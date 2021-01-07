@@ -1,0 +1,152 @@
+/*
+ * Copyright (C) Evergreen [2020 - 2021]
+ * This program comes with ABSOLUTELY NO WARRANTY
+ * This is free software, and you are welcome to redistribute it
+ * under the certain conditions that can be found here
+ * https://www.gnu.org/licenses/lgpl-3.0.en.html
+ */
+
+package com.evergreenclient.hudmod.gui;
+
+import com.evergreenclient.hudmod.EvergreenHUD;
+import com.evergreenclient.hudmod.elements.Element;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.fml.client.config.GuiButtonExt;
+import net.minecraftforge.fml.client.config.GuiSlider;
+
+import java.awt.*;
+import java.io.IOException;
+
+public class ElementGUI extends GuiScreen {
+
+    private final Element element;
+    private boolean dragging;
+    private int xOff, yOff;
+
+    public ElementGUI(Element element) {
+        this.element = element;
+    }
+
+    @Override
+    public void initGui() {
+        this.buttonList.add(new GuiButtonExt(0, width / 2 - 50, height - 20, 100, 20, "Finished"));
+
+        this.buttonList.add(new GuiButtonExt( 1, width / 2 - 1 - 120, 30, 120, 20, "Enabled: "  + (element.isEnabled()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiSlider(    2, width / 2 + 1,       30, 120, 20, "Scale: ",      "%", 20, 200, element.getPosition().scale * 100, false, true));
+        this.buttonList.add(new GuiButtonExt( 3, width / 2 - 1 - 120, 52, 120, 20, "Brackets: " + (element.showBrackets() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt( 4, width / 2 + 1,       52, 120, 20, "Shadow: "   + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt( 5, width / 2 - 1 - 120, 74, 120, 20, "Prefix: "   + (element.showPrefix()   ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiSlider(    6, width / 2 + 1,       74, 120, 20, "Text Red: ",   "", 0, 255, element.getTextColor().getRed(),   false, true));
+        this.buttonList.add(new GuiSlider(    7, width / 2 - 1 - 120, 96, 120, 20, "Text Green: ", "", 0, 255, element.getTextColor().getGreen(), false, true));
+        this.buttonList.add(new GuiSlider(    8, width / 2 + 1,       96, 120, 20, "Text Blue: ",  "", 0, 255, element.getTextColor().getBlue(),  false, true));
+        this.buttonList.add(new GuiSlider(    9, width / 2 - 1 - 120,118, 120, 20, "Text Alpha: ",  "", 0, 255, element.getTextColor().getBlue(),  false, true));
+        this.buttonList.add(new GuiSlider(   10, width / 2 + 1,      118, 120, 20, "Background Red: ",   "", 0, 255, element.getBgColor().getRed(),   false, true));
+        this.buttonList.add(new GuiSlider(   11, width / 2 - 1 - 120,140, 120, 20, "Background Green: ", "", 0, 255, element.getBgColor().getGreen(), false, true));
+        this.buttonList.add(new GuiSlider(   12, width / 2 + 1,      140, 120, 20, "Background Blue: ",  "", 0, 255, element.getBgColor().getBlue(),  false, true));
+        this.buttonList.add(new GuiSlider(   13, width / 2 - 1 - 120,162, 120, 20, "Background Alpha: ", "", 0, 255, element.getBgColor().getAlpha(), false, true));
+        this.buttonList.add(new GuiButtonExt(14, width / 2 + 1,      162, 120, 20, "Centered: " + (element.isCentered()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        drawDefaultBackground();
+        for (Element e : EvergreenHUD.getInstance().getElementManager().getElements())
+            if (e.isEnabled()) e.render();
+        GlStateManager.pushMatrix();
+        float scale = 2;
+        GlStateManager.scale(scale, scale, 0);
+        drawCenteredString(mc.fontRendererObj, "EvergreenHUD", (int)(width / 2 / scale), (int)(5 / scale), -1);
+        GlStateManager.popMatrix();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        switch (button.id) {
+            case 0:
+                mc.displayGuiScreen(new MainGUI());
+                break;
+            case 1:
+                element.setEnabled(!element.isEnabled());
+                button.displayString = "Enabled: " + (element.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                break;
+            case 2:
+                element.getPosition().scale = (float)((GuiSlider)(button)).getValue() / 100;
+                break;
+            case 3:
+                element.setBrackets(!element.showBrackets());
+                button.displayString = "Brackets: " + (element.showBrackets() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                break;
+            case 4:
+                element.setShadow(!element.renderShadow());
+                button.displayString = "Shadow: " + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                break;
+            case 5:
+                element.setPrefix(!element.showPrefix());
+                button.displayString = "Prefix: " + (element.showPrefix() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                break;
+            case 6:
+                element.setTextColor(new Color(((GuiSlider)(button)).getValueInt(), element.getTextColor().getGreen(), element.getTextColor().getBlue()));
+                break;
+            case 7:
+                element.setTextColor(new Color(element.getTextColor().getRed(), ((GuiSlider)(button)).getValueInt(), element.getTextColor().getBlue()));
+                break;
+            case 8:
+                element.setTextColor(new Color(element.getTextColor().getRed(), element.getTextColor().getGreen(), ((GuiSlider)(button)).getValueInt()));
+                break;
+            case 9:
+                element.setTextColor(new Color(element.getTextColor().getRed(), element.getTextColor().getGreen(), element.getTextColor().getBlue(), ((GuiSlider)(button)).getValueInt()));
+                break;
+            case 10:
+                element.setBgColor(new Color(((GuiSlider)(button)).getValueInt(), element.getBgColor().getGreen(), element.getBgColor().getBlue()));
+                break;
+            case 11:
+                element.setBgColor(new Color(element.getBgColor().getRed(), ((GuiSlider)(button)).getValueInt(), element.getBgColor().getBlue()));
+                break;
+            case 12:
+                element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), ((GuiSlider)(button)).getValueInt()));
+                break;
+            case 13:
+                element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), ((GuiSlider)(button)).getValueInt()));
+                break;
+            case 14:
+                element.setCentered(!element.isCentered());
+                button.displayString = "Centered: " + (element.isCentered()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                break;
+        }
+    }
+
+    @Override
+    public void onGuiClosed() {
+        element.getConfig().save();
+    }
+
+    @Override
+    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
+        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
+
+        if (!dragging) {
+            if (clickedMouseButton == 0) {
+                if (element.getHitbox().isMouseOver(mouseX, mouseY)) {
+                    dragging = true;
+                    xOff = mouseX - element.getPosition().x;
+                    yOff = mouseY - element.getPosition().y;
+                }
+            }
+        }
+        else {
+            element.getPosition().x = mouseX - xOff;
+            element.getPosition().y = mouseY - yOff;
+        }
+    }
+
+    @Override
+    protected void mouseReleased(int mouseX, int mouseY, int state) {
+        super.mouseReleased(mouseX, mouseY, state);
+        dragging = false;
+        xOff = yOff = 0;
+    }
+}

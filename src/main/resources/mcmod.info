@@ -1,0 +1,16 @@
+[
+{
+  "modid": "evergreenhud",
+  "name": "EvergreenHUD",
+  "description": "",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["isXander"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
