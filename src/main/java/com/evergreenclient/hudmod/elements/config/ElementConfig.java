@@ -36,7 +36,8 @@ public class ElementConfig {
         root.addProperty("scale", element.getPosition().scale);
         root.addProperty("prefix", element.showPrefix());
         root.addProperty("brackets", element.showBrackets());
-        root.addProperty("color", element.getTextColor().getRGB());
+        root.addProperty("textColor", element.getTextColor().getRGB());
+        root.addProperty("bgColor", element.getBgColor().getRGB());
         root.addProperty("shadow", element.renderShadow());
         root.addProperty("alignment", element.getAlignment().ordinal());
         BetterJsonObject custom = new BetterJsonObject();
@@ -58,7 +59,8 @@ public class ElementConfig {
         element.getPosition().scale = root.optInt("scale");
         element.setPrefix(root.optBoolean("prefix"));
         element.setBrackets(root.optBoolean("brackets"));
-        element.setTextColor(new Color(root.optInt("color")));
+        element.setTextColor(new Color(root.optInt("textColor")));
+        element.setBgColor(new Color(root.optInt("bgColor")));
         element.setShadow(root.optBoolean("shadow"));
         element.setAlignment(Element.Alignment.values()[root.optInt("alignment")]);
     }

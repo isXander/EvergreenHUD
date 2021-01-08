@@ -22,7 +22,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
 
-@Mod(modid = "evergreenhud", name = "EvergreenHUD", version = "0.2", clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]")
+@Mod(modid = "evergreenhud", name = "EvergreenHUD", version = "0.2.1", clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]")
 public class EvergreenHUD {
 
     @Mod.Instance("evergreenhud")
