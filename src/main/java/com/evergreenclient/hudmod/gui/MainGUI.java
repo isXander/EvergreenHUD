@@ -20,12 +20,10 @@ public class MainGUI extends GuiScreen {
     private Element dragging = null;
     private int offX = 0, offY = 0;
 
-    private boolean save;
-
     @Override
     public void initGui() {
         this.buttonList.add(new GuiButtonExt(0, width / 2 + 1, height - 20, 100, 20, "Finished"));
-        this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 100, height - 20, 100, 20, "Cancel"));
+        this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 100, height - 20, 100, 20, "Reset"));
         int columnCount = 0;
         int elementCount = 1;
         for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
@@ -54,9 +52,10 @@ public class MainGUI extends GuiScreen {
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
             case 0:
-                save = true;
-            case 1:
                 mc.displayGuiScreen(null);
+                break;
+            case 1:
+                EvergreenHUD.getInstance().getElementManager().resetAll();
                 break;
             default:
                 mc.displayGuiScreen(new ElementGUI(EvergreenHUD.getInstance().getElementManager().getElements().get(button.id - 2)));
@@ -95,7 +94,6 @@ public class MainGUI extends GuiScreen {
 
     @Override
     public void onGuiClosed() {
-        if (save)
-            EvergreenHUD.getInstance().getElementManager().saveAll();
+        EvergreenHUD.getInstance().getElementManager().saveAll();
     }
 }

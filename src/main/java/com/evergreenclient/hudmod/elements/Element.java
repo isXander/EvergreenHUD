@@ -18,8 +18,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
 
 public abstract class Element extends Gui {
 
@@ -28,12 +26,11 @@ public abstract class Element extends Gui {
 
     /* Config */
     private boolean enabled;
-    private final Position pos;
+    private Position pos;
     private boolean prefix = true;
     private boolean brackets = false;
     private boolean shadow = true;
-    private boolean centered = false;
-    private final List<ElementConfig.ParsableObject> customObjects;
+    private Alignment alignment = Alignment.RIGHT;
 
     /* Color */
     private Color textColor = new Color(255, 255, 255, 255);
@@ -43,7 +40,6 @@ public abstract class Element extends Gui {
 
     public Element() {
         pos = new Position(10, 10, 1);
-        customObjects = new ArrayList<>();
         config = new ElementConfig(this);
         initialise();
         config.load();
@@ -57,7 +53,7 @@ public abstract class Element extends Gui {
 
     public abstract String getDisplayPrefix();
 
-    private String getDisplayString() {
+    public String getDisplayString() {
         String builder = "";
         if (showBrackets())
             builder += "[";
@@ -77,10 +73,17 @@ public abstract class Element extends Gui {
         GlStateManager.scale(getPosition().scale, getPosition().scale, 0);
         Hitbox hitbox = getHitbox();
         drawRect(hitbox.x, hitbox.y, hitbox.x + hitbox.width, hitbox.y + hitbox.height, getBgColor().getRGB());
-        if (isCentered())
-            drawCenteredString(mc.fontRendererObj, getDisplayString(), getPosition().x / getPosition().scale, getPosition().y / getPosition().scale, getTextColor().getRGB(), renderShadow());
-        else
-            mc.fontRendererObj.drawString(getDisplayString(), getPosition().x / getPosition().scale, getPosition().y / getPosition().scale, getTextColor().getRGB(), renderShadow());
+        switch (getAlignment()) {
+            case LEFT:
+                mc.fontRendererObj.drawString(getDisplayString(), (getPosition().x - mc.fontRendererObj.getStringWidth(getDisplayString())) / getPosition().scale, getPosition().y / getPosition().scale, getTextColor().getRGB(), renderShadow());
+                break;
+            case CENTER:
+                drawCenteredString(mc.fontRendererObj, getDisplayString(), getPosition().x / getPosition().scale, getPosition().y / getPosition().scale, getTextColor().getRGB(), renderShadow());
+                break;
+            case RIGHT:
+                mc.fontRendererObj.drawString(getDisplayString(), getPosition().x / getPosition().scale, getPosition().y / getPosition().scale, getTextColor().getRGB(), renderShadow());
+                break;
+        }
         GlStateManager.popMatrix();
     }
 
@@ -89,21 +92,32 @@ public abstract class Element extends Gui {
     }
 
     public Hitbox getHitbox() {
+        Hitbox hitbox = null;
         int width = mc.fontRendererObj.getStringWidth(getDisplayString());
-        return new Hitbox(pos.x - (isCentered() ? (width / 2) : 0) - 4, pos.y - 4, (int) (width + 8 / getPosition().scale), (int) (mc.fontRendererObj.FONT_HEIGHT + 8 / getPosition().scale));
+        switch (getAlignment()) {
+            case LEFT:
+                hitbox = new Hitbox((int)(getPosition().x - width - 4 / getPosition().scale), (int)(pos.y - 4 / getPosition().scale), (int)(width + 8 / getPosition().scale), (int) (mc.fontRendererObj.FONT_HEIGHT + 8 / getPosition().scale));
+                break;
+            case CENTER:
+                hitbox = new Hitbox((int)(pos.x - (width / 2) - 4 / getPosition().scale), (int)(pos.y - 4 / getPosition().scale), (int)(width + 8 / getPosition().scale), (int)(mc.fontRendererObj.FONT_HEIGHT + 8 / getPosition().scale));
+                break;
+            case RIGHT:
+                hitbox = new Hitbox((int)(pos.x - 4 / getPosition().scale), (int)(pos.y - 4 / getPosition().scale), (int)(width + 8 / getPosition().scale), (int)(mc.fontRendererObj.FONT_HEIGHT + 8 / getPosition().scale));
+                break;
+        }
+        return hitbox;
     }
 
-    protected void addSettingObject(String key, Object o) {
-        customObjects.add(new ElementConfig.ParsableObject(key, o));
-    }
-
-    @SuppressWarnings("unchecked")
-    public <T> T getSettingObject(String key) {
-        return (T)customObjects.stream().filter(po -> po.key.equals(key)).findAny().orElse(null);
-    }
-
-    public List<ElementConfig.ParsableObject> getCustomObjects() {
-        return customObjects;
+    public void resetSettings() {
+        enabled = true;
+        pos = new Position(10, 10, 1);
+        prefix = true;
+        brackets = false;
+        shadow = true;
+        alignment = Alignment.RIGHT;
+        textColor = new Color(255, 255, 255, 255);
+        bgColor = new Color(0, 0, 0, 100);
+        getConfig().save();
     }
 
     public ElementConfig getConfig() {
@@ -142,12 +156,12 @@ public abstract class Element extends Gui {
         this.bgColor = bgColor;
     }
 
-    public boolean isCentered() {
-        return centered;
+    public Alignment getAlignment() {
+        return alignment;
     }
 
-    public void setCentered(boolean centered) {
-        this.centered = centered;
+    public void setAlignment(Alignment alignment) {
+        this.alignment = alignment;
     }
 
     public boolean renderShadow() {
@@ -168,5 +182,21 @@ public abstract class Element extends Gui {
 
     public void setShadow(boolean shadow) {
         this.shadow = shadow;
+    }
+
+    public enum Alignment {
+        LEFT("Left"),
+        CENTER("Center"),
+        RIGHT("Right");
+
+        private String name;
+
+        Alignment(String displayName) {
+            this.name = displayName;
+        }
+
+        public String getName() {
+            return name;
+        }
     }
 }

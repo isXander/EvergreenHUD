@@ -19,7 +19,9 @@ import java.io.File;
 public class ElementConfig {
 
     private final Element element;
-    private final File configFile;
+    public final File configFile;
+
+
 
     public ElementConfig(Element e) {
         this.element = e;
@@ -36,12 +38,8 @@ public class ElementConfig {
         root.addProperty("brackets", element.showBrackets());
         root.addProperty("color", element.getTextColor().getRGB());
         root.addProperty("shadow", element.renderShadow());
-        root.addProperty("centered", element.isCentered());
+        root.addProperty("alignment", element.getAlignment().ordinal());
         BetterJsonObject custom = new BetterJsonObject();
-        Gson gson = new Gson();
-        for (ParsableObject po : element.getCustomObjects()) {
-            custom.add(po.key, new BetterJsonObject(gson.toJson(po.o)));
-        }
         root.add("custom", custom);
         root.writeToFile(configFile);
     }
@@ -62,22 +60,7 @@ public class ElementConfig {
         element.setBrackets(root.optBoolean("brackets"));
         element.setTextColor(new Color(root.optInt("color")));
         element.setShadow(root.optBoolean("shadow"));
-        element.setCentered(root.optBoolean("centered"));
-        BetterJsonObject custom = new BetterJsonObject(root.get("custom").getAsJsonObject());
-        Gson gson = new Gson();
-        for (String key : custom.getAllKeys()) {
-            element.getCustomObjects().get(element.getCustomObjects().indexOf(element.getSettingObject(key))).o = gson.fromJson(custom.get(key), Object.class);
-        }
-    }
-
-    public static class ParsableObject {
-        public String key;
-        public Object o;
-
-        public ParsableObject(String key, Object o) {
-            this.key = key;
-            this.o = o;
-        }
+        element.setAlignment(Element.Alignment.values()[root.optInt("alignment")]);
     }
 
 }

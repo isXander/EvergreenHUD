@@ -27,7 +27,8 @@ public class ElementManager {
                 new ElementCoordinates(),
                 new ElementServer(),
                 new ElementCps(),
-                new ElementReach()
+                new ElementReach(),
+                new ElementMemory()
         );
     }
 
@@ -47,6 +48,12 @@ public class ElementManager {
     public void saveAll() {
         for (Element e : elements) {
             e.getConfig().save();
+        }
+    }
+
+    public void resetAll() {
+        for (Element e : elements) {
+            e.resetSettings();
         }
     }
 

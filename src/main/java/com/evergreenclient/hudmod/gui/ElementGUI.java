@@ -20,6 +20,8 @@ import net.minecraftforge.fml.client.config.GuiSlider;
 import java.awt.*;
 import java.io.IOException;
 
+import static com.evergreenclient.hudmod.elements.Element.Alignment.*;
+
 public class ElementGUI extends GuiScreen {
 
     private final Element element;
@@ -32,22 +34,33 @@ public class ElementGUI extends GuiScreen {
 
     @Override
     public void initGui() {
-        this.buttonList.add(new GuiButtonExt(0, width / 2 - 50, height - 20, 100, 20, "Finished"));
+        addButtons();
+    }
 
-        this.buttonList.add(new GuiButtonExt( 1, width / 2 - 1 - 120, 30, 120, 20, "Enabled: "  + (element.isEnabled()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiSlider(    2, width / 2 + 1,       30, 120, 20, "Scale: ",      "%", 20, 200, element.getPosition().scale * 100, false, true));
-        this.buttonList.add(new GuiButtonExt( 3, width / 2 - 1 - 120, 52, 120, 20, "Brackets: " + (element.showBrackets() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonExt( 4, width / 2 + 1,       52, 120, 20, "Shadow: "   + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonExt( 5, width / 2 - 1 - 120, 74, 120, 20, "Prefix: "   + (element.showPrefix()   ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiSlider(    6, width / 2 + 1,       74, 120, 20, "Text Red: ",   "", 0, 255, element.getTextColor().getRed(),   false, true));
-        this.buttonList.add(new GuiSlider(    7, width / 2 - 1 - 120, 96, 120, 20, "Text Green: ", "", 0, 255, element.getTextColor().getGreen(), false, true));
-        this.buttonList.add(new GuiSlider(    8, width / 2 + 1,       96, 120, 20, "Text Blue: ",  "", 0, 255, element.getTextColor().getBlue(),  false, true));
-        this.buttonList.add(new GuiSlider(    9, width / 2 - 1 - 120,118, 120, 20, "Text Alpha: ",  "", 0, 255, element.getTextColor().getBlue(),  false, true));
-        this.buttonList.add(new GuiSlider(   10, width / 2 + 1,      118, 120, 20, "Background Red: ",   "", 0, 255, element.getBgColor().getRed(),   false, true));
-        this.buttonList.add(new GuiSlider(   11, width / 2 - 1 - 120,140, 120, 20, "Background Green: ", "", 0, 255, element.getBgColor().getGreen(), false, true));
-        this.buttonList.add(new GuiSlider(   12, width / 2 + 1,      140, 120, 20, "Background Blue: ",  "", 0, 255, element.getBgColor().getBlue(),  false, true));
-        this.buttonList.add(new GuiSlider(   13, width / 2 - 1 - 120,162, 120, 20, "Background Alpha: ", "", 0, 255, element.getBgColor().getAlpha(), false, true));
-        this.buttonList.add(new GuiButtonExt(14, width / 2 + 1,      162, 120, 20, "Centered: " + (element.isCentered()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+    private void addButtons() {
+        this.buttonList.clear();
+
+        this.buttonList.add(new GuiButtonExt( 0, width / 2 + 1,       height - 20, 90, 20, "Finished"));
+        this.buttonList.add(new GuiButtonExt( 1, width / 2 - 1 - 90,  height - 20, 90, 20, "Reset"));
+
+        this.buttonList.add(new GuiButtonExt( 2, width / 2 - 1 - 120, getRow(0), 120, 20, "Enabled: "  + (element.isEnabled()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiSlider(    3, width / 2 + 1,       getRow(0), 120, 20, "Scale: ",      "%", 20, 200, element.getPosition().scale * 100, false, true));
+        this.buttonList.add(new GuiButtonExt( 4, width / 2 - 1 - 120, getRow(1), 120, 20, "Brackets: " + (element.showBrackets() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt( 5, width / 2 + 1,       getRow(1), 120, 20, "Shadow: "   + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt( 6, width / 2 - 1 - 120, getRow(2), 120, 20, "Prefix: "   + (element.showPrefix()   ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiSlider(    7, width / 2 + 1,       getRow(2), 120, 20, "Text Red: ",   "", 0, 255, element.getTextColor().getRed(),   false, true));
+        this.buttonList.add(new GuiSlider(    8, width / 2 - 1 - 120, getRow(3), 120, 20, "Text Green: ", "", 0, 255, element.getTextColor().getGreen(), false, true));
+        this.buttonList.add(new GuiSlider(    9, width / 2 + 1,       getRow(3), 120, 20, "Text Blue: ",  "", 0, 255, element.getTextColor().getBlue(),  false, true));
+        this.buttonList.add(new GuiSlider(   10, width / 2 - 1 - 120, getRow(4), 120, 20, "Text Alpha: ",  "", 0, 255, element.getTextColor().getBlue(),  false, true));
+        this.buttonList.add(new GuiSlider(   11, width / 2 + 1,       getRow(4), 120, 20, "Background Red: ",   "", 0, 255, element.getBgColor().getRed(),   false, true));
+        this.buttonList.add(new GuiSlider(   12, width / 2 - 1 - 120, getRow(5), 120, 20, "Background Green: ", "", 0, 255, element.getBgColor().getGreen(), false, true));
+        this.buttonList.add(new GuiSlider(   13, width / 2 + 1,       getRow(5), 120, 20, "Background Blue: ",  "", 0, 255, element.getBgColor().getBlue(),  false, true));
+        this.buttonList.add(new GuiSlider(   14, width / 2 - 1 - 120, getRow(6), 120, 20, "Background Alpha: ", "", 0, 255, element.getBgColor().getAlpha(), false, true));
+        this.buttonList.add(new GuiButtonExt(15, width / 2 + 1,       getRow(6), 120, 20, "Alignment: " + element.getAlignment().getName()));
+    }
+
+    private int getRow(int row) {
+        return 40 + (row * 22);
     }
 
     @Override
@@ -58,7 +71,12 @@ public class ElementGUI extends GuiScreen {
         GlStateManager.pushMatrix();
         float scale = 2;
         GlStateManager.scale(scale, scale, 0);
-        drawCenteredString(mc.fontRendererObj, "EvergreenHUD", (int)(width / 2 / scale), (int)(5 / scale), -1);
+        drawCenteredString(mc.fontRendererObj, element.getMetadata().getName(), (int)(width / 2 / scale), (int)(5 / scale), -1);
+        GlStateManager.popMatrix();
+        GlStateManager.pushMatrix();
+        scale = 1f;
+        GlStateManager.scale(scale, scale, 0);
+        drawCenteredString(mc.fontRendererObj, element.getMetadata().getDescription(), (int)(width / 2 / scale), (int)(25 / scale), -1);
         GlStateManager.popMatrix();
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -70,51 +88,68 @@ public class ElementGUI extends GuiScreen {
                 mc.displayGuiScreen(new MainGUI());
                 break;
             case 1:
+                element.resetSettings();
+                addButtons();
+                break;
+            case 2:
                 element.setEnabled(!element.isEnabled());
                 button.displayString = "Enabled: " + (element.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
-            case 2:
+            case 3:
                 element.getPosition().scale = (float)((GuiSlider)(button)).getValue() / 100;
                 break;
-            case 3:
+            case 4:
                 element.setBrackets(!element.showBrackets());
                 button.displayString = "Brackets: " + (element.showBrackets() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
-            case 4:
+            case 5:
                 element.setShadow(!element.renderShadow());
                 button.displayString = "Shadow: " + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
-            case 5:
+            case 6:
                 element.setPrefix(!element.showPrefix());
                 button.displayString = "Prefix: " + (element.showPrefix() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
-            case 6:
-                element.setTextColor(new Color(((GuiSlider)(button)).getValueInt(), element.getTextColor().getGreen(), element.getTextColor().getBlue()));
-                break;
             case 7:
-                element.setTextColor(new Color(element.getTextColor().getRed(), ((GuiSlider)(button)).getValueInt(), element.getTextColor().getBlue()));
+                element.setTextColor(new Color(((GuiSlider)(button)).getValueInt(), element.getTextColor().getGreen(), element.getTextColor().getBlue(), element.getTextColor().getAlpha()));
                 break;
             case 8:
-                element.setTextColor(new Color(element.getTextColor().getRed(), element.getTextColor().getGreen(), ((GuiSlider)(button)).getValueInt()));
+                element.setTextColor(new Color(element.getTextColor().getRed(), ((GuiSlider)(button)).getValueInt(), element.getTextColor().getBlue(), element.getTextColor().getAlpha()));
                 break;
             case 9:
-                element.setTextColor(new Color(element.getTextColor().getRed(), element.getTextColor().getGreen(), element.getTextColor().getBlue(), ((GuiSlider)(button)).getValueInt()));
+                element.setTextColor(new Color(element.getTextColor().getRed(), element.getTextColor().getGreen(), ((GuiSlider)(button)).getValueInt(), element.getTextColor().getAlpha()));
                 break;
             case 10:
-                element.setBgColor(new Color(((GuiSlider)(button)).getValueInt(), element.getBgColor().getGreen(), element.getBgColor().getBlue()));
+                element.setTextColor(new Color(element.getTextColor().getRed(), element.getTextColor().getGreen(), element.getTextColor().getBlue(), ((GuiSlider)(button)).getValueInt()));
                 break;
             case 11:
-                element.setBgColor(new Color(element.getBgColor().getRed(), ((GuiSlider)(button)).getValueInt(), element.getBgColor().getBlue()));
+                element.setBgColor(new Color(((GuiSlider)(button)).getValueInt(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), element.getTextColor().getAlpha()));
                 break;
             case 12:
-                element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), ((GuiSlider)(button)).getValueInt()));
+                element.setBgColor(new Color(element.getBgColor().getRed(), ((GuiSlider)(button)).getValueInt(), element.getBgColor().getBlue(), element.getTextColor().getAlpha()));
                 break;
             case 13:
-                element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), ((GuiSlider)(button)).getValueInt()));
+                element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), ((GuiSlider)(button)).getValueInt(), element.getTextColor().getAlpha()));
                 break;
             case 14:
-                element.setCentered(!element.isCentered());
-                button.displayString = "Centered: " + (element.isCentered()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), ((GuiSlider)(button)).getValueInt()));
+                break;
+            case 15:
+                Element.Alignment alignment = element.getAlignment();
+                if (alignment == LEFT) {
+                    alignment = CENTER;
+                    element.getPosition().x -= mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2;
+                }
+                else if (alignment == CENTER) {
+                    alignment = RIGHT;
+                    element.getPosition().x -= mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2;
+                }
+                else if (alignment == RIGHT) {
+                    alignment = LEFT;
+                    element.getPosition().x += mc.fontRendererObj.getStringWidth(element.getDisplayString());
+                }
+                element.setAlignment(alignment);
+                button.displayString = "Alignment: " + element.getAlignment().getName();
                 break;
         }
     }
