@@ -53,7 +53,7 @@ public class ElementMemory extends Element {
     }
 
     @Override
-    public String getDisplayPrefix() {
+    public String getDisplayTitle() {
         return "Mem";
     }
 

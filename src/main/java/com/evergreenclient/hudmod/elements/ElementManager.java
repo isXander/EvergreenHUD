@@ -28,7 +28,10 @@ public class ElementManager {
                 new ElementServer(),
                 new ElementCps(),
                 new ElementReach(),
-                new ElementMemory()
+                new ElementMemory(),
+                new ElementTime(),
+                new ElementDirection(),
+                new ElementSpeed()
         );
     }
 
@@ -37,7 +40,7 @@ public class ElementManager {
     }
 
     @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent event) {
+    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
         if (Minecraft.getMinecraft().inGameHasFocus || Minecraft.getMinecraft().currentScreen instanceof GuiChat)
             for (Element e : elements)

@@ -9,8 +9,12 @@
 package com.evergreenclient.hudmod.elements.config;
 
 import com.evergreenclient.hudmod.elements.Element;
+import com.evergreenclient.hudmod.settings.Setting;
+import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
+import com.evergreenclient.hudmod.settings.impl.DoubleSetting;
+import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
+import com.evergreenclient.hudmod.utils.Alignment;
 import com.evergreenclient.hudmod.utils.json.BetterJsonObject;
-import com.google.gson.Gson;
 import net.minecraft.client.Minecraft;
 
 import java.awt.*;
@@ -20,7 +24,6 @@ public class ElementConfig {
 
     private final Element element;
     public final File configFile;
-
 
 
     public ElementConfig(Element e) {
@@ -34,13 +37,22 @@ public class ElementConfig {
         root.addProperty("x", element.getPosition().x);
         root.addProperty("y", element.getPosition().y);
         root.addProperty("scale", element.getPosition().scale);
-        root.addProperty("prefix", element.showPrefix());
+        root.addProperty("title", element.showTitle());
         root.addProperty("brackets", element.showBrackets());
+        root.addProperty("inverted", element.isInverted());
         root.addProperty("textColor", element.getTextColor().getRGB());
         root.addProperty("bgColor", element.getBgColor().getRGB());
         root.addProperty("shadow", element.renderShadow());
         root.addProperty("alignment", element.getAlignment().ordinal());
         BetterJsonObject custom = new BetterJsonObject();
+        for (Setting s : element.getCustomSettings()) {
+            if (s instanceof BooleanSetting)
+                custom.addProperty(s.getJsonKey(), ((BooleanSetting)s).get());
+            else if (s instanceof IntegerSetting)
+                custom.addProperty(s.getJsonKey(), ((IntegerSetting)s).get());
+            else if (s instanceof DoubleSetting)
+                custom.addProperty(s.getJsonKey(), ((DoubleSetting)s).get());
+        }
         root.add("custom", custom);
         root.writeToFile(configFile);
     }
@@ -57,12 +69,27 @@ public class ElementConfig {
         element.getPosition().x = root.optInt("x");
         element.getPosition().y = root.optInt("y");
         element.getPosition().scale = root.optInt("scale");
-        element.setPrefix(root.optBoolean("prefix"));
+        element.setTitle(root.optBoolean("title"));
         element.setBrackets(root.optBoolean("brackets"));
+        element.setInverted(root.optBoolean("inverted"));
         element.setTextColor(new Color(root.optInt("textColor")));
         element.setBgColor(new Color(root.optInt("bgColor")));
         element.setShadow(root.optBoolean("shadow"));
-        element.setAlignment(Element.Alignment.values()[root.optInt("alignment")]);
+        element.setAlignment(Alignment.values()[root.optInt("alignment")]);
+        BetterJsonObject custom = new BetterJsonObject(root.get("custom").getAsJsonObject());
+        for (String key : custom.getAllKeys()) {
+            for (Setting s : element.getCustomSettings()) {
+                if (s.getJsonKey().equals(key)) {
+                    if (s instanceof BooleanSetting)
+                        ((BooleanSetting) s).set(custom.optBoolean(key));
+                    else if (s instanceof IntegerSetting)
+                        ((IntegerSetting) s).set(custom.optInt(key));
+                    else if (s instanceof DoubleSetting)
+                        ((DoubleSetting) s).set(custom.optDouble(key));
+                    break;
+                }
+            }
+        }
     }
 
 }

@@ -30,7 +30,7 @@ public class ElementServer extends Element {
     }
 
     @Override
-    public String getDisplayPrefix() {
+    public String getDisplayTitle() {
         return "IP";
     }
 

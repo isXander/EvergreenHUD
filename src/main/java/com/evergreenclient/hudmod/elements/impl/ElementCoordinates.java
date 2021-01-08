@@ -33,7 +33,7 @@ public class ElementCoordinates extends Element {
     }
 
     @Override
-    public String getDisplayPrefix() {
+    public String getDisplayTitle() {
         return "Coordinates";
     }
 

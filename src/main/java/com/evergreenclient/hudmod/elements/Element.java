@@ -9,6 +9,8 @@
 package com.evergreenclient.hudmod.elements;
 
 import com.evergreenclient.hudmod.elements.config.ElementConfig;
+import com.evergreenclient.hudmod.settings.Setting;
+import com.evergreenclient.hudmod.utils.Alignment;
 import com.evergreenclient.hudmod.utils.Position;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import com.evergreenclient.hudmod.utils.gui.Hitbox;
@@ -18,6 +20,9 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 
 import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public abstract class Element extends Gui {
 
@@ -25,12 +30,14 @@ public abstract class Element extends Gui {
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
     /* Config */
-    private boolean enabled;
-    private Position pos;
-    private boolean prefix = true;
+    private boolean enabled = false;
+    private Position pos = new Position(10, 10, 1);
+    private boolean title = true;
     private boolean brackets = false;
     private boolean shadow = true;
+    private boolean inverted = false;
     private Alignment alignment = Alignment.RIGHT;
+    private final List<Setting> customSettings = new ArrayList<>();
 
     /* Color */
     private Color textColor = new Color(255, 255, 255, 255);
@@ -39,7 +46,6 @@ public abstract class Element extends Gui {
     private final ElementConfig config;
 
     public Element() {
-        pos = new Position(10, 10, 1);
         config = new ElementConfig(this);
         initialise();
         config.load();
@@ -51,15 +57,17 @@ public abstract class Element extends Gui {
 
     protected abstract String getValue();
 
-    public abstract String getDisplayPrefix();
+    public abstract String getDisplayTitle();
 
     public String getDisplayString() {
         String builder = "";
         if (showBrackets())
             builder += "[";
-        if (showPrefix())
-            builder += getDisplayPrefix() + ": ";
+        if (showTitle() && !isInverted())
+            builder += getDisplayTitle() + ": ";
         builder += getValue();
+        if (showTitle() && isInverted())
+            builder += " " + getDisplayTitle();
         if (showBrackets())
             builder += "]";
         return builder;
@@ -111,17 +119,27 @@ public abstract class Element extends Gui {
     public void resetSettings() {
         enabled = true;
         pos = new Position(10, 10, 1);
-        prefix = true;
+        title = true;
         brackets = false;
+        inverted = false;
         shadow = true;
         alignment = Alignment.RIGHT;
         textColor = new Color(255, 255, 255, 255);
         bgColor = new Color(0, 0, 0, 100);
+        customSettings.clear();
         getConfig().save();
     }
 
     public ElementConfig getConfig() {
         return config;
+    }
+
+    protected void addSettings(Setting... settings) {
+        customSettings.addAll(Arrays.asList(settings));
+    }
+
+    public List<Setting> getCustomSettings() {
+        return customSettings;
     }
 
     public boolean isEnabled() {
@@ -136,12 +154,20 @@ public abstract class Element extends Gui {
         return pos;
     }
 
-    public boolean showPrefix() {
-        return prefix;
+    public boolean showTitle() {
+        return title;
     }
 
     public boolean showBrackets() {
         return brackets;
+    }
+
+    public boolean isInverted() {
+        return inverted;
+    }
+
+    public void setInverted(boolean inverted) {
+        this.inverted = inverted;
     }
 
     public Color getTextColor() {
@@ -168,8 +194,8 @@ public abstract class Element extends Gui {
         return shadow;
     }
 
-    public void setPrefix(boolean prefix) {
-        this.prefix = prefix;
+    public void setTitle(boolean title) {
+        this.title = title;
     }
 
     public void setBrackets(boolean brackets) {
@@ -184,19 +210,4 @@ public abstract class Element extends Gui {
         this.shadow = shadow;
     }
 
-    public enum Alignment {
-        LEFT("Left"),
-        CENTER("Center"),
-        RIGHT("Right");
-
-        private String name;
-
-        Alignment(String displayName) {
-            this.name = displayName;
-        }
-
-        public String getName() {
-            return name;
-        }
-    }
 }
