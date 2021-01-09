@@ -31,7 +31,8 @@ public class ElementManager {
                 new ElementMemory(),
                 new ElementTime(),
                 new ElementDirection(),
-                new ElementSpeed()
+                new ElementSpeed(),
+                new ElementPing()
         );
     }
 

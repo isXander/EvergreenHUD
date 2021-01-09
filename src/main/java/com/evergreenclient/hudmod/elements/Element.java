@@ -80,7 +80,7 @@ public abstract class Element extends Gui {
         GlStateManager.pushMatrix();
         GlStateManager.scale(getPosition().scale, getPosition().scale, 0);
         Hitbox hitbox = getHitbox();
-        drawRect(hitbox.x, hitbox.y, hitbox.x + hitbox.width, hitbox.y + hitbox.height, getBgColor().getRGB());
+        drawRect((int) (hitbox.x), (int) (hitbox.y), (int) (hitbox.x + (hitbox.width)), (int) (hitbox.y + (hitbox.height)), getBgColor().getRGB());
         switch (getAlignment()) {
             case LEFT:
                 mc.fontRendererObj.drawString(getDisplayString(), (getPosition().x - mc.fontRendererObj.getStringWidth(getDisplayString())) / getPosition().scale, getPosition().y / getPosition().scale, getTextColor().getRGB(), renderShadow());
@@ -104,13 +104,13 @@ public abstract class Element extends Gui {
         int width = mc.fontRendererObj.getStringWidth(getDisplayString());
         switch (getAlignment()) {
             case LEFT:
-                hitbox = new Hitbox((int)(getPosition().x - width - 4 / getPosition().scale), pos.y - 4, (int)(width + 8 / getPosition().scale), (int) (mc.fontRendererObj.FONT_HEIGHT + 8 / getPosition().scale));
+                hitbox = new Hitbox((int)(getPosition().x - width - 4), (int)(pos.y - 4), (int)(width + 8), (int) (mc.fontRendererObj.FONT_HEIGHT + 8));
                 break;
             case CENTER:
-                hitbox = new Hitbox((int)(pos.x - (width / 2) - 4 / getPosition().scale), pos.y - 4, (int)(width + 8 / getPosition().scale), (int)(mc.fontRendererObj.FONT_HEIGHT + 8 / getPosition().scale));
+                hitbox = new Hitbox((int)(pos.x - (width / 2) - 4), (int)(pos.y - 4), (int)(width + 8), (int)(mc.fontRendererObj.FONT_HEIGHT + 8));
                 break;
             case RIGHT:
-                hitbox = new Hitbox((int)(pos.x - 4 / getPosition().scale), pos.y - 4, (int)(width + 8 / getPosition().scale), (int)(mc.fontRendererObj.FONT_HEIGHT + 8 / getPosition().scale));
+                hitbox = new Hitbox((int)(pos.x - 4), (int)(pos.y - 4), (int)(width + 8), (int)(mc.fontRendererObj.FONT_HEIGHT + 8));
                 break;
         }
         return hitbox;
