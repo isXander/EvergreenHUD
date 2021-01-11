@@ -26,17 +26,6 @@ public class MainGUI extends GuiScreen {
     public void initGui() {
         this.buttonList.add(new GuiButtonExt(0, width / 2 + 1,       height - 20, 90, 20, "Finished"));
         this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 90, height - 20, 90, 20, "Reset"));
-//        int columnCount = 0;
-//        int elementCount = 1;
-//        for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-//            int y = 30 + ((22 * elementCount) - ((height - 60) * columnCount));
-//            if (y > height - 60)
-//                columnCount++;
-//            this.buttonList.add(new GuiButtonExt(elementCount + 1, (width / 2 - 40) * (columnCount + 1), y, 80, 20, e.getMetadata().getName()));
-//            elementCount++;
-//        }
-
-
 
         int column = 0;
         int element = 1;
@@ -64,9 +53,9 @@ public class MainGUI extends GuiScreen {
         GlStateManager.pushMatrix();
         float scale = 2;
         GlStateManager.scale(scale, scale, 0);
-        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "Evergreen" + EnumChatFormatting.RESET + "HUD", (int)(width / 2 / scale), (int)(5 / scale), -1);
+        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "EvergreenHUD " + EvergreenHUD.VERSION, (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
-        drawCenteredString(mc.fontRendererObj, EvergreenHUD.VERSION, width / 2, 25, -1);
+        drawCenteredString(mc.fontRendererObj, "evergreenclient.com", width / 2, 25, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

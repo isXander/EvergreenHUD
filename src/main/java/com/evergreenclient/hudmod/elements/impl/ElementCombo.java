@@ -69,4 +69,12 @@ public class ElementCombo extends Element {
         }
     }
 
+    @SubscribeEvent
+    public void onDamage(LivingHurtEvent event) {
+        if (event.entity instanceof EntityPlayerSP) {
+            counter = 0;
+            hitEntity = null;
+        }
+    }
+
 }

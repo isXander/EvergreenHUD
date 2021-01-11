@@ -176,7 +176,7 @@ public class ElementGUI extends GuiScreenExt {
                 if (s instanceof BooleanSetting) {
                     BooleanSetting setting = (BooleanSetting) s;
                     setting.set(!setting.get());
-                    button.displayString = setting.getName() + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                    button.displayString = setting.getName() + ": " + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 } else if (s instanceof IntegerSetting) {
                     IntegerSetting setting = (IntegerSetting) s;
                     setting.set(((GuiSlider)button).getValueInt());
@@ -225,7 +225,7 @@ public class ElementGUI extends GuiScreenExt {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
         if (keyCode == Keyboard.KEY_ESCAPE)
-            mc.displayGuiScreen(null);
+            mc.displayGuiScreen(new MainGUI());
     }
 
     @Override

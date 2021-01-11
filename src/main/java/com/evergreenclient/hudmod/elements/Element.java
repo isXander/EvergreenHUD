@@ -8,7 +8,7 @@
 
 package com.evergreenclient.hudmod.elements;
 
-import com.evergreenclient.hudmod.elements.config.ElementConfig;
+import com.evergreenclient.hudmod.config.ElementConfig;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.utils.Alignment;
 import com.evergreenclient.hudmod.utils.Position;

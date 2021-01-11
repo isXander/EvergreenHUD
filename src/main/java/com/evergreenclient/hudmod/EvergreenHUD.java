@@ -8,8 +8,11 @@
 
 package com.evergreenclient.hudmod;
 
+import club.sk1er.mods.core.gui.notification.Notification;
+import club.sk1er.mods.core.gui.notification.Notifications;
 import com.evergreenclient.hudmod.command.EvergreenHudCommand;
 import com.evergreenclient.hudmod.elements.ElementManager;
+import com.evergreenclient.hudmod.forge.modcore.ModCoreInstaller;
 import com.evergreenclient.hudmod.gui.MainGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -34,10 +37,14 @@ public class EvergreenHUD {
 
     private ElementManager elementManager;
 
+    private boolean reset = false;
+
     private KeyBinding keybind = new KeyBinding("Open GUI", Keyboard.KEY_RSHIFT, "Evergreen");
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
+
         ClientCommandHandler.instance.registerCommand(new EvergreenHudCommand());
         ClientRegistry.registerKeyBinding(keybind);
         MinecraftForge.EVENT_BUS.register(elementManager = new ElementManager());
@@ -48,6 +55,11 @@ public class EvergreenHUD {
     public void onTick(TickEvent.ClientTickEvent event) {
         if (keybind.isPressed())
             Minecraft.getMinecraft().displayGuiScreen(new MainGUI());
+
+        if (reset && Minecraft.getMinecraft().thePlayer != null) {
+            reset = false;
+            Notifications.INSTANCE.pushNotification("EvergreenHUD", "The configuration has been reset due to a version change that makes your configuration incompatible with the current version.");
+        }
     }
 
     public static EvergreenHUD getInstance() {
@@ -56,6 +68,10 @@ public class EvergreenHUD {
 
     public ElementManager getElementManager() {
         return elementManager;
+    }
+
+    public void notifyConfigReset() {
+        reset = true;
     }
 
 }

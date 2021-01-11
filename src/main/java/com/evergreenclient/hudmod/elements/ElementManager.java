@@ -33,7 +33,9 @@ public class ElementManager {
                 new ElementDirection(),
                 new ElementSpeed(),
                 new ElementPing(),
-                new ElementCombo()
+                new ElementCombo(),
+                new ElementYaw(),
+                new ElementPitch()
         );
     }
 

@@ -25,7 +25,7 @@ minecraft {
 }
 
 dependencies {
-
+    provided files("libs/modcore.jar")
 }
 
 processResources {
@@ -40,5 +40,13 @@ processResources {
         
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
+    }
+}
+
+jar {
+    manifest {
+        attributes "FMLCorePlugin": "com.evergreenclient.hudmod.forge.FMLLoadingPlugin",
+                "ModSide": "CLIENT",
+                "FMLCorePluginContainsFMLMod": "Yes, yes it does"
     }
 }
