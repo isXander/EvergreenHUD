@@ -12,6 +12,7 @@ import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
@@ -87,22 +88,22 @@ public class MainGUI extends GuiScreen {
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-
+        ScaledResolution res = new ScaledResolution(mc);
         if (dragging == null) {
             if (clickedMouseButton == 0) {
                 for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
                     if (e.getHitbox().isMouseOver(mouseX, mouseY)) {
                         dragging = e;
-                        offX = mouseX - e.getPosition().x;
-                        offY = mouseY - e.getPosition().y;
+                        offX = mouseX - e.getPosition().getRawX(res);
+                        offY = mouseY - e.getPosition().getRawY(res);
                         break;
                     }
                 }
             }
         }
         else {
-            dragging.getPosition().x = mouseX - offX;
-            dragging.getPosition().y = mouseY - offY;
+            dragging.getPosition().setRawX(mouseX - offX, res);
+            dragging.getPosition().setRawY(mouseY - offY, res);
         }
     }
 

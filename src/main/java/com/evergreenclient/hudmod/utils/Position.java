@@ -8,14 +8,63 @@
 
 package com.evergreenclient.hudmod.utils;
 
+import net.minecraft.client.gui.ScaledResolution;
+
 public class Position {
 
-    public int x, y;
-    public float scale;
+    private float x, y, scale;
 
-    public Position(int x, int y, float scale) {
+    Position(float x, float y, float scale) {
         this.x = x;
         this.y = y;
+        this.scale = scale;
+    }
+
+    public static Position getPositionWithRawPositioning(int x, int y, float scale, ScaledResolution resolution) {
+        return new Position(MathUtils.getPercent(x, 0, resolution.getScaledWidth()), MathUtils.getPercent(y, 0, resolution.getScaledHeight()), scale);
+    }
+
+    public static Position getPositionWithScaledPositioning(float x, float y, float scale) {
+        return new Position(x, y, scale);
+    }
+
+    public int getRawX(ScaledResolution resolution) {
+        return (int) (resolution.getScaledWidth() * x);
+    }
+
+    public int getRawY(ScaledResolution resolution) {
+        return (int) (resolution.getScaledHeight() * y);
+    }
+
+    public float getXScaled() {
+        return x;
+    }
+
+    public float getYScaled() {
+        return y;
+    }
+
+    public void setRawX(int x, ScaledResolution resolution) {
+        this.x = MathUtils.getPercent(x, 0, resolution.getScaledWidth());
+    }
+
+    public void setRawY(int y, ScaledResolution resolution) {
+        this.y = MathUtils.getPercent(y, 0, resolution.getScaledHeight());
+    }
+
+    public void setScaledX(float x) {
+        this.x = x;
+    }
+
+    public void setScaledY(float y) {
+        this.y = y;
+    }
+
+    public float getScale() {
+        return scale;
+    }
+
+    public void setScale(float scale) {
         this.scale = scale;
     }
 

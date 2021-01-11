@@ -22,6 +22,8 @@ import java.io.File;
 
 public class ElementConfig {
 
+    private static final int VERSION = 1;
+
     private final Element element;
     public final File configFile;
 
@@ -33,10 +35,12 @@ public class ElementConfig {
 
     public void save() {
         BetterJsonObject root = new BetterJsonObject();
+        root.addProperty("version", VERSION);
+
         root.addProperty("enabled", element.isEnabled());
-        root.addProperty("x", element.getPosition().x);
-        root.addProperty("y", element.getPosition().y);
-        root.addProperty("scale", element.getPosition().scale);
+        root.addProperty("x", element.getPosition().getXScaled());
+        root.addProperty("y", element.getPosition().getYScaled());
+        root.addProperty("scale", element.getPosition().getScale());
         root.addProperty("title", element.showTitle());
         root.addProperty("brackets", element.showBrackets());
         root.addProperty("inverted", element.isInverted());
@@ -78,16 +82,29 @@ public class ElementConfig {
             save();
             return;
         }
+        // new config version so we need to reset the config
+        if (root.optInt("version") != VERSION) {
+            element.getLogger().warn("Resetting configuration! Older or newer config version detected.");
+            save();
+            return;
+        }
+
         element.setEnabled(root.optBoolean("enabled"));
-        element.getPosition().x = root.optInt("x");
-        element.getPosition().y = root.optInt("y");
-        element.getPosition().scale = root.optFloat("scale");
-        System.out.println(element.getPosition().scale);
+        element.getPosition().setScaledX(root.optFloat("x"));
+        element.getPosition().setScaledY(root.optFloat("y"));
+        element.getPosition().setScale(root.optFloat("scale"));
         element.setTitle(root.optBoolean("title"));
         element.setBrackets(root.optBoolean("brackets"));
         element.setInverted(root.optBoolean("inverted"));
         element.setShadow(root.optBoolean("shadow"));
         element.setAlignment(Alignment.values()[root.optInt("alignment")]);
+
+        BetterJsonObject textColor = new BetterJsonObject(root.get("textColor").getAsJsonObject());
+        element.setTextColor(new Color(textColor.optInt("r"), textColor.optInt("g"), textColor.optInt("b"), textColor.optInt("a")));
+
+        BetterJsonObject bgColor = new BetterJsonObject(root.get("bgColor").getAsJsonObject());
+        element.setBgColor(new Color(bgColor.optInt("r"), bgColor.optInt("g"), bgColor.optInt("b"), bgColor.optInt("a")));
+
 
         BetterJsonObject custom = new BetterJsonObject(root.get("custom").getAsJsonObject());
         for (String key : custom.getAllKeys()) {
@@ -102,18 +119,6 @@ public class ElementConfig {
                     break;
                 }
             }
-        }
-
-        // Do this last so all we don't overwrite whole config on error
-        try {
-            BetterJsonObject textColor = new BetterJsonObject(root.get("textColor").getAsJsonObject());
-            element.setTextColor(new Color(textColor.optInt("r"), textColor.optInt("g"), textColor.optInt("b"), textColor.optInt("a")));
-
-            BetterJsonObject bgColor = new BetterJsonObject(root.get("bgColor").getAsJsonObject());
-            element.setBgColor(new Color(bgColor.optInt("r"), bgColor.optInt("g"), bgColor.optInt("b"), bgColor.optInt("a")));
-        } catch (IllegalStateException e) {
-            // thrown when not a json object, need to re-save to update the config to latest version
-            save();
         }
 
     }

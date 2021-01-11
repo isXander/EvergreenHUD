@@ -19,6 +19,7 @@ import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
 import com.evergreenclient.hudmod.utils.Alignment;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
@@ -35,7 +36,7 @@ import static com.evergreenclient.hudmod.utils.Alignment.*;
 public class ElementGUI extends GuiScreenExt {
 
     private final Element element;
-    private boolean dragging;
+    private Element dragging = null;
     private int xOff, yOff;
 
     private final Map<Integer, Setting> customButtons = new HashMap<>();
@@ -56,7 +57,7 @@ public class ElementGUI extends GuiScreenExt {
         this.buttonList.add(new GuiButtonExt( 1, width / 2 - 1 - 90, height - 20, 90, 20, "Reset"));
 
         this.buttonList.add(new GuiButtonExt( 2, left(),  getRow(0), 120, 20, "Enabled: "  + (element.isEnabled()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiSliderExt( 3, right(), getRow(0), 120, 20, "Scale: ",     "%", 20, 200, element.getPosition().scale * 100f, false, true, this));
+        this.buttonList.add(new GuiSliderExt( 3, right(), getRow(0), 120, 20, "Scale: ",     "%", 20, 200, element.getPosition().getScale() * 100f, false, true, this));
         this.buttonList.add(new GuiButtonExt( 4, left(),  getRow(1), 120, 20, "Brackets: " + (element.showBrackets() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonExt( 5, right(), getRow(1), 120, 20, "Shadow: "   + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonExt( 6, left(),  getRow(2), 120, 20, "Title: "   + (element.showTitle()   ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
@@ -150,17 +151,18 @@ public class ElementGUI extends GuiScreenExt {
                 break;
             case 15:
                 Alignment alignment = element.getAlignment();
+                ScaledResolution res = new ScaledResolution(mc);
                 if (alignment == LEFT) {
                     alignment = CENTER;
-                    element.getPosition().x -= mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2;
+                    element.getPosition().setRawX(element.getPosition().getRawX(res) - mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2, res);
                 }
                 else if (alignment == CENTER) {
                     alignment = RIGHT;
-                    element.getPosition().x -= mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2;
+                    element.getPosition().setRawX(element.getPosition().getRawX(res) - mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2, res);
                 }
                 else if (alignment == RIGHT) {
                     alignment = LEFT;
-                    element.getPosition().x += mc.fontRendererObj.getStringWidth(element.getDisplayString());
+                    element.getPosition().setRawX(element.getPosition().getRawX(res) + mc.fontRendererObj.getStringWidth(element.getDisplayString()), res);
                 }
                 element.setAlignment(alignment);
                 button.displayString = "Alignment: " + element.getAlignment().getName();
@@ -190,7 +192,7 @@ public class ElementGUI extends GuiScreenExt {
     public void sliderUpdated(GuiSlider button) {
         switch (button.id) {
             case 3:
-                element.getPosition().scale = (float) button.getValue() / 100f;
+                element.getPosition().setScale((float) button.getValue() / 100f);
                 break;
             case 7:
                 element.setTextColor(new Color(button.getValueInt(), element.getTextColor().getGreen(), element.getTextColor().getBlue(), element.getTextColor().getAlpha()));
@@ -234,26 +236,30 @@ public class ElementGUI extends GuiScreenExt {
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-
-        if (!dragging) {
+        ScaledResolution res = new ScaledResolution(mc);
+        if (dragging == null) {
             if (clickedMouseButton == 0) {
-                if (element.getHitbox().isMouseOver(mouseX, mouseY)) {
-                    dragging = true;
-                    xOff = mouseX - element.getPosition().x;
-                    yOff = mouseY - element.getPosition().y;
+                for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
+                    if (e.getHitbox().isMouseOver(mouseX, mouseY)) {
+                        dragging = e;
+                        xOff = mouseX - e.getPosition().getRawX(res);
+                        yOff = mouseY - e.getPosition().getRawY(res);
+                        break;
+                    }
                 }
+
             }
         }
         else {
-            element.getPosition().x = mouseX - xOff;
-            element.getPosition().y = mouseY - yOff;
+            dragging.getPosition().setRawX(mouseX - xOff, res);
+            dragging.getPosition().setRawY(mouseY - yOff, res);
         }
     }
 
     @Override
     protected void mouseReleased(int mouseX, int mouseY, int state) {
         super.mouseReleased(mouseX, mouseY, state);
-        dragging = false;
+        dragging = null;
         xOff = yOff = 0;
     }
 }

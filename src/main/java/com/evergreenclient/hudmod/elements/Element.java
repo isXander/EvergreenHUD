@@ -17,7 +17,10 @@ import com.evergreenclient.hudmod.utils.gui.Hitbox;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -31,7 +34,7 @@ public abstract class Element extends Gui {
 
     /* Config */
     private boolean enabled = false;
-    private Position pos = new Position(10, 10, 1);
+    private Position pos = Position.getPositionWithRawPositioning(10, 10, 1, new ScaledResolution(mc));
     private boolean title = true;
     private boolean brackets = false;
     private boolean shadow = true;
@@ -43,9 +46,11 @@ public abstract class Element extends Gui {
     private Color textColor = new Color(255, 255, 255, 255);
     private Color bgColor = new Color(0, 0, 0, 100);
 
+    private final Logger logger;
     private final ElementConfig config;
 
     public Element() {
+        this.logger = LogManager.getLogger(getMetadata().getName());
         config = new ElementConfig(this);
         initialise();
         config.load();
@@ -78,18 +83,20 @@ public abstract class Element extends Gui {
      */
     public void render() {
         GlStateManager.pushMatrix();
-        GlStateManager.scale(getPosition().scale, getPosition().scale, 0);
+        GlStateManager.scale(getPosition().getScale(), getPosition().getScale(), 0);
         Hitbox hitbox = getHitbox();
-        drawRect((int) (hitbox.x), (int) (hitbox.y), (int) (hitbox.x + (hitbox.width)), (int) (hitbox.y + (hitbox.height)), getBgColor().getRGB());
+        int x = getPosition().getRawX(new ScaledResolution(mc));
+        int y = getPosition().getRawY(new ScaledResolution(mc));
+        drawRect(hitbox.x, hitbox.y, hitbox.x + (hitbox.width), hitbox.y + (hitbox.height), getBgColor().getRGB());
         switch (getAlignment()) {
             case LEFT:
-                mc.fontRendererObj.drawString(getDisplayString(), (getPosition().x - mc.fontRendererObj.getStringWidth(getDisplayString())) / getPosition().scale, getPosition().y / getPosition().scale, getTextColor().getRGB(), renderShadow());
+                mc.fontRendererObj.drawString(getDisplayString(), (x - mc.fontRendererObj.getStringWidth(getDisplayString())) / getPosition().getScale(), y / getPosition().getScale(), getTextColor().getRGB(), renderShadow());
                 break;
             case CENTER:
-                drawCenteredString(mc.fontRendererObj, getDisplayString(), getPosition().x / getPosition().scale, getPosition().y / getPosition().scale, getTextColor().getRGB(), renderShadow());
+                drawCenteredString(mc.fontRendererObj, getDisplayString(), x / getPosition().getScale(), y / getPosition().getScale(), getTextColor().getRGB(), renderShadow());
                 break;
             case RIGHT:
-                mc.fontRendererObj.drawString(getDisplayString(), getPosition().x / getPosition().scale, getPosition().y / getPosition().scale, getTextColor().getRGB(), renderShadow());
+                mc.fontRendererObj.drawString(getDisplayString(), x / getPosition().getScale(), y / getPosition().getScale(), getTextColor().getRGB(), renderShadow());
                 break;
         }
         GlStateManager.popMatrix();
@@ -102,15 +109,17 @@ public abstract class Element extends Gui {
     public Hitbox getHitbox() {
         Hitbox hitbox = null;
         int width = mc.fontRendererObj.getStringWidth(getDisplayString());
+        int x = getPosition().getRawX(new ScaledResolution(mc));
+        int y = getPosition().getRawY(new ScaledResolution(mc));
         switch (getAlignment()) {
             case LEFT:
-                hitbox = new Hitbox((int)(getPosition().x - width - 4), (int)(pos.y - 4), (int)(width + 8), (int) (mc.fontRendererObj.FONT_HEIGHT + 8));
+                hitbox = new Hitbox(x - width - 4, y - 4, width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
             case CENTER:
-                hitbox = new Hitbox((int)(pos.x - (width / 2) - 4), (int)(pos.y - 4), (int)(width + 8), (int)(mc.fontRendererObj.FONT_HEIGHT + 8));
+                hitbox = new Hitbox(x - (width / 2) - 4, y - 4, width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
             case RIGHT:
-                hitbox = new Hitbox((int)(pos.x - 4), (int)(pos.y - 4), (int)(width + 8), (int)(mc.fontRendererObj.FONT_HEIGHT + 8));
+                hitbox = new Hitbox(x - 4, y - 4, width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
         }
         return hitbox;
@@ -118,7 +127,7 @@ public abstract class Element extends Gui {
 
     public void resetSettings() {
         enabled = true;
-        pos = new Position(10, 10, 1);
+        pos = Position.getPositionWithRawPositioning(10, 10, 1, new ScaledResolution(mc));
         title = true;
         brackets = false;
         inverted = false;
@@ -176,6 +185,10 @@ public abstract class Element extends Gui {
 
     public Color getBgColor() {
         return bgColor;
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 
     public void setBgColor(Color bgColor) {
