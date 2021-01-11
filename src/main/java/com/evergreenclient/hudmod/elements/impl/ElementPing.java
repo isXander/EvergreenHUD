@@ -10,6 +10,7 @@ package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.utils.element.ElementData;
+import net.minecraft.client.network.NetworkPlayerInfo;
 
 public class ElementPing extends Element {
 
@@ -25,7 +26,10 @@ public class ElementPing extends Element {
 
     @Override
     protected String getValue() {
-        return Integer.toString(mc.getNetHandler().getPlayerInfo(mc.thePlayer.getGameProfile().getId()).getResponseTime());
+        NetworkPlayerInfo info = mc.getNetHandler().getPlayerInfo(mc.thePlayer.getGameProfile().getId());
+        if (info == null)
+            return "0";
+        return Integer.toString(info.getResponseTime());
     }
 
     @Override

@@ -55,7 +55,7 @@ public class ElementConfig {
         bgCol.addProperty("g", element.getBgColor().getGreen());
         bgCol.addProperty("b", element.getBgColor().getBlue());
         bgCol.addProperty("a", element.getBgColor().getAlpha());
-        root.add("bgColor", textCol);
+        root.add("bgColor", bgCol);
 
         BetterJsonObject custom = new BetterJsonObject();
         for (Setting s : element.getCustomSettings()) {
@@ -81,18 +81,13 @@ public class ElementConfig {
         element.setEnabled(root.optBoolean("enabled"));
         element.getPosition().x = root.optInt("x");
         element.getPosition().y = root.optInt("y");
-        element.getPosition().scale = root.optInt("scale");
+        element.getPosition().scale = root.optFloat("scale");
+        System.out.println(element.getPosition().scale);
         element.setTitle(root.optBoolean("title"));
         element.setBrackets(root.optBoolean("brackets"));
         element.setInverted(root.optBoolean("inverted"));
         element.setShadow(root.optBoolean("shadow"));
         element.setAlignment(Alignment.values()[root.optInt("alignment")]);
-
-        BetterJsonObject textColor = new BetterJsonObject(root.get("textColor").getAsJsonObject());
-        element.setTextColor(new Color(textColor.optInt("r"), textColor.optInt("g"), textColor.optInt("b"), textColor.optInt("a")));
-
-        BetterJsonObject bgColor = new BetterJsonObject(root.get("bgColor").getAsJsonObject());
-        element.setBgColor(new Color(bgColor.optInt("r"), bgColor.optInt("g"), bgColor.optInt("b"), bgColor.optInt("a")));
 
         BetterJsonObject custom = new BetterJsonObject(root.get("custom").getAsJsonObject());
         for (String key : custom.getAllKeys()) {
@@ -108,6 +103,19 @@ public class ElementConfig {
                 }
             }
         }
+
+        // Do this last so all we don't overwrite whole config on error
+        try {
+            BetterJsonObject textColor = new BetterJsonObject(root.get("textColor").getAsJsonObject());
+            element.setTextColor(new Color(textColor.optInt("r"), textColor.optInt("g"), textColor.optInt("b"), textColor.optInt("a")));
+
+            BetterJsonObject bgColor = new BetterJsonObject(root.get("bgColor").getAsJsonObject());
+            element.setBgColor(new Color(bgColor.optInt("r"), bgColor.optInt("g"), bgColor.optInt("b"), bgColor.optInt("a")));
+        } catch (IllegalStateException e) {
+            // thrown when not a json object, need to re-save to update the config to latest version
+            save();
+        }
+
     }
 
 }

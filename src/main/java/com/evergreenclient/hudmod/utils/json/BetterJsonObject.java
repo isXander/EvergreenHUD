@@ -77,6 +77,22 @@ public class BetterJsonObject {
         return value;
     }
 
+    public float optFloat(final String key) {
+        return this.optFloat(key, 0f);
+    }
+
+    public float optFloat(final String key, final float value) {
+        if (key == null || key.isEmpty() || !this.has(key))
+            return value;
+        final JsonPrimitive primitive = this.asPrimitive(this.get(key));
+        try {
+            if (primitive != null && primitive.isNumber())
+                return primitive.getAsFloat();
+        } catch (NumberFormatException ignored) {
+        }
+        return value;
+    }
+
     public double optDouble(final String key) {
         return this.optDouble(key, 0.0);
     }

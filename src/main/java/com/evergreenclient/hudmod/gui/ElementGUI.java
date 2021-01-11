@@ -23,8 +23,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiSlider;
+import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -54,7 +56,7 @@ public class ElementGUI extends GuiScreenExt {
         this.buttonList.add(new GuiButtonExt( 1, width / 2 - 1 - 90, height - 20, 90, 20, "Reset"));
 
         this.buttonList.add(new GuiButtonExt( 2, left(),  getRow(0), 120, 20, "Enabled: "  + (element.isEnabled()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiSliderExt( 3, right(), getRow(0), 120, 20, "Scale: ",     "%", 20, 200, element.getPosition().scale * 100, false, true, this));
+        this.buttonList.add(new GuiSliderExt( 3, right(), getRow(0), 120, 20, "Scale: ",     "%", 20, 200, element.getPosition().scale * 100f, false, true, this));
         this.buttonList.add(new GuiButtonExt( 4, left(),  getRow(1), 120, 20, "Brackets: " + (element.showBrackets() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonExt( 5, right(), getRow(1), 120, 20, "Shadow: "   + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonExt( 6, left(),  getRow(2), 120, 20, "Title: "   + (element.showTitle()   ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
@@ -188,7 +190,7 @@ public class ElementGUI extends GuiScreenExt {
     public void sliderUpdated(GuiSlider button) {
         switch (button.id) {
             case 3:
-                element.getPosition().scale = (float) button.getValue() / 100;
+                element.getPosition().scale = (float) button.getValue() / 100f;
                 break;
             case 7:
                 element.setTextColor(new Color(button.getValueInt(), element.getTextColor().getGreen(), element.getTextColor().getBlue(), element.getTextColor().getAlpha()));
@@ -215,6 +217,13 @@ public class ElementGUI extends GuiScreenExt {
                 element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), button.getValueInt()));
                 break;
         }
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        super.keyTyped(typedChar, keyCode);
+        if (keyCode == Keyboard.KEY_ESCAPE)
+            mc.displayGuiScreen(null);
     }
 
     @Override
