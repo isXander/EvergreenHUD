@@ -9,6 +9,7 @@
 package com.evergreenclient.hudmod.command;
 
 import club.sk1er.mods.core.gui.notification.Notifications;
+import club.sk1er.mods.core.util.Multithreading;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.gui.MainGUI;
 import com.evergreenclient.hudmod.update.UpdateChecker;
@@ -48,21 +49,13 @@ public class EvergreenHudCommand extends CommandBase {
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("update")) {
-                if (UpdateChecker.updateAvailable()) {
-                    if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                        Notifications.INSTANCE.pushNotification("EvergreenHUD", "There is an update available that you can download right now. Click here to download.", () -> {
-                            try {
-                                Desktop.getDesktop().browse(new URI("https://short.evergreenclient.com/GlYH5z"));
-                            }
-                            catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                            return null;
-                        });
+                Multithreading.runAsync(() -> {
+                    if (UpdateChecker.updateAvailable()) {
+                        EvergreenHUD.notifyUpdate();
                     } else {
-                        Notifications.INSTANCE.pushNotification("EvergreenHUD", "There is an update available that you can download right now.");
+                        Notifications.INSTANCE.pushNotification("EvergreenHUD", "There are no updates available.");
                     }
-                }
+                });
             }
         }
         else {

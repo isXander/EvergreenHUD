@@ -13,6 +13,7 @@ import com.evergreenclient.hudmod.command.EvergreenHudCommand;
 import com.evergreenclient.hudmod.elements.ElementManager;
 import com.evergreenclient.hudmod.forge.modcore.ModCoreInstaller;
 import com.evergreenclient.hudmod.gui.MainGUI;
+import com.evergreenclient.hudmod.update.UpdateChecker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -20,16 +21,20 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
+
+import java.awt.*;
+import java.net.URI;
 
 @Mod(modid = EvergreenHUD.MOD_ID, name = EvergreenHUD.NAME, version = EvergreenHUD.VERSION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]")
 public class EvergreenHUD {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String NAME = "EvergreenHUD";
-    public static final String VERSION = "0.7";
+    public static final String VERSION = "0.6";
 
     @Mod.Instance(EvergreenHUD.MOD_ID)
     private static EvergreenHUD instance;
@@ -50,14 +55,37 @@ public class EvergreenHUD {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
+    @Mod.EventHandler
+    public void postInit(FMLPostInitializationEvent event) {
+        if (UpdateChecker.updateAvailable()) {
+            notifyUpdate();
+        }
+
+        if (reset) {
+            reset = false;
+            Notifications.INSTANCE.pushNotification("EvergreenHUD", "The configuration has been reset due to a version change that makes your configuration incompatible with the current version.");
+        }
+    }
+
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (keybind.isPressed())
             Minecraft.getMinecraft().displayGuiScreen(new MainGUI());
+    }
 
-        if (reset && Minecraft.getMinecraft().thePlayer != null) {
-            reset = false;
-            Notifications.INSTANCE.pushNotification("EvergreenHUD", "The configuration has been reset due to a version change that makes your configuration incompatible with the current version.");
+    public static void notifyUpdate() {
+        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+            Notifications.INSTANCE.pushNotification("EvergreenHUD", "There is an update available that you can download right now. Click here to download.", () -> {
+                try {
+                    Desktop.getDesktop().browse(new URI("https://short.evergreenclient.com/GlYH5z"));
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
+                return null;
+            });
+        } else {
+            Notifications.INSTANCE.pushNotification("EvergreenHUD", "There is an update available that you can download right now.");
         }
     }
 
