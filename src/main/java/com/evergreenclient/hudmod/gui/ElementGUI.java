@@ -96,18 +96,6 @@ public class ElementGUI extends GuiScreenExt {
         }
     }
 
-    private int getRow(int row) {
-        return 40 + (row * 22);
-    }
-
-    private int left() {
-        return width / 2 - 1 - 120;
-    }
-
-    private int right() {
-        return width / 2 + 1;
-    }
-
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();

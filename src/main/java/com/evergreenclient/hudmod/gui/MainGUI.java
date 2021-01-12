@@ -16,6 +16,9 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
+import org.lwjgl.input.Keyboard;
+
+import java.io.IOException;
 
 public class MainGUI extends GuiScreen {
 
@@ -24,25 +27,8 @@ public class MainGUI extends GuiScreen {
 
     @Override
     public void initGui() {
-        this.buttonList.add(new GuiButtonExt(0, width / 2 + 1,       height - 20, 90, 20, "Finished"));
-        this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 90, height - 20, 90, 20, "Reset"));
-
-//        int column = 0;
-//        int element = 1;
-//        final int columnOffset = 60;
-//        for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-//            int y = 30 + ((22 * element) - ((height - 108) * column));
-//            if (y > height - 60) {
-//                column++;
-//                y = 30 + ((22 * element) - ((height - 108) * column));
-//                for (GuiButton button : this.buttonList) {
-//                    if (button.id > 1)
-//                        button.xPosition -= columnOffset * column + column;
-//                }
-//            }
-//            this.buttonList.add(new GuiButtonExt(element + 1, width / 2 - 60 + (columnOffset * column), y, 120, 20, e.getMetadata().getName()));
-//            element++;
-//        }
+        this.buttonList.add(new GuiButtonExt(0, width / 2 + 1,      height - 20, 90, 20, "Config"));
+        this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 90, height - 20, 90, 20, "Positioning"));
 
         int column = 0;
         int element = 2;
@@ -83,15 +69,22 @@ public class MainGUI extends GuiScreen {
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
             case 0:
-                mc.displayGuiScreen(null);
+                mc.displayGuiScreen(new ConfigGUI(EvergreenHUD.getInstance().getElementManager()));
                 break;
             case 1:
-                EvergreenHUD.getInstance().getElementManager().resetAll();
+                mc.displayGuiScreen(new PositioningGUI());
                 break;
             default:
                 mc.displayGuiScreen(new ElementGUI(EvergreenHUD.getInstance().getElementManager().getElements().get(button.id - 2)));
                 break;
         }
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        super.keyTyped(typedChar, keyCode);
+        if (keyCode == Keyboard.KEY_ESCAPE)
+            mc.displayGuiScreen(null);
     }
 
     @Override

@@ -8,20 +8,36 @@
 
 package com.evergreenclient.hudmod.elements;
 
+import com.evergreenclient.hudmod.config.MainConfig;
 import com.evergreenclient.hudmod.elements.impl.*;
+import com.evergreenclient.hudmod.gui.ConfigGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class ElementManager {
 
+    private final Minecraft mc = Minecraft.getMinecraft();
+
     private final List<Element> elements;
 
+    /* Config */
+    private final MainConfig config;
+    private boolean showInChat;
+    private boolean showInDebug;
+
+    private final Logger logger;
+
     public ElementManager() {
+        this.config = new MainConfig(this);
+        resetConfig();
+
         this.elements = Arrays.asList(
                 new ElementFPS(),
                 new ElementCoordinates(),
@@ -37,6 +53,14 @@ public class ElementManager {
                 new ElementYaw(),
                 new ElementPitch()
         );
+
+        this.logger = LogManager.getLogger("Evergreen Manager");
+        this.getConfig().load();
+    }
+
+    public void resetConfig() {
+        this.showInChat = true;
+        this.showInDebug = false;
     }
 
     public List<Element> getElements() {
@@ -46,7 +70,7 @@ public class ElementManager {
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
-        if (Minecraft.getMinecraft().inGameHasFocus || Minecraft.getMinecraft().currentScreen instanceof GuiChat)
+        if ((mc.inGameHasFocus && !mc.gameSettings.showDebugInfo) || (mc.gameSettings.showDebugInfo && showInDebug) || (mc.currentScreen instanceof GuiChat && showInChat))
             for (Element e : elements)
                 if (e.isEnabled())
                     e.render();
@@ -64,4 +88,27 @@ public class ElementManager {
         }
     }
 
+    public MainConfig getConfig() {
+        return config;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public boolean doShowInChat() {
+        return showInChat;
+    }
+
+    public void setShowInChat(boolean showInChat) {
+        this.showInChat = showInChat;
+    }
+
+    public boolean doShowInDebug() {
+        return showInDebug;
+    }
+
+    public void setShowInDebug(boolean showInDebug) {
+        this.showInDebug = showInDebug;
+    }
 }

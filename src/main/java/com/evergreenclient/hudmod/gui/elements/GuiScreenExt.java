@@ -15,7 +15,18 @@ import net.minecraftforge.fml.client.config.GuiSlider;
 public class GuiScreenExt extends GuiScreen {
 
     public void sliderUpdated(GuiSlider button) {
+    }
 
+    protected int getRow(int row) {
+        return 40 + (row * 22);
+    }
+
+    protected int left() {
+        return width / 2 - 1 - 120;
+    }
+
+    protected int right() {
+        return width / 2 + 1;
     }
 
 }

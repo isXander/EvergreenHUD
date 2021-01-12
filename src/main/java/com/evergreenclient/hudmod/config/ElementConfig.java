@@ -18,9 +18,11 @@ import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
 import com.evergreenclient.hudmod.utils.Alignment;
 import com.evergreenclient.hudmod.utils.json.BetterJsonObject;
 import net.minecraft.client.Minecraft;
+import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 public class ElementConfig {
 
@@ -29,10 +31,19 @@ public class ElementConfig {
     private final Element element;
     public final File configFile;
 
-
     public ElementConfig(Element e) {
         this.element = e;
-        this.configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/" + element.getMetadata().getName() + ".json");
+        this.configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/elements/" + element.getMetadata().getName() + ".json");
+
+        // Config has moved directories. So we don't need to reset all configs, just test if the old config is there and move it
+        File oldLocation = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/" + element.getMetadata().getName() + ".json");
+        if (oldLocation.exists()) {
+            try {
+                FileUtils.moveFile(oldLocation, configFile);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public void save() {
