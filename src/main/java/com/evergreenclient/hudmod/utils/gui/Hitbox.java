@@ -20,7 +20,7 @@ public class Hitbox {
     }
 
     public boolean isMouseOver(int mouseX, int mouseY, float scale) {
-        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
+        return mouseX >= x * scale && mouseX <= x * scale + width && mouseY >= y * scale && mouseY <= y * scale + height;
     }
 
 }
