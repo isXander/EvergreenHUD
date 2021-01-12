@@ -46,7 +46,7 @@ public abstract class Element extends Gui {
     private Color textColor = new Color(255, 255, 255, 255);
     private Color bgColor = new Color(0, 0, 0, 100);
 
-    private final Logger logger;
+    protected final Logger logger;
     private final ElementConfig config;
 
     public Element() {
@@ -113,13 +113,13 @@ public abstract class Element extends Gui {
         int y = getPosition().getRawY(new ScaledResolution(mc));
         switch (getAlignment()) {
             case LEFT:
-                hitbox = new Hitbox(x - width - 4, y - 4, width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
+                hitbox = new Hitbox((int) ((x - width - 4)/getPosition().getScale()), (int)((y - 4)/getPosition().getScale()), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
             case CENTER:
-                hitbox = new Hitbox(x - (width / 2) - 4, y - 4, width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
+                hitbox = new Hitbox((int)((x - (width / 2) - 4)/getPosition().getScale()), (int)((y - 4)/getPosition().getScale()), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
             case RIGHT:
-                hitbox = new Hitbox(x - 4, y - 4, width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
+                hitbox = new Hitbox((int)((x - 4)/getPosition().getScale()), (int)((y - 4)/getPosition().getScale()), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
         }
         return hitbox;

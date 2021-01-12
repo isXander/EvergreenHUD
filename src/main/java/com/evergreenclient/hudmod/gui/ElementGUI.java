@@ -18,7 +18,6 @@ import com.evergreenclient.hudmod.settings.impl.DoubleSetting;
 import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
 import com.evergreenclient.hudmod.utils.Alignment;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
@@ -240,7 +239,7 @@ public class ElementGUI extends GuiScreenExt {
         if (dragging == null) {
             if (clickedMouseButton == 0) {
                 for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-                    if (e.getHitbox().isMouseOver(mouseX, mouseY)) {
+                    if (e.getHitbox().isMouseOver(mouseX, mouseY, e.getPosition().getScale())) {
                         dragging = e;
                         xOff = mouseX - e.getPosition().getRawX(res);
                         yOff = mouseY - e.getPosition().getRawY(res);

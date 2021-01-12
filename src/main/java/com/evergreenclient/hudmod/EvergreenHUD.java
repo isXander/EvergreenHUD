@@ -8,7 +8,6 @@
 
 package com.evergreenclient.hudmod;
 
-import club.sk1er.mods.core.gui.notification.Notification;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import com.evergreenclient.hudmod.command.EvergreenHudCommand;
 import com.evergreenclient.hudmod.elements.ElementManager;
@@ -30,7 +29,7 @@ public class EvergreenHUD {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String NAME = "EvergreenHUD";
-    public static final String VERSION = "0.5";
+    public static final String VERSION = "0.6";
 
     @Mod.Instance(EvergreenHUD.MOD_ID)
     private static EvergreenHUD instance;

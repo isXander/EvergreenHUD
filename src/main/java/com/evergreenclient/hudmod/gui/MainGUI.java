@@ -81,7 +81,7 @@ public class MainGUI extends GuiScreen {
         if (dragging == null) {
             if (clickedMouseButton == 0) {
                 for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-                    if (e.getHitbox().isMouseOver(mouseX, mouseY)) {
+                    if (e.getHitbox().isMouseOver(mouseX, mouseY, e.getPosition().getScale())) {
                         dragging = e;
                         offX = mouseX - e.getPosition().getRawX(res);
                         offY = mouseY - e.getPosition().getRawY(res);
