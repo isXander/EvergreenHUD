@@ -29,7 +29,7 @@ public class EvergreenHUD {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String NAME = "EvergreenHUD";
-    public static final String VERSION = "0.6";
+    public static final String VERSION = "0.7";
 
     @Mod.Instance(EvergreenHUD.MOD_ID)
     private static EvergreenHUD instance;
