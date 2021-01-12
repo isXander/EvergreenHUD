@@ -44,7 +44,7 @@ processResources {
 }
 
 jar {
-    archiveName = '[' + minecraft.version + '-' + version + '] EvergreenHUD'
+    archiveName = '[' + minecraft.version + '-' + version + '] EvergreenHUD.jar'
 
     manifest {
         attributes "FMLCorePlugin": "com.evergreenclient.hudmod.forge.FMLLoadingPlugin",
