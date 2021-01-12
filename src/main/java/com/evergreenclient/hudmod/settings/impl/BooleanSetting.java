@@ -12,11 +12,12 @@ import com.evergreenclient.hudmod.settings.Setting;
 
 public class BooleanSetting extends Setting {
 
+    private final boolean def;
     private boolean value;
 
     public BooleanSetting(String name, boolean def) {
         super(name);
-        this.value = def;
+        this.value = this.def = def;
     }
 
     public boolean get() {
@@ -32,4 +33,8 @@ public class BooleanSetting extends Setting {
         return value;
     }
 
+    @Override
+    public void reset() {
+        this.value = def;
+    }
 }

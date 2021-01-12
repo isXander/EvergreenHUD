@@ -12,6 +12,7 @@ import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
@@ -54,19 +55,19 @@ public class ElementCombo extends Element {
 
     @SubscribeEvent
     public void onAttack(AttackEntityEvent event) {
-        if (event.entity instanceof EntityPlayerSP && !(event.target instanceof EntityPlayerSP)) {
-            if (hitEntity == null || event.target == hitEntity) {
-                counter++;
-            } else {
-                counter = 1;
-            }
-            lastHit = System.currentTimeMillis();
-            hitEntity = event.target;
-        }
-        else if (!(event.entity instanceof EntityPlayerSP) && event.target instanceof EntityPlayerSP) {
-            counter = 0;
-            hitEntity = null;
-        }
+//        if (event.entity instanceof EntityPlayerSP && !(event.target instanceof EntityPlayerSP)) {
+//            if (hitEntity == null || event.target == hitEntity) {
+//                counter++;
+//            } else {
+//                counter = 1;
+//            }
+//            lastHit = System.currentTimeMillis();
+//            hitEntity = event.target;
+//        }
+//        else if (!(event.entity instanceof EntityPlayerSP) && event.target instanceof EntityPlayerSP) {
+//            counter = 0;
+//            hitEntity = null;
+//        }
     }
 
     @SubscribeEvent
@@ -74,6 +75,14 @@ public class ElementCombo extends Element {
         if (event.entity instanceof EntityPlayerSP) {
             counter = 0;
             hitEntity = null;
+        } else if (event.source.getEntity() instanceof EntityPlayerSP) {
+            if (hitEntity == null || event.entity == hitEntity) {
+                counter++;
+            } else {
+                counter = 1;
+            }
+            lastHit = System.currentTimeMillis();
+            hitEntity = event.entity;
         }
     }
 

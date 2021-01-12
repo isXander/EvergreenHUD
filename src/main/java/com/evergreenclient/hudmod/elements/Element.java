@@ -135,7 +135,7 @@ public abstract class Element extends Gui {
         alignment = Alignment.RIGHT;
         textColor = new Color(255, 255, 255, 255);
         bgColor = new Color(0, 0, 0, 100);
-        customSettings.clear();
+        for (Setting s : customSettings) s.reset();
         getConfig().save();
     }
 

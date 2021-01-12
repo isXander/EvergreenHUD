@@ -27,20 +27,40 @@ public class MainGUI extends GuiScreen {
         this.buttonList.add(new GuiButtonExt(0, width / 2 + 1,       height - 20, 90, 20, "Finished"));
         this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 90, height - 20, 90, 20, "Reset"));
 
+//        int column = 0;
+//        int element = 1;
+//        final int columnOffset = 60;
+//        for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
+//            int y = 30 + ((22 * element) - ((height - 108) * column));
+//            if (y > height - 60) {
+//                column++;
+//                y = 30 + ((22 * element) - ((height - 108) * column));
+//                for (GuiButton button : this.buttonList) {
+//                    if (button.id > 1)
+//                        button.xPosition -= columnOffset * column + column;
+//                }
+//            }
+//            this.buttonList.add(new GuiButtonExt(element + 1, width / 2 - 60 + (columnOffset * column), y, 120, 20, e.getMetadata().getName()));
+//            element++;
+//        }
+
         int column = 0;
-        int element = 1;
-        final int columnOffset = 60;
+        int element = 2;
+        final int columnOffset = 61;
+        int y = 50;
         for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-            int y = 30 + ((22 * element) - ((height - 108) * column));
             if (y > height - 60) {
                 column++;
-                y = 30 + ((22 * element) - ((height - 108) * column));
+                y = 50;
                 for (GuiButton button : this.buttonList) {
-                    if (button.id > 1)
-                        button.xPosition -= columnOffset * column + column;
+                    if (button.id > 1) {
+                        button.xPosition -= columnOffset * column;
+                    }
                 }
+
             }
-            this.buttonList.add(new GuiButtonExt(element + 1, width / 2 - 60 + (columnOffset * column), y, 120, 20, e.getMetadata().getName()));
+            this.buttonList.add(new GuiButtonExt(element, width / 2 - 60 + (columnOffset * (column)), y, 120, 20, e.getMetadata().getName()));
+            y += 22;
             element++;
         }
     }

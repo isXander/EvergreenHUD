@@ -8,13 +8,15 @@
 
 package com.evergreenclient.hudmod.settings;
 
-public class Setting {
+public abstract class Setting {
 
     private final String name;
 
     protected Setting(String name) {
         this.name = name;
     }
+
+    public abstract void reset();
 
     public String getName() {
         return name;

@@ -12,16 +12,22 @@ import com.evergreenclient.hudmod.settings.Setting;
 
 public class IntegerSetting extends Setting {
 
+    private final int def;
     private int val;
     private final int min, max;
     private final String suffix;
 
     public IntegerSetting(String name, int val, int min, int max, String suffix) {
         super(name);
-        this.val = val;
+        this.val = this.def = val;
         this.min = min;
         this.max = max;
         this.suffix = suffix;
+    }
+
+    @Override
+    public void reset() {
+        this.val = def;
     }
 
     public int get() {

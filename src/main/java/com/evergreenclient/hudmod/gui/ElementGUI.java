@@ -13,6 +13,7 @@ import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.gui.elements.GuiScreenExt;
 import com.evergreenclient.hudmod.gui.elements.GuiSliderExt;
 import com.evergreenclient.hudmod.settings.Setting;
+import com.evergreenclient.hudmod.settings.impl.ArraySetting;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.settings.impl.DoubleSetting;
 import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
@@ -79,10 +80,13 @@ public class ElementGUI extends GuiScreenExt {
                 this.buttonList.add(new GuiButtonExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": " + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
             } else if (s instanceof IntegerSetting) {
                 IntegerSetting setting = (IntegerSetting) s;
-                this.buttonList.add(new GuiSlider(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), false, true));
+                this.buttonList.add(new GuiSliderExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), false, true, this));
             } else if (s instanceof DoubleSetting) {
                 DoubleSetting setting = (DoubleSetting) s;
-                this.buttonList.add(new GuiSlider(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), true, true));
+                this.buttonList.add(new GuiSliderExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), true, true, this));
+            } else if (s instanceof ArraySetting) {
+                ArraySetting setting = (ArraySetting) s;
+                this.buttonList.add(new GuiButtonExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": " + setting.get()));
             }
             customButtons.put(id, s);
 
@@ -176,12 +180,9 @@ public class ElementGUI extends GuiScreenExt {
                     BooleanSetting setting = (BooleanSetting) s;
                     setting.set(!setting.get());
                     button.displayString = setting.getName() + ": " + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
-                } else if (s instanceof IntegerSetting) {
-                    IntegerSetting setting = (IntegerSetting) s;
-                    setting.set(((GuiSlider)button).getValueInt());
-                } else if (s instanceof DoubleSetting) {
-                    DoubleSetting setting = (DoubleSetting) s;
-                    setting.set(((GuiSlider)button).getValue());
+                } else if (s instanceof ArraySetting) {
+                    ArraySetting setting = (ArraySetting) s;
+                    button.displayString = setting.getName() + ": " + setting.next();
                 }
                 break;
         }
@@ -216,6 +217,16 @@ public class ElementGUI extends GuiScreenExt {
                 break;
             case 14:
                 element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), button.getValueInt()));
+                break;
+            default:
+                Setting s = customButtons.get(button.id);
+                if (s instanceof IntegerSetting) {
+                    IntegerSetting setting = (IntegerSetting) s;
+                    setting.set(button.getValueInt());
+                } else if (s instanceof DoubleSetting) {
+                    DoubleSetting setting = (DoubleSetting) s;
+                    setting.set(button.getValue());
+                }
                 break;
         }
     }

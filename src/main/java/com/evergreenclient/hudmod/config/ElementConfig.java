@@ -11,6 +11,7 @@ package com.evergreenclient.hudmod.config;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.Setting;
+import com.evergreenclient.hudmod.settings.impl.ArraySetting;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.settings.impl.DoubleSetting;
 import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
@@ -70,6 +71,8 @@ public class ElementConfig {
                 custom.addProperty(s.getJsonKey(), ((IntegerSetting)s).get());
             else if (s instanceof DoubleSetting)
                 custom.addProperty(s.getJsonKey(), ((DoubleSetting)s).get());
+            else if (s instanceof ArraySetting)
+                custom.addProperty(s.getJsonKey(), ((ArraySetting) s).getIndex());
         }
         root.add("custom", custom);
         root.writeToFile(configFile);
@@ -117,6 +120,8 @@ public class ElementConfig {
                         ((IntegerSetting) s).set(custom.optInt(key));
                     else if (s instanceof DoubleSetting)
                         ((DoubleSetting) s).set(custom.optDouble(key));
+                    else if (s instanceof ArraySetting)
+                        ((ArraySetting) s).set(custom.optInt(key));
                     break;
                 }
             }

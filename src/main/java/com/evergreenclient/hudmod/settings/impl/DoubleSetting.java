@@ -12,13 +12,14 @@ import com.evergreenclient.hudmod.settings.Setting;
 
 public class DoubleSetting extends Setting {
 
+    private final double def;
     private double val;
     private final double min, max;
     private final String suffix;
 
     public DoubleSetting(String name, double val, double min, double max, String suffix) {
         super(name);
-        this.val = val;
+        this.val = this.def = val;
         this.min = min;
         this.max = max;
         this.suffix = suffix;
@@ -44,4 +45,8 @@ public class DoubleSetting extends Setting {
         return suffix;
     }
 
+    @Override
+    public void reset() {
+        this.val = this.def;
+    }
 }

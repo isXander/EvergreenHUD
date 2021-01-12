@@ -9,6 +9,7 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
+import com.evergreenclient.hudmod.settings.impl.ArraySetting;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -26,8 +27,11 @@ public class ElementCps extends Element {
     private final List<Long> right = new ArrayList<>();
     private boolean rightPressed;
 
+    public ArraySetting button;
+
     @Override
     public void initialise() {
+        addSettings(button = new ArraySetting("Button", "Both", "Left", "Right", "Both"));
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -38,7 +42,19 @@ public class ElementCps extends Element {
 
     @Override
     protected String getValue() {
-        return left.size() + " | " + right.size();
+        String text = "";
+        switch (button.get().toLowerCase()) {
+            case "left":
+                text = Integer.toString(left.size());
+                break;
+            case "right":
+                text = Integer.toString(right.size());
+                break;
+            case "both":
+                text = left.size() + " | " + right.size();
+                break;
+        }
+        return text;
     }
 
     @Override
