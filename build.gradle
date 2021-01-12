@@ -44,6 +44,8 @@ processResources {
 }
 
 jar {
+    archiveName = '[1.8.9-' + version + '] EvergreenHUD'
+
     manifest {
         attributes "FMLCorePlugin": "com.evergreenclient.hudmod.forge.FMLLoadingPlugin",
                 "ModSide": "CLIENT",
