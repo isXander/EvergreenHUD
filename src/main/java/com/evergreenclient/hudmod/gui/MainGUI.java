@@ -8,6 +8,7 @@
 
 package com.evergreenclient.hudmod.gui;
 
+import club.sk1er.mods.core.gui.notification.Notifications;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import net.minecraft.client.gui.GuiButton;
@@ -27,6 +28,9 @@ public class MainGUI extends GuiScreen {
 
     @Override
     public void initGui() {
+        if (!EvergreenHUD.getInstance().getElementManager().isEnabled())
+            Notifications.INSTANCE.pushNotification("EvergreenHUD", "The mod is disabled. You will not see the hud in-game unless you enable it.");
+
         this.buttonList.add(new GuiButtonExt(0, width / 2 + 1,      height - 20, 90, 20, "Config"));
         this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 90, height - 20, 90, 20, "Positioning"));
 

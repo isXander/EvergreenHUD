@@ -43,8 +43,9 @@ public class ConfigGUI extends GuiScreenExt {
         this.buttonList.add(new GuiButtonExt(0, width / 2 + 1,      height - 20, 90, 20, "Finished"));
         this.buttonList.add(new GuiButtonExt(1, width / 2 - 90 - 1, height - 20, 90, 20, "Reset"));
 
-        this.buttonList.add(new GuiButtonExt(2, left(),  getRow(0), 120, 20, "Show in Chat: "  + (manager.doShowInChat()  ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonExt(3, right(), getRow(0), 120, 20, "Show in Debug: " + (manager.doShowInDebug() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt(2, left(),  getRow(0), 242, 20, "Enabled: "       + (manager.isEnabled()     ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt(3, left(),  getRow(1), 120, 20, "Show in Chat: "  + (manager.doShowInChat()  ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt(4, right(), getRow(1), 120, 20, "Show in Debug: " + (manager.doShowInDebug() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
 
     }
 
@@ -74,10 +75,14 @@ public class ConfigGUI extends GuiScreenExt {
                 addButtons();
                 break;
             case 2:
+                manager.setEnabled(!manager.isEnabled());
+                button.displayString = "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                break;
+            case 3:
                 manager.setShowInChat(!manager.doShowInChat());
                 button.displayString = "Show in Chat: " + (manager.doShowInChat() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
-            case 3:
+            case 4:
                 manager.setShowInDebug(!manager.doShowInDebug());
                 button.displayString = "Show in Debug: " + (manager.doShowInDebug() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
@@ -88,7 +93,7 @@ public class ConfigGUI extends GuiScreenExt {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
         if (keyCode == Keyboard.KEY_ESCAPE)
-            mc.displayGuiScreen(null);
+            mc.displayGuiScreen(new MainGUI());
     }
 
     @Override

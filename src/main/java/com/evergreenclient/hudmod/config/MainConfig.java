@@ -43,7 +43,7 @@ public class MainConfig {
             save();
             return;
         }
-
+        manager.setEnabled(root.optBoolean("enabled"));
         manager.setShowInChat(root.optBoolean("chat"));
         manager.setShowInDebug(root.optBoolean("debug"));
     }
@@ -51,6 +51,7 @@ public class MainConfig {
     public void save() {
         BetterJsonObject root = new BetterJsonObject();
         root.addProperty("version", VERSION);
+        root.addProperty("enabled", manager.isEnabled());
         root.addProperty("chat", manager.doShowInChat());
         root.addProperty("debug", manager.doShowInDebug());
 

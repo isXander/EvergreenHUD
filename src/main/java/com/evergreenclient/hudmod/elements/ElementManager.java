@@ -29,6 +29,7 @@ public class ElementManager {
 
     /* Config */
     private final MainConfig config;
+    private boolean enabled;
     private boolean showInChat;
     private boolean showInDebug;
 
@@ -59,6 +60,7 @@ public class ElementManager {
     }
 
     public void resetConfig() {
+        this.enabled = true;
         this.showInChat = true;
         this.showInDebug = false;
     }
@@ -70,10 +72,12 @@ public class ElementManager {
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
-        if ((mc.inGameHasFocus && !mc.gameSettings.showDebugInfo) || (mc.gameSettings.showDebugInfo && showInDebug) || (mc.currentScreen instanceof GuiChat && showInChat))
-            for (Element e : elements)
-                if (e.isEnabled())
-                    e.render();
+
+        if (isEnabled())
+            if ((mc.inGameHasFocus && !mc.gameSettings.showDebugInfo) || (mc.gameSettings.showDebugInfo && showInDebug) || (mc.currentScreen instanceof GuiChat && showInChat))
+                for (Element e : elements)
+                    if (e.isEnabled())
+                        e.render();
     }
 
     public void saveAll() {
@@ -94,6 +98,14 @@ public class ElementManager {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
     }
 
     public boolean doShowInChat() {
