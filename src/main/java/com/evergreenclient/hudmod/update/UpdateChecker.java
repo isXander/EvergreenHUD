@@ -17,13 +17,13 @@ public class UpdateChecker {
 
     private static final String URL = "https://raw.githubusercontent.com/Evergreen-Client/EvergreenHUD/main/version.json";
 
-    public static Version getLatestVersion() {
+    public static double getLatestVersion() {
         BetterJsonObject json = new BetterJsonObject(HttpsUtils.getString(URL));
-        return new Version(json.optString("latest"));
+        return json.optDouble("latest");
     }
 
     public static boolean updateAvailable() {
-        return Version.olderThan(getLatestVersion(), new Version(EvergreenHUD.VERSION));
+        return getLatestVersion() > Double.parseDouble(EvergreenHUD.VERSION);
     }
 
 }
