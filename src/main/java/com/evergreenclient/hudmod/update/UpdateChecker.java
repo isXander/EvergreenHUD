@@ -10,19 +10,20 @@ package com.evergreenclient.hudmod.update;
 
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.utils.HttpsUtils;
+import com.evergreenclient.hudmod.utils.Version;
 import com.evergreenclient.hudmod.utils.json.BetterJsonObject;
 
 public class UpdateChecker {
 
     private static final String URL = "https://raw.githubusercontent.com/Evergreen-Client/EvergreenHUD/main/version.json";
 
-    public static double getLatestVersion() {
+    public static Version getLatestVersion() {
         BetterJsonObject json = new BetterJsonObject(HttpsUtils.getString(URL));
-        return json.optDouble("latest");
+        return new Version(json.optString("latest"));
     }
 
     public static boolean updateAvailable() {
-        return getLatestVersion() > Double.parseDouble(EvergreenHUD.VERSION);
+        return Version.olderThan(getLatestVersion(), new Version(EvergreenHUD.VERSION));
     }
 
 }
