@@ -21,6 +21,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -87,7 +88,7 @@ public abstract class Element extends Gui {
         Hitbox hitbox = getHitbox();
         int x = getPosition().getRawX(new ScaledResolution(mc));
         int y = getPosition().getRawY(new ScaledResolution(mc));
-        drawRect(hitbox.x, hitbox.y, hitbox.x + (hitbox.width), hitbox.y + (hitbox.height), getBgColor().getRGB());
+        drawRect((int) (hitbox.x / getPosition().getScale()), (int) (hitbox.y / getPosition().getScale()), (int) ((hitbox.x / getPosition().getScale()) + (hitbox.width)), (int) (hitbox.y / getPosition().getScale() + (hitbox.height)), getBgColor().getRGB());
         switch (getAlignment()) {
             case LEFT:
                 mc.fontRendererObj.drawString(getDisplayString(), (x - mc.fontRendererObj.getStringWidth(getDisplayString())) / getPosition().getScale(), y / getPosition().getScale(), getTextColor().getRGB(), renderShadow());
@@ -113,13 +114,13 @@ public abstract class Element extends Gui {
         int y = getPosition().getRawY(new ScaledResolution(mc));
         switch (getAlignment()) {
             case LEFT:
-                hitbox = new Hitbox((int) ((x - width - 4)/getPosition().getScale()), (int)((y - 4)/getPosition().getScale()), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
+                hitbox = new Hitbox((int) ((x - width - 4)), (int)((y - 4)), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
             case CENTER:
-                hitbox = new Hitbox((int)((x - (width / 2) - 4)/getPosition().getScale()), (int)((y - 4)/getPosition().getScale()), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
+                hitbox = new Hitbox((int)((x - (width / 2) - 4)), (int)((y - 4)), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
             case RIGHT:
-                hitbox = new Hitbox((int)((x - 4)/getPosition().getScale()), (int)((y - 4)/getPosition().getScale()), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
+                hitbox = new Hitbox((int)((x - 4)), (int)((y - 4)), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
         }
         return hitbox;

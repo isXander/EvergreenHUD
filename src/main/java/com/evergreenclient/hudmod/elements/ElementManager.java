@@ -10,7 +10,6 @@ package com.evergreenclient.hudmod.elements;
 
 import com.evergreenclient.hudmod.config.MainConfig;
 import com.evergreenclient.hudmod.elements.impl.*;
-import com.evergreenclient.hudmod.gui.ConfigGUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -42,6 +41,7 @@ public class ElementManager {
         this.elements = Arrays.asList(
                 new ElementFPS(),
                 new ElementCoordinates(),
+                new ElementBiome(),
                 new ElementServer(),
                 new ElementCps(),
                 new ElementReach(),
@@ -50,9 +50,10 @@ public class ElementManager {
                 new ElementDirection(),
                 new ElementSpeed(),
                 new ElementPing(),
-                new ElementCombo(),
+                //new ElementCombo(),
                 new ElementYaw(),
-                new ElementPitch()
+                new ElementPitch(),
+                new ElementBlockAbove()
         );
 
         this.logger = LogManager.getLogger("Evergreen Manager");

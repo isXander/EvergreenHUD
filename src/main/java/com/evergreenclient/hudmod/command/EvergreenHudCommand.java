@@ -11,10 +11,8 @@ package com.evergreenclient.hudmod.command;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
 import com.evergreenclient.hudmod.EvergreenHUD;
-import com.evergreenclient.hudmod.gui.MainGUI;
+import com.evergreenclient.hudmod.gui.GuiMain;
 import com.evergreenclient.hudmod.update.UpdateChecker;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function0;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -22,11 +20,6 @@ import net.minecraft.command.ICommandSender;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.awt.*;
-import java.net.URI;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class EvergreenHudCommand extends CommandBase {
 
@@ -50,7 +43,9 @@ public class EvergreenHudCommand extends CommandBase {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("update")) {
                 Multithreading.runAsync(() -> {
-                    if (UpdateChecker.updateAvailable()) {
+                    if (EvergreenHUD.getInstance().isDevelopment())
+                        Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are on a development version. There are no updates available.");
+                    else if (UpdateChecker.updateAvailable()) {
                         EvergreenHUD.notifyUpdate();
                     } else {
                         Notifications.INSTANCE.pushNotification("EvergreenHUD", "There are no updates available.");
@@ -65,7 +60,7 @@ public class EvergreenHudCommand extends CommandBase {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        Minecraft.getMinecraft().displayGuiScreen(new MainGUI());
+        Minecraft.getMinecraft().displayGuiScreen(new GuiMain());
         MinecraftForge.EVENT_BUS.unregister(this);
     }
 

@@ -10,7 +10,6 @@ package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.utils.element.ElementData;
-import net.minecraft.client.resources.I18n;
 
 public class ElementServer extends Element {
 

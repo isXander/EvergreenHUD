@@ -11,6 +11,7 @@ package com.evergreenclient.hudmod.elements.impl;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraft.client.Minecraft;
+import org.jetbrains.annotations.NotNull;
 
 public class ElementFPS extends Element {
 
@@ -24,6 +25,7 @@ public class ElementFPS extends Element {
         return new ElementData("FPS Display", "Shows your current FPS");
     }
 
+    @NotNull
     @Override
     protected String getValue() {
         return Integer.toString(Minecraft.getDebugFPS());

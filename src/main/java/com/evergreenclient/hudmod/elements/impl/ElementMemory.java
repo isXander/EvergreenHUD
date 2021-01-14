@@ -14,6 +14,7 @@ import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 
@@ -32,6 +33,7 @@ public class ElementMemory extends Element {
         return new ElementData("Memory", "Shows how much memory minecraft is utilising.");
     }
 
+    @NotNull
     @Override
     protected String getValue() {
         return memDisplay;

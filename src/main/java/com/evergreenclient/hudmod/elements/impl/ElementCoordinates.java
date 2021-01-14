@@ -10,6 +10,7 @@ package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.utils.element.ElementData;
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DecimalFormat;
 
@@ -25,6 +26,7 @@ public class ElementCoordinates extends Element {
         return new ElementData("Coordinates", "Shows your current coordinates.");
     }
 
+    @NotNull
     @Override
     protected String getValue() {
         if (mc.thePlayer == null) return "unknown";
@@ -34,7 +36,7 @@ public class ElementCoordinates extends Element {
 
     @Override
     public String getDisplayTitle() {
-        return "Coordinates";
+        return "Coords";
     }
 
 }

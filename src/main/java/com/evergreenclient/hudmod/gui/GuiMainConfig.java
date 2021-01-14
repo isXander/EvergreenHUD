@@ -21,14 +21,14 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
-public class ConfigGUI extends GuiScreenExt {
+public class GuiMainConfig extends GuiScreenExt {
 
     private final ElementManager manager;
 
     private Element dragging = null;
     private int offX = 0, offY = 0;
 
-    public ConfigGUI(ElementManager manager) {
+    public GuiMainConfig(ElementManager manager) {
         this.manager = manager;
     }
 
@@ -68,7 +68,7 @@ public class ConfigGUI extends GuiScreenExt {
         super.actionPerformed(button);
         switch (button.id) {
             case 0:
-                mc.displayGuiScreen(new MainGUI());
+                mc.displayGuiScreen(new GuiMain());
                 break;
             case 1:
                 manager.resetConfig();
@@ -93,7 +93,7 @@ public class ConfigGUI extends GuiScreenExt {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
         if (keyCode == Keyboard.KEY_ESCAPE)
-            mc.displayGuiScreen(new MainGUI());
+            mc.displayGuiScreen(new GuiMain());
     }
 
     @Override
@@ -103,7 +103,7 @@ public class ConfigGUI extends GuiScreenExt {
         if (dragging == null) {
             if (clickedMouseButton == 0) {
                 for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-                    if (e.getHitbox().isMouseOver(mouseX, mouseY, e.getPosition().getScale())) {
+                    if (e.getHitbox().isMouseOver(mouseX, mouseY)) {
                         dragging = e;
                         offX = mouseX - e.getPosition().getRawX(res);
                         offY = mouseY - e.getPosition().getRawY(res);

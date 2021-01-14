@@ -17,7 +17,7 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
-public class PositioningGUI extends GuiScreen {
+public class GuiElementPosition extends GuiScreen {
 
     private Element dragging = null;
     private int offX = 0, offY = 0;
@@ -38,7 +38,7 @@ public class PositioningGUI extends GuiScreen {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
         if (keyCode == Keyboard.KEY_ESCAPE) {
-            mc.displayGuiScreen(new MainGUI());
+            mc.displayGuiScreen(new GuiMain());
         }
     }
 
@@ -49,7 +49,7 @@ public class PositioningGUI extends GuiScreen {
         if (dragging == null) {
             if (clickedMouseButton == 0) {
                 for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-                    if (e.getHitbox().isMouseOver(mouseX, mouseY, e.getPosition().getScale())) {
+                    if (e.getHitbox().isMouseOver(mouseX, mouseY)) {
                         dragging = e;
                         offX = mouseX - e.getPosition().getRawX(res);
                         offY = mouseY - e.getPosition().getRawY(res);

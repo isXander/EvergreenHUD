@@ -12,7 +12,7 @@ import club.sk1er.mods.core.gui.notification.Notifications;
 import com.evergreenclient.hudmod.command.EvergreenHudCommand;
 import com.evergreenclient.hudmod.elements.ElementManager;
 import com.evergreenclient.hudmod.forge.modcore.ModCoreInstaller;
-import com.evergreenclient.hudmod.gui.MainGUI;
+import com.evergreenclient.hudmod.gui.GuiMain;
 import com.evergreenclient.hudmod.update.UpdateChecker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
@@ -34,12 +34,13 @@ public class EvergreenHUD {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String NAME = "EvergreenHUD";
-    public static final String VERSION = "0.7";
+    public static final String VERSION = "0.8";
 
     @Mod.Instance(EvergreenHUD.MOD_ID)
     private static EvergreenHUD instance;
 
     private ElementManager elementManager;
+    private boolean development;
 
     private boolean reset = false;
 
@@ -57,8 +58,12 @@ public class EvergreenHUD {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        if (UpdateChecker.updateAvailable()) {
+        double version = UpdateChecker.getLatestVersion();
+        if (version > Double.parseDouble(EvergreenHUD.VERSION)) {
             notifyUpdate();
+        }
+        if (version < Double.parseDouble(EvergreenHUD.VERSION)) {
+            development = true;
         }
 
         if (reset) {
@@ -70,7 +75,7 @@ public class EvergreenHUD {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (keybind.isPressed())
-            Minecraft.getMinecraft().displayGuiScreen(new MainGUI());
+            Minecraft.getMinecraft().displayGuiScreen(new GuiMain());
     }
 
     public static void notifyUpdate() {
@@ -99,6 +104,10 @@ public class EvergreenHUD {
 
     public void notifyConfigReset() {
         reset = true;
+    }
+
+    public boolean isDevelopment() {
+        return development;
     }
 
 }

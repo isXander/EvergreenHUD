@@ -9,40 +9,42 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
-import com.evergreenclient.hudmod.utils.StringUtils;
 import com.evergreenclient.hudmod.utils.element.ElementData;
-import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.BlockPos;
+import net.minecraft.world.chunk.Chunk;
 import org.jetbrains.annotations.NotNull;
 
-public class ElementDirection extends Element {
-
-    private BooleanSetting abbreviated;
+public class ElementBiome extends Element {
 
     @Override
     public void initialise() {
-        addSettings(abbreviated = new BooleanSetting("Abbreviated", true));
+
     }
 
     @Override
     public ElementData getMetadata() {
-        return new ElementData("Direction", "Shows what direction you are facing.");
+        return new ElementData("Biome", "Displays the current biome you are standing in.");
     }
 
     @NotNull
     @Override
     protected String getValue() {
-        EnumFacing facing = mc.thePlayer.getHorizontalFacing();
-        String value = facing.getName();
-        if (abbreviated.get())
-            value = value.substring(0, 1);
-        return StringUtils.firstUpper(value);
+        String text = null;
+
+        if (mc.theWorld != null && mc.thePlayer != null) {
+            BlockPos playerPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);
+            Chunk playerChunk = mc.theWorld.getChunkFromBlockCoords(playerPos);
+            text = playerChunk.getBiome(playerPos, mc.theWorld.getWorldChunkManager()).biomeName;
+        }
+
+        if (text == null) text = "Unknown";
+
+        return text;
     }
 
     @Override
     public String getDisplayTitle() {
-        return "Direction";
+        return "Biome";
     }
 
 }

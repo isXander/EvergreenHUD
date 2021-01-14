@@ -19,8 +19,8 @@ public class Hitbox {
         this.height = height;
     }
 
-    public boolean isMouseOver(int mouseX, int mouseY, float scale) {
-        return mouseX >= x * scale && mouseX <= x * scale + width && mouseY >= y * scale && mouseY <= y * scale + height;
+    public boolean isMouseOver(int mouseX, int mouseY) {
+        return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 
 }

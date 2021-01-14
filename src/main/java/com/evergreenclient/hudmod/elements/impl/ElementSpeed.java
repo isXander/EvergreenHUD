@@ -37,7 +37,7 @@ public class ElementSpeed extends Element {
 
     @Override
     protected String getValue() {
-        return new DecimalFormat("#.##").format(speed * 10) + (suffix.get() ? " blocks/s" : "");
+        return new DecimalFormat("#.##").format(speed * 10) + (suffix.get() ? " m/s" : "");
     }
 
     @Override
@@ -53,7 +53,8 @@ public class ElementSpeed extends Element {
         double distTraveledLastTickY = mc.thePlayer.posY - mc.thePlayer.prevPosY;
         double distTraveledLastTickZ = mc.thePlayer.posZ - mc.thePlayer.prevPosZ;
 
-        this.speed = MathHelper.sqrt_double(distTraveledLastTickX * distTraveledLastTickX + distTraveledLastTickY * distTraveledLastTickY + distTraveledLastTickZ * distTraveledLastTickZ);
+        // multiplying by 2 is necessary dont ask me why it matches up to mc wiki speed when doubled
+        this.speed = MathHelper.sqrt_double(distTraveledLastTickX * distTraveledLastTickX + distTraveledLastTickY * distTraveledLastTickY + distTraveledLastTickZ * distTraveledLastTickZ) * 2;
     }
 
 }
