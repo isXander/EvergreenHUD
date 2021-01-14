@@ -18,7 +18,6 @@ import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.jetbrains.annotations.NotNull;
 
 // FIXME: 14/01/2021 fix combo counter idk how to do it
 public class ElementCombo extends Element {
@@ -37,7 +36,6 @@ public class ElementCombo extends Element {
         return new ElementData("Combo Counter", "Shows the amount of hits you get before you are attacked.");
     }
 
-    @NotNull
     @Override
     protected String getValue() {
         return Integer.toString(counter);

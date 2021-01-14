@@ -12,7 +12,6 @@ import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.chunk.Chunk;
-import org.jetbrains.annotations.NotNull;
 
 public class ElementBiome extends Element {
 
@@ -26,7 +25,6 @@ public class ElementBiome extends Element {
         return new ElementData("Biome", "Displays the current biome you are standing in.");
     }
 
-    @NotNull
     @Override
     protected String getValue() {
         String text = null;

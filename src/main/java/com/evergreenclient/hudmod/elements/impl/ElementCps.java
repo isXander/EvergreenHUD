@@ -14,12 +14,10 @@ import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.jetbrains.annotations.NotNull;
 import org.lwjgl.input.Mouse;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ElementCps extends Element {
 
@@ -41,7 +39,6 @@ public class ElementCps extends Element {
         return new ElementData("CPS Mod", "Shows how many times you can click in a second.");
     }
 
-    @NotNull
     @Override
     protected String getValue() {
         String text = "";

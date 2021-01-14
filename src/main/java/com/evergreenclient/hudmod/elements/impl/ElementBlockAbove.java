@@ -19,7 +19,6 @@ import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.jetbrains.annotations.NotNull;
 
 public class ElementBlockAbove extends Element {
 
@@ -40,7 +39,6 @@ public class ElementBlockAbove extends Element {
         return new ElementData("Block Above", "Tells you if there is a block above your head. Useful for games like bedwars.");
     }
 
-    @NotNull
     @Override
     protected String getValue() {
         return Integer.toString(blockDistance);

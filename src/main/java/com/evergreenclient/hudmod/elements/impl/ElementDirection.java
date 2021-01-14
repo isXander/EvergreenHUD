@@ -12,9 +12,7 @@ import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.utils.StringUtils;
 import com.evergreenclient.hudmod.utils.element.ElementData;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.EnumFacing;
-import org.jetbrains.annotations.NotNull;
 
 public class ElementDirection extends Element {
 
@@ -30,7 +28,6 @@ public class ElementDirection extends Element {
         return new ElementData("Direction", "Shows what direction you are facing.");
     }
 
-    @NotNull
     @Override
     protected String getValue() {
         EnumFacing facing = mc.thePlayer.getHorizontalFacing();
