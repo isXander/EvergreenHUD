@@ -77,23 +77,22 @@ public class ElementManager {
     public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
 
-        if (isEnabled())
-            if ((mc.inGameHasFocus && !mc.gameSettings.showDebugInfo) || (mc.gameSettings.showDebugInfo && showInDebug) || (mc.currentScreen instanceof GuiChat && showInChat))
-                for (Element e : elements)
+        if (isEnabled()) {
+            if ((mc.inGameHasFocus && !mc.gameSettings.showDebugInfo) || (mc.gameSettings.showDebugInfo && showInDebug) || (mc.currentScreen instanceof GuiChat && showInChat)) {
+                for (Element e : elements) {
                     if (e.isEnabled())
                         e.render();
+                }
+            }
+        }
     }
 
     public void saveAll() {
-        for (Element e : elements) {
-            e.getConfig().save();
-        }
+        for (Element e : elements) e.getConfig().save();
     }
 
     public void resetAll() {
-        for (Element e : elements) {
-            e.resetSettings();
-        }
+        for (Element e : elements) e.resetSettings();
     }
 
     public MainConfig getConfig() {

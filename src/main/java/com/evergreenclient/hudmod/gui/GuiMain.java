@@ -68,7 +68,7 @@ public class GuiMain extends GuiScreen {
         GlStateManager.scale(scale, scale, 0);
         drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "EvergreenHUD " + EvergreenHUD.VERSION, (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
-        drawCenteredString(mc.fontRendererObj, (EvergreenHUD.getInstance().isDevelopment() ? "Development" : "evergreenclient.com"), width / 2, 25, -1);
+        drawCenteredString(mc.fontRendererObj, "evergreenclient.com", width / 2, 25, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
