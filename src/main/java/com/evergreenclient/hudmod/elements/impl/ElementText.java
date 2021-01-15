@@ -9,34 +9,36 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
+import com.evergreenclient.hudmod.settings.impl.StringSetting;
 import com.evergreenclient.hudmod.utils.element.ElementData;
-import net.minecraft.util.MathHelper;
 
-import java.text.DecimalFormat;
+public class ElementText extends Element {
 
-public class ElementPitch extends Element {
-
-    public BooleanSetting trailingZeros;
+    public StringSetting text;
 
     @Override
     public void initialise() {
-        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", true));
+        addSettings(text = new StringSetting("Text Element", "Text Element"));
     }
 
     @Override
     public ElementData getMetadata() {
-        return new ElementData("Pitch Display", "Shows the player's rotation pitch. Useful for bridging.");
+        return new ElementData("Custom Text", "Displays a custom message of your liking!");
     }
 
     @Override
     protected String getValue() {
-        return new DecimalFormat(trailingZeros.get() ? "0.0" : "#.#").format(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationPitch));
+        return text.get();
+    }
+
+    @Override
+    public boolean canShowTitle() {
+        return false;
     }
 
     @Override
     public String getDisplayTitle() {
-        return "Pitch";
+        return "";
     }
 
 }

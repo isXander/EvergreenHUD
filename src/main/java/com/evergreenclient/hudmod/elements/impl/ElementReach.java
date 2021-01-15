@@ -9,6 +9,7 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
+import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
@@ -24,11 +25,14 @@ import java.text.DecimalFormat;
 
 public class ElementReach extends Element {
 
+    public BooleanSetting trailingZeros;
+
     private Double reach = 0D;
     private long lastHit = 0L;
 
     @Override
     public void initialise() {
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", false));
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -39,7 +43,7 @@ public class ElementReach extends Element {
 
     @Override
     protected String getValue() {
-        DecimalFormat df = new DecimalFormat("#.#");
+        DecimalFormat df = new DecimalFormat(trailingZeros.get() ? "#.#" : "0.0");
         return df.format(reach);
     }
 

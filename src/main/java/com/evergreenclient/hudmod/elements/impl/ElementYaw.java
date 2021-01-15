@@ -9,6 +9,7 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
+import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraft.util.MathHelper;
 
@@ -16,9 +17,11 @@ import java.text.DecimalFormat;
 
 public class ElementYaw extends Element {
 
+    public BooleanSetting trailingZeros;
+
     @Override
     public void initialise() {
-
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", false));
     }
 
     @Override
@@ -28,7 +31,7 @@ public class ElementYaw extends Element {
 
     @Override
     protected String getValue() {
-        return new DecimalFormat("#.#").format(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw));
+        return new DecimalFormat(trailingZeros.get() ? "0.0" : "#.#").format(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw));
     }
 
     @Override

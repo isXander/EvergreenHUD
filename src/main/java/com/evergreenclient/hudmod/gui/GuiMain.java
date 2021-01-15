@@ -46,7 +46,9 @@ public class GuiMain extends GuiScreen {
                 }
 
             }
-            this.buttonList.add(new GuiButtonExt(element, width / 2 - 60 + (columnOffset * (column)), y, 120, 20, e.getMetadata().getName()));
+            this.buttonList.add(new GuiButtonExt(element, width / 2 - 60 + (columnOffset * (column)), y,
+                    120, 20, (EvergreenHUD.getInstance().getElementManager().doColorsInGui() ?
+                    (e.isEnabled() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) : "") + e.getMetadata().getName()));
             y += 22;
             element++;
         }

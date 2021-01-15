@@ -13,12 +13,10 @@ import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.gui.elements.GuiScreenExt;
 import com.evergreenclient.hudmod.gui.elements.GuiSliderExt;
 import com.evergreenclient.hudmod.settings.Setting;
-import com.evergreenclient.hudmod.settings.impl.ArraySetting;
-import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
-import com.evergreenclient.hudmod.settings.impl.DoubleSetting;
-import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
+import com.evergreenclient.hudmod.settings.impl.*;
 import com.evergreenclient.hudmod.utils.Alignment;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
@@ -28,7 +26,9 @@ import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.evergreenclient.hudmod.utils.Alignment.*;
@@ -40,6 +40,7 @@ public class GuiElementConfig extends GuiScreenExt {
     private int xOff, yOff;
 
     private final Map<Integer, Setting> customButtons = new HashMap<>();
+    private final List<GuiTextField> textFieldList = new ArrayList<>();
 
     public GuiElementConfig(Element element) {
         this.element = element;
@@ -61,6 +62,11 @@ public class GuiElementConfig extends GuiScreenExt {
         this.buttonList.add(new GuiButtonExt( 4, left(),  getRow(1), 120, 20, "Brackets: " + (element.showBrackets() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonExt( 5, right(), getRow(1), 120, 20, "Shadow: "   + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonExt( 6, left(),  getRow(2), 120, 20, "Title: "   + (element.showTitle()   ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        if (!element.canShowTitle()) {
+            this.buttonList.get(6).enabled = false;
+            this.buttonList.get(6).displayString = "Title: " + EnumChatFormatting.RED + "OFF";
+            this.element.setTitle(false);
+        }
         this.buttonList.add(new GuiSliderExt( 7, right(), getRow(2), 120, 20, "Text Red: ",   "", 0, 255, element.getTextColor().getRed(),   false, true, this));
         this.buttonList.add(new GuiSliderExt( 8, left(),  getRow(3), 120, 20, "Text Green: ", "", 0, 255, element.getTextColor().getGreen(), false, true, this));
         this.buttonList.add(new GuiSliderExt( 9, right(), getRow(3), 120, 20, "Text Blue: ",  "", 0, 255, element.getTextColor().getBlue(),  false, true, this));
@@ -87,6 +93,20 @@ public class GuiElementConfig extends GuiScreenExt {
             } else if (s instanceof ArraySetting) {
                 ArraySetting setting = (ArraySetting) s;
                 this.buttonList.add(new GuiButtonExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": " + setting.get()));
+            } else if (s instanceof StringSetting) {
+                StringSetting setting = (StringSetting) s;
+                GuiTextField textInput = new GuiTextField(id, mc.fontRendererObj, (id % 2 == 0 ? left() : right()) + 1, getRow(row) + 1, 120 - 2, 20 - 2);
+                if (!setting.get().equals(setting.getName()))
+                    textInput.setText(setting.get());
+                else
+                    textInput.setText(setting.getName());
+                textInput.setEnableBackgroundDrawing(true);
+                textInput.setMaxStringLength(120);
+                textInput.setVisible(true);
+                textInput.setEnableBackgroundDrawing(true);
+                textInput.setCanLoseFocus(true);
+                textInput.setFocused(false);
+                textFieldList.add(textInput);
             }
             customButtons.put(id, s);
 
@@ -112,6 +132,9 @@ public class GuiElementConfig extends GuiScreenExt {
         drawCenteredString(mc.fontRendererObj, element.getMetadata().getDescription(), (int)(width / 2 / scale), (int)(25 / scale), -1);
         GlStateManager.popMatrix();
         super.drawScreen(mouseX, mouseY, partialTicks);
+        for (GuiTextField textField : textFieldList) {
+            textField.drawTextBox();
+        }
     }
 
     @Override
@@ -221,6 +244,14 @@ public class GuiElementConfig extends GuiScreenExt {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        for (GuiTextField textField : textFieldList) {
+            textField.textboxKeyTyped(typedChar, keyCode);
+            Setting s = customButtons.get(textField.getId());
+            if (s instanceof StringSetting) {
+                StringSetting setting = (StringSetting) s;
+                setting.set(textField.getText());
+            }
+        }
         super.keyTyped(typedChar, keyCode);
         if (keyCode == Keyboard.KEY_ESCAPE)
             mc.displayGuiScreen(new GuiMain());
@@ -259,5 +290,13 @@ public class GuiElementConfig extends GuiScreenExt {
         super.mouseReleased(mouseX, mouseY, state);
         dragging = null;
         xOff = yOff = 0;
+    }
+
+    @Override
+    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        for (GuiTextField textField : textFieldList) {
+            textField.mouseClicked(mouseX, mouseY, mouseButton);
+        }
     }
 }

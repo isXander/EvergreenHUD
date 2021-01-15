@@ -65,14 +65,18 @@ public abstract class Element extends Gui {
 
     public abstract String getDisplayTitle();
 
+    public boolean canShowTitle() {
+        return true;
+    }
+
     public String getDisplayString() {
         String builder = "";
         if (showBrackets())
             builder += "[";
-        if (showTitle() && !isInverted())
+        if (showTitle() && !isInverted() && canShowTitle())
             builder += getDisplayTitle() + ": ";
         builder += getValue();
-        if (showTitle() && isInverted())
+        if (showTitle() && isInverted() && canShowTitle())
             builder += " " + getDisplayTitle();
         if (showBrackets())
             builder += "]";

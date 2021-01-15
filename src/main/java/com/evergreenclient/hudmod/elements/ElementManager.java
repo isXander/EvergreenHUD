@@ -31,6 +31,7 @@ public class ElementManager {
     private boolean enabled;
     private boolean showInChat;
     private boolean showInDebug;
+    private boolean colorsInGui;
 
     private final Logger logger;
 
@@ -53,7 +54,8 @@ public class ElementManager {
                 //new ElementCombo(),
                 new ElementYaw(),
                 new ElementPitch(),
-                new ElementBlockAbove()
+                new ElementBlockAbove(),
+                new ElementText()
         );
 
         this.logger = LogManager.getLogger("Evergreen Manager");
@@ -64,6 +66,7 @@ public class ElementManager {
         this.enabled = true;
         this.showInChat = true;
         this.showInDebug = false;
+        this.colorsInGui = true;
     }
 
     public List<Element> getElements() {
@@ -123,5 +126,13 @@ public class ElementManager {
 
     public void setShowInDebug(boolean showInDebug) {
         this.showInDebug = showInDebug;
+    }
+
+    public boolean doColorsInGui() {
+        return colorsInGui;
+    }
+
+    public void setColorsInGui(boolean colorsInGui) {
+        this.colorsInGui = colorsInGui;
     }
 }

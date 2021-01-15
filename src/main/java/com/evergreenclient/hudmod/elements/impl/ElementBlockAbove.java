@@ -14,6 +14,7 @@ import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
@@ -59,8 +60,17 @@ public class ElementBlockAbove extends Element {
 
         boolean above = false;
         for (int i = 1; i < 10 + 1; i++) {
-            Block b = mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ)).getBlock();
-            if (b != Blocks.air && b != Blocks.water && b != Blocks.lava) {
+            IBlockState state;
+            try {
+                state = mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ));
+            } catch (NullPointerException e) {
+                continue;
+            }
+
+            if (state == null) continue;
+            Block b = state.getBlock();
+            if (b != Blocks.air && b != Blocks.water && b != Blocks.lava && b != Blocks.ladder && b != Blocks.vine
+                    && b != Blocks.wall_sign && b != Blocks.standing_banner && b != Blocks.wall_banner && b != Blocks.standing_sign) {
                 if (i <= notifyHeight.get() && (blockDistance > notifyHeight.get() || blockDistance == 0)) {
                     if (notify.get())
                         mc.thePlayer.playSound("random.orb", 0.1f, 0.5f);

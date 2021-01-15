@@ -10,6 +10,7 @@ package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
+import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -22,10 +23,14 @@ public class ElementSpeed extends Element {
 
     private double speed = 0;
 
-    private BooleanSetting suffix;
+    public IntegerSetting accuracy;
+    public BooleanSetting trailingZeros;
+    public BooleanSetting suffix;
 
     @Override
     public void initialise() {
+        addSettings(accuracy = new IntegerSetting("Accuracy", 2, 0, 4, " places"));
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", false));
         addSettings(suffix = new BooleanSetting("Suffix", false));
         MinecraftForge.EVENT_BUS.register(this);
     }
@@ -37,7 +42,10 @@ public class ElementSpeed extends Element {
 
     @Override
     protected String getValue() {
-        return new DecimalFormat("#.##").format(speed * 10) + (suffix.get() ? " m/s" : "");
+        String format = (trailingZeros.get() ? "0" : "#");
+        StringBuilder sb = new StringBuilder(accuracy.get() < 1 ? format : format + ".");
+        for (int i = 0; i < accuracy.get(); i++) sb.append(format);
+        return new DecimalFormat(sb.toString()).format(speed) + (suffix.get() ? " m/s" : "");
     }
 
     @Override
@@ -53,8 +61,7 @@ public class ElementSpeed extends Element {
         double distTraveledLastTickY = mc.thePlayer.posY - mc.thePlayer.prevPosY;
         double distTraveledLastTickZ = mc.thePlayer.posZ - mc.thePlayer.prevPosZ;
 
-        // multiplying by 2 is necessary dont ask me why it matches up to mc wiki speed when doubled
-        this.speed = MathHelper.sqrt_double(distTraveledLastTickX * distTraveledLastTickX + distTraveledLastTickY * distTraveledLastTickY + distTraveledLastTickZ * distTraveledLastTickZ) * 2;
+        this.speed = MathHelper.sqrt_double(distTraveledLastTickX * distTraveledLastTickX + distTraveledLastTickY * distTraveledLastTickY + distTraveledLastTickZ * distTraveledLastTickZ) * 20;
     }
 
 }
