@@ -8,6 +8,7 @@
 
 package com.evergreenclient.hudmod.forge;
 
+import club.sk1er.mods.core.forge.ClassTransformer;
 import com.evergreenclient.hudmod.forge.modcore.ModCoreInstaller;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;

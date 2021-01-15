@@ -12,8 +12,6 @@ import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ElementPing extends Element {
 
@@ -32,17 +30,12 @@ public class ElementPing extends Element {
     @Override
     protected String getValue() {
         NetworkPlayerInfo info = mc.getNetHandler().getPlayerInfo(mc.thePlayer.getGameProfile().getId());
-        if (info == null)
-            return "0";
-        return Integer.toString(info.getResponseTime());
-    }
-
-    @SubscribeEvent
-    public void onClientTick(TickEvent.ClientTickEvent event) {
-        NetworkPlayerInfo info = mc.getNetHandler().getPlayerInfo(mc.thePlayer.getGameProfile().getId());
         if (info != null && info.getResponseTime() != 1)
             ping = info.getResponseTime();
+
+        return Integer.toString(ping);
     }
+
 
     @Override
     public String getDisplayTitle() {
