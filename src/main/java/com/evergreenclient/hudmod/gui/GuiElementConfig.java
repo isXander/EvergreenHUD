@@ -126,11 +126,7 @@ public class GuiElementConfig extends GuiScreenExt {
         GlStateManager.scale(scale, scale, 0);
         drawCenteredString(mc.fontRendererObj, element.getMetadata().getName(), (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
-        GlStateManager.pushMatrix();
-        scale = 1f;
-        GlStateManager.scale(scale, scale, 0);
-        drawCenteredString(mc.fontRendererObj, element.getMetadata().getDescription(), (int)(width / 2 / scale), (int)(25 / scale), -1);
-        GlStateManager.popMatrix();
+        drawCenteredString(mc.fontRendererObj, element.getMetadata().getDescription(), width / 2, 25, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);
         for (GuiTextField textField : textFieldList) {
             textField.drawTextBox();
