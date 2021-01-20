@@ -21,7 +21,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jetbrains.annotations.NotNull;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -39,6 +38,7 @@ public abstract class Element extends Gui {
     private boolean title = true;
     private boolean brackets = false;
     private boolean shadow = true;
+    private boolean chroma = false;
     private boolean inverted = false;
     private Alignment alignment = Alignment.RIGHT;
     private final List<Setting> customSettings = new ArrayList<>();
@@ -95,13 +95,31 @@ public abstract class Element extends Gui {
         drawRect((int) (hitbox.x / getPosition().getScale()), (int) (hitbox.y / getPosition().getScale()), (int) ((hitbox.x / getPosition().getScale()) + (hitbox.width)), (int) (hitbox.y / getPosition().getScale() + (hitbox.height)), getBgColor().getRGB());
         switch (getAlignment()) {
             case LEFT:
-                mc.fontRendererObj.drawString(getDisplayString(), (x - mc.fontRendererObj.getStringWidth(getDisplayString())) / getPosition().getScale(), y / getPosition().getScale(), getTextColor().getRGB(), renderShadow());
+                float posX = (x - mc.fontRendererObj.getStringWidth(getDisplayString())) / getPosition().getScale();
+                float posY = y / getPosition().getScale();
+
+                if (chroma)
+                    drawChromaString(getDisplayString(), posX, posY, renderShadow(), false);
+                else
+                    mc.fontRendererObj.drawString(getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
                 break;
             case CENTER:
-                drawCenteredString(mc.fontRendererObj, getDisplayString(), x / getPosition().getScale(), y / getPosition().getScale(), getTextColor().getRGB(), renderShadow());
+                posX = x / getPosition().getScale();
+                posY = y / getPosition().getScale();
+
+                if (chroma)
+                    drawChromaString(getDisplayString(), posX, posY, renderShadow(), true);
+                else
+                    drawCenteredString(mc.fontRendererObj, getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
                 break;
             case RIGHT:
-                mc.fontRendererObj.drawString(getDisplayString(), x / getPosition().getScale(), y / getPosition().getScale(), getTextColor().getRGB(), renderShadow());
+                posX = x / getPosition().getScale();
+                posY = y / getPosition().getScale();
+
+                if (chroma)
+                    drawChromaString(getDisplayString(), posX, posY, renderShadow(), false);
+                else
+                    mc.fontRendererObj.drawString(getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
                 break;
         }
         GlStateManager.popMatrix();
@@ -109,6 +127,23 @@ public abstract class Element extends Gui {
 
     public void drawCenteredString(FontRenderer fontRendererIn, String text, float x, float y, int color, boolean shadow) {
         fontRendererIn.drawString(text, x - fontRendererIn.getStringWidth(text) / 2f, y, color, shadow);
+    }
+
+    protected void drawChromaString(String text, float x, float y, boolean shadow, boolean centered) {
+        if (centered)
+            x -= mc.fontRendererObj.getStringWidth(text) / 2f;
+
+        for (char c : text.toCharArray()) {
+            int i = getChroma(x, y).getRGB();
+            String tmp = String.valueOf(c);
+            mc.fontRendererObj.drawString(tmp, x, y, i, shadow);
+            x += mc.fontRendererObj.getStringWidth(tmp);
+        }
+    }
+
+    private Color getChroma(double x, double y) {
+        float v = 2000.0f;
+        return new Color(Color.HSBtoRGB((float)((System.currentTimeMillis() - x * 10.0 * 1.0 - y * 10.0 * 1.0) % v) / v, 0.8f, 0.8f));
     }
 
     public Hitbox getHitbox() {
@@ -176,6 +211,10 @@ public abstract class Element extends Gui {
         return brackets;
     }
 
+    public boolean useChroma() {
+        return chroma;
+    }
+
     public boolean isInverted() {
         return inverted;
     }
@@ -222,6 +261,10 @@ public abstract class Element extends Gui {
 
     public void setTextColor(Color color) {
         this.textColor = color;
+    }
+
+    public void setChroma(boolean chroma) {
+        this.chroma = chroma;
     }
 
     public void setShadow(boolean shadow) {

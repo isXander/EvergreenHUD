@@ -76,10 +76,11 @@ public class GuiElementConfig extends GuiScreenExt {
         this.buttonList.add(new GuiSliderExt(13, right(), getRow(5), 120, 20, "Background Blue: ",  "", 0, 255, element.getBgColor().getBlue(),  false, true, this));
         this.buttonList.add(new GuiSliderExt(14, left(),  getRow(6), 120, 20, "Background Alpha: ", "", 0, 255, element.getBgColor().getAlpha(), false, true, this));
         this.buttonList.add(new GuiButtonExt(15, right(), getRow(6), 120, 20, "Alignment: " + element.getAlignment().getName()));
-        this.buttonList.add(new GuiButtonExt(16, left(),  getRow(7), 120, 20, "Inverted: " + (element.isInverted() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt(16, left(),  getRow(7), 120, 20, "Inverted: "  + (element.isInverted() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt(17, right(), getRow(7), 120, 20, "Chroma: "    + (element.useChroma()  ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
 
-        int id = 17;
-        int row = 7;
+        int id = 18;
+        int row = 8;
         for (Setting s : element.getCustomSettings()) {
             if (s instanceof BooleanSetting) {
                 BooleanSetting setting = (BooleanSetting) s;
@@ -180,6 +181,10 @@ public class GuiElementConfig extends GuiScreenExt {
             case 16:
                 element.setInverted(!element.isInverted());
                 button.displayString = "Inverted: " + (element.isInverted() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                break;
+            case 17:
+                element.setChroma(!element.useChroma());
+                button.displayString = "Chroma: " + (element.useChroma() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
             default:
                 Setting s = customButtons.get(button.id);

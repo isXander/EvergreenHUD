@@ -54,6 +54,7 @@ public class ElementConfig {
         root.addProperty("title", element.showTitle());
         root.addProperty("brackets", element.showBrackets());
         root.addProperty("inverted", element.isInverted());
+        root.addProperty("chroma", element.useChroma());
         root.addProperty("shadow", element.renderShadow());
         root.addProperty("alignment", element.getAlignment().ordinal());
 
@@ -111,6 +112,7 @@ public class ElementConfig {
         element.setTitle(root.optBoolean("title"));
         element.setBrackets(root.optBoolean("brackets"));
         element.setInverted(root.optBoolean("inverted"));
+        element.setChroma(root.optBoolean("chroma"));
         element.setShadow(root.optBoolean("shadow"));
         element.setAlignment(Alignment.values()[root.optInt("alignment")]);
 

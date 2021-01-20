@@ -21,6 +21,10 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class EvergreenHudCommand extends CommandBase {
 
     @Override
@@ -29,8 +33,18 @@ public class EvergreenHudCommand extends CommandBase {
     }
 
     @Override
+    public List<String> getCommandAliases() {
+        return new ArrayList<>(Arrays.asList(
+                "evergreenhud",
+                "hud",
+                "evergreen",
+                "hudmod"
+        ));
+    }
+
+    @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/" + getCommandName();
+        return "/evergreenhud [update|check]";
     }
 
     @Override
@@ -41,7 +55,7 @@ public class EvergreenHudCommand extends CommandBase {
     @Override
     public void processCommand(ICommandSender sender, String[] args) throws CommandException {
         if (args.length > 0) {
-            if (args[0].equalsIgnoreCase("update")) {
+            if (args[0].equalsIgnoreCase("update") || args[0].equalsIgnoreCase("check")) {
                 Multithreading.runAsync(() -> {
                     if (EvergreenHUD.getInstance().isDevelopment())
                         Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are on a development version. There are no updates available.");
