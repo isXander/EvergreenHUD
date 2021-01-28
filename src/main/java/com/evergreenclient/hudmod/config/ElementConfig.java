@@ -62,7 +62,6 @@ public class ElementConfig {
         textCol.addProperty("r", element.getTextColor().getRed());
         textCol.addProperty("g", element.getTextColor().getGreen());
         textCol.addProperty("b", element.getTextColor().getBlue());
-        textCol.addProperty("a", element.getTextColor().getAlpha());
         root.add("textColor", textCol);
 
         BetterJsonObject bgCol = new BetterJsonObject();
@@ -117,7 +116,7 @@ public class ElementConfig {
         element.setAlignment(Alignment.values()[root.optInt("alignment")]);
 
         BetterJsonObject textColor = new BetterJsonObject(root.get("textColor").getAsJsonObject());
-        element.setTextColor(new Color(textColor.optInt("r"), textColor.optInt("g"), textColor.optInt("b"), textColor.optInt("a")));
+        element.setTextColor(new Color(textColor.optInt("r"), textColor.optInt("g"), textColor.optInt("b")));
 
         BetterJsonObject bgColor = new BetterJsonObject(root.get("bgColor").getAsJsonObject());
         element.setBgColor(new Color(bgColor.optInt("r"), bgColor.optInt("g"), bgColor.optInt("b"), bgColor.optInt("a")));

@@ -9,6 +9,7 @@
 package com.evergreenclient.hudmod.elements;
 
 import com.evergreenclient.hudmod.config.ElementConfig;
+import com.evergreenclient.hudmod.gui.GuiElementConfig;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.utils.Alignment;
 import com.evergreenclient.hudmod.utils.Position;
@@ -44,7 +45,7 @@ public abstract class Element extends Gui {
     private final List<Setting> customSettings = new ArrayList<>();
 
     /* Color */
-    private Color textColor = new Color(255, 255, 255, 255);
+    private Color textColor = new Color(255, 255, 255);
     private Color bgColor = new Color(0, 0, 0, 100);
 
     protected final Logger logger;
@@ -64,6 +65,10 @@ public abstract class Element extends Gui {
     protected abstract String getValue();
 
     public abstract String getDisplayTitle();
+
+    public GuiElementConfig getElementConfigGui() {
+        return new GuiElementConfig(this);
+    }
 
     public boolean canShowTitle() {
         return true;
@@ -153,13 +158,13 @@ public abstract class Element extends Gui {
         int y = getPosition().getRawY(new ScaledResolution(mc));
         switch (getAlignment()) {
             case LEFT:
-                hitbox = new Hitbox((int) ((x - width - 4)), (int)((y - 4)), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
+                hitbox = new Hitbox((x - width - 4), (y - 4), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
             case CENTER:
-                hitbox = new Hitbox((int)((x - (width / 2) - 4)), (int)((y - 4)), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
+                hitbox = new Hitbox((x - (width / 2) - 4), (y - 4), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
             case RIGHT:
-                hitbox = new Hitbox((int)((x - 4)), (int)((y - 4)), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
+                hitbox = new Hitbox((x - 4), (y - 4), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
         }
         return hitbox;

@@ -55,7 +55,8 @@ public class ElementManager {
                 new ElementYaw(),
                 new ElementPitch(),
                 new ElementBlockAbove(),
-                new ElementText()
+                new ElementText(),
+                new ElementArmour()
         );
 
         this.logger = LogManager.getLogger("Evergreen Manager");

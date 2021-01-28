@@ -82,7 +82,7 @@ public class GuiMain extends GuiScreen {
                 mc.displayGuiScreen(new GuiElementPosition());
                 break;
             default:
-                mc.displayGuiScreen(new GuiElementConfig(EvergreenHUD.getInstance().getElementManager().getElements().get(button.id - 2)));
+                mc.displayGuiScreen(EvergreenHUD.getInstance().getElementManager().getElements().get(button.id - 2).getElementConfigGui());
                 break;
         }
     }

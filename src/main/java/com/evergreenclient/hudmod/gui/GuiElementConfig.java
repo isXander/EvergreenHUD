@@ -35,12 +35,12 @@ import static com.evergreenclient.hudmod.utils.Alignment.*;
 
 public class GuiElementConfig extends GuiScreenExt {
 
-    private final Element element;
-    private Element dragging = null;
-    private int xOff, yOff;
+    protected final Element element;
+    protected Element dragging = null;
+    protected int xOff, yOff;
 
-    private final Map<Integer, Setting> customButtons = new HashMap<>();
-    private final List<GuiTextField> textFieldList = new ArrayList<>();
+    protected final Map<Integer, Setting> customButtons = new HashMap<>();
+    protected final List<GuiTextField> textFieldList = new ArrayList<>();
 
     public GuiElementConfig(Element element) {
         this.element = element;
@@ -51,7 +51,7 @@ public class GuiElementConfig extends GuiScreenExt {
         addButtons();
     }
 
-    private void addButtons() {
+    protected void addButtons() {
         this.buttonList.clear();
 
         this.buttonList.add(new GuiButtonExt( 0, width / 2 + 1,      height - 20, 90, 20, "Finished"));
@@ -70,17 +70,16 @@ public class GuiElementConfig extends GuiScreenExt {
         this.buttonList.add(new GuiSliderExt( 7, right(), getRow(2), 120, 20, "Text Red: ",   "", 0, 255, element.getTextColor().getRed(),   false, true, this));
         this.buttonList.add(new GuiSliderExt( 8, left(),  getRow(3), 120, 20, "Text Green: ", "", 0, 255, element.getTextColor().getGreen(), false, true, this));
         this.buttonList.add(new GuiSliderExt( 9, right(), getRow(3), 120, 20, "Text Blue: ",  "", 0, 255, element.getTextColor().getBlue(),  false, true, this));
-        this.buttonList.add(new GuiSliderExt(10, left(),  getRow(4), 120, 20, "Text Alpha: ", "", 0, 255, element.getTextColor().getBlue(),  false, true, this));
-        this.buttonList.add(new GuiSliderExt(11, right(), getRow(4), 120, 20, "Background Red: ",   "", 0, 255, element.getBgColor().getRed(),   false, true, this));
-        this.buttonList.add(new GuiSliderExt(12, left(),  getRow(5), 120, 20, "Background Green: ", "", 0, 255, element.getBgColor().getGreen(), false, true, this));
-        this.buttonList.add(new GuiSliderExt(13, right(), getRow(5), 120, 20, "Background Blue: ",  "", 0, 255, element.getBgColor().getBlue(),  false, true, this));
-        this.buttonList.add(new GuiSliderExt(14, left(),  getRow(6), 120, 20, "Background Alpha: ", "", 0, 255, element.getBgColor().getAlpha(), false, true, this));
-        this.buttonList.add(new GuiButtonExt(15, right(), getRow(6), 120, 20, "Alignment: " + element.getAlignment().getName()));
-        this.buttonList.add(new GuiButtonExt(16, left(),  getRow(7), 120, 20, "Inverted: "  + (element.isInverted() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonExt(17, right(), getRow(7), 120, 20, "Chroma: "    + (element.useChroma()  ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiSliderExt(10, left(),  getRow(4), 120, 20, "Background Red: ",   "", 0, 255, element.getBgColor().getRed(),   false, true, this));
+        this.buttonList.add(new GuiSliderExt(11, right(), getRow(4), 120, 20, "Background Green: ", "", 0, 255, element.getBgColor().getGreen(), false, true, this));
+        this.buttonList.add(new GuiSliderExt(12, left(),  getRow(5), 120, 20, "Background Blue: ",  "", 0, 255, element.getBgColor().getBlue(),  false, true, this));
+        this.buttonList.add(new GuiSliderExt(13, right(), getRow(5), 120, 20, "Background Alpha: ", "", 0, 255, element.getBgColor().getAlpha(), false, true, this));
+        this.buttonList.add(new GuiButtonExt(14, left(),  getRow(6), 120, 20, "Alignment: " + element.getAlignment().getName()));
+        this.buttonList.add(new GuiButtonExt(15, right(), getRow(6), 120, 20, "Inverted: "  + (element.isInverted() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt(16, left(),  getRow(7), 120, 20, "Chroma: "    + (element.useChroma()  ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
 
-        int id = 18;
-        int row = 8;
+        int id = 17;
+        int row = 7;
         for (Setting s : element.getCustomSettings()) {
             if (s instanceof BooleanSetting) {
                 BooleanSetting setting = (BooleanSetting) s;
@@ -160,7 +159,7 @@ public class GuiElementConfig extends GuiScreenExt {
                 element.setTitle(!element.showTitle());
                 button.displayString = "Title: " + (element.showTitle() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
-            case 15:
+            case 14:
                 Alignment alignment = element.getAlignment();
                 ScaledResolution res = new ScaledResolution(mc);
                 if (alignment == LEFT) {
@@ -178,11 +177,11 @@ public class GuiElementConfig extends GuiScreenExt {
                 element.setAlignment(alignment);
                 button.displayString = "Alignment: " + element.getAlignment().getName();
                 break;
-            case 16:
+            case 15:
                 element.setInverted(!element.isInverted());
                 button.displayString = "Inverted: " + (element.isInverted() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
-            case 17:
+            case 16:
                 element.setChroma(!element.useChroma());
                 button.displayString = "Chroma: " + (element.useChroma() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
@@ -216,18 +215,15 @@ public class GuiElementConfig extends GuiScreenExt {
                 element.setTextColor(new Color(element.getTextColor().getRed(), element.getTextColor().getGreen(), button.getValueInt(), element.getTextColor().getAlpha()));
                 break;
             case 10:
-                element.setTextColor(new Color(element.getTextColor().getRed(), element.getTextColor().getGreen(), element.getTextColor().getBlue(), button.getValueInt()));
-                break;
-            case 11:
                 element.setBgColor(new Color(button.getValueInt(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), element.getTextColor().getAlpha()));
                 break;
-            case 12:
+            case 11:
                 element.setBgColor(new Color(element.getBgColor().getRed(), button.getValueInt(), element.getBgColor().getBlue(), element.getTextColor().getAlpha()));
                 break;
-            case 13:
+            case 12:
                 element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), button.getValueInt(), element.getTextColor().getAlpha()));
                 break;
-            case 14:
+            case 13:
                 element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), button.getValueInt()));
                 break;
             default:
@@ -265,7 +261,6 @@ public class GuiElementConfig extends GuiScreenExt {
 
     @Override
     protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
         ScaledResolution res = new ScaledResolution(mc);
         if (dragging == null) {
             if (clickedMouseButton == 0) {
