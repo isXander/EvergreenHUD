@@ -8,7 +8,6 @@
 
 package com.evergreenclient.hudmod.elements.impl;
 
-import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.gui.GuiElementConfig;
 import com.evergreenclient.hudmod.gui.elements.GuiSliderExt;
@@ -23,14 +22,11 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
-import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -134,6 +130,7 @@ public class ElementArmour extends Element {
                         getPosition().setRawY(getPosition().getRawY(res) - getHeight(), res);
                 }
             }
+
         };
     }
 
