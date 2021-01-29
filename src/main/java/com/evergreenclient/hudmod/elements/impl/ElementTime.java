@@ -25,7 +25,7 @@ public class ElementTime extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Time Display", "Displays current system time.");
     }
 

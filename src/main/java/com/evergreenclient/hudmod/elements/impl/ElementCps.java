@@ -35,7 +35,7 @@ public class ElementCps extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("CPS Mod", "Shows how many times you can click in a second.");
     }
 

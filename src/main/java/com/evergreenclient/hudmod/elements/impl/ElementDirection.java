@@ -24,7 +24,7 @@ public class ElementDirection extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Direction", "Shows what direction you are facing.");
     }
 

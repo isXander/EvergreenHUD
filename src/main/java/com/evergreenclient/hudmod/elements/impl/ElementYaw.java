@@ -25,7 +25,7 @@ public class ElementYaw extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Yaw Display", "Shows the player's rotation yaw. Useful for bridging.");
     }
 

@@ -50,8 +50,10 @@ public abstract class Element extends Gui {
 
     protected final Logger logger;
     private final ElementConfig config;
+    private final ElementData meta;
 
     public Element() {
+        this.meta = metadata();
         this.logger = LogManager.getLogger(getMetadata().getName());
         config = new ElementConfig(this);
         initialise();
@@ -60,7 +62,11 @@ public abstract class Element extends Gui {
 
     public abstract void initialise();
 
-    public abstract ElementData getMetadata();
+    // performance: avoid repeat initialization
+    protected abstract ElementData metadata();
+    public final ElementData getMetadata() {
+        return meta;
+    }
 
     protected abstract String getValue();
 
@@ -92,6 +98,7 @@ public abstract class Element extends Gui {
      * This can be overwritten if element has a very specific way of displaying itself
      */
     public void render() {
+        mc.mcProfiler.startSection(getMetadata().getName());
         GlStateManager.pushMatrix();
         GlStateManager.scale(getPosition().getScale(), getPosition().getScale(), 0);
         Hitbox hitbox = getHitbox();
@@ -128,6 +135,7 @@ public abstract class Element extends Gui {
                 break;
         }
         GlStateManager.popMatrix();
+        mc.mcProfiler.endSection();
     }
 
     public void drawCenteredString(FontRenderer fontRendererIn, String text, float x, float y, int color, boolean shadow) {

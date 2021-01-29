@@ -93,6 +93,9 @@ public class GuiElementConfig extends GuiScreenExt {
             } else if (s instanceof ArraySetting) {
                 ArraySetting setting = (ArraySetting) s;
                 this.buttonList.add(new GuiButtonExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": " + setting.get()));
+            } else if (s instanceof ButtonSetting) {
+                ButtonSetting setting = (ButtonSetting) s;
+                this.buttonList.add(new GuiButtonExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName()));
             } else if (s instanceof StringSetting) {
                 StringSetting setting = (StringSetting) s;
                 GuiTextField textInput = new GuiTextField(id, mc.fontRendererObj, (id % 2 == 0 ? left() : right()) + 1, getRow(row) + 1, 120 - 2, 20 - 2);
@@ -194,6 +197,9 @@ public class GuiElementConfig extends GuiScreenExt {
                 } else if (s instanceof ArraySetting) {
                     ArraySetting setting = (ArraySetting) s;
                     button.displayString = setting.getName() + ": " + setting.next();
+                } else if (s instanceof ButtonSetting) {
+                    ButtonSetting setting = (ButtonSetting) s;
+                    setting.get().run();
                 }
                 break;
         }

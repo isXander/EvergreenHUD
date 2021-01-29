@@ -21,7 +21,7 @@ public class ElementBiome extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Biome Display", "Displays the current biome you are standing in.");
     }
 

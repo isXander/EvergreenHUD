@@ -23,7 +23,7 @@ public class ElementPing extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Ping Display", "Shows the delay in ms for your actions to be sent to the server.");
     }
 

@@ -32,7 +32,7 @@ public class ElementMemory extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Memory", "Shows how much memory minecraft is utilising.");
     }
 

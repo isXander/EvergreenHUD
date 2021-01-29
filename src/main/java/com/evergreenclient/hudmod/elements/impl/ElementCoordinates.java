@@ -35,7 +35,7 @@ public class ElementCoordinates extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Coordinates", "Shows your current coordinates.");
     }
 

@@ -27,7 +27,7 @@ public class ElementReach extends Element {
 
     public BooleanSetting trailingZeros;
 
-    private Double reach = 0D;
+    private String reach = "0";
     private long lastHit = 0L;
 
     @Override
@@ -37,14 +37,13 @@ public class ElementReach extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Reach Display", "Shows how far away you are from your enemy.");
     }
 
     @Override
     protected String getValue() {
-        DecimalFormat df = new DecimalFormat(trailingZeros.get() ? "#.#" : "0.0");
-        return df.format(reach);
+        return reach;
     }
 
     @Override
@@ -55,21 +54,23 @@ public class ElementReach extends Element {
     @SubscribeEvent
     public void attackEntity(AttackEntityEvent event) {
         if (event.entity instanceof EntityPlayerSP) {
-            reach = getReachDistanceFromEntity(event.target);
+            double num = getReachDistanceFromEntity(event.target);
+            DecimalFormat df = new DecimalFormat(trailingZeros.get() ? "0.0" : "#.#");
+            reach = df.format(num);
             lastHit = System.currentTimeMillis();
         }
     }
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        if (System.currentTimeMillis() - lastHit > 3000) reach = 0D;
+        if (System.currentTimeMillis() - lastHit > 3000) reach = "0";
     }
 
     private double getReachDistanceFromEntity(Entity entity) {
         mc.mcProfiler.startSection("Calculate Reach Dist");
 
         // How far will ray travel before ending
-        double maxSize = 6D;
+        double maxSize = 6D; // use 6 because creative mode is 6 and any more is literally reach
         // Bounding box of entity
         AxisAlignedBB otherBB = entity.getEntityBoundingBox();
         // This is where people found out that F3+B is not accurate for hitboxes,

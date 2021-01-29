@@ -52,7 +52,7 @@ public class ElementArmour extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("ArmourHUD", "Displays what you are wearing and holding.");
     }
 

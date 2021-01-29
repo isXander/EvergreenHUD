@@ -36,7 +36,7 @@ public class ElementBlockAbove extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Block Above", "Tells you if there is a block above your head. Useful for games like bedwars.");
     }
 

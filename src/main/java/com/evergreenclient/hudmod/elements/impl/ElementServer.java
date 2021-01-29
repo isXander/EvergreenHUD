@@ -19,7 +19,7 @@ public class ElementServer extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Server IP", "Shows the current server IP.");
     }
 

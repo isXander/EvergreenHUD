@@ -22,7 +22,7 @@ public class ElementText extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Custom Text", "Displays a custom message of your liking!");
     }
 

@@ -32,7 +32,7 @@ public class ElementCombo extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Combo Counter", "Shows the amount of hits you get before you are attacked.");
     }
 

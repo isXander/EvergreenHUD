@@ -25,7 +25,7 @@ public class ElementPitch extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Pitch Display", "Shows the player's rotation pitch. Useful for bridging.");
     }
 

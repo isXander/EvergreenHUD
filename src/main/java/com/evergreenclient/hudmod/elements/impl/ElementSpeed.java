@@ -36,7 +36,7 @@ public class ElementSpeed extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("Speed Display", "Displays the blocks per second speed of the player.");
     }
 

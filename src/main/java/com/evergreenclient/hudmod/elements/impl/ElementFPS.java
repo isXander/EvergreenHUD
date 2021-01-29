@@ -20,7 +20,7 @@ public class ElementFPS extends Element {
     }
 
     @Override
-    public ElementData getMetadata() {
+    public ElementData metadata() {
         return new ElementData("FPS Display", "Shows your current FPS");
     }
 
