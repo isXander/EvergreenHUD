@@ -13,6 +13,7 @@ import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -29,8 +30,9 @@ public class GuiElementPosition extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        ScaledResolution res = new ScaledResolution(mc);
         for (Element e : EvergreenHUD.getInstance().getElementManager().getElements())
-            if (e.isEnabled()) e.render();
+            if (e.isEnabled()) e.render(new RenderGameOverlayEvent(partialTicks, res));
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

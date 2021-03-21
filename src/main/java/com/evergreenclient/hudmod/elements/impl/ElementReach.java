@@ -11,12 +11,14 @@ package com.evergreenclient.hudmod.elements.impl;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.utils.element.ElementData;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.item.ItemTossEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -33,7 +35,6 @@ public class ElementReach extends Element {
     @Override
     public void initialise() {
         addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", false));
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -51,8 +52,7 @@ public class ElementReach extends Element {
         return "Reach";
     }
 
-    @SubscribeEvent
-    public void attackEntity(AttackEntityEvent event) {
+    public void onAttackEntity(AttackEntityEvent event) {
         if (event.entity instanceof EntityPlayerSP) {
             double num = getReachDistanceFromEntity(event.target);
             DecimalFormat df = new DecimalFormat(trailingZeros.get() ? "0.0" : "#.#");
@@ -61,9 +61,8 @@ public class ElementReach extends Element {
         }
     }
 
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
-        if (System.currentTimeMillis() - lastHit > 3000) reach = "0";
+    public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (Minecraft.getSystemTime() - lastHit > 3000) reach = "0";
     }
 
     private double getReachDistanceFromEntity(Entity entity) {

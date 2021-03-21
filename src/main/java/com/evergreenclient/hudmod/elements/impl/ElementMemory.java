@@ -28,7 +28,6 @@ public class ElementMemory extends Element {
     @Override
     public void initialise() {
         addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", false));
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -42,8 +41,7 @@ public class ElementMemory extends Element {
     }
 
     // Update memory every second to minimize lag
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
+    public void onClientTick(TickEvent.ClientTickEvent event) {
         if (lastUpdated < System.currentTimeMillis() - 1000L) {
             DecimalFormat df = new DecimalFormat(trailingZeros.get() ? "0.0%" : "#.#%");
             memDisplay = df.format(MathUtils.getPercent(bytesToMb(Runtime.getRuntime().totalMemory() -

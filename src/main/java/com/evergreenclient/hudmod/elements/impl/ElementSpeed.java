@@ -32,7 +32,6 @@ public class ElementSpeed extends Element {
         addSettings(accuracy = new IntegerSetting("Accuracy", 2, 0, 4, " places"));
         addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", false));
         addSettings(suffix = new BooleanSetting("Suffix", false));
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -53,8 +52,7 @@ public class ElementSpeed extends Element {
         return "Speed";
     }
 
-    @SubscribeEvent
-    public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
+    public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
 
         double distTraveledLastTickX = mc.thePlayer.posX - mc.thePlayer.prevPosX;

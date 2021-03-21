@@ -16,6 +16,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import org.lwjgl.input.Keyboard;
 
@@ -61,8 +62,9 @@ public class GuiMain extends GuiScreen {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
+        ScaledResolution res = new ScaledResolution(mc);
         for (Element e : EvergreenHUD.getInstance().getElementManager().getElements())
-            if (e.isEnabled()) e.render();
+            if (e.isEnabled()) e.render(new RenderGameOverlayEvent(partialTicks, res));
         GlStateManager.pushMatrix();
         float scale = 2;
         GlStateManager.scale(scale, scale, 0);

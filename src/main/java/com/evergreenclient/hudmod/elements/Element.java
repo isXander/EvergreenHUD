@@ -8,7 +8,10 @@
 
 package com.evergreenclient.hudmod.elements;
 
+import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.config.ElementConfig;
+import com.evergreenclient.hudmod.event.EventManager;
+import com.evergreenclient.hudmod.event.Listenable;
 import com.evergreenclient.hudmod.gui.GuiElementConfig;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.utils.Alignment;
@@ -20,6 +23,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -28,7 +32,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Element extends Gui {
+public abstract class Element extends Gui implements Listenable {
+
+    @Override
+    public boolean canReceiveEvents() {
+        return isEnabled() && EvergreenHUD.getInstance().getElementManager().isEnabled();
+    }
 
     /* For child classes */
     protected static final Minecraft mc = Minecraft.getMinecraft();
@@ -53,6 +62,7 @@ public abstract class Element extends Gui {
     private final ElementData meta;
 
     public Element() {
+        EventManager.getInstance().addListener(this);
         this.meta = metadata();
         this.logger = LogManager.getLogger(getMetadata().getName());
         config = new ElementConfig(this);
@@ -97,13 +107,13 @@ public abstract class Element extends Gui {
     /**
      * This can be overwritten if element has a very specific way of displaying itself
      */
-    public void render() {
+    public void render(RenderGameOverlayEvent event) {
         mc.mcProfiler.startSection(getMetadata().getName());
         GlStateManager.pushMatrix();
         GlStateManager.scale(getPosition().getScale(), getPosition().getScale(), 0);
         Hitbox hitbox = getHitbox();
-        int x = getPosition().getRawX(new ScaledResolution(mc));
-        int y = getPosition().getRawY(new ScaledResolution(mc));
+        int x = getPosition().getRawX(event.resolution);
+        int y = getPosition().getRawY(event.resolution);
         drawRect((int) (hitbox.x / getPosition().getScale()), (int) (hitbox.y / getPosition().getScale()), (int) ((hitbox.x / getPosition().getScale()) + (hitbox.width)), (int) (hitbox.y / getPosition().getScale() + (hitbox.height)), getBgColor().getRGB());
         switch (getAlignment()) {
             case LEFT:
@@ -161,9 +171,10 @@ public abstract class Element extends Gui {
 
     public Hitbox getHitbox() {
         Hitbox hitbox = null;
+        ScaledResolution res = new ScaledResolution(mc);
         int width = mc.fontRendererObj.getStringWidth(getDisplayString());
-        int x = getPosition().getRawX(new ScaledResolution(mc));
-        int y = getPosition().getRawY(new ScaledResolution(mc));
+        int x = getPosition().getRawX(res);
+        int y = getPosition().getRawY(res);
         switch (getAlignment()) {
             case LEFT:
                 hitbox = new Hitbox((x - width - 4), (y - 4), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);

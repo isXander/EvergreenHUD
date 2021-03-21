@@ -31,7 +31,6 @@ public class ElementCps extends Element {
     @Override
     public void initialise() {
         addSettings(button = new ArraySetting("Button", "Both", "Left", "Right", "Both"));
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -61,8 +60,7 @@ public class ElementCps extends Element {
         return "CPS";
     }
 
-    @SubscribeEvent
-    public void render(TickEvent.RenderTickEvent event) {
+    public void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START) return;
 
         boolean pressed = Mouse.isButtonDown(0);

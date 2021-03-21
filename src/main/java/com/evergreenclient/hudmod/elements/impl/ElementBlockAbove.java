@@ -32,7 +32,6 @@ public class ElementBlockAbove extends Element {
     public void initialise() {
         addSettings(notify = new BooleanSetting("Notify", false));
         addSettings(notifyHeight = new IntegerSetting("Notify Height", 3, 1, 10, " blocks"));
-        MinecraftForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -45,8 +44,7 @@ public class ElementBlockAbove extends Element {
         return Integer.toString(blockDistance);
     }
 
-    @SubscribeEvent
-    public void livingUpdate(LivingEvent.LivingUpdateEvent event) {
+    public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
         if (mc.theWorld == null) return;
 
 //                || mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX + 1, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ + 1)).getBlock() != Blocks.air

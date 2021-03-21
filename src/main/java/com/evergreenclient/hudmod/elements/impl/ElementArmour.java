@@ -22,8 +22,11 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.item.ItemArmor;
+import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 
 import java.util.ArrayList;
@@ -135,8 +138,8 @@ public class ElementArmour extends Element {
     }
 
     @Override
-    public void render() {
-        ScaledResolution res = new ScaledResolution(mc);
+    public void render(RenderGameOverlayEvent event) {
+        ScaledResolution res = event.resolution;
 
         ItemStack item = mc.thePlayer.inventory.getCurrentItem();
         ItemStack helmet = mc.thePlayer.inventory.armorItemInSlot(3);
@@ -150,7 +153,8 @@ public class ElementArmour extends Element {
         if (legs != null && this.leggings.get()) renderedStacks.add(legs);
         if (boots != null && this.boots.get()) renderedStacks.add(boots);
         if (item != null && this.item.get()) renderedStacks.add(item);
-        if (listType.get().equalsIgnoreCase("up")) {
+        boolean up = listType.get().equalsIgnoreCase("up");
+        if (up) {
             Collections.reverse(renderedStacks);
         }
 
@@ -160,6 +164,7 @@ public class ElementArmour extends Element {
         GlStateManager.scale(getPosition().getScale(), getPosition().getScale(), 1);
 
         int offset = 0;
+        int index = 0;
         for (ItemStack stack : renderedStacks) {
             int x = (int) (getPosition().getRawX(res) / getPosition().getScale());
             int y = (int) (getPosition().getRawY(res) / getPosition().getScale());
@@ -219,7 +224,8 @@ public class ElementArmour extends Element {
             itemRenderer.zLevel = 200f;
             itemRenderer.renderItemAndEffectIntoGUI(stack, x, y + offset);
             String count = Integer.toString(stack.stackSize);
-            if (!stack.isStackable() || !showCount.get()) count = "";
+            if (!stack.isStackable() || !showCount.get() || stack.getItem() instanceof ItemArmor || (up ? index != 0 : index != 4))
+                count = "";
             itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, stack, x, y + offset, count);
             RenderHelper.disableStandardItemLighting();
 
@@ -227,6 +233,8 @@ public class ElementArmour extends Element {
                 offset += 10 + spacing.get() + (this.getAlignment() == Alignment.CENTER ? mc.fontRendererObj.FONT_HEIGHT + 2 : 0);
             else
                 offset -= 10 + spacing.get() + (this.getAlignment() == Alignment.CENTER ? mc.fontRendererObj.FONT_HEIGHT + 2 : 0);
+
+            index++;
         }
         height = Math.abs(4 + offset + 2);
 
@@ -236,8 +244,9 @@ public class ElementArmour extends Element {
 
     @Override
     public Hitbox getHitbox() {
-        int x = getPosition().getRawX(new ScaledResolution(mc));
-        int y = getPosition().getRawY(new ScaledResolution(mc));
+        ScaledResolution res = new ScaledResolution(mc);
+        int x = getPosition().getRawX(res);
+        int y = getPosition().getRawY(res);
 
         int hitX, hitY, hitW, hitH;
         hitX = hitY = hitW = hitH = 0;

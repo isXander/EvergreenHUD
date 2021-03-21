@@ -11,6 +11,7 @@ package com.evergreenclient.hudmod.elements.impl;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ElementFPS extends Element {
 

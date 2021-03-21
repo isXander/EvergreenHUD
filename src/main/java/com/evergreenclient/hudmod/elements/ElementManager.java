@@ -82,7 +82,7 @@ public class ElementManager {
             if ((mc.inGameHasFocus && !mc.gameSettings.showDebugInfo) || (mc.gameSettings.showDebugInfo && showInDebug) || (mc.currentScreen instanceof GuiChat && showInChat)) {
                 for (Element e : elements) {
                     if (e.isEnabled())
-                        e.render();
+                        e.render(event);
                 }
             }
         }

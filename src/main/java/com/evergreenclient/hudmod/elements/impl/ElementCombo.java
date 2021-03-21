@@ -12,6 +12,7 @@ import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -28,7 +29,7 @@ public class ElementCombo extends Element {
 
     @Override
     public void initialise() {
-        MinecraftForge.EVENT_BUS.register(this);
+
     }
 
     @Override
@@ -46,44 +47,45 @@ public class ElementCombo extends Element {
         return "Combo";
     }
 
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
+    public void onClientTick(TickEvent.ClientTickEvent event) {
         if (System.currentTimeMillis() - lastHit > 2000L) {
+            hitEntity = null;
             counter = 0;
             lastHit = 0;
         }
     }
 
-    @SubscribeEvent
-    public void onAttack(AttackEntityEvent event) {
-//        if (event.entity instanceof EntityPlayerSP && !(event.target instanceof EntityPlayerSP)) {
-//            if (hitEntity == null || event.target == hitEntity) {
-//                counter++;
-//            } else {
-//                counter = 1;
-//            }
-//            lastHit = System.currentTimeMillis();
-//            hitEntity = event.target;
-//        }
-//        else if (!(event.entity instanceof EntityPlayerSP) && event.target instanceof EntityPlayerSP) {
-//            counter = 0;
-//            hitEntity = null;
-//        }
-    }
+    public void onAttackEntity(AttackEntityEvent event) {
+        if (event.target.hurtResistantTime > 0) return;
 
-    @SubscribeEvent
-    public void onDamage(LivingHurtEvent event) {
         if (event.entity instanceof EntityPlayerSP) {
+            if (hitEntity == null) {
+                if (event.target instanceof EntityLivingBase) {
+                    hitEntity = event.target;
+                    counter++;
+                    lastHit = System.currentTimeMillis();
+                }
+            } else {
+                if (hitEntity == event.target) {
+                    counter++;
+                    lastHit = System.currentTimeMillis();
+                } else if (event.target instanceof EntityLivingBase) {
+                    hitEntity = event.target;
+                    counter = 1;
+                    lastHit = System.currentTimeMillis();
+                }
+            }
+        } else if (event.target instanceof EntityPlayerSP) {
+            System.out.println("Damage");
             counter = 0;
             hitEntity = null;
-        } else if (event.source.getEntity() instanceof EntityPlayerSP) {
-            if (hitEntity == null || event.entity == hitEntity) {
-                counter++;
-            } else {
-                counter = 1;
-            }
-            lastHit = System.currentTimeMillis();
-            hitEntity = event.entity;
+        }
+
+    }
+
+    public void onLivingHurt(LivingHurtEvent event) {
+        if (event.entity instanceof EntityPlayerSP) {
+
         }
     }
 
