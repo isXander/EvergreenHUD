@@ -14,19 +14,22 @@ public class Version {
 
     public Version(String version) {
         String[] split = version.split("\\.");
-        if (split.length > 0) {
-            major = Integer.parseInt(split[0]);
-        } else {
-            minor = patch = 0;
+        int[] vals = new int[3];
+        for (int i = 0; i < vals.length; i++) {
+            if (i + 1 >= split.length) {
+                vals[i] = 0;
+                continue;
+            }
+            try {
+                vals[i] = Integer.parseInt(split[i]);
+            } catch (NumberFormatException e) {
+                vals[i] = 0;
+            }
         }
-        if (split.length > 1) {
-            minor = Integer.parseInt(split[1]);
-        } else {
-            patch = 0;
-        }
-        if (split.length > 2) {
-            patch = Integer.parseInt(split[2]);
-        }
+        major = vals[0];
+        minor = vals[1];
+        patch = vals[2];
+        System.out.println(this.toString());
     }
 
     public Version(int major, int minor, int patch) {
@@ -45,6 +48,16 @@ public class Version {
         return false;
     }
 
+    public boolean newerThan(Version b) {
+        if (this.getMajor() > b.getMajor())
+            return true;
+        if (this.getMinor() > b.getMinor())
+            return true;
+        if (this.getPatch() > b.getPatch())
+            return true;
+        return false;
+    }
+
     public static boolean olderThan(Version a, Version b) {
         if (a.getMajor() < b.getMajor())
             return true;
@@ -55,8 +68,22 @@ public class Version {
         return false;
     }
 
+    public boolean olderThan(Version b) {
+        if (this.getMajor() < b.getMajor())
+            return true;
+        if (this.getMinor() < b.getMinor())
+            return true;
+        if (this.getPatch() < b.getPatch())
+            return true;
+        return false;
+    }
+
     public static boolean sameVersion(Version a, Version b) {
         return a.getMajor() == b.getMajor() && a.getMinor() == b.getMinor() && a.getPatch() == b.getPatch();
+    }
+
+    public boolean sameVersion(Version b) {
+        return this.getMajor() == b.getMajor() && this.getMinor() == b.getMinor() && this.getPatch() == b.getPatch();
     }
 
     public int getMajor() {

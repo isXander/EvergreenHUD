@@ -14,6 +14,7 @@ import com.evergreenclient.hudmod.elements.ElementManager;
 import com.evergreenclient.hudmod.forge.modcore.ModCoreInstaller;
 import com.evergreenclient.hudmod.gui.GuiMain;
 import com.evergreenclient.hudmod.update.UpdateChecker;
+import com.evergreenclient.hudmod.utils.Version;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -34,7 +35,7 @@ public class EvergreenHUD {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String NAME = "EvergreenHUD";
-    public static final String VERSION = "1.1.1";
+    public static final String VERSION = "1.2";
 
     @Mod.Instance(EvergreenHUD.MOD_ID)
     private static EvergreenHUD instance;
@@ -58,11 +59,12 @@ public class EvergreenHUD {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        double version = UpdateChecker.getLatestVersion();
-        if (version > Double.parseDouble(EvergreenHUD.VERSION)) {
+        Version version = UpdateChecker.getLatestVersion();
+        if (version.newerThan(new Version(EvergreenHUD.VERSION))) {
             notifyUpdate();
         }
-        if (version < Double.parseDouble(EvergreenHUD.VERSION)) {
+        if (version.olderThan(new Version(EvergreenHUD.VERSION))) {
+            System.out.println("DEVELOPMENT");
             development = true;
         }
 
