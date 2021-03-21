@@ -25,6 +25,8 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
@@ -42,6 +44,7 @@ public class EvergreenHUD {
 
     private ElementManager elementManager;
     private boolean development;
+    private Logger logger = LogManager.getLogger("EvergreenHUD");
 
     private boolean reset = false;
 
@@ -59,12 +62,13 @@ public class EvergreenHUD {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        Version version = UpdateChecker.getLatestVersion();
-        if (version.newerThan(new Version(EvergreenHUD.VERSION))) {
+        Version lastestVersion = UpdateChecker.getLatestVersion();
+        Version currentVersion = new Version(EvergreenHUD.VERSION);
+        if (lastestVersion.newerThan(currentVersion)) {
+            logger.warn("Discovered new version: " + lastestVersion.toString() + ". Current Version: " + currentVersion.toString());
             notifyUpdate();
-        }
-        if (version.olderThan(new Version(EvergreenHUD.VERSION))) {
-            System.out.println("DEVELOPMENT");
+        } else if (!Version.sameVersion(lastestVersion, currentVersion)) {
+            logger.warn("Running on Development Version");
             development = true;
         }
 

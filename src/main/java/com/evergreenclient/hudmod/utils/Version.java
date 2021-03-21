@@ -15,9 +15,8 @@ public class Version {
     public Version(String version) {
         String[] split = version.split("\\.");
         int[] vals = new int[3];
-        for (int i = 0; i < vals.length; i++) {
-            if (i + 1 >= split.length) {
-                vals[i] = 0;
+        for (int i = 0; i < split.length; i++) {
+            if (i > vals.length - 1) {
                 continue;
             }
             try {
@@ -29,7 +28,6 @@ public class Version {
         major = vals[0];
         minor = vals[1];
         patch = vals[2];
-        System.out.println(this.toString());
     }
 
     public Version(int major, int minor, int patch) {
@@ -59,21 +57,21 @@ public class Version {
     }
 
     public static boolean olderThan(Version a, Version b) {
-        if (a.getMajor() < b.getMajor())
+        if (b.getMajor() > a.getMajor())
             return true;
-        if (a.getMinor() < b.getMinor())
+        if (b.getMinor() > a.getMinor())
             return true;
-        if (a.getPatch() < b.getPatch())
+        if (b.getPatch() > a.getPatch())
             return true;
         return false;
     }
 
     public boolean olderThan(Version b) {
-        if (this.getMajor() < b.getMajor())
+        if (b.getMajor() > this.getMajor())
             return true;
-        if (this.getMinor() < b.getMinor())
+        if (b.getMinor() > this.getMinor())
             return true;
-        if (this.getPatch() < b.getPatch())
+        if (b.getPatch() > this.getPatch())
             return true;
         return false;
     }
