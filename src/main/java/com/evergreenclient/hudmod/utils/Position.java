@@ -28,12 +28,12 @@ public class Position {
         return new Position(x, y, scale);
     }
 
-    public int getRawX(ScaledResolution resolution) {
-        return (int) (resolution.getScaledWidth() * x);
+    public float getRawX(ScaledResolution resolution) {
+        return ((float)resolution.getScaledWidth() * x);
     }
 
-    public int getRawY(ScaledResolution resolution) {
-        return (int) (resolution.getScaledHeight() * y);
+    public float getRawY(ScaledResolution resolution) {
+        return ((float)resolution.getScaledHeight() * y);
     }
 
     public float getXScaled() {
@@ -44,11 +44,11 @@ public class Position {
         return y;
     }
 
-    public void setRawX(int x, ScaledResolution resolution) {
+    public void setRawX(float x, ScaledResolution resolution) {
         this.x = MathUtils.getPercent(x, 0, resolution.getScaledWidth());
     }
 
-    public void setRawY(int y, ScaledResolution resolution) {
+    public void setRawY(float y, ScaledResolution resolution) {
         this.y = MathUtils.getPercent(y, 0, resolution.getScaledHeight());
     }
 

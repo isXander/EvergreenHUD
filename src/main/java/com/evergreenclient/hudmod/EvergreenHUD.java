@@ -12,7 +12,7 @@ import club.sk1er.mods.core.gui.notification.Notifications;
 import com.evergreenclient.hudmod.command.EvergreenHudCommand;
 import com.evergreenclient.hudmod.elements.ElementManager;
 import com.evergreenclient.hudmod.forge.modcore.ModCoreInstaller;
-import com.evergreenclient.hudmod.gui.GuiMain;
+import com.evergreenclient.hudmod.gui.screens.impl.GuiMain;
 import com.evergreenclient.hudmod.update.UpdateChecker;
 import com.evergreenclient.hudmod.utils.Version;
 import net.minecraft.client.Minecraft;
@@ -37,7 +37,8 @@ public class EvergreenHUD {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String NAME = "EvergreenHUD";
-    public static final String VERSION = "1.2";
+    public static final String VERSION = "1.3";
+    public static final String UPDATE_NAME = "the smexy update.";
 
     @Mod.Instance(EvergreenHUD.MOD_ID)
     private static EvergreenHUD instance;

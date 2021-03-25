@@ -9,7 +9,7 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.gui.GuiElementConfig;
+import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
 import com.evergreenclient.hudmod.gui.elements.GuiSliderExt;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.*;
@@ -23,7 +23,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemArmor;
-import net.minecraft.item.ItemSkull;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -245,10 +244,10 @@ public class ElementArmour extends Element {
     @Override
     public Hitbox getHitbox() {
         ScaledResolution res = new ScaledResolution(mc);
-        int x = getPosition().getRawX(res);
-        int y = getPosition().getRawY(res);
+        float x = getPosition().getRawX(res);
+        float y = getPosition().getRawY(res);
 
-        int hitX, hitY, hitW, hitH;
+        float hitX, hitY, hitW, hitH;
         hitX = hitY = hitW = hitH = 0;
         switch (getAlignment()) {
             case LEFT:
@@ -258,7 +257,7 @@ public class ElementArmour extends Element {
                 hitH = height + 4;
                 break;
             case CENTER:
-                hitX = x - (width / 2) - width + 12;
+                hitX = x - (width / 2f) - width + 12;
                 hitY = y - 4;
                 hitW = width - 8;
                 hitH = height - 2;

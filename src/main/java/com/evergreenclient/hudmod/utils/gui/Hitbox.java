@@ -10,16 +10,16 @@ package com.evergreenclient.hudmod.utils.gui;
 
 public class Hitbox {
 
-    public int x, y, width, height;
+    public float x, y, width, height;
 
-    public Hitbox(int x, int y, int width, int height) {
+    public Hitbox(float x, float y, float width, float height) {
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
     }
 
-    public boolean isMouseOver(int mouseX, int mouseY) {
+    public boolean isMouseOver(float mouseX, float mouseY) {
         return mouseX >= x && mouseX <= x + width && mouseY >= y && mouseY <= y + height;
     }
 

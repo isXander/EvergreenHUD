@@ -11,7 +11,7 @@ package com.evergreenclient.hudmod.command;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
 import com.evergreenclient.hudmod.EvergreenHUD;
-import com.evergreenclient.hudmod.gui.GuiMain;
+import com.evergreenclient.hudmod.gui.screens.impl.GuiMain;
 import com.evergreenclient.hudmod.update.UpdateChecker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -29,13 +29,13 @@ public class EvergreenHudCommand extends CommandBase {
 
     @Override
     public String getCommandName() {
-        return "evergreenhud";
+        return "assets/evergreenhud";
     }
 
     @Override
     public List<String> getCommandAliases() {
         return new ArrayList<>(Arrays.asList(
-                "evergreenhud",
+                "assets/evergreenhud",
                 "hud",
                 "evergreen",
                 "hudmod"

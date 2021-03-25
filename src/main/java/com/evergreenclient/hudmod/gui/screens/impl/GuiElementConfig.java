@@ -6,12 +6,13 @@
  * https://www.gnu.org/licenses/lgpl-3.0.en.html
  */
 
-package com.evergreenclient.hudmod.gui;
+package com.evergreenclient.hudmod.gui.screens.impl;
 
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.gui.elements.GuiScreenExt;
 import com.evergreenclient.hudmod.gui.elements.GuiSliderExt;
+import com.evergreenclient.hudmod.gui.screens.GuiScreenElements;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.*;
 import com.evergreenclient.hudmod.utils.Alignment;
@@ -34,11 +35,9 @@ import java.util.Map;
 
 import static com.evergreenclient.hudmod.utils.Alignment.*;
 
-public class GuiElementConfig extends GuiScreenExt {
+public class GuiElementConfig extends GuiScreenElements {
 
     protected final Element element;
-    protected Element dragging = null;
-    protected int xOff, yOff;
 
     protected final Map<Integer, Setting> customButtons = new HashMap<>();
     protected final List<GuiTextField> textFieldList = new ArrayList<>();
@@ -123,9 +122,6 @@ public class GuiElementConfig extends GuiScreenExt {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-        ScaledResolution res = new ScaledResolution(mc);
-        for (Element e : EvergreenHUD.getInstance().getElementManager().getElements())
-            if (e.isEnabled()) e.render(new RenderGameOverlayEvent(partialTicks, res));
         GlStateManager.pushMatrix();
         float scale = 2;
         GlStateManager.scale(scale, scale, 0);
@@ -169,11 +165,11 @@ public class GuiElementConfig extends GuiScreenExt {
                 ScaledResolution res = new ScaledResolution(mc);
                 if (alignment == LEFT) {
                     alignment = CENTER;
-                    element.getPosition().setRawX(element.getPosition().getRawX(res) - mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2, res);
+                    element.getPosition().setRawX(element.getPosition().getRawX(res) - mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2f, res);
                 }
                 else if (alignment == CENTER) {
                     alignment = RIGHT;
-                    element.getPosition().setRawX(element.getPosition().getRawX(res) - mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2, res);
+                    element.getPosition().setRawX(element.getPosition().getRawX(res) - mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2f, res);
                 }
                 else if (alignment == RIGHT) {
                     alignment = LEFT;
@@ -264,36 +260,8 @@ public class GuiElementConfig extends GuiScreenExt {
 
     @Override
     public void onGuiClosed() {
+        super.onGuiClosed();
         element.getConfig().save();
-    }
-
-    @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        ScaledResolution res = new ScaledResolution(mc);
-        if (dragging == null) {
-            if (clickedMouseButton == 0) {
-                for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-                    if (e.getHitbox().isMouseOver(mouseX, mouseY)) {
-                        dragging = e;
-                        xOff = mouseX - e.getPosition().getRawX(res);
-                        yOff = mouseY - e.getPosition().getRawY(res);
-                        break;
-                    }
-                }
-
-            }
-        }
-        else {
-            dragging.getPosition().setRawX(mouseX - xOff, res);
-            dragging.getPosition().setRawY(mouseY - yOff, res);
-        }
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state) {
-        super.mouseReleased(mouseX, mouseY, state);
-        dragging = null;
-        xOff = yOff = 0;
     }
 
     @Override

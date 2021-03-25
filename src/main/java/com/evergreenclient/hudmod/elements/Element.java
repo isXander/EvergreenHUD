@@ -12,17 +12,19 @@ import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.config.ElementConfig;
 import com.evergreenclient.hudmod.event.EventManager;
 import com.evergreenclient.hudmod.event.Listenable;
-import com.evergreenclient.hudmod.gui.GuiElementConfig;
+import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.utils.Alignment;
 import com.evergreenclient.hudmod.utils.Position;
 import com.evergreenclient.hudmod.utils.element.ElementData;
 import com.evergreenclient.hudmod.utils.gui.Hitbox;
+import com.evergreenclient.hudmod.utils.thirdparty.GLRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -112,8 +114,8 @@ public abstract class Element extends Gui implements Listenable {
         GlStateManager.pushMatrix();
         GlStateManager.scale(getPosition().getScale(), getPosition().getScale(), 0);
         Hitbox hitbox = getHitbox();
-        int x = getPosition().getRawX(event.resolution);
-        int y = getPosition().getRawY(event.resolution);
+        float x = getPosition().getRawX(event.resolution);
+        float y = getPosition().getRawY(event.resolution);
         drawRect((int) (hitbox.x / getPosition().getScale()), (int) (hitbox.y / getPosition().getScale()), (int) ((hitbox.x / getPosition().getScale()) + (hitbox.width)), (int) (hitbox.y / getPosition().getScale() + (hitbox.height)), getBgColor().getRGB());
         switch (getAlignment()) {
             case LEFT:
@@ -173,14 +175,14 @@ public abstract class Element extends Gui implements Listenable {
         Hitbox hitbox = null;
         ScaledResolution res = new ScaledResolution(mc);
         int width = mc.fontRendererObj.getStringWidth(getDisplayString());
-        int x = getPosition().getRawX(res);
-        int y = getPosition().getRawY(res);
+        float x = getPosition().getRawX(res);
+        float y = getPosition().getRawY(res);
         switch (getAlignment()) {
             case LEFT:
                 hitbox = new Hitbox((x - width - 4), (y - 4), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
             case CENTER:
-                hitbox = new Hitbox((x - (width / 2) - 4), (y - 4), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
+                hitbox = new Hitbox((x - (width / 2f) - 4), (y - 4), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
                 break;
             case RIGHT:
                 hitbox = new Hitbox((x - 4), (y - 4), width + 8, mc.fontRendererObj.FONT_HEIGHT + 8);
@@ -199,8 +201,37 @@ public abstract class Element extends Gui implements Listenable {
         alignment = Alignment.RIGHT;
         textColor = new Color(255, 255, 255, 255);
         bgColor = new Color(0, 0, 0, 100);
-        for (Setting s : customSettings) s.reset();
+        for (Setting s : customSettings)
+            s.reset();
         getConfig().save();
+    }
+
+    private static final ResourceLocation settingsIcon = new ResourceLocation("evergreenhud/textures/settings.png");
+    private static final ResourceLocation deleteIcon = new ResourceLocation("evergreenhud/textures/delete.png");
+
+    public void renderGuiOverlay(boolean selected) {
+        Hitbox hitbox = getHitbox();
+        GLRenderer.drawHollowRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, 1, (selected ? new Color(255, 255, 255, 175) : new Color(175, 175, 175, 100)));
+        GlStateManager.pushMatrix();
+        GlStateManager.color(1f, 1f, 1f);
+        GlStateManager.enableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.scale(0.02f, 0.02f, 1);
+        mc.getTextureManager().bindTexture(settingsIcon);
+        Gui.drawScaledCustomSizeModalRect((int)(hitbox.x / 0.02f), (int)((hitbox.y + hitbox.height - (384 * 0.02f)) / 0.02f), 0, 0, 384, 384, 384, 384, 384, 384);
+        mc.getTextureManager().bindTexture(deleteIcon);
+        Gui.drawScaledCustomSizeModalRect((int)((hitbox.x + hitbox.width - (384 * 0.02f)) / 0.02f), (int)((hitbox.y + hitbox.height - (384 * 0.02f)) / 0.02f), 0, 0, 384, 384, 384, 384, 384, 384);
+        GlStateManager.popMatrix();
+    }
+
+    public void onMouseClicked(float mouseX, float mouseY) {
+        Hitbox hitbox = getHitbox();
+        if (mouseX >= hitbox.x && mouseX <= (hitbox.x) + (384 * 0.02f) && mouseY >= hitbox.y + (384 * 0.02f) && mouseY <= (hitbox.y) + (384 * 0.02f) + (384 * 0.02f)) {
+            mc.displayGuiScreen(this.getElementConfigGui());
+        }
+        if (mouseX >= hitbox.x + hitbox.width - (384 * 0.02f) && mouseX <= (hitbox.x) + hitbox.width && mouseY >= hitbox.y + (384 * 0.02f) && mouseY <= (hitbox.y) + (384 * 0.02f) + (384 * 0.02f)) {
+            this.setEnabled(false);
+        }
     }
 
     public ElementConfig getConfig() {

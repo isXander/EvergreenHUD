@@ -6,12 +6,13 @@
  * https://www.gnu.org/licenses/lgpl-3.0.en.html
  */
 
-package com.evergreenclient.hudmod.gui;
+package com.evergreenclient.hudmod.gui.screens.impl;
 
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.elements.ElementManager;
 import com.evergreenclient.hudmod.gui.elements.GuiScreenExt;
+import com.evergreenclient.hudmod.gui.screens.GuiScreenElements;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -22,12 +23,9 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
-public class GuiMainConfig extends GuiScreenExt {
+public class GuiMainConfig extends GuiScreenElements {
 
     private final ElementManager manager;
-
-    private Element dragging = null;
-    private int offX = 0, offY = 0;
 
     public GuiMainConfig(ElementManager manager) {
         this.manager = manager;
@@ -44,18 +42,15 @@ public class GuiMainConfig extends GuiScreenExt {
         this.buttonList.add(new GuiButtonExt(0, width / 2 + 1,      height - 20, 90, 20, "Finished"));
         this.buttonList.add(new GuiButtonExt(1, width / 2 - 90 - 1, height - 20, 90, 20, "Reset"));
 
-        this.buttonList.add(new GuiButtonExt(2, left(),  getRow(0), 242, 20, "Enabled: "       + (manager.isEnabled()     ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonExt(3, left(),  getRow(1), 120, 20, "Show in Chat: "  + (manager.doShowInChat()  ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt(2, left(), getRow(0), 242, 20, "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt(3, left(), getRow(1), 120, 20, "Show in Chat: " + (manager.doShowInChat() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonExt(4, right(), getRow(1), 120, 20, "Show in Debug: " + (manager.doShowInDebug() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonExt(5, left(),  getRow(2), 120, 20, "Colors in Gui: " + (manager.doColorsInGui() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonExt(5, left(), getRow(2), 120, 20, "Colors in Gui: " + (manager.doColorsInGui() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
-        ScaledResolution res = new ScaledResolution(mc);
-        for (Element e : manager.getElements())
-            if (e.isEnabled()) e.render(new RenderGameOverlayEvent(partialTicks, res));
         GlStateManager.pushMatrix();
         float scale = 2f;
         GlStateManager.scale(scale, scale, 0f);
@@ -102,36 +97,8 @@ public class GuiMainConfig extends GuiScreenExt {
     }
 
     @Override
-    protected void mouseClickMove(int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick) {
-        super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick);
-        ScaledResolution res = new ScaledResolution(mc);
-        if (dragging == null) {
-            if (clickedMouseButton == 0) {
-                for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-                    if (e.getHitbox().isMouseOver(mouseX, mouseY)) {
-                        dragging = e;
-                        offX = mouseX - e.getPosition().getRawX(res);
-                        offY = mouseY - e.getPosition().getRawY(res);
-                        break;
-                    }
-                }
-            }
-        }
-        else {
-            dragging.getPosition().setRawX(mouseX - offX, res);
-            dragging.getPosition().setRawY(mouseY - offY, res);
-        }
-    }
-
-    @Override
-    protected void mouseReleased(int mouseX, int mouseY, int state) {
-        super.mouseReleased(mouseX, mouseY, state);
-        dragging = null;
-        offX = offY = 0;
-    }
-
-    @Override
     public void onGuiClosed() {
+        super.onGuiClosed();
         manager.getConfig().save();
     }
 }

@@ -47,6 +47,7 @@ public class MainConfig {
         manager.setShowInChat(root.optBoolean("chat"));
         manager.setShowInDebug(root.optBoolean("debug"));
         manager.setColorsInGui(root.optBoolean("colors"));
+
     }
 
     public void save() {
