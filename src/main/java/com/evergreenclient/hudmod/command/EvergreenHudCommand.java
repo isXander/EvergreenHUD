@@ -35,7 +35,7 @@ public class EvergreenHudCommand extends CommandBase {
     @Override
     public List<String> getCommandAliases() {
         return new ArrayList<>(Arrays.asList(
-                "assets/evergreenhud",
+                "evergreenhud",
                 "hud",
                 "evergreen",
                 "hudmod"
