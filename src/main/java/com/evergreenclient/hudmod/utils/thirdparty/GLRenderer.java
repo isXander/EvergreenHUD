@@ -13,6 +13,9 @@
   Contact: Icovid#3888 @ https://discord.com
  ⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼*/
 
+// Before people start screaming at me on the forums, I do have icovid's permission
+// This class has been adopted from https://github.com/Ic0vid/apollo/blob/master/src/main/java/net/apolloclient/utils/GLRenderer.java
+
 package com.evergreenclient.hudmod.utils.thirdparty;
 
 import net.minecraft.client.Minecraft;
