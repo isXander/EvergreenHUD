@@ -51,12 +51,14 @@ public class ElementManager {
                 new ElementDirection(),
                 new ElementSpeed(),
                 new ElementPing(),
-                //new ElementCombo(),
+                new ElementCombo(),
                 new ElementYaw(),
                 new ElementPitch(),
                 new ElementBlockAbove(),
                 new ElementText(),
-                new ElementArmour()
+                new ElementArmour(),
+                new ElementImage(),
+                new ElementPlayerPreview()
         );
 
         this.logger = LogManager.getLogger("Evergreen Manager");
@@ -81,8 +83,9 @@ public class ElementManager {
         if (isEnabled()) {
             if ((mc.inGameHasFocus && !mc.gameSettings.showDebugInfo) || (mc.gameSettings.showDebugInfo && showInDebug) || (mc.currentScreen instanceof GuiChat && showInChat)) {
                 for (Element e : elements) {
-                    if (e.isEnabled())
+                    if (e.isEnabled()) {
                         e.render(event);
+                    }
                 }
             }
         }

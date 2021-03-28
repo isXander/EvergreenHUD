@@ -11,7 +11,7 @@ package com.evergreenclient.hudmod.elements.impl;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
-import com.evergreenclient.hudmod.utils.element.ElementData;
+import com.evergreenclient.hudmod.utils.ElementData;
 
 import java.text.DecimalFormat;
 
@@ -26,12 +26,12 @@ public class ElementCoordinates extends Element {
 
     @Override
     public void initialise() {
-        addSettings(showCoord = new BooleanSetting("Show Name", true));
-        addSettings(showX = new BooleanSetting("Show X", true));
-        addSettings(showY = new BooleanSetting("Show Y", true));
-        addSettings(showZ = new BooleanSetting("Show Z", true));
-        addSettings(accuracy = new IntegerSetting("Accuracy", 0, 0, 4, " places"));
-        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", false));
+        addSettings(showCoord = new BooleanSetting("Show Name", "Show X: Y: and Z: before the values.", true));
+        addSettings(showX = new BooleanSetting("Show X", "Show the X coordinate.", true));
+        addSettings(showY = new BooleanSetting("Show Y", "Show the Y coordinate.", true));
+        addSettings(showZ = new BooleanSetting("Show Z", "Show the Z coordinate.", true));
+        addSettings(accuracy = new IntegerSetting("Accuracy", "How many decimal places the value should display.", 0, 0, 4, " places"));
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Add zeroes to match the accuracy.", false));
     }
 
     @Override

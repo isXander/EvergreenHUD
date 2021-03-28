@@ -11,15 +11,12 @@ package com.evergreenclient.hudmod.elements.impl;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
-import com.evergreenclient.hudmod.utils.element.ElementData;
+import com.evergreenclient.hudmod.utils.ElementData;
 import net.minecraft.block.Block;
-import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ElementBlockAbove extends Element {
 
@@ -30,8 +27,8 @@ public class ElementBlockAbove extends Element {
 
     @Override
     public void initialise() {
-        addSettings(notify = new BooleanSetting("Notify", false));
-        addSettings(notifyHeight = new IntegerSetting("Notify Height", 3, 1, 10, " blocks"));
+        addSettings(notify = new BooleanSetting("Notify", "Make a noise when the block gets too close.", false));
+        addSettings(notifyHeight = new IntegerSetting("Notify Height", "How close the block needs to be before notifying.", 3, 1, 10, " blocks"));
     }
 
     @Override
@@ -44,6 +41,7 @@ public class ElementBlockAbove extends Element {
         return Integer.toString(blockDistance);
     }
 
+    @Override
     public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
         if (mc.theWorld == null) return;
 

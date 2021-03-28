@@ -11,7 +11,7 @@ package com.evergreenclient.hudmod.update;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.utils.HttpsUtils;
 import com.evergreenclient.hudmod.utils.Version;
-import com.evergreenclient.hudmod.utils.json.BetterJsonObject;
+import com.evergreenclient.hudmod.utils.BetterJsonObject;
 
 public class UpdateChecker {
 
@@ -25,7 +25,7 @@ public class UpdateChecker {
     }
 
     public static boolean updateAvailable() {
-        return getLatestVersion().newerThan(new Version(EvergreenHUD.VERSION));
+        return getLatestVersion().newerThan(EvergreenHUD.PARSED_VERSION);
     }
 
 }

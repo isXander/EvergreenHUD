@@ -13,6 +13,7 @@ import club.sk1er.mods.core.util.Multithreading;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiMain;
 import com.evergreenclient.hudmod.update.UpdateChecker;
+import com.evergreenclient.hudmod.utils.Version;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -29,7 +30,7 @@ public class EvergreenHudCommand extends CommandBase {
 
     @Override
     public String getCommandName() {
-        return "assets/evergreenhud";
+        return "evergreenhud";
     }
 
     @Override
@@ -44,7 +45,7 @@ public class EvergreenHudCommand extends CommandBase {
 
     @Override
     public String getCommandUsage(ICommandSender sender) {
-        return "/evergreenhud [update|check]";
+        return "/evergreenhud [update|check|version]";
     }
 
     @Override
@@ -53,18 +54,23 @@ public class EvergreenHudCommand extends CommandBase {
     }
 
     @Override
-    public void processCommand(ICommandSender sender, String[] args) throws CommandException {
+    public void processCommand(ICommandSender sender, String[] args) {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("update") || args[0].equalsIgnoreCase("check")) {
                 Multithreading.runAsync(() -> {
                     if (EvergreenHUD.getInstance().isDevelopment())
                         Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are on a development version. There are no updates available.");
-                    else if (UpdateChecker.updateAvailable()) {
-                        EvergreenHUD.notifyUpdate();
-                    } else {
-                        Notifications.INSTANCE.pushNotification("EvergreenHUD", "There are no updates available.");
+                    else {
+                        Version latest = UpdateChecker.getLatestVersion();
+                        if (latest.newerThan(EvergreenHUD.PARSED_VERSION)) {
+                            EvergreenHUD.notifyUpdate(latest);
+                        } else {
+                            Notifications.INSTANCE.pushNotification("EvergreenHUD", "There are no updates available.");
+                        }
                     }
                 });
+            } else if (args[0].equalsIgnoreCase("version")) {
+                Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running on version " + EvergreenHUD.VERSION + "\nIf you want to check for updates, use \"/evergreenhud update\"");
             }
         }
         else {

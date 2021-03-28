@@ -10,7 +10,7 @@ package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
-import com.evergreenclient.hudmod.utils.element.ElementData;
+import com.evergreenclient.hudmod.utils.ElementData;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -21,7 +21,7 @@ public class ElementTime extends Element {
 
     @Override
     public void initialise() {
-        addSettings(twelveHour = new BooleanSetting("Twelve Hour", false));
+        addSettings(twelveHour = new BooleanSetting("Twelve Hour", "If the clock will be 12 hour or 24 hour.", false));
     }
 
     @Override

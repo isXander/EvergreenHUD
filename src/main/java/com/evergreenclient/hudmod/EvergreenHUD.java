@@ -37,19 +37,21 @@ public class EvergreenHUD {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String NAME = "EvergreenHUD";
-    public static final String VERSION = "1.3.1";
-    public static final String UPDATE_NAME = "the smexy update.";
+    public static final String VERSION = "1.4";
+    public static final String UPDATE_NAME = "the ego update.";
+
+    public static final Version PARSED_VERSION = new Version(VERSION);
+    public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
 
     @Mod.Instance(EvergreenHUD.MOD_ID)
     private static EvergreenHUD instance;
 
     private ElementManager elementManager;
     private boolean development;
-    private Logger logger = LogManager.getLogger("EvergreenHUD");
 
     private boolean reset = false;
 
-    private KeyBinding keybind = new KeyBinding("Open GUI", Keyboard.KEY_RSHIFT, "Evergreen");
+    private KeyBinding keybind = new KeyBinding("Open GUI", Keyboard.KEY_HOME, "Evergreen");
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
@@ -63,13 +65,13 @@ public class EvergreenHUD {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        Version lastestVersion = UpdateChecker.getLatestVersion();
-        Version currentVersion = new Version(EvergreenHUD.VERSION);
-        if (lastestVersion.newerThan(currentVersion)) {
-            logger.warn("Discovered new version: " + lastestVersion.toString() + ". Current Version: " + currentVersion.toString());
-            notifyUpdate();
-        } else if (!Version.sameVersion(lastestVersion, currentVersion)) {
-            logger.warn("Running on Development Version");
+        Version latestVersion = UpdateChecker.getLatestVersion();
+        Version currentVersion = EvergreenHUD.PARSED_VERSION;
+        if (latestVersion.newerThan(currentVersion)) {
+            LOGGER.warn("Discovered new version: " + latestVersion.toString() + ". Current Version: " + currentVersion.toString());
+            notifyUpdate(latestVersion);
+        } else if (!Version.sameVersion(latestVersion, currentVersion)) {
+            LOGGER.warn("Running on Development Version");
             development = true;
         }
 
@@ -85,20 +87,21 @@ public class EvergreenHUD {
             Minecraft.getMinecraft().displayGuiScreen(new GuiMain());
     }
 
-    public static void notifyUpdate() {
-        if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-            Notifications.INSTANCE.pushNotification("EvergreenHUD", "There is an update available that you can download right now. Click here to download.", () -> {
+    public static void notifyUpdate(Version latestVersion) {
+        Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running an outdated version.\nCurrent: " + EvergreenHUD.PARSED_VERSION.toString() + "\nLatest: " + latestVersion.toString() + "\n\nClick here to download.", () -> {
+            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 try {
                     Desktop.getDesktop().browse(new URI("https://short.evergreenclient.com/GlYH5z"));
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                 }
-                return null;
-            });
-        } else {
-            Notifications.INSTANCE.pushNotification("EvergreenHUD", "There is an update available that you can download right now.");
-        }
+            } else {
+                Notifications.INSTANCE.pushNotification("EvergreenHUD", "Unfortunately, your computer does not seem to support web-browsing so the mod could not open the download page.\n\nPlease navigate to \"https://short.evergreenclient.com/GlYH5z\"" );
+            }
+
+            return null;
+        });
     }
 
     public static EvergreenHUD getInstance() {

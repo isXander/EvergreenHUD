@@ -9,9 +9,8 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.utils.element.ElementData;
+import com.evergreenclient.hudmod.utils.ElementData;
 import net.minecraft.client.network.NetworkPlayerInfo;
-import net.minecraftforge.common.MinecraftForge;
 
 public class ElementPing extends Element {
 
@@ -19,7 +18,7 @@ public class ElementPing extends Element {
 
     @Override
     public void initialise() {
-        MinecraftForge.EVENT_BUS.register(this);
+
     }
 
     @Override

@@ -15,6 +15,11 @@ public class StringSetting extends Setting {
     private final String def;
     private String val;
 
+    public StringSetting(String name, String description, String def) {
+        super(name, description);
+        this.val = this.def = def;
+    }
+
     public StringSetting(String name, String def) {
         super(name);
         this.val = this.def = def;

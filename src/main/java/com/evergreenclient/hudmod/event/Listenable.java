@@ -8,6 +8,7 @@
 
 package com.evergreenclient.hudmod.event;
 
+import net.minecraft.network.Packet;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -39,6 +40,10 @@ public interface Listenable {
     }
 
     default void onLivingHurt(LivingHurtEvent event) {
+
+    }
+
+    default void onPacketReceive(Packet<?> packet) {
 
     }
 

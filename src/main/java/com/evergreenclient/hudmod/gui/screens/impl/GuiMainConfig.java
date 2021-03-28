@@ -8,16 +8,11 @@
 
 package com.evergreenclient.hudmod.gui.screens.impl;
 
-import com.evergreenclient.hudmod.EvergreenHUD;
-import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.elements.ElementManager;
-import com.evergreenclient.hudmod.gui.elements.GuiScreenExt;
 import com.evergreenclient.hudmod.gui.screens.GuiScreenElements;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import org.lwjgl.input.Keyboard;
 
@@ -54,7 +49,7 @@ public class GuiMainConfig extends GuiScreenElements {
         GlStateManager.pushMatrix();
         float scale = 2f;
         GlStateManager.scale(scale, scale, 0f);
-        drawCenteredString(mc.fontRendererObj, "Configuration", (int)(width / 2 / scale), (int)(5 / scale), -1);
+        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "Configuration", (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, "Configures the main settings for the mod.", width / 2, 25, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);

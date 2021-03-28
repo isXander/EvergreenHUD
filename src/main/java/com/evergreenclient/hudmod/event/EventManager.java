@@ -8,6 +8,13 @@
 
 package com.evergreenclient.hudmod.event;
 
+import com.evergreenclient.hudmod.elements.impl.ElementCombo;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.ChannelOutboundHandlerAdapter;
+import io.netty.channel.ChannelPipeline;
+import net.minecraft.client.Minecraft;
+import net.minecraft.network.Packet;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -18,9 +25,11 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class EventManager {
 
+    private static final Minecraft mc = Minecraft.getMinecraft();
     private static EventManager instance;
 
     public static EventManager getInstance() {
@@ -46,6 +55,19 @@ public class EventManager {
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
         listenables.parallelStream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onClientTick(event)));
+
+        // Registers a packet listener for packet event
+        if (mc.theWorld != null) {
+            ChannelPipeline pipeline = mc.thePlayer.sendQueue.getNetworkManager().channel().pipeline();
+            if (pipeline.get("evergreen_packet_handler") == null && pipeline.get("packet_handler") != null) {
+                try {
+                    pipeline.addBefore("packet_handler", "evergreen_packet_handler", new EvergreenPacketHandler(this));
+                } catch (NoSuchElementException | IllegalArgumentException | NullPointerException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
     }
 
     @SubscribeEvent
@@ -71,6 +93,29 @@ public class EventManager {
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
         listenables.parallelStream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onLivingHurt(event)));
+    }
+
+    public void onPacketReceive(Packet<?> packet) {
+        listenables.parallelStream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onPacketReceive(packet)));
+    }
+
+    public static class EvergreenPacketHandler extends ChannelInboundHandlerAdapter {
+
+        private final EventManager eventManager;
+
+        public EvergreenPacketHandler(EventManager eventManager) {
+            this.eventManager = eventManager;
+        }
+
+        @Override
+        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+            if (msg instanceof Packet) {
+                eventManager.onPacketReceive((Packet<?>) msg);
+
+            }
+            super.channelRead(ctx, msg);
+        }
+
     }
 
 }

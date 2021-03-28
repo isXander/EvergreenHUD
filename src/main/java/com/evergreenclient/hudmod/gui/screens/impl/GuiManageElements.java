@@ -30,7 +30,7 @@ public class GuiManageElements extends GuiScreenElements {
     public void initGui() {
         ElementManager manager = EvergreenHUD.getInstance().getElementManager();
 
-        this.buttonList.add(new GuiButtonExt(0, width / 2 - 90, height - 20, 180, 20, "Back"));
+        this.buttonList.add(new GuiButtonExt(0, width / 2 - 90 - 1, height - 20, 182, 20, "Back"));
 
         final int startY = 50;
         final int buttonGap = 2;
@@ -70,7 +70,7 @@ public class GuiManageElements extends GuiScreenElements {
         GlStateManager.pushMatrix();
         float scale = 2;
         GlStateManager.scale(scale, scale, 0);
-        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "EvergreenHUD " + EvergreenHUD.VERSION, (int)(width / 2 / scale), (int)(5 / scale), -1);
+        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "Element Manager", (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, "Manage all the elements in the mod!", width / 2, 25, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);

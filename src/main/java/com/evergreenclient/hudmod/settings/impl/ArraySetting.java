@@ -19,6 +19,18 @@ public class ArraySetting extends Setting {
     private final int def;
     private int index;
 
+    public ArraySetting(String name, String description, String current, String... options) {
+        super(name, description);
+        this.options = Arrays.asList(options);
+        this.index = this.def = this.options.indexOf(current);
+    }
+
+    public ArraySetting(String name, String description, int current, String... options) {
+        super(name, description);
+        this.options = Arrays.asList(options);
+        this.index = this.def = current;
+    }
+
     public ArraySetting(String name, String current, String... options) {
         super(name);
         this.options = Arrays.asList(options);

@@ -37,43 +37,43 @@ public class Version {
     }
 
     public static boolean newerThan(Version a, Version b) {
-        if (a.getMajor() > b.getMajor())
-            return true;
-        if (a.getMinor() > b.getMinor())
-            return true;
-        if (a.getPatch() > b.getPatch())
-            return true;
-        return false;
+        if (a.getMajor() < b.getMajor())
+            return false;
+        if (a.getMinor() < b.getMinor())
+            return false;
+        if (a.getPatch() < b.getPatch())
+            return false;
+        return !sameVersion(a, b);
     }
 
     public boolean newerThan(Version b) {
-        if (this.getMajor() > b.getMajor())
-            return true;
-        if (this.getMinor() > b.getMinor())
-            return true;
-        if (this.getPatch() > b.getPatch())
-            return true;
-        return false;
+        if (this.getMajor() < b.getMajor())
+            return false;
+        if (this.getMinor() < b.getMinor())
+            return false;
+        if (this.getPatch() < b.getPatch())
+            return false;
+        return !sameVersion(b);
     }
 
     public static boolean olderThan(Version a, Version b) {
-        if (b.getMajor() > a.getMajor())
-            return true;
-        if (b.getMinor() > a.getMinor())
-            return true;
-        if (b.getPatch() > a.getPatch())
-            return true;
-        return false;
+        if (a.getMajor() > b.getMajor())
+            return false;
+        if (a.getMinor() > b.getMinor())
+            return false;
+        if (a.getPatch() > b.getPatch())
+            return false;
+        return !sameVersion(a, b);
     }
 
     public boolean olderThan(Version b) {
-        if (b.getMajor() > this.getMajor())
-            return true;
-        if (b.getMinor() > this.getMinor())
-            return true;
-        if (b.getPatch() > this.getPatch())
-            return true;
-        return false;
+        if (this.getMajor() > b.getMajor())
+            return false;
+        if (this.getMinor() > b.getMinor())
+            return false;
+        if (this.getPatch() > b.getPatch())
+            return false;
+        return !sameVersion(b);
     }
 
     public static boolean sameVersion(Version a, Version b) {

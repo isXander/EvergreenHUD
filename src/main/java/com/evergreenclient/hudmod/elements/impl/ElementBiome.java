@@ -9,7 +9,7 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.utils.element.ElementData;
+import com.evergreenclient.hudmod.utils.ElementData;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 

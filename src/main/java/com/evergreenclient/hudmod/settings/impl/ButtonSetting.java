@@ -14,7 +14,12 @@ public class ButtonSetting extends Setting {
 
     private final Runnable value;
 
-    protected ButtonSetting(String name, Runnable runnable) {
+    public ButtonSetting(String name, String description, Runnable runnable) {
+        super(name, description);
+        this.value = runnable;
+    }
+
+    public ButtonSetting(String name, Runnable runnable) {
         super(name);
         this.value = runnable;
     }

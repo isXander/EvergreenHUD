@@ -10,7 +10,7 @@ package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.StringSetting;
-import com.evergreenclient.hudmod.utils.element.ElementData;
+import com.evergreenclient.hudmod.utils.ElementData;
 
 public class ElementText extends Element {
 
@@ -18,7 +18,7 @@ public class ElementText extends Element {
 
     @Override
     public void initialise() {
-        addSettings(text = new StringSetting("Text Element", "Text Element"));
+        addSettings(text = new StringSetting("Text Element", "What the value will display.", "Text Element"));
     }
 
     @Override

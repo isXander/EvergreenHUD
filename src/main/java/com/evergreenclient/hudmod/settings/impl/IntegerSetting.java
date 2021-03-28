@@ -17,6 +17,14 @@ public class IntegerSetting extends Setting {
     private final int min, max;
     private final String suffix;
 
+    public IntegerSetting(String name, String description, int val, int min, int max, String suffix) {
+        super(name, description);
+        this.val = this.def = val;
+        this.min = min;
+        this.max = max;
+        this.suffix = suffix;
+    }
+
     public IntegerSetting(String name, int val, int min, int max, String suffix) {
         super(name);
         this.val = this.def = val;

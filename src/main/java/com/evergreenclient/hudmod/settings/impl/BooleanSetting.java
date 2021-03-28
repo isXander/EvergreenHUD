@@ -15,6 +15,11 @@ public class BooleanSetting extends Setting {
     private final boolean def;
     private boolean value;
 
+    public BooleanSetting(String name, String description, boolean def) {
+        super(name, description);
+        this.value = this.def = def;
+    }
+
     public BooleanSetting(String name, boolean def) {
         super(name);
         this.value = this.def = def;
@@ -25,12 +30,20 @@ public class BooleanSetting extends Setting {
     }
 
     public void set(boolean newVal) {
-        value = newVal;
+        if (onChange(value, newVal))
+            value = newVal;
     }
 
     public boolean toggle() {
-        value = !value;
+        boolean newVal = !value;
+        if (onChange(value, newVal)) {
+            value = newVal;
+        }
         return value;
+    }
+
+    protected boolean onChange(boolean oldValue, boolean newValue) {
+        return true;
     }
 
     @Override

@@ -11,9 +11,7 @@ package com.evergreenclient.hudmod.elements.impl;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.utils.MathUtils;
-import com.evergreenclient.hudmod.utils.element.ElementData;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import com.evergreenclient.hudmod.utils.ElementData;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.text.DecimalFormat;
@@ -27,7 +25,7 @@ public class ElementMemory extends Element {
 
     @Override
     public void initialise() {
-        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", false));
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Add zeroes to match the accuracy.", false));
     }
 
     @Override
@@ -41,6 +39,7 @@ public class ElementMemory extends Element {
     }
 
     // Update memory every second to minimize lag
+    @Override
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (lastUpdated < System.currentTimeMillis() - 1000L) {
             DecimalFormat df = new DecimalFormat(trailingZeros.get() ? "0.0%" : "#.#%");

@@ -10,23 +10,20 @@ package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
-import com.evergreenclient.hudmod.gui.elements.GuiSliderExt;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.*;
 import com.evergreenclient.hudmod.utils.Alignment;
-import com.evergreenclient.hudmod.utils.element.ElementData;
-import com.evergreenclient.hudmod.utils.gui.Hitbox;
+import com.evergreenclient.hudmod.utils.ElementData;
+import com.evergreenclient.hudmod.utils.Hitbox;
+import com.evergreenclient.hudmod.utils.thirdparty.GLRenderer;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.fml.client.config.GuiButtonExt;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,8 +46,8 @@ public class ElementArmour extends Element {
         addSettings(item = new BooleanSetting("Show Item", true));
         addSettings(showCount = new BooleanSetting("Show Count", true));
         addSettings(spacing = new IntegerSetting("Spacing", 5, 0, 10, ""));
-        addSettings(listType = new ArraySetting("List Type", "Down", "Down", "Up"));
-        addSettings(textDisplay = new ArraySetting("Text", "Durability", "Durability", "Name", "None"));
+        addSettings(listType = new ArraySetting("List Type", "Which way the list should expand if an item is added.", "Down", new String[]{"Down", "Up"}));
+        addSettings(textDisplay = new ArraySetting("Text", "What information should be displayed next to the item.", "Durability", new String[]{"Durability", "Name", "None"}));
     }
 
     @Override
@@ -65,60 +62,6 @@ public class ElementArmour extends Element {
     @Override
     public GuiElementConfig getElementConfigGui() {
         return new GuiElementConfig(this) {
-
-            @Override
-            protected void addButtons() {
-                this.buttonList.clear();
-
-                this.buttonList.add(new GuiButtonExt( 0, width / 2 + 1,      height - 20, 90, 20, "Finished"));
-                this.buttonList.add(new GuiButtonExt( 1, width / 2 - 1 - 90, height - 20, 90, 20, "Reset"));
-
-                this.buttonList.add(new GuiButtonExt( 2, left(),  getRow(0), 120, 20, "Enabled: "  + (element.isEnabled()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-                this.buttonList.add(new GuiSliderExt( 3, right(), getRow(0), 120, 20, "Scale: ",     "%", 20, 200, element.getPosition().getScale() * 100f, false, true, this));
-                this.buttonList.add(new GuiButtonExt( 5, left(), getRow(1), 120, 20, "Shadow: "   + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-                this.buttonList.add(new GuiSliderExt( 7, right(), getRow(1), 120, 20, "Text Red: ",   "", 0, 255, element.getTextColor().getRed(),   false, true, this));
-                this.buttonList.add(new GuiSliderExt( 8, left(),  getRow(2), 120, 20, "Text Green: ", "", 0, 255, element.getTextColor().getGreen(), false, true, this));
-                this.buttonList.add(new GuiSliderExt( 9, right(), getRow(2), 120, 20, "Text Blue: ",  "", 0, 255, element.getTextColor().getBlue(),  false, true, this));
-                this.buttonList.add(new GuiButtonExt(14, left(),  getRow(3), 120, 20, "Alignment: " + element.getAlignment().getName()));
-                this.buttonList.add(new GuiButtonExt(16, right(),  getRow(3), 120, 20, "Chroma: "    + (element.useChroma()  ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-
-                int id = 18;
-                int row = 4;
-                for (Setting s : element.getCustomSettings()) {
-                    if (s instanceof BooleanSetting) {
-                        BooleanSetting setting = (BooleanSetting) s;
-                        this.buttonList.add(new GuiButtonExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": " + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-                    } else if (s instanceof IntegerSetting) {
-                        IntegerSetting setting = (IntegerSetting) s;
-                        this.buttonList.add(new GuiSliderExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), false, true, this));
-                    } else if (s instanceof DoubleSetting) {
-                        DoubleSetting setting = (DoubleSetting) s;
-                        this.buttonList.add(new GuiSliderExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), true, true, this));
-                    } else if (s instanceof ArraySetting) {
-                        ArraySetting setting = (ArraySetting) s;
-                        this.buttonList.add(new GuiButtonExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": " + setting.get()));
-                    } else if (s instanceof StringSetting) {
-                        StringSetting setting = (StringSetting) s;
-                        GuiTextField textInput = new GuiTextField(id, mc.fontRendererObj, (id % 2 == 0 ? left() : right()) + 1, getRow(row) + 1, 120 - 2, 20 - 2);
-                        if (!setting.get().equals(setting.getName()))
-                            textInput.setText(setting.get());
-                        else
-                            textInput.setText(setting.getName());
-                        textInput.setEnableBackgroundDrawing(true);
-                        textInput.setMaxStringLength(120);
-                        textInput.setVisible(true);
-                        textInput.setEnableBackgroundDrawing(true);
-                        textInput.setCanLoseFocus(true);
-                        textInput.setFocused(false);
-                        textFieldList.add(textInput);
-                    }
-                    customButtons.put(id, s);
-
-                    id++;
-                    if (id % 2 == 0)
-                        row++;
-                }
-            }
 
             @Override
             protected void actionPerformed(GuiButton button) {
@@ -137,8 +80,26 @@ public class ElementArmour extends Element {
     }
 
     @Override
+    public boolean useBracketsSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useInvertedSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useTitleSetting() {
+        return false;
+    }
+
+    @Override
     public void render(RenderGameOverlayEvent event) {
         ScaledResolution res = event.resolution;
+
+        Hitbox hitbox = getHitbox(1, getPosition().getScale());
+        GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
 
         ItemStack item = mc.thePlayer.inventory.getCurrentItem();
         ItemStack helmet = mc.thePlayer.inventory.armorItemInSlot(3);
@@ -242,37 +203,39 @@ public class ElementArmour extends Element {
     }
 
     @Override
-    public Hitbox getHitbox() {
+    public Hitbox getHitbox(float posScale, float sizeScale) {
         ScaledResolution res = new ScaledResolution(mc);
         float x = getPosition().getRawX(res);
         float y = getPosition().getRawY(res);
+        float extraWidth = getPaddingWidth() * sizeScale;
+        float extraHeight = getPaddingHeight() * sizeScale;
 
         float hitX, hitY, hitW, hitH;
         hitX = hitY = hitW = hitH = 0;
         switch (getAlignment()) {
             case LEFT:
-                hitX = x - width - 4;
-                hitY = y - 2;
-                hitW = width + 8;
-                hitH = height + 4;
+                hitX = x - width;
+                hitY = y;
+                hitW = width;
+                hitH = height;
                 break;
             case CENTER:
-                hitX = x - (width / 2f) - width + 12;
-                hitY = y - 4;
-                hitW = width - 8;
-                hitH = height - 2;
+                hitX = x - (width / 2f) - width + 20;
+                hitY = y;
+                hitW = width - 24;
+                hitH = height - 4;
                 break;
             case RIGHT:
-                hitX = x - 4;
-                hitY = y - 2;
-                hitW = width + 8;
-                hitH = height + 4;
+                hitX = x;
+                hitY = y;
+                hitW = width;
+                hitH = height;
                 break;
         }
         if (listType.get().equalsIgnoreCase("up"))
             hitY -= height;
 
-        return new Hitbox(hitX, hitY, hitW, hitH);
+        return new Hitbox(hitX / posScale - extraWidth, hitY / posScale - extraHeight, hitW * sizeScale + (extraWidth * 2), hitH * sizeScale + (extraHeight * 2));
     }
 
     @Override

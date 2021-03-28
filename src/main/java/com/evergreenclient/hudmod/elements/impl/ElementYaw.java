@@ -10,7 +10,7 @@ package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
-import com.evergreenclient.hudmod.utils.element.ElementData;
+import com.evergreenclient.hudmod.utils.ElementData;
 import net.minecraft.util.MathHelper;
 
 import java.text.DecimalFormat;
@@ -21,7 +21,7 @@ public class ElementYaw extends Element {
 
     @Override
     public void initialise() {
-        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", false));
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Add zeroes to match the accuracy.", false));
     }
 
     @Override

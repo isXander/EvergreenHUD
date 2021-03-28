@@ -8,10 +8,10 @@
 
 package com.evergreenclient.hudmod.gui.screens.impl;
 
-import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.gui.elements.GuiScreenExt;
-import com.evergreenclient.hudmod.gui.elements.GuiSliderExt;
+import com.evergreenclient.hudmod.gui.elements.BetterGuiButton;
+import com.evergreenclient.hudmod.gui.elements.BetterGuiTextField;
+import com.evergreenclient.hudmod.gui.elements.BetterGuiSlider;
 import com.evergreenclient.hudmod.gui.screens.GuiScreenElements;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.*;
@@ -21,7 +21,6 @@ import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import org.lwjgl.input.Keyboard;
@@ -37,10 +36,10 @@ import static com.evergreenclient.hudmod.utils.Alignment.*;
 
 public class GuiElementConfig extends GuiScreenElements {
 
-    protected final Element element;
+    public final Element element;
 
     protected final Map<Integer, Setting> customButtons = new HashMap<>();
-    protected final List<GuiTextField> textFieldList = new ArrayList<>();
+    protected final List<BetterGuiTextField> textFieldList = new ArrayList<>();
 
     public GuiElementConfig(Element element) {
         this.element = element;
@@ -51,58 +50,79 @@ public class GuiElementConfig extends GuiScreenElements {
         addButtons();
     }
 
-    protected void addButtons() {
+    public void addButtons() {
         this.buttonList.clear();
 
-        this.buttonList.add(new GuiButtonExt( 0, width / 2 + 1,      height - 20, 90, 20, "Finished"));
-        this.buttonList.add(new GuiButtonExt( 1, width / 2 - 1 - 90, height - 20, 90, 20, "Reset"));
+        this.buttonList.add(new GuiButtonExt(0, width / 2 + 1, height - 20, 90, 20, "Finished"));
+        this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 90, height - 20, 90, 20, "Reset"));
 
-        this.buttonList.add(new GuiButtonExt( 2, left(),  getRow(0), 120, 20, "Enabled: "  + (element.isEnabled()    ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiSliderExt( 3, right(), getRow(0), 120, 20, "Scale: ",     "%", 20, 200, element.getPosition().getScale() * 100f, false, true, this));
-        this.buttonList.add(new GuiButtonExt( 4, left(),  getRow(1), 120, 20, "Brackets: " + (element.showBrackets() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonExt( 5, right(), getRow(1), 120, 20, "Shadow: "   + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonExt( 6, left(),  getRow(2), 120, 20, "Title: "   + (element.showTitle()   ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new BetterGuiButton(2, left(), getRow(0), 120, 20, "Enabled: " + (element.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF"), "Determines if element is enabled."));
+        this.buttonList.add(new BetterGuiSlider(3, right(), getRow(0), 120, 20, "Scale: ", "%", 20, 200, element.getPosition().getScale() * 100f, false, true, this, "Controls the size of the element."));
+        this.buttonList.get(3).enabled = element.useScaleSetting();
+        this.buttonList.add(new BetterGuiButton(4, left(), getRow(1), 120, 20, "Brackets: " + (element.showBrackets() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF"), "If there are square brackets before and after the text."));
+        this.buttonList.get(4).enabled = element.useBracketsSetting();
+        this.buttonList.add(new BetterGuiButton(5, right(), getRow(1), 120, 20, "Shadow: " + (element.renderShadow() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF"), "If the text has a shadow."));
+        this.buttonList.get(5).enabled = element.useShadowSetting();
+        this.buttonList.add(new BetterGuiButton(6, left(), getRow(2), 120, 20, "Title: " + (element.showTitle() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF"), "If the text has the element name in it."));
+        this.buttonList.get(6).enabled = element.useTitleSetting();
         if (!element.canShowTitle()) {
             this.buttonList.get(6).enabled = false;
             this.buttonList.get(6).displayString = "Title: " + EnumChatFormatting.RED + "OFF";
             this.element.setTitle(false);
         }
-        this.buttonList.add(new GuiSliderExt( 7, right(), getRow(2), 120, 20, "Text Red: ",   "", 0, 255, element.getTextColor().getRed(),   false, true, this));
-        this.buttonList.add(new GuiSliderExt( 8, left(),  getRow(3), 120, 20, "Text Green: ", "", 0, 255, element.getTextColor().getGreen(), false, true, this));
-        this.buttonList.add(new GuiSliderExt( 9, right(), getRow(3), 120, 20, "Text Blue: ",  "", 0, 255, element.getTextColor().getBlue(),  false, true, this));
-        this.buttonList.add(new GuiSliderExt(10, left(),  getRow(4), 120, 20, "Background Red: ",   "", 0, 255, element.getBgColor().getRed(),   false, true, this));
-        this.buttonList.add(new GuiSliderExt(11, right(), getRow(4), 120, 20, "Background Green: ", "", 0, 255, element.getBgColor().getGreen(), false, true, this));
-        this.buttonList.add(new GuiSliderExt(12, left(),  getRow(5), 120, 20, "Background Blue: ",  "", 0, 255, element.getBgColor().getBlue(),  false, true, this));
-        this.buttonList.add(new GuiSliderExt(13, right(), getRow(5), 120, 20, "Background Alpha: ", "", 0, 255, element.getBgColor().getAlpha(), false, true, this));
-        this.buttonList.add(new GuiButtonExt(14, left(),  getRow(6), 120, 20, "Alignment: " + element.getAlignment().getName()));
-        this.buttonList.add(new GuiButtonExt(15, right(), getRow(6), 120, 20, "Inverted: "  + (element.isInverted() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonExt(16, left(),  getRow(7), 120, 20, "Chroma: "    + (element.useChroma()  ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new BetterGuiSlider(7, right(), getRow(2), 120, 20, "Text Red: ","", 0, 255, element.getTextColor().getRed(), false, true, this, "How much red is in the color of the text."));
+        this.buttonList.get(7).enabled = element.useTextColorSetting();
+        this.buttonList.add(new BetterGuiSlider(8, left(), getRow(3), 120, 20, "Text Green: ", "", 0, 255, element.getTextColor().getGreen(), false, true, this, "How much green is in the color of the text."));
+        this.buttonList.get(8).enabled = element.useTextColorSetting();
+        this.buttonList.add(new BetterGuiSlider(9, right(), getRow(3), 120, 20, "Text Blue: ",  "", 0, 255, element.getTextColor().getBlue(), false, true, this, "How much blue is in the color of the text."));
+        this.buttonList.get(9).enabled = element.useTextColorSetting();
+        this.buttonList.add(new BetterGuiSlider(10, left(), getRow(4), 120, 20, "Background Red: ", "", 0, 255, element.getBgColor().getRed(), false, true, this, "How much red is in the color of the background."));
+        this.buttonList.get(10).enabled = element.useBgColorSetting();
+        this.buttonList.add(new BetterGuiSlider(11, right(), getRow(4), 120, 20, "Background Green: ", "", 0, 255, element.getBgColor().getGreen(), false, true, this, "How much green is in the color of the background."));
+        this.buttonList.get(11).enabled = element.useBgColorSetting();
+        this.buttonList.add(new BetterGuiSlider(12, left(), getRow(5), 120, 20, "Background Blue: ", "", 0, 255, element.getBgColor().getBlue(), false, true, this, "How much blue is in the color of the background."));
+        this.buttonList.get(12).enabled = element.useBgColorSetting();
+        this.buttonList.add(new BetterGuiSlider(13, right(), getRow(5), 120, 20, "Background Alpha: ", "", 0, 255, element.getBgColor().getAlpha(), false, true, this, "How transparent the background is."));
+        this.buttonList.get(13).enabled = element.useBgColorSetting();
+        this.buttonList.add(new BetterGuiSlider(14, left(), getRow(6), 120, 20, "Padding Width: ", "", 0, 12, element.getPaddingWidth(), true, true, this, "How much extra width the background box will have."));
+        this.buttonList.get(14).enabled = element.usePaddingSetting();
+        this.buttonList.add(new BetterGuiSlider(15, right(), getRow(6), 120, 20, "Padding Height: ", "", 0, 12, element.getPaddingHeight(), true, true, this, "How much extra height the background box will have."));
+        this.buttonList.get(15).enabled = element.usePaddingSetting();
+        this.buttonList.add(new BetterGuiButton(16, left(), getRow(7), 120, 20, "Alignment: " + element.getAlignment().getName(), "When the text grows or shrinks in size, which way the element will move."));
+        this.buttonList.get(16).enabled = element.useAlignmentSetting();
+        this.buttonList.add(new BetterGuiButton(17, right(), getRow(7), 120, 20, "Inverted: " + (element.isInverted() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF"), "If the title is rendered after the value."));
+        this.buttonList.get(17).enabled = element.useInvertedSetting();
+        this.buttonList.add(new BetterGuiButton(18, left(), getRow(8), 120, 20, "Chroma: " + (element.useChroma() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF"), "If the color is chroma."));
+        this.buttonList.get(18).enabled = element.useChromaSetting();
 
-        int id = 17;
-        int row = 7;
+        int id = 19;
+        int row = 8;
         for (Setting s : element.getCustomSettings()) {
+            int x = (id % 2 == 0 ? left() : right());
+            int y = getRow(row);
             if (s instanceof BooleanSetting) {
                 BooleanSetting setting = (BooleanSetting) s;
-                this.buttonList.add(new GuiButtonExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": " + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+                this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, setting.getName() + ": " + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF"), setting.getDescription()));
             } else if (s instanceof IntegerSetting) {
                 IntegerSetting setting = (IntegerSetting) s;
-                this.buttonList.add(new GuiSliderExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), false, true, this));
+                this.buttonList.add(new BetterGuiSlider(id, x, y, 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), false, true, this, setting.getDescription()));
             } else if (s instanceof DoubleSetting) {
                 DoubleSetting setting = (DoubleSetting) s;
-                this.buttonList.add(new GuiSliderExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), true, true, this));
+                this.buttonList.add(new BetterGuiSlider(id, x, y, 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), true, true, this, setting.getDescription()));
             } else if (s instanceof ArraySetting) {
                 ArraySetting setting = (ArraySetting) s;
-                this.buttonList.add(new GuiButtonExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName() + ": " + setting.get()));
+                this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, setting.getName() + ": " + setting.get(), setting.getDescription()));
             } else if (s instanceof ButtonSetting) {
                 ButtonSetting setting = (ButtonSetting) s;
-                this.buttonList.add(new GuiButtonExt(id, (id % 2 == 0 ? left() : right()), getRow(row), 120, 20, setting.getName()));
+                this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, setting.getName(), setting.getDescription()));
             } else if (s instanceof StringSetting) {
                 StringSetting setting = (StringSetting) s;
-                GuiTextField textInput = new GuiTextField(id, mc.fontRendererObj, (id % 2 == 0 ? left() : right()) + 1, getRow(row) + 1, 120 - 2, 20 - 2);
+                BetterGuiTextField textInput = new BetterGuiTextField(id, mc.fontRendererObj, x + 1, y + 1, 120 - 2, 20 - 2);
                 if (!setting.get().equals(setting.getName()))
                     textInput.setText(setting.get());
                 else
                     textInput.setText(setting.getName());
+                textInput.setDescription(setting.getName());
                 textInput.setEnableBackgroundDrawing(true);
                 textInput.setMaxStringLength(120);
                 textInput.setVisible(true);
@@ -125,12 +145,15 @@ public class GuiElementConfig extends GuiScreenElements {
         GlStateManager.pushMatrix();
         float scale = 2;
         GlStateManager.scale(scale, scale, 0);
-        drawCenteredString(mc.fontRendererObj, element.getMetadata().getName(), (int)(width / 2 / scale), (int)(5 / scale), -1);
+        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + element.getMetadata().getName(), (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, element.getMetadata().getDescription(), width / 2, 25, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);
-        for (GuiTextField textField : textFieldList) {
+        for (BetterGuiTextField textField : textFieldList) {
             textField.drawTextBox();
+        }
+        for (BetterGuiTextField textField : textFieldList) {
+            textField.drawTextBoxDescription(mc, mouseX, mouseY);
         }
     }
 
@@ -138,7 +161,7 @@ public class GuiElementConfig extends GuiScreenElements {
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
             case 0:
-                mc.displayGuiScreen(new GuiMain());
+                mc.displayGuiScreen(new GuiManageElements());
                 break;
             case 1:
                 element.resetSettings();
@@ -160,7 +183,7 @@ public class GuiElementConfig extends GuiScreenElements {
                 element.setTitle(!element.showTitle());
                 button.displayString = "Title: " + (element.showTitle() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
-            case 14:
+            case 16:
                 Alignment alignment = element.getAlignment();
                 ScaledResolution res = new ScaledResolution(mc);
                 if (alignment == LEFT) {
@@ -178,11 +201,11 @@ public class GuiElementConfig extends GuiScreenElements {
                 element.setAlignment(alignment);
                 button.displayString = "Alignment: " + element.getAlignment().getName();
                 break;
-            case 15:
+            case 17:
                 element.setInverted(!element.isInverted());
                 button.displayString = "Inverted: " + (element.isInverted() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
-            case 16:
+            case 18:
                 element.setChroma(!element.useChroma());
                 button.displayString = "Chroma: " + (element.useChroma() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
@@ -229,6 +252,12 @@ public class GuiElementConfig extends GuiScreenElements {
                 break;
             case 13:
                 element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), button.getValueInt()));
+                break;
+            case 14:
+                element.setPaddingWidth((float)button.getValue());
+                break;
+            case 15:
+                element.setPaddingHeight((float)button.getValue());
                 break;
             default:
                 Setting s = customButtons.get(button.id);

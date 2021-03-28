@@ -10,13 +10,11 @@ package com.evergreenclient.hudmod.elements.text.gui;
 
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.elements.text.TextVariable;
-import com.evergreenclient.hudmod.gui.elements.GuiScreenExt;
+import com.evergreenclient.hudmod.gui.screens.GuiScreenExt;
 import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 

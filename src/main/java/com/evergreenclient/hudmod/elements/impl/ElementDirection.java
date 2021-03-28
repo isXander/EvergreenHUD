@@ -11,9 +11,7 @@ package com.evergreenclient.hudmod.elements.impl;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.utils.Facing;
-import com.evergreenclient.hudmod.utils.StringUtils;
-import com.evergreenclient.hudmod.utils.element.ElementData;
-import net.minecraft.util.EnumFacing;
+import com.evergreenclient.hudmod.utils.ElementData;
 import net.minecraft.util.MathHelper;
 
 public class ElementDirection extends Element {
@@ -22,7 +20,7 @@ public class ElementDirection extends Element {
 
     @Override
     public void initialise() {
-        addSettings(abbreviated = new BooleanSetting("Abbreviated", true));
+        addSettings(abbreviated = new BooleanSetting("Abbreviated", "If the direction should be abbreviated to \"N\" from \"North\"", true));
     }
 
     @Override

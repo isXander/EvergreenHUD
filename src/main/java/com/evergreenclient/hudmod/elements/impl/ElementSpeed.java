@@ -11,11 +11,9 @@ package com.evergreenclient.hudmod.elements.impl;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
-import com.evergreenclient.hudmod.utils.element.ElementData;
+import com.evergreenclient.hudmod.utils.ElementData;
 import net.minecraft.util.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.text.DecimalFormat;
 
@@ -29,9 +27,9 @@ public class ElementSpeed extends Element {
 
     @Override
     public void initialise() {
-        addSettings(accuracy = new IntegerSetting("Accuracy", 2, 0, 4, " places"));
-        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", false));
-        addSettings(suffix = new BooleanSetting("Suffix", false));
+        addSettings(accuracy = new IntegerSetting("Accuracy", "How many decimal places the value should display.", 2, 0, 4, " places"));
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Add zeroes to match the accuracy.", false));
+        addSettings(suffix = new BooleanSetting("Suffix", "If the value should be suffixed with \"ms\"", false));
     }
 
     @Override

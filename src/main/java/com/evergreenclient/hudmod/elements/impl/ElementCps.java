@@ -10,9 +10,7 @@ package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.ArraySetting;
-import com.evergreenclient.hudmod.utils.element.ElementData;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import com.evergreenclient.hudmod.utils.ElementData;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Mouse;
 
@@ -30,7 +28,7 @@ public class ElementCps extends Element {
 
     @Override
     public void initialise() {
-        addSettings(button = new ArraySetting("Button", "Both", "Left", "Right", "Both"));
+        addSettings(button = new ArraySetting("Button", "Which button to display.", "Both", new String[]{"Left", "Right", "Both"}));
     }
 
     @Override
@@ -60,6 +58,7 @@ public class ElementCps extends Element {
         return "CPS";
     }
 
+    @Override
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START) return;
 

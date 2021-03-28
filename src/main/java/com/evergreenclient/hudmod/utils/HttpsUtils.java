@@ -36,6 +36,7 @@ public class HttpsUtils {
 
     public static String getString(String url) {
         try {
+            EvergreenHUD.LOGGER.info("Opening connection to " + url);
             HttpURLConnection httpClient =
                     (HttpURLConnection) new URL(url).openConnection();
             httpClient.setRequestMethod("GET");

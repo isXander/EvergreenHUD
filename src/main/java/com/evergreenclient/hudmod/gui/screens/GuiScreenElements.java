@@ -10,7 +10,6 @@ package com.evergreenclient.hudmod.gui.screens;
 
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.gui.elements.GuiScreenExt;
 import com.evergreenclient.hudmod.utils.MathUtils;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -23,7 +22,7 @@ public class GuiScreenElements extends GuiScreenExt {
 
     protected Element dragging = null;
     protected Element lastClicked = null;
-    protected Map<Element, Map.Entry<Float, Float>> moveables = new HashMap<>();
+    protected Map<Element, Map.Entry<Float, Float>> movables = new HashMap<>();
     protected float offX = 0, offY = 0;
 
     @Override
@@ -39,22 +38,24 @@ public class GuiScreenElements extends GuiScreenExt {
             }
         }
 
-        int x = Mouse.getEventX() * this.width / this.mc.displayWidth;
-        int y = this.height - Mouse.getEventY() * this.height / this.mc.displayHeight - 1;
+        float x = ((float)Mouse.getEventX()) * ((float)this.width) / ((float)this.mc.displayWidth);
+        float y = ((float)this.height) - ((float)Mouse.getEventY()) * ((float)this.height) / ((float)this.mc.displayHeight) - 1f;
 
         if (dragging != null) {
-            moveables.put(dragging, new AbstractMap.SimpleEntry<>(
+            movables.put(dragging, new AbstractMap.SimpleEntry<>(
                     MathUtils.getPercent(x - offX, 0, res.getScaledWidth()),
                     MathUtils.getPercent(y - offY, 0, res.getScaledHeight())));
         }
-        moveables.forEach((e, p) -> {
+        List<Element> toRemove = new ArrayList<>();
+        movables.forEach((e, p) -> {
             e.getPosition().setScaledX(MathUtils.lerp(e.getPosition().getXScaled(), p.getKey(), partialTicks * 3));
             e.getPosition().setScaledY(MathUtils.lerp(e.getPosition().getYScaled(), p.getValue(), partialTicks * 3));
             // Remove element once it is done moving
             if (e.getPosition().getXScaled() == p.getKey() && e.getPosition().getYScaled() == p.getValue()) {
-
+                toRemove.add(e);
             }
         });
+        toRemove.parallelStream().forEach((e) -> movables.remove(e));
     }
 
     @Override
@@ -64,7 +65,7 @@ public class GuiScreenElements extends GuiScreenExt {
         boolean clickedElement = false;
         for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
             e.onMouseClicked(mouseX, mouseY);
-            if (e.getHitbox().isMouseOver(mouseX, mouseY)) {
+            if (e.getHitbox(1, e.getPosition().getScale()).isMouseOver(mouseX, mouseY)) {
                 lastClicked = dragging = e;
                 offX = mouseX - e.getPosition().getRawX(res);
                 offY = mouseY - e.getPosition().getRawY(res);
