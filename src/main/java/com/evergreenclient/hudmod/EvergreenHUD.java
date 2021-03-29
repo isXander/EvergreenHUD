@@ -30,6 +30,7 @@ import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 import java.awt.*;
+import java.io.File;
 import java.net.URI;
 
 @Mod(modid = EvergreenHUD.MOD_ID, name = EvergreenHUD.NAME, version = EvergreenHUD.VERSION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]")
@@ -48,6 +49,7 @@ public class EvergreenHUD {
 
     private ElementManager elementManager;
     private boolean development;
+    private boolean firstLaunch = false;
 
     private boolean reset = false;
 
@@ -55,6 +57,8 @@ public class EvergreenHUD {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
+        firstLaunch = !new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud").exists();
+
         ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
 
         ClientCommandHandler.instance.registerCommand(new EvergreenHudCommand());
@@ -118,6 +122,10 @@ public class EvergreenHUD {
 
     public boolean isDevelopment() {
         return development;
+    }
+
+    public boolean isFirstLaunch() {
+        return this.firstLaunch;
     }
 
 }

@@ -43,7 +43,12 @@ public class IntegerSetting extends Setting {
     }
 
     public void set(int newVal) {
-        this.val = newVal;
+        if (onChange(this.val, newVal))
+            this.val = newVal;
+    }
+
+    protected boolean onChange(int currentVal, int newVal) {
+        return true;
     }
 
     public int getMin() {

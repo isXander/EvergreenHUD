@@ -57,18 +57,19 @@ public class ArraySetting extends Setting {
     }
 
     public void set(String current) {
-        this.index = this.options.indexOf(current);
+        set(this.options.indexOf(current));
     }
 
     public void set(int index) {
-        this.index = index;
+        if (onChange(this.index, index))
+            this.index = index;
     }
 
     public String next() {
         int i = index + 1;
         if (i > this.options.size() - 1)
             i = 0;
-        this.index = i;
+        set(i);
         return this.options.get(index);
     }
 
@@ -76,8 +77,12 @@ public class ArraySetting extends Setting {
         int i = index - 1;
         if (i < 0)
             i = this.options.size() - 1;
-        this.index = i;
+        set(i);
         return this.options.get(index);
+    }
+
+    protected boolean onChange(int currentIndex, int newIndex) {
+        return true;
     }
 
     public List<String> options() {

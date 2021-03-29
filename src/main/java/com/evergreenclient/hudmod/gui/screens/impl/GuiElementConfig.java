@@ -242,13 +242,13 @@ public class GuiElementConfig extends GuiScreenElements {
                 element.setTextColor(new Color(element.getTextColor().getRed(), element.getTextColor().getGreen(), button.getValueInt(), element.getTextColor().getAlpha()));
                 break;
             case 10:
-                element.setBgColor(new Color(button.getValueInt(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), element.getTextColor().getAlpha()));
+                element.setBgColor(new Color(button.getValueInt(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), element.getBgColor().getAlpha()));
                 break;
             case 11:
-                element.setBgColor(new Color(element.getBgColor().getRed(), button.getValueInt(), element.getBgColor().getBlue(), element.getTextColor().getAlpha()));
+                element.setBgColor(new Color(element.getBgColor().getRed(), button.getValueInt(), element.getBgColor().getBlue(), element.getBgColor().getAlpha()));
                 break;
             case 12:
-                element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), button.getValueInt(), element.getTextColor().getAlpha()));
+                element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), button.getValueInt(), element.getBgColor().getAlpha()));
                 break;
             case 13:
                 element.setBgColor(new Color(element.getBgColor().getRed(), element.getBgColor().getGreen(), element.getBgColor().getBlue(), button.getValueInt()));

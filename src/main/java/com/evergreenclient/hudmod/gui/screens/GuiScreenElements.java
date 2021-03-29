@@ -17,6 +17,7 @@ import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GuiScreenElements extends GuiScreenExt {
 
@@ -63,7 +64,7 @@ public class GuiScreenElements extends GuiScreenExt {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         ScaledResolution res = new ScaledResolution(mc);
         boolean clickedElement = false;
-        for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
+        for (Element e : EvergreenHUD.getInstance().getElementManager().getElements().stream().filter(Element::isEnabled).collect(Collectors.toList())) {
             e.onMouseClicked(mouseX, mouseY);
             if (e.getHitbox(1, e.getPosition().getScale()).isMouseOver(mouseX, mouseY)) {
                 lastClicked = dragging = e;

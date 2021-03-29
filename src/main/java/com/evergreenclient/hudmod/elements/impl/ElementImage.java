@@ -9,11 +9,14 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import club.sk1er.mods.core.gui.notification.Notifications;
+import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.gui.elements.BetterGuiSlider;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
+import com.evergreenclient.hudmod.settings.impl.ArraySetting;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.settings.impl.ButtonSetting;
+import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
 import com.evergreenclient.hudmod.utils.*;
 import com.evergreenclient.hudmod.utils.thirdparty.GLRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -37,6 +40,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,13 +50,17 @@ import java.util.stream.Collectors;
 public class ElementImage extends Element {
 
     private static final File imageFile = new File(mc.mcDataDir, "config/evergreenhud/image.png");
+    private static final ResourceLocation unknownImage = new ResourceLocation("evergreenhud/textures/unknown.png");
+    private static final float imgSize = 60;
 
     private Dimension imageDimension;
     private final Map<File, ITextureObject> fileTextureMap = new HashMap<>();
     private boolean changed = false;
+    private float scaleMod = 1;
 
-    public BooleanSetting horizontalFlip;
-    public BooleanSetting verticalFlip;
+    public BooleanSetting mirror;
+    public ArraySetting rotation;
+    public BooleanSetting autoScale;
 
     @Override
     public GuiElementConfig getElementConfigGui() {
@@ -103,17 +113,30 @@ public class ElementImage extends Element {
     public void resetSettings() {
         super.resetSettings();
         imageFile.delete();
-        imageDimension = null;
+
+        try {
+            Files.copy(ElementImage.class.getResourceAsStream("/assets/" + unknownImage.getResourceDomain() + "/" + unknownImage.getResourcePath()), imageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            BufferedImage img = ImageIO.read(imageFile);
+            imageDimension = new Dimension(img.getWidth(), img.getHeight());
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ReportedException(CrashReport.makeCrashReport(e, "Failed to copy image."));
+        }
+
     }
 
     @Override
     public void initialise() {
-        imageDimension = null;
         try {
-            if (imageFile.exists()) {
-                BufferedImage img = ImageIO.read(imageFile);
-                imageDimension = new Dimension(img.getWidth(), img.getHeight());
+            if (!imageFile.exists()) {
+                if (!EvergreenHUD.getInstance().isFirstLaunch()) {
+                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "It appears EvergreenHUD could not find the image for Custom Image element.\nYou will have to choose your image again.");
+                }
+                Files.copy(ElementImage.class.getResourceAsStream("/assets/" + unknownImage.getResourceDomain() + "/" + unknownImage.getResourcePath()), imageFile.toPath());
             }
+
+            BufferedImage img = ImageIO.read(imageFile);
+            imageDimension = new Dimension(img.getWidth(), img.getHeight());
         } catch (IOException e) {
             e.printStackTrace();
             throw new ReportedException(CrashReport.makeCrashReport(e, "An error was encountered."));
@@ -143,20 +166,21 @@ public class ElementImage extends Element {
                 changed = true;
             }).start();
         }));
-        addSettings(horizontalFlip = new BooleanSetting("Horizontal Flip", "If the image is flipped horizontally.", false) {
+        addSettings(mirror = new BooleanSetting("Mirror", "If the image is flipped horizontally.", false) {
             @Override
             protected boolean onChange(boolean oldValue, boolean newValue) {
                 changed = true;
                 return true;
             }
         });
-        addSettings(verticalFlip = new BooleanSetting("Vertical Flip", "If the image is flipped vertically.",false) {
+        addSettings(rotation = new ArraySetting("Rotation", "How will the image be rotated. (Image should be square for best result.)", 0, "0 deg", "90 deg", "180 deg", "270 deg") {
             @Override
-            protected boolean onChange(boolean oldValue, boolean newValue) {
+            protected boolean onChange(int currentIndex, int newIndex) {
                 changed = true;
                 return true;
             }
         });
+        addSettings(autoScale = new BooleanSetting("Auto Scale", "Automatically scales your image to a constant size depending on the scale.", true));
     }
 
     @Override
@@ -169,18 +193,28 @@ public class ElementImage extends Element {
         mc.mcProfiler.startSection(getMetadata().getName());
         GlStateManager.pushMatrix();
         float scale = getPosition().getScale();
+
+        if (autoScale.get()) {
+            scaleMod = imgSize / Math.min((float) imageDimension.getWidth(), (float) imageDimension.getHeight());
+        } else {
+            scaleMod = 1;
+        }
         Hitbox hitbox = getHitbox(1, scale);
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
         GlStateManager.scale(scale, scale, 1);
         GlStateManager.enableDepth();
         GlStateManager.color(1f, 1f, 1f, 1f);
-        if (imageDimension != null) {
-            bindTexture(imageFile);
-            RenderUtils.drawModalRect(this.getPosition().getRawX(event.resolution) / scale, this.getPosition().getRawY(event.resolution) / scale, 0, 0, imageDimension.getWidth(), imageDimension.getHeight(), imageDimension.getWidth(), imageDimension.getHeight(), imageDimension.getWidth(), imageDimension.getHeight());
-        } else {
-            mc.getTextureManager().bindTexture(new ResourceLocation("evergreenhud/textures/unknown.png"));
-            RenderUtils.drawModalRect(this.getPosition().getRawX(event.resolution) / scale, this.getPosition().getRawY(event.resolution) / scale, 0, 0, 50, 50, 50, 50, 50, 50);
-        }
+        bindTexture(imageFile);
+        double width = imageDimension.getWidth();
+        double height = imageDimension.getHeight();
+//            if (rotation.getIndex() == 1 || rotation.getIndex() == 3) {
+//                width = imageDimension.getHeight();
+//                height = imageDimension.getWidth();
+//            }
+        double renderWidth = width * scaleMod;
+        double renderHeight = height * scaleMod;
+
+        RenderUtils.drawModalRect(this.getPosition().getRawX(event.resolution) / scale, this.getPosition().getRawY(event.resolution) / scale, 0, 0, imageDimension.getWidth(), imageDimension.getHeight(), renderWidth, renderHeight, imageDimension.getWidth(), imageDimension.getHeight());
 
         GlStateManager.popMatrix();
         mc.mcProfiler.endSection();
@@ -190,15 +224,8 @@ public class ElementImage extends Element {
     public Hitbox getHitbox(float posScale, float sizeScale) {
         ScaledResolution res = new ScaledResolution(mc);
 
-        float width;
-        float height;
-        if (imageDimension != null) {
-            width = (float)imageDimension.getWidth() * sizeScale;
-            height = (float)imageDimension.getHeight() * sizeScale;
-        } else {
-            width = 50;
-            height = 50;
-        }
+        float width = (float)imageDimension.getWidth() * sizeScale * scaleMod;
+        float height = (float)imageDimension.getHeight() * sizeScale * scaleMod;
 
         float extraWidth = getPaddingWidth() * sizeScale;
         float extraHeight = getPaddingHeight() * sizeScale;
@@ -263,10 +290,9 @@ public class ElementImage extends Element {
             InputStream is = new FileInputStream(textureLocation);
 
             BufferedImage img = TextureUtil.readBufferedImage(is);
-            if (element.horizontalFlip.get())
+            if (element.mirror.get())
                 img = ImageUtils.flipHorizontally(img);
-            if (element.verticalFlip.get())
-                img = ImageUtils.flipVertically(img);
+            img = ImageUtils.rotate(img, element.rotation.getIndex() * 90);
 
             TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), img, false, false);
             is.close();

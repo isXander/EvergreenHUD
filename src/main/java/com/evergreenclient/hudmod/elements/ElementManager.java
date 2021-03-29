@@ -59,6 +59,7 @@ public class ElementManager {
                 new ElementArmour(),
                 new ElementImage(),
                 new ElementPlayerPreview()
+                //new ElementScoreboard()
         );
 
         this.logger = LogManager.getLogger("Evergreen Manager");

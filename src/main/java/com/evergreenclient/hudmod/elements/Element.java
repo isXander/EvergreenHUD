@@ -271,7 +271,15 @@ public abstract class Element extends Gui implements Listenable {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+        if (enabled)
+            onEnabled();
+        else
+            onDisabled();
     }
+
+    public void onEnabled() { }
+
+    public void onDisabled() { }
 
     public Position getPosition() {
         return pos;

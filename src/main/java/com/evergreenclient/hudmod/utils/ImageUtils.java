@@ -8,8 +8,11 @@
 
 package com.evergreenclient.hudmod.utils;
 
+import net.minecraft.util.MathHelper;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 
 public class ImageUtils {
@@ -32,6 +35,21 @@ public class ImageUtils {
             }
         }
         return newImage;
+    }
+
+    public static BufferedImage rotate(BufferedImage image, int degrees) {
+        float rads = (float)Math.toRadians(degrees);
+        float sin = MathHelper.abs(MathHelper.sin(rads));
+        float cos = MathHelper.abs(MathHelper.cos(rads));
+        int w = MathHelper.floor_float(image.getWidth() * cos + image.getHeight() * sin);
+        int h = MathHelper.floor_float(image.getHeight() * cos + image.getWidth() * sin);
+        BufferedImage rotated = new BufferedImage(w, h, image.getType());
+        AffineTransform at = new AffineTransform();
+        at.translate(w / 2f, h / 2f);
+        at.rotate(rads, 0, 0);
+        at.translate(-image.getWidth() / 2f, -image.getHeight() / 2f);
+        AffineTransformOp rotateOp = new AffineTransformOp(at, AffineTransformOp.TYPE_BILINEAR);
+        return rotateOp.filter(image, rotated);
     }
 
 }

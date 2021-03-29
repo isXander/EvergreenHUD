@@ -18,10 +18,8 @@ import net.minecraft.client.Minecraft;
 import org.apache.commons.io.FileUtils;
 
 import java.awt.*;
-import java.util.HashMap;
 import java.io.File;
 import java.io.IOException;
-import java.util.Map;
 
 public class ElementConfig {
 
@@ -29,12 +27,10 @@ public class ElementConfig {
 
     private final Element element;
     public final File configFile;
-    private final Map<String, Object> customElements;
 
     public ElementConfig(Element e) {
         this.element = e;
         this.configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/elements/" + element.getMetadata().getName() + ".json");
-        this.customElements = new HashMap<>();
 
         // Config has moved directories. So we don't need to reset all configs, just test if the old config is there and move it
         File oldLocation = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/" + element.getMetadata().getName() + ".json");
@@ -91,18 +87,6 @@ public class ElementConfig {
                 custom.addProperty(s.getJsonKey(), ((StringSetting)s).get());
         }
         root.add("custom", custom);
-
-        BetterJsonObject manual = new BetterJsonObject();
-        customElements.forEach((k, v) -> {
-            if (v instanceof String) {
-                manual.addProperty(k, (String)v);
-            } else if (v instanceof Boolean) {
-                manual.addProperty(k, (Boolean)v);
-            } else if (v instanceof Number) {
-                manual.addProperty(k, (Number)v);
-            }
-        });
-        root.add("manual", manual);
 
         return root;
     }
