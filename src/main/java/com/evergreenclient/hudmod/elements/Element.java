@@ -37,7 +37,7 @@ public abstract class Element extends Gui implements Listenable {
     @Override
     public boolean canReceiveEvents() {
         ElementManager manager = EvergreenHUD.getInstance().getElementManager();
-        return manager.isEnabled() && manager.getCurrentElements().contains(this);
+        return manager.isEnabled();
     }
 
     /* For child classes */
@@ -65,7 +65,6 @@ public abstract class Element extends Gui implements Listenable {
     public Element() {
         this.customSettings = new ArrayList<>();
         resetSettings(false);
-        EventManager.getInstance().addListener(this);
         this.meta = metadata();
         this.logger = LogManager.getLogger(getMetadata().getName());
         initialise();

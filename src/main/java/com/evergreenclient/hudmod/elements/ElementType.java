@@ -35,7 +35,6 @@ public enum ElementType {
     private final Class<? extends Element> element;
     ElementType(Class<? extends Element> element) {
         this.element = element;
-        System.out.println("enum constructor");
     }
 
     public Class<? extends Element> getElementClass() {

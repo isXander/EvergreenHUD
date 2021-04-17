@@ -10,6 +10,7 @@ package com.evergreenclient.hudmod.elements;
 
 import com.evergreenclient.hudmod.config.ElementConfig;
 import com.evergreenclient.hudmod.config.MainConfig;
+import com.evergreenclient.hudmod.event.EventManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -72,10 +73,12 @@ public class ElementManager {
     }
 
     public void addElement(Element element) {
+        EventManager.getInstance().addListener(element);
         this.currentElements.add(element);
     }
 
     public void removeElement(Element element) {
+        EventManager.getInstance().removeListener(element);
         this.currentElements.remove(element);
     }
 

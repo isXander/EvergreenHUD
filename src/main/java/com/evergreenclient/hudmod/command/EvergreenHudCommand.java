@@ -8,6 +8,8 @@
 
 package com.evergreenclient.hudmod.command;
 
+import club.sk1er.mods.core.ModCore;
+import club.sk1er.mods.core.gui.GuiHandler;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.Multithreading;
 import com.evergreenclient.hudmod.EvergreenHUD;
@@ -74,14 +76,8 @@ public class EvergreenHudCommand extends CommandBase {
             }
         }
         else {
-            MinecraftForge.EVENT_BUS.register(this);
+            ModCore.getInstance().getGuiHandler().open(new GuiMain());
         }
-    }
-
-    @SubscribeEvent
-    public void onTick(TickEvent.ClientTickEvent event) {
-        Minecraft.getMinecraft().displayGuiScreen(new GuiMain());
-        MinecraftForge.EVENT_BUS.unregister(this);
     }
 
 }
