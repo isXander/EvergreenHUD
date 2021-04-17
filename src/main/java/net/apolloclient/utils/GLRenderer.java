@@ -12,11 +12,10 @@
   along with this program.  If not, see https://www.gnu.org/licenses/.
   Contact: Icovid#3888 @ https://discord.com
  ⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼⎼*/
+// This file has been improved upon the original found here:
+// https://github.com/Ic0vid/apollo/blob/master/src/main/java/net/apolloclient/utils/GLRenderer.java
 
-// Before people start screaming at me on the forums, I do have icovid's permission
-// This class has been adopted from https://github.com/Ic0vid/apollo/blob/master/src/main/java/net/apolloclient/utils/GLRenderer.java
-
-package com.evergreenclient.hudmod.utils.thirdparty;
+package net.apolloclient.utils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
@@ -34,9 +33,8 @@ import java.awt.*;
  * Various functions to draw gui objects using GL11 and WorldRenderer.
  *
  * @author Icovid | Icovid#3888
- * @since b0.2
  */
-public class GLRenderer {
+public final class GLRenderer {
 
     /**
      * {@link GL11} scissor using minecraft screen positions.

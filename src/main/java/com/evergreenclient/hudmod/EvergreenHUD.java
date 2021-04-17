@@ -4,6 +4,13 @@
  * This is free software, and you are welcome to redistribute it
  * under the certain conditions that can be found here
  * https://www.gnu.org/licenses/lgpl-3.0.en.html
+ *
+ * If you have any questions or concerns, please create
+ * an issue on the github page that can be found here
+ * https://github.com/Evergreen-Client/EvergreenHUD
+ *
+ * If you have a private concern, please contact
+ * isXander @ business.isxander@gmail.com
  */
 
 package com.evergreenclient.hudmod;
@@ -11,7 +18,7 @@ package com.evergreenclient.hudmod;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import com.evergreenclient.hudmod.command.EvergreenHudCommand;
 import com.evergreenclient.hudmod.elements.ElementManager;
-import com.evergreenclient.hudmod.forge.modcore.ModCoreInstaller;
+import club.sk1er.mods.core.ModCoreInstaller;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiMain;
 import com.evergreenclient.hudmod.update.UpdateChecker;
 import com.evergreenclient.hudmod.utils.Version;

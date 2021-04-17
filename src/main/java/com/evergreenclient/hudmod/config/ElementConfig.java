@@ -4,23 +4,24 @@
  * This is free software, and you are welcome to redistribute it
  * under the certain conditions that can be found here
  * https://www.gnu.org/licenses/lgpl-3.0.en.html
+ *
+ * If you have any questions or concerns, please create
+ * an issue on the github page that can be found here
+ * https://github.com/Evergreen-Client/EvergreenHUD
+ *
+ * If you have a private concern, please contact
+ * isXander @ business.isxander@gmail.com
  */
 
 package com.evergreenclient.hudmod.config;
 
 import com.evergreenclient.hudmod.EvergreenHUD;
-import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.elements.ElementManager;
-import com.evergreenclient.hudmod.elements.ElementType;
-import com.evergreenclient.hudmod.elements.impl.ElementImage;
-import com.evergreenclient.hudmod.settings.impl.StringSetting;
+import com.evergreenclient.hudmod.elements.*;
 import com.evergreenclient.hudmod.utils.BetterJsonObject;
 import com.google.gson.JsonArray;
 import net.minecraft.client.Minecraft;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
