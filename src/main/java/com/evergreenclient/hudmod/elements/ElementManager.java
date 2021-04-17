@@ -18,6 +18,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class ElementManager {
@@ -61,6 +62,7 @@ public class ElementManager {
                 new ElementPlayerPreview()
                 //new ElementScoreboard()
         );
+        this.elements.sort(Comparator.comparing(e -> e.getMetadata().getName()));
 
         this.logger = LogManager.getLogger("Evergreen Manager");
         this.getConfig().load();
@@ -82,6 +84,7 @@ public class ElementManager {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
 
         if (isEnabled()) {
+            mc.mcProfiler.startSection("Element Render");
             if ((mc.inGameHasFocus && !mc.gameSettings.showDebugInfo) || (mc.gameSettings.showDebugInfo && showInDebug) || (mc.currentScreen instanceof GuiChat && showInChat)) {
                 for (Element e : elements) {
                     if (e.isEnabled()) {
@@ -89,6 +92,7 @@ public class ElementManager {
                     }
                 }
             }
+            mc.mcProfiler.endSection();
         }
     }
 

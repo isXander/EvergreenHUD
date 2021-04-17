@@ -92,6 +92,10 @@ public abstract class Element extends Gui implements Listenable {
         return new GuiElementConfig(this);
     }
 
+    public void onSettingChange(Setting setting) {
+
+    }
+
     public boolean canShowTitle() {
         return true;
     }

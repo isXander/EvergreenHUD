@@ -52,6 +52,7 @@ public class GuiElementConfig extends GuiScreenElements {
 
     public void addButtons() {
         this.buttonList.clear();
+        this.textFieldList.clear();
 
         this.buttonList.add(new GuiButtonExt(0, width / 2 + 1, height - 20, 90, 20, "Finished"));
         this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 90, height - 20, 90, 20, "Reset"));
@@ -118,11 +119,12 @@ public class GuiElementConfig extends GuiScreenElements {
             } else if (s instanceof StringSetting) {
                 StringSetting setting = (StringSetting) s;
                 BetterGuiTextField textInput = new BetterGuiTextField(id, mc.fontRendererObj, x + 1, y + 1, 120 - 2, 20 - 2);
-                if (!setting.get().equals(setting.getName()))
+                if (!setting.get().equals(setting.getName())) {
                     textInput.setText(setting.get());
-                else
+                } else {
                     textInput.setText(setting.getName());
-                textInput.setDescription(setting.getName());
+                }
+                textInput.setDescription(setting.getName() + ": " + setting.getDescription());
                 textInput.setEnableBackgroundDrawing(true);
                 textInput.setMaxStringLength(120);
                 textInput.setVisible(true);
@@ -222,6 +224,7 @@ public class GuiElementConfig extends GuiScreenElements {
                     ButtonSetting setting = (ButtonSetting) s;
                     setting.get().run();
                 }
+                element.onSettingChange(s);
                 break;
         }
     }

@@ -8,6 +8,9 @@
 
 package com.evergreenclient.hudmod.utils;
 
+import java.util.Collections;
+import java.util.List;
+
 public class MathUtils {
 
     /**
@@ -60,6 +63,20 @@ public class MathUtils {
      */
     public static float getPercent(float val, float min, float max) {
         return (val - min) / (max - min);
+    }
+
+    /**
+     * Returns the percentile of list of longs
+     *
+     * @param nums the list on which to calculate the percentile
+     * @param percentile what percentile the calculation will output
+     * @return the percentile of the nums
+     * @author isXander
+     */
+    public static long percentile(List<Long> nums, double percentile) {
+        Collections.sort(nums);
+        int index = (int) Math.ceil(percentile / 100.0 * nums.size());
+        return nums.get(index - 1);
     }
 
 }
