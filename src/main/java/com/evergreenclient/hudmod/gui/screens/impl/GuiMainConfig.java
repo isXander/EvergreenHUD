@@ -40,7 +40,6 @@ public class GuiMainConfig extends GuiScreenElements {
         this.buttonList.add(new GuiButtonExt(2, left(), getRow(0), 242, 20, "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonExt(3, left(), getRow(1), 120, 20, "Show in Chat: " + (manager.doShowInChat() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonExt(4, right(), getRow(1), 120, 20, "Show in Debug: " + (manager.doShowInDebug() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonExt(5, left(), getRow(2), 120, 20, "Colors in Gui: " + (manager.doColorsInGui() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
     }
 
     @Override
@@ -78,9 +77,6 @@ public class GuiMainConfig extends GuiScreenElements {
                 manager.setShowInDebug(!manager.doShowInDebug());
                 button.displayString = "Show in Debug: " + (manager.doShowInDebug() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
-            case 5:
-                manager.setColorsInGui(!manager.doColorsInGui());
-                button.displayString = "Colors in Gui: " + (manager.doColorsInGui() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
         }
     }
 
@@ -94,6 +90,6 @@ public class GuiMainConfig extends GuiScreenElements {
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
-        manager.getConfig().save();
+        manager.getMainConfig().save();
     }
 }

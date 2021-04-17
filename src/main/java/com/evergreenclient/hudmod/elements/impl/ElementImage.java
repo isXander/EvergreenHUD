@@ -11,12 +11,10 @@ package com.evergreenclient.hudmod.elements.impl;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
+import com.evergreenclient.hudmod.elements.ElementType;
 import com.evergreenclient.hudmod.gui.elements.BetterGuiSlider;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
-import com.evergreenclient.hudmod.settings.impl.ArraySetting;
-import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
-import com.evergreenclient.hudmod.settings.impl.ButtonSetting;
-import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
+import com.evergreenclient.hudmod.settings.impl.*;
 import com.evergreenclient.hudmod.utils.*;
 import com.evergreenclient.hudmod.utils.thirdparty.GLRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -40,7 +38,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.HashMap;
@@ -49,6 +46,7 @@ import java.util.stream.Collectors;
 
 public class ElementImage extends Element {
 
+    private static boolean warned = false;
     private static final File imageFile = new File(mc.mcDataDir, "config/evergreenhud/image.png");
     private static final ResourceLocation unknownImage = new ResourceLocation("evergreenhud/textures/unknown.png");
     private static final float imgSize = 60;
@@ -58,6 +56,7 @@ public class ElementImage extends Element {
     private boolean changed = false;
     private float scaleMod = 1;
 
+    private StringSetting fileLocation;
     public BooleanSetting mirror;
     public ArraySetting rotation;
     public BooleanSetting autoScale;
@@ -69,7 +68,7 @@ public class ElementImage extends Element {
             public void addButtons() {
                 super.addButtons();
                 this.buttonList = this.buttonList.stream().filter(b -> b.id != 3).collect(Collectors.toList());
-                this.buttonList.add(new BetterGuiSlider(3, right(), getRow(0), 120, 20, "Scale: ", "%", 1, 300, element.getPosition().getScale() * 100f, false, true, this, "Controls the size of the element."));
+                this.buttonList.add(new BetterGuiSlider(3, left(), getRow(0), 120, 20, "Scale: ", "%", 1, 300, element.getPosition().getScale() * 100f, false, true, this, "Controls the size of the element."));
             }
         };
     }
@@ -109,11 +108,18 @@ public class ElementImage extends Element {
         return false;
     }
 
-    @Override
-    public void resetSettings() {
-        super.resetSettings();
-        imageFile.delete();
+    private File getImageFile() {
+        if (fileLocation.get().equals("") || !new File(fileLocation.get()).exists()) {
+            if (!imageFile.exists()) {
+                copyNullImage();
+            }
+            fileLocation.set(imageFile.getPath());
+        }
 
+        return new File(fileLocation.get());
+    }
+
+    private void copyNullImage() {
         try {
             Files.copy(ElementImage.class.getResourceAsStream("/assets/" + unknownImage.getResourceDomain() + "/" + unknownImage.getResourcePath()), imageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
             BufferedImage img = ImageIO.read(imageFile);
@@ -122,25 +128,19 @@ public class ElementImage extends Element {
             e.printStackTrace();
             throw new ReportedException(CrashReport.makeCrashReport(e, "Failed to copy image."));
         }
+    }
 
+    @Override
+    public void resetSettings(boolean save) {
+        super.resetSettings(save);
+
+        imageFile.delete();
+        copyNullImage();
     }
 
     @Override
     public void initialise() {
-        try {
-            if (!imageFile.exists()) {
-                if (!EvergreenHUD.getInstance().isFirstLaunch()) {
-                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "It appears EvergreenHUD could not find the image for Custom Image element.\nYou will have to choose your image again.");
-                }
-                Files.copy(ElementImage.class.getResourceAsStream("/assets/" + unknownImage.getResourceDomain() + "/" + unknownImage.getResourcePath()), imageFile.toPath());
-            }
-
-            BufferedImage img = ImageIO.read(imageFile);
-            imageDimension = new Dimension(img.getWidth(), img.getHeight());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ReportedException(CrashReport.makeCrashReport(e, "An error was encountered."));
-        }
+        addSettings(fileLocation = new StringSetting("File Path", "", true));
 
         addSettings(new ButtonSetting("Choose Image", "Picks your desired image to be rendered.", () -> {
             // Add to new thread so the game does not freeze
@@ -153,8 +153,8 @@ public class ElementImage extends Element {
                     try {
                         File file = fileChooser.getSelectedFile();
                         BufferedImage image = ImageIO.read(file);
-                        ImageIO.write(image, "PNG", imageFile);
-                        fileTextureMap.remove(imageFile);
+                        fileTextureMap.remove(getImageFile());
+                        fileLocation.set(file.getPath());
                         imageDimension = new Dimension(image.getWidth(), image.getHeight());
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -184,6 +184,24 @@ public class ElementImage extends Element {
     }
 
     @Override
+    protected void onSettingsLoad() {
+        try {
+            if (getImageFile().equals(imageFile)) {
+                if (!EvergreenHUD.getInstance().isFirstLaunch() && !warned) {
+                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "Could not find image on one or more of your custom image elements.\nPlease reselect your images.");
+                    warned = true;
+                }
+            }
+
+            BufferedImage img = ImageIO.read(getImageFile());
+            imageDimension = new Dimension(img.getWidth(), img.getHeight());
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ReportedException(CrashReport.makeCrashReport(e, "An error was encountered."));
+        }
+    }
+
+    @Override
     protected ElementData metadata() {
         return new ElementData("Custom Image", "Renders an image of your choosing.");
     }
@@ -204,13 +222,9 @@ public class ElementImage extends Element {
         GlStateManager.scale(scale, scale, 1);
         GlStateManager.enableDepth();
         GlStateManager.color(1f, 1f, 1f, 1f);
-        bindTexture(imageFile);
+        bindTexture(getImageFile());
         double width = imageDimension.getWidth();
         double height = imageDimension.getHeight();
-//            if (rotation.getIndex() == 1 || rotation.getIndex() == 3) {
-//                width = imageDimension.getHeight();
-//                height = imageDimension.getWidth();
-//            }
         double renderWidth = width * scaleMod;
         double renderHeight = height * scaleMod;
 

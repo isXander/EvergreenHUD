@@ -9,6 +9,7 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
+import com.evergreenclient.hudmod.elements.ElementType;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.*;

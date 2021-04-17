@@ -8,8 +8,8 @@
 
 package com.evergreenclient.hudmod.elements;
 
+import com.evergreenclient.hudmod.config.ElementConfig;
 import com.evergreenclient.hudmod.config.MainConfig;
-import com.evergreenclient.hudmod.elements.impl.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -17,66 +17,43 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Arrays;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ElementManager {
 
     private final Minecraft mc = Minecraft.getMinecraft();
 
-    private final List<Element> elements;
+    private final List<Element> currentElements;
 
     /* Config */
-    private final MainConfig config;
+    private final MainConfig mainConfig;
+    private final ElementConfig elementConfig;
     private boolean enabled;
     private boolean showInChat;
     private boolean showInDebug;
-    private boolean colorsInGui;
 
     private final Logger logger;
 
     public ElementManager() {
-        this.config = new MainConfig(this);
+        this.currentElements = new ArrayList<>();
+        this.mainConfig = new MainConfig(this);
+        this.elementConfig = new ElementConfig(this);
         resetConfig();
 
-        this.elements = Arrays.asList(
-                new ElementFPS(),
-                new ElementCoordinates(),
-                new ElementBiome(),
-                new ElementServer(),
-                new ElementCps(),
-                new ElementReach(),
-                new ElementMemory(),
-                new ElementTime(),
-                new ElementDirection(),
-                new ElementSpeed(),
-                new ElementPing(),
-                new ElementCombo(),
-                new ElementYaw(),
-                new ElementPitch(),
-                new ElementBlockAbove(),
-                new ElementText(),
-                new ElementArmour(),
-                new ElementImage(),
-                new ElementPlayerPreview()
-                //new ElementScoreboard()
-        );
-        this.elements.sort(Comparator.comparing(e -> e.getMetadata().getName()));
-
         this.logger = LogManager.getLogger("Evergreen Manager");
-        this.getConfig().load();
+        this.getElementConfig().load();
+        this.getMainConfig().load();
     }
 
     public void resetConfig() {
         this.enabled = true;
         this.showInChat = true;
         this.showInDebug = false;
-        this.colorsInGui = true;
     }
 
-    public List<Element> getElements() {
-        return elements;
+    public List<Element> getCurrentElements() {
+        return currentElements;
     }
 
     @SubscribeEvent
@@ -86,26 +63,28 @@ public class ElementManager {
         if (isEnabled()) {
             mc.mcProfiler.startSection("Element Render");
             if ((mc.inGameHasFocus && !mc.gameSettings.showDebugInfo) || (mc.gameSettings.showDebugInfo && showInDebug) || (mc.currentScreen instanceof GuiChat && showInChat)) {
-                for (Element e : elements) {
-                    if (e.isEnabled()) {
-                        e.render(event);
-                    }
+                for (Element e : currentElements) {
+                    e.render(event);
                 }
             }
             mc.mcProfiler.endSection();
         }
     }
 
-    public void saveAll() {
-        for (Element e : elements) e.getConfig().save();
+    public void addElement(Element element) {
+        this.currentElements.add(element);
     }
 
-    public void resetAll() {
-        for (Element e : elements) e.resetSettings();
+    public void removeElement(Element element) {
+        this.currentElements.remove(element);
     }
 
-    public MainConfig getConfig() {
-        return config;
+    public MainConfig getMainConfig() {
+        return mainConfig;
+    }
+
+    public ElementConfig getElementConfig() {
+        return elementConfig;
     }
 
     public Logger getLogger() {
@@ -134,13 +113,5 @@ public class ElementManager {
 
     public void setShowInDebug(boolean showInDebug) {
         this.showInDebug = showInDebug;
-    }
-
-    public boolean doColorsInGui() {
-        return colorsInGui;
-    }
-
-    public void setColorsInGui(boolean colorsInGui) {
-        this.colorsInGui = colorsInGui;
     }
 }

@@ -8,7 +8,9 @@
 
 package com.evergreenclient.hudmod.elements.impl;
 
+import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
+import com.evergreenclient.hudmod.elements.ElementType;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
@@ -159,8 +161,7 @@ public class ElementScoreboard extends Element {
     }
 
     @Override
-    public void resetSettings() {
-        setEnabled(true);
+    public void resetSettings(boolean save) {
         getPosition().setScaledY(0.5f);
         getPosition().setScaledX(1f);
         setTitle(false);
@@ -174,7 +175,8 @@ public class ElementScoreboard extends Element {
         setPaddingHeight(4);
         for (Setting s : getCustomSettings())
             s.reset();
-        getConfig().save();
+        if (save)
+            EvergreenHUD.getInstance().getElementManager().getElementConfig().save();
     }
 
     @Override

@@ -12,15 +12,20 @@ public abstract class Setting {
 
     private final String name;
     private final String description;
+    private boolean internal;
 
-    protected Setting(String name, String description) {
+    protected Setting(String name, String description, boolean internal) {
         this.name = name;
         this.description = description;
+        this.internal = internal;
+    }
+
+    protected Setting(String name, String description) {
+        this(name, description, false);
     }
 
     protected Setting(String name) {
-        this.name = name;
-        this.description = "";
+        this(name, "", false);
     }
 
     public abstract void reset();
@@ -31,6 +36,10 @@ public abstract class Setting {
 
     public String getDescription() {
         return description;
+    }
+
+    public boolean isInternal() {
+        return internal;
     }
 
     public final String getJsonKey() {

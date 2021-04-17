@@ -25,29 +25,7 @@ public class GuiMain extends GuiScreenElements {
     @Override
     public void initGui() {
         this.buttonList.add(new GuiButtonExt(0, width / 2 + 1,      height - 20, 90, 20, "Config"));
-        this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 90, height - 20, 90, 20, "Manage"));
-
-//        int column = 0;
-//        int element = 2;
-//        final int columnOffset = 61;
-//        int y = 50;
-//        for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-//            if (y > height - 60) {
-//                column++;
-//                y = 50;
-//                for (GuiButton button : this.buttonList) {
-//                    if (button.id > 1) {
-//                        button.xPosition -= columnOffset * column;
-//                    }
-//                }
-//
-//            }
-//            this.buttonList.add(new GuiButtonExt(element, width / 2 - 60 + (columnOffset * (column)), y,
-//                    120, 20, (EvergreenHUD.getInstance().getElementManager().doColorsInGui() ?
-//                    (e.isEnabled() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) : "") + e.getMetadata().getName()));
-//            y += 22;
-//            element++;
-//        }
+        this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 90, height - 20, 90, 20, "Add"));
 
         if (!EvergreenHUD.getInstance().getElementManager().isEnabled())
             Notifications.INSTANCE.pushNotification("EvergreenHUD", "The mod is disabled. You will not see the hud in-game unless you enable it.");
@@ -73,10 +51,7 @@ public class GuiMain extends GuiScreenElements {
                 mc.displayGuiScreen(new GuiMainConfig(EvergreenHUD.getInstance().getElementManager()));
                 break;
             case 1:
-                mc.displayGuiScreen(new GuiManageElements());
-                break;
-            default:
-                mc.displayGuiScreen(EvergreenHUD.getInstance().getElementManager().getElements().get(button.id - 2).getElementConfigGui());
+                mc.displayGuiScreen(new GuiAddElement());
                 break;
         }
     }

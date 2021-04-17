@@ -13,11 +13,23 @@ import com.evergreenclient.hudmod.settings.Setting;
 import java.util.Arrays;
 import java.util.List;
 
-public class ArraySetting extends Setting {
+public class  ArraySetting extends Setting {
 
     private final List<String> options;
     private final int def;
     private int index;
+
+    public ArraySetting(String name, String description, String current, boolean internal, String... options) {
+        super(name, description, internal);
+        this.options = Arrays.asList(options);
+        this.index = this.def = this.options.indexOf(current);
+    }
+
+    public ArraySetting(String name, String description, int current, boolean internal, String... options) {
+        super(name, description, internal);
+        this.options = Arrays.asList(options);
+        this.index = this.def = current;
+    }
 
     public ArraySetting(String name, String description, String current, String... options) {
         super(name, description);
@@ -27,6 +39,18 @@ public class ArraySetting extends Setting {
 
     public ArraySetting(String name, String description, int current, String... options) {
         super(name, description);
+        this.options = Arrays.asList(options);
+        this.index = this.def = current;
+    }
+
+    public ArraySetting(String name, String current, boolean internal, String... options) {
+        super(name, "", internal);
+        this.options = Arrays.asList(options);
+        this.index = this.def = this.options.indexOf(current);
+    }
+
+    public ArraySetting(String name, int current, boolean internal, String... options) {
+        super(name, "", internal);
         this.options = Arrays.asList(options);
         this.index = this.def = current;
     }

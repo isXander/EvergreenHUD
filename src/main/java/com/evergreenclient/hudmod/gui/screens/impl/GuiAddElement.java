@@ -11,6 +11,8 @@ package com.evergreenclient.hudmod.gui.screens.impl;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.elements.ElementManager;
+import com.evergreenclient.hudmod.elements.ElementType;
+import com.evergreenclient.hudmod.elements.impl.ElementText;
 import com.evergreenclient.hudmod.gui.screens.GuiScreenElements;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -20,16 +22,15 @@ import net.minecraftforge.fml.client.config.GuiButtonExt;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class GuiManageElements extends GuiScreenElements {
+public class GuiAddElement extends GuiScreenElements {
 
     @Override
     public void initGui() {
-        ElementManager manager = EvergreenHUD.getInstance().getElementManager();
-
         this.buttonList.add(new GuiButtonExt(0, width / 2 - 90 - 1, height - 20, 182, 20, "Back"));
 
         final int startY = 50;
@@ -40,8 +41,9 @@ public class GuiManageElements extends GuiScreenElements {
         int column = 0;
         int row = 0;
         int index = 1;
-        List<Element> elements = manager.getElements().stream().sorted(Comparator.comparing(o -> o.getMetadata().getName())).collect(Collectors.toList());
-        for (Element e : elements) {
+        List<ElementType> elements = Arrays.stream(ElementType.values()).sorted(Comparator.comparing(o -> o.getElement().getMetadata().getName())).collect(Collectors.toList());
+        for (ElementType type : elements) {
+            Element e = type.getElement();
             if (startY + (row * buttonHeight + row * buttonGap) > height - 60 && index - 1 < elements.size()) {
                 column++;
                 row = 0;
@@ -50,14 +52,12 @@ public class GuiManageElements extends GuiScreenElements {
                         button.xPosition -= (buttonWidth / 2) + buttonGap;
                     }
                 }
-
             }
 
             int x = width / 2 + ((buttonWidth / 2) * column) - (buttonWidth / 2);
             int y = startY + (row * buttonHeight + row * buttonGap);
 
-            this.buttonList.add(new ElementButton(startButtonIndex + index, x, y, buttonWidth, buttonHeight,
-                    (manager.doColorsInGui() ? (e.isEnabled() ? EnumChatFormatting.GREEN.toString() : EnumChatFormatting.RED.toString()) : "") + e.getMetadata().getName(), e));
+            this.buttonList.add(new ElementButton(startButtonIndex + index, x, y, buttonWidth, buttonHeight, e.getMetadata().getName(), e));
 
             row++;
             index++;
@@ -83,6 +83,7 @@ public class GuiManageElements extends GuiScreenElements {
         } else {
             if (button instanceof ElementButton) {
                 ElementButton eb = (ElementButton) button;
+                EvergreenHUD.getInstance().getElementManager().addElement(eb.getElement());
                 mc.displayGuiScreen(eb.getElement().getElementConfigGui());
             }
         }

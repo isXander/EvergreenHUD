@@ -32,11 +32,9 @@ public class GuiScreenElements extends GuiScreenExt {
 
         ScaledResolution res = new ScaledResolution(mc);
 
-        for (Element e : EvergreenHUD.getInstance().getElementManager().getElements()) {
-            if (e.isEnabled()) {
-                e.render(new RenderGameOverlayEvent(partialTicks, res));
-                e.renderGuiOverlay(lastClicked != null && lastClicked == e);
-            }
+        for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
+            e.render(new RenderGameOverlayEvent(partialTicks, res));
+            e.renderGuiOverlay(lastClicked != null && lastClicked == e);
         }
 
         float x = ((float)Mouse.getEventX()) * ((float)this.width) / ((float)this.mc.displayWidth);
@@ -64,7 +62,7 @@ public class GuiScreenElements extends GuiScreenExt {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         ScaledResolution res = new ScaledResolution(mc);
         boolean clickedElement = false;
-        for (Element e : EvergreenHUD.getInstance().getElementManager().getElements().stream().filter(Element::isEnabled).collect(Collectors.toList())) {
+        for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
             e.onMouseClicked(mouseX, mouseY);
             if (e.getHitbox(1, e.getPosition().getScale()).isMouseOver(mouseX, mouseY)) {
                 lastClicked = dragging = e;
@@ -89,7 +87,7 @@ public class GuiScreenElements extends GuiScreenExt {
 
     @Override
     public void onGuiClosed() {
-        EvergreenHUD.getInstance().getElementManager().saveAll();
+        EvergreenHUD.getInstance().getElementManager().getElementConfig().save();
     }
 
 }

@@ -10,10 +10,13 @@ package com.evergreenclient.hudmod.config;
 
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
+import com.evergreenclient.hudmod.elements.ElementManager;
+import com.evergreenclient.hudmod.elements.ElementType;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.*;
 import com.evergreenclient.hudmod.utils.Alignment;
 import com.evergreenclient.hudmod.utils.BetterJsonObject;
+import com.google.gson.JsonArray;
 import net.minecraft.client.Minecraft;
 import org.apache.commons.io.FileUtils;
 
@@ -23,70 +26,28 @@ import java.io.IOException;
 
 public class ElementConfig {
 
-    private static final int VERSION = 1;
+    public static final int VERSION = 1;
 
-    private final Element element;
+    private final ElementManager manager;
     public final File configFile;
 
-    public ElementConfig(Element e) {
-        this.element = e;
-        this.configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/elements/" + element.getMetadata().getName() + ".json");
-
-        // Config has moved directories. So we don't need to reset all configs, just test if the old config is there and move it
-        File oldLocation = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/" + element.getMetadata().getName() + ".json");
-        if (oldLocation.exists()) {
-            try {
-                FileUtils.moveFile(oldLocation, configFile);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-        }
+    public ElementConfig(ElementManager manager) {
+        this.manager = manager;
+        this.configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/elements.json");
     }
 
     private BetterJsonObject generateJson() {
         BetterJsonObject root = new BetterJsonObject();
         root.addProperty("version", VERSION);
 
-        root.addProperty("enabled", element.isEnabled());
-        root.addProperty("x", element.getPosition().getXScaled());
-        root.addProperty("y", element.getPosition().getYScaled());
-        root.addProperty("scale", element.getPosition().getScale());
-        root.addProperty("title", element.showTitle());
-        root.addProperty("brackets", element.showBrackets());
-        root.addProperty("inverted", element.isInverted());
-        root.addProperty("chroma", element.useChroma());
-        root.addProperty("shadow", element.renderShadow());
-        root.addProperty("alignment", element.getAlignment().ordinal());
-
-        BetterJsonObject textCol = new BetterJsonObject();
-        textCol.addProperty("r", element.getTextColor().getRed());
-        textCol.addProperty("g", element.getTextColor().getGreen());
-        textCol.addProperty("b", element.getTextColor().getBlue());
-        root.add("textColor", textCol);
-
-        BetterJsonObject bgCol = new BetterJsonObject();
-        bgCol.addProperty("r", element.getBgColor().getRed());
-        bgCol.addProperty("g", element.getBgColor().getGreen());
-        bgCol.addProperty("b", element.getBgColor().getBlue());
-        bgCol.addProperty("a", element.getBgColor().getAlpha());
-        bgCol.addProperty("padding_width", element.getPaddingWidth());
-        bgCol.addProperty("padding_height", element.getPaddingHeight());
-        root.add("bgColor", bgCol);
-
-        BetterJsonObject custom = new BetterJsonObject();
-        for (Setting s : element.getCustomSettings()) {
-            if (s instanceof BooleanSetting)
-                custom.addProperty(s.getJsonKey(), ((BooleanSetting)s).get());
-            else if (s instanceof IntegerSetting)
-                custom.addProperty(s.getJsonKey(), ((IntegerSetting)s).get());
-            else if (s instanceof DoubleSetting)
-                custom.addProperty(s.getJsonKey(), ((DoubleSetting)s).get());
-            else if (s instanceof ArraySetting)
-                custom.addProperty(s.getJsonKey(), ((ArraySetting) s).getIndex());
-            else if (s instanceof StringSetting)
-                custom.addProperty(s.getJsonKey(), ((StringSetting)s).get());
+        JsonArray array = new JsonArray();
+        for (Element element : manager.getCurrentElements()) {
+            BetterJsonObject obj = new BetterJsonObject();
+            obj.addProperty("type", element.getType().name());
+            obj.add("settings", element.generateJson());
+            array.add(obj.getData());
         }
-        root.add("custom", custom);
+        root.getData().add("elements", array);
 
         return root;
     }
@@ -106,49 +67,19 @@ public class ElementConfig {
         }
         // new config version so we need to reset the config
         if (root.optInt("version") != VERSION) {
-            element.getLogger().warn("Resetting configuration! Older or newer config version detected.");
+            manager.getLogger().warn("Resetting configuration! Older or newer config version detected.");
             EvergreenHUD.getInstance().notifyConfigReset();
             save();
             return;
         }
 
-        element.setEnabled(root.optBoolean("enabled"));
-        element.getPosition().setScaledX(root.optFloat("x"));
-        element.getPosition().setScaledY(root.optFloat("y"));
-        element.getPosition().setScale(root.optFloat("scale", 1.0f));
-        element.setTitle(root.optBoolean("title", true));
-        element.setBrackets(root.optBoolean("brackets", false));
-        element.setInverted(root.optBoolean("inverted", false));
-        element.setChroma(root.optBoolean("chroma", false));
-        element.setShadow(root.optBoolean("shadow", true));
-        element.setAlignment(Alignment.values()[root.optInt("alignment", 0)]);
-
-        BetterJsonObject textColor = new BetterJsonObject(root.get("textColor").getAsJsonObject());
-        element.setTextColor(new Color(textColor.optInt("r", 255), textColor.optInt("g", 255), textColor.optInt("b", 255)));
-
-        BetterJsonObject bgColor = new BetterJsonObject(root.get("bgColor").getAsJsonObject());
-        element.setBgColor(new Color(bgColor.optInt("r", 255), bgColor.optInt("g", 255), bgColor.optInt("b", 255), bgColor.optInt("a", 255)));
-        element.setPaddingWidth(bgColor.optFloat("padding_width", 4));
-        element.setPaddingHeight(bgColor.optFloat("padding_height", 4));
-
-        BetterJsonObject custom = new BetterJsonObject(root.get("custom").getAsJsonObject());
-        for (String key : custom.getAllKeys()) {
-            for (Setting s : element.getCustomSettings()) {
-                if (s.getJsonKey().equals(key)) {
-                    if (s instanceof BooleanSetting)
-                        ((BooleanSetting) s).set(custom.optBoolean(key));
-                    else if (s instanceof IntegerSetting)
-                        ((IntegerSetting) s).set(custom.optInt(key));
-                    else if (s instanceof DoubleSetting)
-                        ((DoubleSetting) s).set(custom.optDouble(key));
-                    else if (s instanceof ArraySetting)
-                        ((ArraySetting) s).set(custom.optInt(key));
-                    else if (s instanceof StringSetting)
-                        ((StringSetting) s).set(custom.optString(key));
-                    break;
-                }
-            }
-        }
+        JsonArray array = root.getData().getAsJsonArray("elements");
+        array.forEach((jsonElement) -> {
+            BetterJsonObject elementConfig = new BetterJsonObject(jsonElement.getAsJsonObject());
+            Element element = ElementType.valueOf(elementConfig.optString("type")).getElement();
+            element.loadJson(new BetterJsonObject(elementConfig.get("settings").getAsJsonObject()));
+            manager.addElement(element);
+        });
     }
 
 }

@@ -14,6 +14,16 @@ public class ButtonSetting extends Setting {
 
     private final Runnable value;
 
+    public ButtonSetting(String name, String description, Runnable runnable, boolean internal) {
+        super(name, description, internal);
+        this.value = runnable;
+    }
+
+    public ButtonSetting(String name, Runnable runnable, boolean internal) {
+        super(name, "", internal);
+        this.value = runnable;
+    }
+
     public ButtonSetting(String name, String description, Runnable runnable) {
         super(name, description);
         this.value = runnable;

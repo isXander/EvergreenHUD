@@ -46,8 +46,6 @@ public class MainConfig {
         manager.setEnabled(root.optBoolean("enabled"));
         manager.setShowInChat(root.optBoolean("chat"));
         manager.setShowInDebug(root.optBoolean("debug"));
-        manager.setColorsInGui(root.optBoolean("colors"));
-
     }
 
     public void save() {
@@ -56,7 +54,6 @@ public class MainConfig {
         root.addProperty("enabled", manager.isEnabled());
         root.addProperty("chat", manager.doShowInChat());
         root.addProperty("debug", manager.doShowInDebug());
-        root.addProperty("colors", manager.doColorsInGui());
 
         root.writeToFile(this.configFile);
     }

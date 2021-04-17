@@ -15,6 +15,16 @@ public class BooleanSetting extends Setting {
     private final boolean def;
     private boolean value;
 
+    public BooleanSetting(String name, String description, boolean def, boolean internal) {
+        super(name, description, internal);
+        this.value = this.def = def;
+    }
+
+    public BooleanSetting(String name, boolean def, boolean internal) {
+        super(name, "", internal);
+        this.value = this.def = def;
+    }
+
     public BooleanSetting(String name, String description, boolean def) {
         super(name, description);
         this.value = this.def = def;

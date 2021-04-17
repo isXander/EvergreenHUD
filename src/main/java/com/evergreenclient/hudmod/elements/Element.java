@@ -14,12 +14,8 @@ import com.evergreenclient.hudmod.event.EventManager;
 import com.evergreenclient.hudmod.event.Listenable;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
 import com.evergreenclient.hudmod.settings.Setting;
-import com.evergreenclient.hudmod.utils.Alignment;
-import com.evergreenclient.hudmod.utils.MathUtils;
-import com.evergreenclient.hudmod.utils.Position;
-import com.evergreenclient.hudmod.utils.RenderUtils;
-import com.evergreenclient.hudmod.utils.ElementData;
-import com.evergreenclient.hudmod.utils.Hitbox;
+import com.evergreenclient.hudmod.settings.impl.*;
+import com.evergreenclient.hudmod.utils.*;
 import com.evergreenclient.hudmod.utils.thirdparty.GLRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
@@ -40,40 +36,39 @@ public abstract class Element extends Gui implements Listenable {
 
     @Override
     public boolean canReceiveEvents() {
-        return isEnabled() && EvergreenHUD.getInstance().getElementManager().isEnabled();
+        ElementManager manager = EvergreenHUD.getInstance().getElementManager();
+        return manager.isEnabled() && manager.getCurrentElements().contains(this);
     }
 
     /* For child classes */
     protected static final Minecraft mc = Minecraft.getMinecraft();
 
     /* Config */
-    private boolean enabled = false;
-    private Position pos = Position.getPositionWithRawPositioning(10, 10, 1, new ScaledResolution(mc));
-    private boolean title = true;
-    private boolean brackets = false;
-    private boolean shadow = true;
-    private boolean chroma = false;
-    private boolean inverted = false;
-    private float paddingWidth = 4;
-    private float paddingHeight = 4;
-    private Alignment alignment = Alignment.RIGHT;
-    private final List<Setting> customSettings = new ArrayList<>();
+    private Position pos;
+    private boolean title;
+    private boolean brackets;
+    private boolean shadow;
+    private boolean chroma;
+    private boolean inverted;
+    private float paddingWidth;
+    private float paddingHeight;
+    private Alignment alignment;
+    private final List<Setting> customSettings;
 
     /* Color */
-    private Color textColor = new Color(255, 255, 255);
-    private Color bgColor = new Color(0, 0, 0, 100);
+    private Color textColor;
+    private Color bgColor;
 
     protected final Logger logger;
-    private final ElementConfig config;
     private final ElementData meta;
 
     public Element() {
+        this.customSettings = new ArrayList<>();
+        resetSettings(false);
         EventManager.getInstance().addListener(this);
         this.meta = metadata();
         this.logger = LogManager.getLogger(getMetadata().getName());
-        config = new ElementConfig(this);
         initialise();
-        config.load();
     }
 
     public abstract void initialise();
@@ -88,26 +83,22 @@ public abstract class Element extends Gui implements Listenable {
 
     public abstract String getDisplayTitle();
 
+    public ElementType getType() {
+        return ElementType.getType(this);
+    }
+
     public GuiElementConfig getElementConfigGui() {
         return new GuiElementConfig(this);
-    }
-
-    public void onSettingChange(Setting setting) {
-
-    }
-
-    public boolean canShowTitle() {
-        return true;
     }
 
     public String getDisplayString() {
         String builder = "";
         if (showBrackets())
             builder += "[";
-        if (showTitle() && !isInverted() && canShowTitle())
+        if (showTitle() && !isInverted() && useTitleSetting())
             builder += getDisplayTitle() + ": ";
         builder += getValue();
-        if (showTitle() && isInverted() && canShowTitle())
+        if (showTitle() && isInverted() && useTitleSetting())
             builder += " " + getDisplayTitle();
         if (showBrackets())
             builder += "]";
@@ -202,8 +193,7 @@ public abstract class Element extends Gui implements Listenable {
         return hitbox;
     }
 
-    public void resetSettings() {
-        enabled = true;
+    public void resetSettings(boolean save) {
         pos = Position.getPositionWithRawPositioning(10, 10, 1, new ScaledResolution(mc));
         title = true;
         brackets = false;
@@ -216,7 +206,8 @@ public abstract class Element extends Gui implements Listenable {
         paddingHeight = 4;
         for (Setting s : customSettings)
             s.reset();
-        getConfig().save();
+        if (save)
+            EvergreenHUD.getInstance().getElementManager().getElementConfig().save();
     }
 
     private static final ResourceLocation settingsIcon = new ResourceLocation("evergreenhud/textures/settings.png");
@@ -246,7 +237,7 @@ public abstract class Element extends Gui implements Listenable {
             mc.displayGuiScreen(this.getElementConfigGui());
         }
         if (mouseX >= hitbox.x + hitbox.width - iconWidth && mouseX <= hitbox.x + hitbox.width && mouseY >= hitbox.y + hitbox.height - iconHeight && mouseY <= hitbox.y + hitbox.height) {
-            this.setEnabled(false);
+            EvergreenHUD.getInstance().getElementManager().removeElement(this);
             // Update the buttons so enabled is false
             if (mc.currentScreen instanceof GuiElementConfig) {
                 GuiElementConfig gui = (GuiElementConfig) mc.currentScreen;
@@ -257,8 +248,94 @@ public abstract class Element extends Gui implements Listenable {
         }
     }
 
-    public ElementConfig getConfig() {
-        return config;
+    public BetterJsonObject generateJson() {
+        BetterJsonObject settings = new BetterJsonObject();
+
+        settings.addProperty("x", getPosition().getXScaled());
+        settings.addProperty("y", getPosition().getYScaled());
+        settings.addProperty("scale", getPosition().getScale());
+        settings.addProperty("title", showTitle());
+        settings.addProperty("brackets", showBrackets());
+        settings.addProperty("inverted", isInverted());
+        settings.addProperty("chroma", useChroma());
+        settings.addProperty("shadow", renderShadow());
+        settings.addProperty("alignment", getAlignment().ordinal());
+
+        BetterJsonObject textCol = new BetterJsonObject();
+        textCol.addProperty("r", getTextColor().getRed());
+        textCol.addProperty("g", getTextColor().getGreen());
+        textCol.addProperty("b", getTextColor().getBlue());
+        settings.add("textColor", textCol);
+
+        BetterJsonObject bgCol = new BetterJsonObject();
+        bgCol.addProperty("r", getBgColor().getRed());
+        bgCol.addProperty("g", getBgColor().getGreen());
+        bgCol.addProperty("b", getBgColor().getBlue());
+        bgCol.addProperty("a", getBgColor().getAlpha());
+        bgCol.addProperty("padding_width", getPaddingWidth());
+        bgCol.addProperty("padding_height", getPaddingHeight());
+        settings.add("bgColor", bgCol);
+
+        BetterJsonObject custom = new BetterJsonObject();
+        for (Setting s : getCustomSettings()) {
+            if (s instanceof BooleanSetting)
+                custom.addProperty(s.getJsonKey(), ((BooleanSetting)s).get());
+            else if (s instanceof IntegerSetting)
+                custom.addProperty(s.getJsonKey(), ((IntegerSetting)s).get());
+            else if (s instanceof DoubleSetting)
+                custom.addProperty(s.getJsonKey(), ((DoubleSetting)s).get());
+            else if (s instanceof ArraySetting)
+                custom.addProperty(s.getJsonKey(), ((ArraySetting) s).getIndex());
+            else if (s instanceof StringSetting)
+                custom.addProperty(s.getJsonKey(), ((StringSetting)s).get());
+        }
+        settings.add("custom", custom);
+
+        return settings;
+    }
+
+    public void loadJson(BetterJsonObject root) {
+        getPosition().setScaledX(root.optFloat("x"));
+        getPosition().setScaledY(root.optFloat("y"));
+        getPosition().setScale(root.optFloat("scale", 1.0f));
+        setTitle(root.optBoolean("title", true));
+        setBrackets(root.optBoolean("brackets", false));
+        setInverted(root.optBoolean("inverted", false));
+        setChroma(root.optBoolean("chroma", false));
+        setShadow(root.optBoolean("shadow", true));
+        setAlignment(Alignment.values()[root.optInt("alignment", 0)]);
+
+        BetterJsonObject textColor = new BetterJsonObject(root.get("textColor").getAsJsonObject());
+        setTextColor(new Color(textColor.optInt("r", 255), textColor.optInt("g", 255), textColor.optInt("b", 255)));
+
+        BetterJsonObject bgColor = new BetterJsonObject(root.get("bgColor").getAsJsonObject());
+        setBgColor(new Color(bgColor.optInt("r", 255), bgColor.optInt("g", 255), bgColor.optInt("b", 255), bgColor.optInt("a", 255)));
+        setPaddingWidth(bgColor.optFloat("padding_width", 4));
+        setPaddingHeight(bgColor.optFloat("padding_height", 4));
+
+        BetterJsonObject custom = new BetterJsonObject(root.get("custom").getAsJsonObject());
+        for (String key : custom.getAllKeys()) {
+            for (Setting s : getCustomSettings()) {
+                if (s.getJsonKey().equals(key)) {
+                    if (s instanceof BooleanSetting)
+                        ((BooleanSetting) s).set(custom.optBoolean(key));
+                    else if (s instanceof IntegerSetting)
+                        ((IntegerSetting) s).set(custom.optInt(key));
+                    else if (s instanceof DoubleSetting)
+                        ((DoubleSetting) s).set(custom.optDouble(key));
+                    else if (s instanceof ArraySetting)
+                        ((ArraySetting) s).set(custom.optInt(key));
+                    else if (s instanceof StringSetting)
+                        ((StringSetting) s).set(custom.optString(key));
+                    break;
+                }
+            }
+        }
+        onSettingsLoad();
+    }
+
+    protected void onSettingsLoad() {
+
     }
 
     protected void addSettings(Setting... settings) {
@@ -269,21 +346,8 @@ public abstract class Element extends Gui implements Listenable {
         return customSettings;
     }
 
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-        if (enabled)
-            onEnabled();
-        else
-            onDisabled();
-    }
-
-    public void onEnabled() { }
-
-    public void onDisabled() { }
+    public void onAdded() {}
+    public void onRemoved() {}
 
     public Position getPosition() {
         return pos;

@@ -9,6 +9,7 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
+import com.evergreenclient.hudmod.elements.ElementType;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.utils.ElementData;
 import net.minecraft.util.MathHelper;
@@ -27,6 +28,11 @@ public class ElementPitch extends Element {
     @Override
     public ElementData metadata() {
         return new ElementData("Pitch Display", "Shows the player's rotation pitch. Useful for bridging.");
+    }
+
+    @Override
+    public ElementType getType() {
+        return ElementType.PITCH;
     }
 
     @Override

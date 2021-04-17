@@ -9,6 +9,7 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
+import com.evergreenclient.hudmod.elements.ElementType;
 import com.evergreenclient.hudmod.settings.impl.StringSetting;
 import com.evergreenclient.hudmod.utils.ElementData;
 
@@ -32,7 +33,7 @@ public class ElementText extends Element {
     }
 
     @Override
-    public boolean canShowTitle() {
+    public boolean useTitleSetting() {
         return false;
     }
 
