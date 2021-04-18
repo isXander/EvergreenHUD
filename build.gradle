@@ -12,7 +12,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "1.4"
+version = "2.0"
 group = "com.evergreenclient"
 archivesBaseName = "evergreenhud"
 
@@ -21,11 +21,11 @@ targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
     runDir = "run"
-    mappings = "stable_20"
+    mappings = "stable_22"
 }
 
 dependencies {
-    provided files("libs/modcore.jar")
+    provided files("libs/xanderlib.jar")
 }
 
 processResources {
@@ -44,7 +44,7 @@ processResources {
 }
 
 jar {
-    archiveName = '[' + minecraft.version + '-' + version + '] EvergreenHUD.jar'
+    archiveName = "[$minecraft.version-$version] EvergreenHUD.jar"
 
     manifest {
         attributes "FMLCorePlugin": "com.evergreenclient.hudmod.forge.FMLLoadingPlugin",

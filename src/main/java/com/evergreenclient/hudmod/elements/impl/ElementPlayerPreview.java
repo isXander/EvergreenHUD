@@ -15,9 +15,9 @@
 
 package com.evergreenclient.hudmod.elements.impl;
 
+import co.uk.isxander.xanderlib.utils.HitBox2D;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.utils.ElementData;
-import com.evergreenclient.hudmod.utils.Hitbox;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -84,7 +84,7 @@ public class ElementPlayerPreview extends Element {
     public void render(RenderGameOverlayEvent event) {
         GlStateManager.pushMatrix();
         GlStateManager.enableDepth();
-        Hitbox hitbox = getHitbox(1, getPosition().getScale());
+        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
 
         EntityPlayerSP ent = mc.thePlayer;
@@ -130,7 +130,7 @@ public class ElementPlayerPreview extends Element {
     }
 
     @Override
-    public Hitbox getHitbox(float posScale, float sizeScale) {
+    public HitBox2D getHitbox(float posScale, float sizeScale) {
         ScaledResolution res = new ScaledResolution(mc);
 
         float width = 80 * sizeScale;
@@ -140,7 +140,7 @@ public class ElementPlayerPreview extends Element {
         float x = getPosition().getRawX(res) - (width / 2f) / posScale;
         float y = getPosition().getRawY(res) - height + (height / 8f) + (height / 128f) / posScale;
 
-        return new Hitbox(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+        return new HitBox2D(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
     }
 
     @Override

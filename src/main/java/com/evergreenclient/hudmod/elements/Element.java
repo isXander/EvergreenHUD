@@ -15,9 +15,14 @@
 
 package com.evergreenclient.hudmod.elements;
 
+import co.uk.isxander.xanderlib.utils.HitBox2D;
+import co.uk.isxander.xanderlib.utils.MathUtils;
+import co.uk.isxander.xanderlib.utils.Position;
+import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.event.Listenable;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
+import com.evergreenclient.hudmod.gui.screens.impl.GuiMain;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.*;
 import com.evergreenclient.hudmod.utils.*;
@@ -114,7 +119,7 @@ public abstract class Element extends Gui implements Listenable {
      */
     public void render(RenderGameOverlayEvent event) {
         mc.mcProfiler.startSection(getMetadata().getName());
-        Hitbox hitbox = getHitbox(1, getPosition().getScale());
+        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
         float x = getPosition().getRawX(event.resolution);
         float y = getPosition().getRawY(event.resolution);
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
@@ -174,8 +179,8 @@ public abstract class Element extends Gui implements Listenable {
         return new Color(Color.HSBtoRGB((float)((System.currentTimeMillis() - x * 10.0 * 1.0 - y * 10.0 * 1.0) % v) / v, 0.8f, 0.8f));
     }
 
-    public Hitbox getHitbox(float posScale, float sizeScale) {
-        Hitbox hitbox = null;
+    public HitBox2D getHitbox(float posScale, float sizeScale) {
+        HitBox2D hitbox = null;
         ScaledResolution res = new ScaledResolution(mc);
         float width = mc.fontRendererObj.getStringWidth(getDisplayString()) * sizeScale;
         float extraWidth = getPaddingWidth() * sizeScale;
@@ -185,13 +190,13 @@ public abstract class Element extends Gui implements Listenable {
         float y = getPosition().getRawY(res) / posScale;
         switch (getAlignment()) {
             case LEFT:
-                hitbox = new Hitbox(x - width - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+                hitbox = new HitBox2D(x - width - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
                 break;
             case CENTER:
-                hitbox = new Hitbox(x - (width / 2f) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+                hitbox = new HitBox2D(x - (width / 2f) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
                 break;
             case RIGHT:
-                hitbox = new Hitbox(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+                hitbox = new HitBox2D(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
                 break;
         }
         return hitbox;
@@ -218,7 +223,7 @@ public abstract class Element extends Gui implements Listenable {
     private static final ResourceLocation deleteIcon = new ResourceLocation("evergreenhud/textures/delete.png");
 
     public void renderGuiOverlay(boolean selected) {
-        Hitbox hitbox = getHitbox(1, getPosition().getScale());
+        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
         GLRenderer.drawHollowRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, 1, (selected ? new Color(255, 255, 255, 175) : new Color(175, 175, 175, 100)));
         GlStateManager.pushMatrix();
         GlStateManager.color(1f, 1f, 1f);
@@ -227,14 +232,14 @@ public abstract class Element extends Gui implements Listenable {
         double iconWidth = 384 * 0.02f * MathUtils.clamp(getPosition().getScale(), 0.75f, 1f);
         double iconHeight = 384 * 0.02f * MathUtils.clamp(getPosition().getScale(), 0.75f, 1f);
         mc.getTextureManager().bindTexture(settingsIcon);
-        RenderUtils.drawModalRect(hitbox.x, hitbox.y + hitbox.height - iconHeight, 0, 0, 384, 384, iconWidth, iconHeight, 384, 384);
+        GLRenderer.drawModalRect(hitbox.x, hitbox.y + hitbox.height - iconHeight, 0, 0, 384, 384, iconWidth, iconHeight, 384, 384);
         mc.getTextureManager().bindTexture(deleteIcon);
-        RenderUtils.drawModalRect(hitbox.x + hitbox.width - iconWidth, hitbox.y + hitbox.height - iconHeight, 0, 0, 384, 384, iconWidth, iconHeight, 384, 384);
+        GLRenderer.drawModalRect(hitbox.x + hitbox.width - iconWidth, hitbox.y + hitbox.height - iconHeight, 0, 0, 384, 384, iconWidth, iconHeight, 384, 384);
         GlStateManager.popMatrix();
     }
 
     public void onMouseClicked(float mouseX, float mouseY) {
-        Hitbox hitbox = getHitbox(1, getPosition().getScale());
+        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
         double iconWidth = 384 * 0.02f * MathUtils.clamp01(getPosition().getScale());
         double iconHeight = 384 * 0.02f * MathUtils.clamp01(getPosition().getScale());
         if (mouseX >= hitbox.x && mouseX <= hitbox.x + iconWidth && mouseY >= hitbox.y + hitbox.height - iconHeight && mouseY <= hitbox.y + hitbox.height) {
@@ -350,8 +355,18 @@ public abstract class Element extends Gui implements Listenable {
         return customSettings;
     }
 
-    public void onAdded() {}
-    public void onRemoved() {}
+    public void onAdded() {
+
+    }
+    public void onRemoved() {
+        // You can't adjust a removed element
+        if (mc.currentScreen instanceof GuiElementConfig) {
+            GuiElementConfig configScreen = (GuiElementConfig) mc.currentScreen;
+            if (configScreen.element.equals(this)) {
+                mc.displayGuiScreen(new GuiMain());
+            }
+        }
+    }
 
     public Position getPosition() {
         return pos;

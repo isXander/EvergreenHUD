@@ -15,10 +15,10 @@
 
 package com.evergreenclient.hudmod.update;
 
+import co.uk.isxander.xanderlib.utils.HttpsUtils;
+import co.uk.isxander.xanderlib.utils.Version;
+import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import com.evergreenclient.hudmod.EvergreenHUD;
-import com.evergreenclient.hudmod.utils.HttpsUtils;
-import com.evergreenclient.hudmod.utils.Version;
-import com.evergreenclient.hudmod.utils.BetterJsonObject;
 
 public class UpdateChecker {
 

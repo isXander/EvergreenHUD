@@ -15,7 +15,9 @@
 
 package com.evergreenclient.hudmod.elements.impl;
 
-import club.sk1er.mods.core.gui.notification.Notifications;
+import co.uk.isxander.xanderlib.XanderLib;
+import co.uk.isxander.xanderlib.utils.HitBox2D;
+import co.uk.isxander.xanderlib.utils.ImageUtils;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.gui.elements.BetterGuiSlider;
@@ -26,11 +28,9 @@ import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.AbstractTexture;
-import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.crash.CrashReport;
-import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -46,8 +46,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ElementImage extends Element {
@@ -58,7 +56,6 @@ public class ElementImage extends Element {
     private static final float imgSize = 60;
 
     private Dimension imageDimension;
-    private final Map<File, ITextureObject> fileTextureMap = new HashMap<>();
     private boolean changed = false;
     private float scaleMod = 1;
 
@@ -159,15 +156,14 @@ public class ElementImage extends Element {
                     try {
                         File file = fileChooser.getSelectedFile();
                         BufferedImage image = ImageIO.read(file);
-                        fileTextureMap.remove(getImageFile());
                         fileLocation.set(file.getPath());
                         imageDimension = new Dimension(image.getWidth(), image.getHeight());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "You have selected a new image.");
+                    XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "You have selected a new image.");
                 } else {
-                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "You must select an image.");
+                    XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "You must select an image.");
                 }
                 changed = true;
             }).start();
@@ -194,7 +190,7 @@ public class ElementImage extends Element {
         try {
             if (getImageFile().equals(imageFile)) {
                 if (!EvergreenHUD.getInstance().isFirstLaunch() && !warned) {
-                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "Could not find image on one or more of your custom image elements.\nPlease reselect your images.");
+                    XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "Could not find image on one or more of your custom image elements.\nPlease reselect your images.");
                     warned = true;
                 }
             }
@@ -215,6 +211,12 @@ public class ElementImage extends Element {
     @Override
     public void render(RenderGameOverlayEvent event) {
         mc.mcProfiler.startSection(getMetadata().getName());
+        if (changed) {
+            // Reload the texture
+            XanderLib.getInstance().getModifiedTextureManager().deleteTexture(getImageFile());
+            changed = false;
+        }
+
         GlStateManager.pushMatrix();
         float scale = getPosition().getScale();
 
@@ -223,25 +225,29 @@ public class ElementImage extends Element {
         } else {
             scaleMod = 1;
         }
-        Hitbox hitbox = getHitbox(1, scale);
+        HitBox2D hitbox = getHitbox(1, scale);
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
         GlStateManager.scale(scale, scale, 1);
         GlStateManager.enableDepth();
         GlStateManager.color(1f, 1f, 1f, 1f);
-        bindTexture(getImageFile());
+        XanderLib.getInstance().getModifiedTextureManager().bindTexture(getImageFile(), (img) -> {
+            if (this.mirror.get())
+                img = ImageUtils.mirror(img);
+            return ImageUtils.rotate(img, this.rotation.getIndex() * 90);
+        });
         double width = imageDimension.getWidth();
         double height = imageDimension.getHeight();
         double renderWidth = width * scaleMod;
         double renderHeight = height * scaleMod;
 
-        RenderUtils.drawModalRect(this.getPosition().getRawX(event.resolution) / scale, this.getPosition().getRawY(event.resolution) / scale, 0, 0, imageDimension.getWidth(), imageDimension.getHeight(), renderWidth, renderHeight, imageDimension.getWidth(), imageDimension.getHeight());
+        GLRenderer.drawModalRect(this.getPosition().getRawX(event.resolution) / scale, this.getPosition().getRawY(event.resolution) / scale, 0, 0, imageDimension.getWidth(), imageDimension.getHeight(), renderWidth, renderHeight, imageDimension.getWidth(), imageDimension.getHeight());
 
         GlStateManager.popMatrix();
         mc.mcProfiler.endSection();
     }
 
     @Override
-    public Hitbox getHitbox(float posScale, float sizeScale) {
+    public HitBox2D getHitbox(float posScale, float sizeScale) {
         ScaledResolution res = new ScaledResolution(mc);
 
         float width = (float)imageDimension.getWidth() * sizeScale * scaleMod;
@@ -252,36 +258,7 @@ public class ElementImage extends Element {
         float x = getPosition().getRawX(res) / posScale;
         float y = getPosition().getRawY(res) / posScale;
 
-        return new Hitbox(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
-    }
-
-    private void bindTexture(File file) {
-        ITextureObject texture = fileTextureMap.get(file);
-        if (texture == null || changed) {
-            texture = new ExternalFileTexture(file, this);
-            loadTexture(file, texture);
-            changed = false;
-        }
-
-        GlStateManager.bindTexture(texture.getGlTextureId());
-    }
-
-    private void loadTexture(File file, ITextureObject texture) {
-        try {
-            texture.loadTexture(mc.getResourceManager());
-        } catch (IOException e) {
-            logger.warn("Failed to load texture: " + file.getPath(), e);
-            texture = TextureUtil.missingTexture;
-            this.fileTextureMap.put(file, texture);
-        } catch (Throwable throwable) {
-            ITextureObject finalTexture = texture;
-            CrashReport crash = CrashReport.makeCrashReport(throwable, "Registering texture");
-            CrashReportCategory crashreportcategory = crash.makeCategory("Resource location being registered");
-            crashreportcategory.addCrashSection("Resource location", file.getPath());
-            crashreportcategory.addCrashSectionCallable("Texture object class", () -> finalTexture.getClass().getName());
-            throw new ReportedException(crash);
-        }
-        this.fileTextureMap.put(file, texture);
+        return new HitBox2D(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
     }
 
     @Override
@@ -311,7 +288,7 @@ public class ElementImage extends Element {
 
             BufferedImage img = TextureUtil.readBufferedImage(is);
             if (element.mirror.get())
-                img = ImageUtils.flipHorizontally(img);
+                img = ImageUtils.mirror(img);
             img = ImageUtils.rotate(img, element.rotation.getIndex() * 90);
 
             TextureUtil.uploadTextureImageAllocate(this.getGlTextureId(), img, false, false);

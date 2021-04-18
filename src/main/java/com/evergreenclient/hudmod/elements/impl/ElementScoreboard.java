@@ -15,6 +15,7 @@
 
 package com.evergreenclient.hudmod.elements.impl;
 
+import co.uk.isxander.xanderlib.utils.HitBox2D;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
@@ -22,7 +23,6 @@ import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.utils.Alignment;
 import com.evergreenclient.hudmod.utils.ElementData;
-import com.evergreenclient.hudmod.utils.Hitbox;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.apolloclient.utils.GLRenderer;
@@ -186,12 +186,12 @@ public class ElementScoreboard extends Element {
     }
 
     @Override
-    public Hitbox getHitbox(float posScale, float sizeScale) {
+    public HitBox2D getHitbox(float posScale, float sizeScale) {
         float width = scoreWidth * sizeScale;
         float height = scoreHeight + 3 * sizeScale;
         float hitX = x - 2 / posScale;
         float hitY = y + 1 - height / posScale;
-        return new Hitbox(hitX, hitY, width, height);
+        return new HitBox2D(hitX, hitY, width, height);
     }
 
     @Override

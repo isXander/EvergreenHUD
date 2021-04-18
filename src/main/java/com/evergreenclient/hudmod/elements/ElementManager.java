@@ -82,11 +82,13 @@ public class ElementManager {
     public void addElement(Element element) {
         EventManager.getInstance().addListener(element);
         this.currentElements.add(element);
+        element.onAdded();
     }
 
     public void removeElement(Element element) {
         EventManager.getInstance().removeListener(element);
         this.currentElements.remove(element);
+        element.onRemoved();
     }
 
     public MainConfig getMainConfig() {

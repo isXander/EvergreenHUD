@@ -15,13 +15,13 @@
 
 package com.evergreenclient.hudmod.elements.impl;
 
+import co.uk.isxander.xanderlib.utils.HitBox2D;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.*;
 import com.evergreenclient.hudmod.utils.Alignment;
 import com.evergreenclient.hudmod.utils.ElementData;
-import com.evergreenclient.hudmod.utils.Hitbox;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
@@ -105,7 +105,7 @@ public class ElementArmour extends Element {
     public void render(RenderGameOverlayEvent event) {
         ScaledResolution res = event.resolution;
 
-        Hitbox hitbox = getHitbox(1, getPosition().getScale());
+        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
 
         ItemStack item = mc.thePlayer.inventory.getCurrentItem();
@@ -210,7 +210,7 @@ public class ElementArmour extends Element {
     }
 
     @Override
-    public Hitbox getHitbox(float posScale, float sizeScale) {
+    public HitBox2D getHitbox(float posScale, float sizeScale) {
         ScaledResolution res = new ScaledResolution(mc);
         float x = getPosition().getRawX(res);
         float y = getPosition().getRawY(res);
@@ -242,7 +242,7 @@ public class ElementArmour extends Element {
         if (listType.get().equalsIgnoreCase("up"))
             hitY -= height;
 
-        return new Hitbox(hitX / posScale - extraWidth, hitY / posScale - extraHeight, hitW * sizeScale + (extraWidth * 2), hitH * sizeScale + (extraHeight * 2));
+        return new HitBox2D(hitX / posScale - extraWidth, hitY / posScale - extraHeight, hitW * sizeScale + (extraWidth * 2), hitH * sizeScale + (extraHeight * 2));
     }
 
     @Override

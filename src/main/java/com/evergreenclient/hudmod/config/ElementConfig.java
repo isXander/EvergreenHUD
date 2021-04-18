@@ -15,9 +15,9 @@
 
 package com.evergreenclient.hudmod.config;
 
+import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.*;
-import com.evergreenclient.hudmod.utils.BetterJsonObject;
 import com.google.gson.JsonArray;
 import net.minecraft.client.Minecraft;
 

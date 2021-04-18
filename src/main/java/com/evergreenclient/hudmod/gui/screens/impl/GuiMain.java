@@ -15,9 +15,8 @@
 
 package com.evergreenclient.hudmod.gui.screens.impl;
 
-import club.sk1er.mods.core.gui.notification.Notifications;
+import co.uk.isxander.xanderlib.XanderLib;
 import com.evergreenclient.hudmod.EvergreenHUD;
-import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.gui.screens.GuiScreenElements;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -35,7 +34,7 @@ public class GuiMain extends GuiScreenElements {
         this.buttonList.add(new GuiButtonExt(1, width / 2 - 1 - 90, height - 20, 90, 20, "Add"));
 
         if (!EvergreenHUD.getInstance().getElementManager().isEnabled())
-            Notifications.INSTANCE.pushNotification("EvergreenHUD", "The mod is disabled. You will not see the hud in-game unless you enable it.");
+            XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "The mod is disabled. You will not see the hud in-game unless you enable it.");
 
     }
 

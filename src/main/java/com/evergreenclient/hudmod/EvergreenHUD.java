@@ -15,13 +15,12 @@
 
 package com.evergreenclient.hudmod;
 
-import club.sk1er.mods.core.gui.notification.Notifications;
+import co.uk.isxander.xanderlib.XanderLib;
+import co.uk.isxander.xanderlib.utils.Version;
 import com.evergreenclient.hudmod.command.EvergreenHudCommand;
 import com.evergreenclient.hudmod.elements.ElementManager;
-import club.sk1er.mods.core.ModCoreInstaller;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiMain;
 import com.evergreenclient.hudmod.update.UpdateChecker;
-import com.evergreenclient.hudmod.utils.Version;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -45,8 +44,8 @@ public class EvergreenHUD {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String NAME = "EvergreenHUD";
-    public static final String VERSION = "1.4";
-    public static final String UPDATE_NAME = "the ego update.";
+    public static final String VERSION = "2.0";
+    public static final String UPDATE_NAME = "the next step.";
 
     public static final Version PARSED_VERSION = new Version(VERSION);
     public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
@@ -64,9 +63,9 @@ public class EvergreenHUD {
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        firstLaunch = !new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud").exists();
+        XanderLib.getInstance().initPhase();
 
-        ModCoreInstaller.initializeModCore(Minecraft.getMinecraft().mcDataDir);
+        firstLaunch = !new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud").exists();
 
         ClientCommandHandler.instance.registerCommand(new EvergreenHudCommand());
         ClientRegistry.registerKeyBinding(keybind);
@@ -79,7 +78,7 @@ public class EvergreenHUD {
         Version latestVersion = UpdateChecker.getLatestVersion();
         Version currentVersion = EvergreenHUD.PARSED_VERSION;
         if (latestVersion.newerThan(currentVersion)) {
-            LOGGER.warn("Discovered new version: " + latestVersion.toString() + ". Current Version: " + currentVersion.toString());
+            LOGGER.warn("Discovered new version: " + latestVersion + ". Current Version: " + currentVersion);
             notifyUpdate(latestVersion);
         } else if (!Version.sameVersion(latestVersion, currentVersion)) {
             LOGGER.warn("Running on Development Version");
@@ -88,7 +87,7 @@ public class EvergreenHUD {
 
         if (reset) {
             reset = false;
-            Notifications.INSTANCE.pushNotification("EvergreenHUD", "The configuration has been reset due to a version change that makes your configuration incompatible with the current version.");
+            XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "The configuration has been reset due to a version change that makes your configuration incompatible with the current version.");
         }
     }
 
@@ -99,7 +98,7 @@ public class EvergreenHUD {
     }
 
     public static void notifyUpdate(Version latestVersion) {
-        Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running an outdated version.\nCurrent: " + EvergreenHUD.PARSED_VERSION.toString() + "\nLatest: " + latestVersion.toString() + "\n\nClick here to download.", () -> {
+        XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "You are running an outdated version.\nCurrent: " + EvergreenHUD.PARSED_VERSION.toString() + "\nLatest: " + latestVersion.toString() + "\n\nClick here to download.", () -> {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 try {
                     Desktop.getDesktop().browse(new URI("https://short.evergreenclient.com/GlYH5z"));
@@ -108,10 +107,8 @@ public class EvergreenHUD {
                     e.printStackTrace();
                 }
             } else {
-                Notifications.INSTANCE.pushNotification("EvergreenHUD", "Unfortunately, your computer does not seem to support web-browsing so the mod could not open the download page.\n\nPlease navigate to \"https://short.evergreenclient.com/GlYH5z\"" );
+                XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "Unfortunately, your computer does not seem to support web-browsing so the mod could not open the download page.\n\nPlease navigate to \"https://short.evergreenclient.com/GlYH5z\"" );
             }
-
-            return null;
         });
     }
 

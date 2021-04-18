@@ -15,13 +15,12 @@
 
 package com.evergreenclient.hudmod.command;
 
-import club.sk1er.mods.core.ModCore;
-import club.sk1er.mods.core.gui.notification.Notifications;
-import club.sk1er.mods.core.util.Multithreading;
+import co.uk.isxander.xanderlib.XanderLib;
+import co.uk.isxander.xanderlib.utils.Multithreading;
+import co.uk.isxander.xanderlib.utils.Version;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.gui.screens.impl.GuiMain;
 import com.evergreenclient.hudmod.update.UpdateChecker;
-import com.evergreenclient.hudmod.utils.Version;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
@@ -61,23 +60,23 @@ public class EvergreenHudCommand extends CommandBase {
         if (args.length > 0) {
             if (args[0].equalsIgnoreCase("update") || args[0].equalsIgnoreCase("check")) {
                 Multithreading.runAsync(() -> {
-                    if (EvergreenHUD.getInstance().isDevelopment())
-                        Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are on a development version. There are no updates available.");
-                    else {
+                    if (EvergreenHUD.getInstance().isDevelopment()) {
+                        XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "You are on a development version. There are no updates available.");
+                    } else {
                         Version latest = UpdateChecker.getLatestVersion();
                         if (latest.newerThan(EvergreenHUD.PARSED_VERSION)) {
                             EvergreenHUD.notifyUpdate(latest);
                         } else {
-                            Notifications.INSTANCE.pushNotification("EvergreenHUD", "There are no updates available.");
+                            XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "There are no updates available.");
                         }
                     }
                 });
             } else if (args[0].equalsIgnoreCase("version")) {
-                Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running on version " + EvergreenHUD.VERSION + "\nIf you want to check for updates, use \"/evergreenhud update\"");
+                XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "You are running on version " + EvergreenHUD.VERSION + "\nIf you want to check for updates, use \"/evergreenhud update\"");
             }
         }
         else {
-            ModCore.getInstance().getGuiHandler().open(new GuiMain());
+            XanderLib.getInstance().getGuiHandler().open(new GuiMain());
         }
     }
 

@@ -15,7 +15,7 @@
 
 package com.evergreenclient.hudmod.forge;
 
-import club.sk1er.mods.core.ModCoreInstaller;
+import co.uk.isxander.xanderlib.installer.XanderLibInstaller;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
@@ -24,16 +24,7 @@ import java.util.Map;
 public class FMLLoadingPlugin implements IFMLLoadingPlugin {
     @Override
     public String[] getASMTransformerClass() {
-        int initialize = ModCoreInstaller.initialize(Launch.minecraftHome, "1.8.9");
-
-        if (ModCoreInstaller.isErrored() || initialize != 0 && initialize != -1) {
-            System.out.println("Failed to load Sk1er Modcore - " + initialize + " - " + ModCoreInstaller.getError());
-        }
-        // If true the classes are loaded
-        if (ModCoreInstaller.isIsRunningModCore()) {
-            // register ModCore's class transformer
-            return new String[]{"club.sk1er.mods.core.forge.ClassTransformer"};
-        }
+        XanderLibInstaller.initialize(Launch.minecraftHome);
 
         return new String[]{};
     }

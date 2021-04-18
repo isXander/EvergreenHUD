@@ -15,10 +15,9 @@
 
 package com.evergreenclient.hudmod.elements.impl;
 
+import co.uk.isxander.xanderlib.utils.Facing;
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.elements.ElementType;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
-import com.evergreenclient.hudmod.utils.Facing;
 import com.evergreenclient.hudmod.utils.ElementData;
 import net.minecraft.util.MathHelper;
 
@@ -38,25 +37,8 @@ public class ElementDirection extends Element {
 
     @Override
     protected String getValue() {
-        float rotationYaw = MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw);
-        Facing facing = Facing.NORTH;
-        if (rotationYaw >= 165f || rotationYaw <= -165f) {
-            facing = Facing.NORTH;
-        } else if (rotationYaw >= -165f && rotationYaw <= -105f) {
-            facing = Facing.NORTH_EAST;
-        } else if (rotationYaw >= -105f && rotationYaw <= -75f) {
-            facing = Facing.EAST;
-        } else if (rotationYaw >= -75f && rotationYaw <= -15f) {
-            facing = Facing.SOUTH_EAST;
-        } else if (rotationYaw >= -15f && rotationYaw <= 15f) {
-            facing = Facing.SOUTH;
-        } else if (rotationYaw >= 15f && rotationYaw <= 75f) {
-            facing = Facing.SOUTH_WEST;
-        } else if (rotationYaw >= 75f && rotationYaw <= 105f) {
-            facing = Facing.WEST;
-        } else if (rotationYaw >= 105f && rotationYaw <= 165f) {
-            facing = Facing.NORTH_WEST;
-        }
+        Facing facing = Facing.parse(mc.thePlayer.rotationYaw);
+
         if (abbreviated.get())
             return facing.getAbbreviated();
         return facing.getNormal();

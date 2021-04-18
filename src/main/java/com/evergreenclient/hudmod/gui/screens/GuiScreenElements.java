@@ -15,16 +15,16 @@
 
 package com.evergreenclient.hudmod.gui.screens;
 
+import co.uk.isxander.xanderlib.utils.HitBox2D;
+import co.uk.isxander.xanderlib.utils.MathUtils;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.utils.MathUtils;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class GuiScreenElements extends GuiScreenExt {
 
@@ -71,7 +71,7 @@ public class GuiScreenElements extends GuiScreenExt {
         boolean clickedElement = false;
         for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
             e.onMouseClicked(mouseX, mouseY);
-            if (e.getHitbox(1, e.getPosition().getScale()).isMouseOver(mouseX, mouseY)) {
+            if (e.getHitbox(1, e.getPosition().getScale()).doesPositionOverlap(mouseX, mouseY)) {
                 lastClicked = dragging = e;
                 offX = mouseX - e.getPosition().getRawX(res);
                 offY = mouseY - e.getPosition().getRawY(res);
