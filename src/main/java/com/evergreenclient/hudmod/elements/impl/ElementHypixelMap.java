@@ -16,12 +16,11 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import co.uk.isxander.xanderlib.XanderLib;
-import co.uk.isxander.xanderlib.hypixel.locraw.GameType;
 import co.uk.isxander.xanderlib.hypixel.locraw.LocationParsed;
 import co.uk.isxander.xanderlib.utils.MinecraftUtils;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.StringSetting;
-import com.evergreenclient.hudmod.utils.ElementData;
+import com.evergreenclient.hudmod.elements.ElementData;
 
 public class ElementHypixelMap extends Element {
 

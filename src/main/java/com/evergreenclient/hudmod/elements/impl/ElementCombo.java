@@ -16,11 +16,10 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.elements.ElementType;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
 import com.evergreenclient.hudmod.settings.impl.StringSetting;
-import com.evergreenclient.hudmod.utils.ElementData;
+import com.evergreenclient.hudmod.elements.ElementData;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S19PacketEntityStatus;

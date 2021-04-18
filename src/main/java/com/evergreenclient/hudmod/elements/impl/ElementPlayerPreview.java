@@ -17,7 +17,7 @@ package com.evergreenclient.hudmod.elements.impl;
 
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.utils.ElementData;
+import com.evergreenclient.hudmod.elements.ElementData;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;

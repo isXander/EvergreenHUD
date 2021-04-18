@@ -16,10 +16,9 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.elements.ElementType;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
-import com.evergreenclient.hudmod.utils.ElementData;
+import com.evergreenclient.hudmod.elements.ElementData;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;

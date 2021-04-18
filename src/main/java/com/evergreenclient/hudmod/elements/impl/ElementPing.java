@@ -16,8 +16,7 @@
 package com.evergreenclient.hudmod.elements.impl;
 
 import com.evergreenclient.hudmod.elements.Element;
-import com.evergreenclient.hudmod.elements.ElementType;
-import com.evergreenclient.hudmod.utils.ElementData;
+import com.evergreenclient.hudmod.elements.ElementData;
 import net.minecraft.client.network.NetworkPlayerInfo;
 
 public class ElementPing extends Element {

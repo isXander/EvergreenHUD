@@ -18,7 +18,7 @@ package com.evergreenclient.hudmod.elements.impl;
 import co.uk.isxander.xanderlib.utils.MathUtils;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
-import com.evergreenclient.hudmod.utils.ElementData;
+import com.evergreenclient.hudmod.elements.ElementData;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.text.DecimalFormat;

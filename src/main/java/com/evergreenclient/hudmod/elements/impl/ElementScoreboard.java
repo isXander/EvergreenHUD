@@ -22,7 +22,7 @@ import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.utils.Alignment;
-import com.evergreenclient.hudmod.utils.ElementData;
+import com.evergreenclient.hudmod.elements.ElementData;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import net.apolloclient.utils.GLRenderer;

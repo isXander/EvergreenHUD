@@ -21,7 +21,7 @@ import com.evergreenclient.hudmod.gui.screens.impl.GuiElementConfig;
 import com.evergreenclient.hudmod.settings.Setting;
 import com.evergreenclient.hudmod.settings.impl.*;
 import com.evergreenclient.hudmod.utils.Alignment;
-import com.evergreenclient.hudmod.utils.ElementData;
+import com.evergreenclient.hudmod.elements.ElementData;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;

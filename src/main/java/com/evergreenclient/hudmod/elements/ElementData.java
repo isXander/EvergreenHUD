@@ -13,7 +13,7 @@
  * isXander @ business.isxander@gmail.com
  */
 
-package com.evergreenclient.hudmod.utils;
+package com.evergreenclient.hudmod.elements;
 
 public class ElementData {
 
