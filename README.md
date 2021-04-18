@@ -4,10 +4,14 @@ EvergreenHUD is a forge mod to improve and add upon your heads up display.
 I, Xander, have been working on this mod for over 3 months and believe it really
 is the best HUD mod out there for 1.8.
 
-###### Announcement
+#### Announcement
 I would love if someone could work on a multi-version system for the mod as I
 think it could become very popular for fabric players and maybe even modpacks.
 *Contact me on discord @ isXander#0162*
+
+#### Links
+- [Latest Stable Release](https://github.com/Evergreen-Client/EvergreenHUD/releases/latest)
+- [Hypixel Thread](https://hypixel.net/threads/v2-beta-out-now-evergreenhud-1-3-1.3787277/)
 
 ## Summary
 
