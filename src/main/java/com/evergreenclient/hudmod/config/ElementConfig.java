@@ -15,27 +15,26 @@
 
 package com.evergreenclient.hudmod.config;
 
+import co.uk.isxander.xanderlib.utils.Constants;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import com.evergreenclient.hudmod.EvergreenHUD;
 import com.evergreenclient.hudmod.elements.*;
 import com.google.gson.JsonArray;
-import net.minecraft.client.Minecraft;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementConfig {
+public class ElementConfig implements Constants {
 
     public static final int VERSION = 2;
-    private static final File oldConfigFolder = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/elements");
+    public static final File OLD_CONFIG_FOLDER = new File(EvergreenHUD.DATA_DIR, "elements");
+    public static final File CONFIG_FILE = new File(EvergreenHUD.DATA_DIR, "elements.json");
 
     private final ElementManager manager;
-    public final File configFile;
 
     public ElementConfig(ElementManager manager) {
         this.manager = manager;
-        this.configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/elements.json");
     }
 
     private BetterJsonObject generateJson() {
@@ -56,11 +55,11 @@ public class ElementConfig {
 
     public void save() {
         BetterJsonObject root = generateJson();
-        root.writeToFile(configFile);
+        root.writeToFile(CONFIG_FILE);
     }
 
     public void load() {
-        if (!configFile.exists() && oldConfigFolder.exists()) {
+        if (!CONFIG_FILE.exists() && OLD_CONFIG_FOLDER.exists()) {
             loadOld();
 
             save();
@@ -69,7 +68,7 @@ public class ElementConfig {
 
         BetterJsonObject root;
         try {
-            root = BetterJsonObject.getFromFile(configFile);
+            root = BetterJsonObject.getFromFile(CONFIG_FILE);
         } catch (Exception e) {
             save();
             return;
@@ -101,7 +100,7 @@ public class ElementConfig {
             availableElements.add(type.getElement());
         }
 
-        for (File config : oldConfigFolder.listFiles()) {
+        for (File config : OLD_CONFIG_FOLDER.listFiles()) {
             for (Element element : availableElements) {
                 if (config.getName().equalsIgnoreCase(element.getMetadata().getName() + ".json")) {
                     BetterJsonObject root;
@@ -131,7 +130,7 @@ public class ElementConfig {
             }
             config.delete();
         }
-        oldConfigFolder.delete();
+        OLD_CONFIG_FOLDER.delete();
     }
 
 }

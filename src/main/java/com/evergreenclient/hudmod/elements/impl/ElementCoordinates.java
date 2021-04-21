@@ -48,7 +48,7 @@ public class ElementCoordinates extends Element {
 
     @Override
     protected String getValue() {
-        if (mc.thePlayer == null) return "unknown";
+        if (mc.thePlayer == null) return "Unknown";
         String formatter = (trailingZeros.get() ? "0" : "#");
         StringBuilder sb = new StringBuilder(accuracy.get() < 1 ? formatter : formatter + ".");
         for (int i = 0; i < accuracy.get(); i++) sb.append(formatter);

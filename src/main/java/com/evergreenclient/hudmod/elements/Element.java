@@ -15,6 +15,7 @@
 
 package com.evergreenclient.hudmod.elements;
 
+import co.uk.isxander.xanderlib.utils.Constants;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.MathUtils;
 import co.uk.isxander.xanderlib.utils.Position;
@@ -42,16 +43,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class Element extends Gui implements Listenable {
+public abstract class Element extends Gui implements Listenable, Constants {
 
     @Override
     public boolean canReceiveEvents() {
         ElementManager manager = EvergreenHUD.getInstance().getElementManager();
         return manager.isEnabled();
     }
-
-    /* For child classes */
-    protected static final Minecraft mc = Minecraft.getMinecraft();
 
     /* Config */
     private Position pos;
@@ -126,7 +124,7 @@ public abstract class Element extends Gui implements Listenable {
         GlStateManager.pushMatrix();
         GlStateManager.scale(getPosition().getScale(), getPosition().getScale(), 0);
         switch (getAlignment()) {
-            case LEFT:
+            case RIGHT:
                 float posX = (x - mc.fontRendererObj.getStringWidth(getDisplayString())) / getPosition().getScale();
                 float posY = y / getPosition().getScale();
 
@@ -144,7 +142,7 @@ public abstract class Element extends Gui implements Listenable {
                 else
                     drawCenteredString(mc.fontRendererObj, getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
                 break;
-            case RIGHT:
+            case LEFT:
                 posX = x / getPosition().getScale();
                 posY = y / getPosition().getScale();
 
@@ -189,13 +187,13 @@ public abstract class Element extends Gui implements Listenable {
         float x = getPosition().getRawX(res) / posScale;
         float y = getPosition().getRawY(res) / posScale;
         switch (getAlignment()) {
-            case LEFT:
-                hitbox = new HitBox2D(x - width - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+            case RIGHT:
+                hitbox = new HitBox2D(x - (width / sizeScale) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
                 break;
             case CENTER:
                 hitbox = new HitBox2D(x - (width / 2f) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
                 break;
-            case RIGHT:
+            case LEFT:
                 hitbox = new HitBox2D(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
                 break;
         }
@@ -208,7 +206,7 @@ public abstract class Element extends Gui implements Listenable {
         brackets = false;
         inverted = false;
         shadow = true;
-        alignment = Alignment.RIGHT;
+        alignment = Alignment.LEFT;
         textColor = new Color(255, 255, 255, 255);
         bgColor = new Color(0, 0, 0, 100);
         paddingWidth = 4;
@@ -268,7 +266,7 @@ public abstract class Element extends Gui implements Listenable {
         settings.addProperty("inverted", isInverted());
         settings.addProperty("chroma", useChroma());
         settings.addProperty("shadow", renderShadow());
-        settings.addProperty("alignment", getAlignment().ordinal());
+        settings.addProperty("align", getAlignment().ordinal());
 
         BetterJsonObject textCol = new BetterJsonObject();
         textCol.addProperty("r", getTextColor().getRed());
@@ -312,7 +310,21 @@ public abstract class Element extends Gui implements Listenable {
         setInverted(root.optBoolean("inverted", false));
         setChroma(root.optBoolean("chroma", false));
         setShadow(root.optBoolean("shadow", true));
-        setAlignment(Alignment.values()[root.optInt("alignment", 0)]);
+
+        // Swapped Left and Right alignment
+        // Code will be removed in v2.1
+        if (root.has("alignment")) {
+            EvergreenHUD.LOGGER.info("Converting Alignments");
+            Alignment alignment = Alignment.values()[root.optInt("alignment", 0)];
+            if (alignment == Alignment.LEFT) {
+                alignment = Alignment.RIGHT;
+            } else if (alignment == Alignment.RIGHT) {
+                alignment = Alignment.LEFT;
+            }
+            setAlignment(alignment);
+        } else {
+            setAlignment(Alignment.values()[root.optInt("align", 0)]);
+        }
 
         BetterJsonObject textColor = new BetterJsonObject(root.get("textColor").getAsJsonObject());
         setTextColor(new Color(textColor.optInt("r", 255), textColor.optInt("g", 255), textColor.optInt("b", 255)));

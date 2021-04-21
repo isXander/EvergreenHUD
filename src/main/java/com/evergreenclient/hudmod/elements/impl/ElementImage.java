@@ -15,6 +15,7 @@
 
 package com.evergreenclient.hudmod.elements.impl;
 
+import club.sk1er.mods.core.gui.notification.Notifications;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.ImageUtils;
@@ -51,7 +52,7 @@ import java.util.stream.Collectors;
 public class ElementImage extends Element {
 
     private static boolean warned = false;
-    private static final File imageFile = new File(mc.mcDataDir, "config/evergreenhud/image.png");
+    private static final File imageFile = new File(EvergreenHUD.DATA_DIR, "image.png");
     private static final ResourceLocation unknownImage = new ResourceLocation("evergreenhud/textures/unknown.png");
     private static final float imgSize = 60;
 
@@ -149,8 +150,9 @@ public class ElementImage extends Element {
             // Add to new thread so the game does not freeze
             new Thread(() -> {
                 JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File(mc.mcDataDir, "config/evergreenhud/"));
+                fileChooser.setCurrentDirectory(EvergreenHUD.DATA_DIR);
                 fileChooser.setFileFilter(new FileNameExtensionFilter("Image File", "png", "jpg"));
+                Notifications.INSTANCE.pushNotification("EvergreenHUD", "The file dialogue has just been opened. You may need to tab out to see it.");
                 int result = fileChooser.showOpenDialog(null);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     try {
@@ -161,9 +163,9 @@ public class ElementImage extends Element {
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "You have selected a new image.");
+                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "You have selected a new image.");
                 } else {
-                    XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "You must select an image.");
+                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "You must select an image.");
                 }
                 changed = true;
             }).start();
@@ -188,13 +190,6 @@ public class ElementImage extends Element {
     @Override
     protected void onSettingsLoad() {
         try {
-            if (getImageFile().equals(imageFile)) {
-                if (!EvergreenHUD.getInstance().isFirstLaunch() && !warned) {
-                    XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "Could not find image on one or more of your custom image elements.\nPlease reselect your images.");
-                    warned = true;
-                }
-            }
-
             BufferedImage img = ImageIO.read(getImageFile());
             imageDimension = new Dimension(img.getWidth(), img.getHeight());
         } catch (IOException e) {

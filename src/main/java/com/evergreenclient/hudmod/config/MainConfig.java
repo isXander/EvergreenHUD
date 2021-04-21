@@ -25,19 +25,18 @@ import java.io.File;
 public class MainConfig {
 
     private static final int VERSION = 1;
+    public static final File CONFIG_FILE = new File(EvergreenHUD.DATA_DIR, "config/evergreenhud/config.json");
 
     private final ElementManager manager;
-    public final File configFile;
 
     public MainConfig(ElementManager manager) {
         this.manager = manager;
-        this.configFile = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud/config.json");
     }
 
     public void load() {
         BetterJsonObject root;
         try {
-            root = BetterJsonObject.getFromFile(this.configFile);
+            root = BetterJsonObject.getFromFile(CONFIG_FILE);
         } catch (Exception e) {
             save();
             return;
@@ -62,7 +61,7 @@ public class MainConfig {
         root.addProperty("chat", manager.doShowInChat());
         root.addProperty("debug", manager.doShowInDebug());
 
-        root.writeToFile(this.configFile);
+        root.writeToFile(CONFIG_FILE);
     }
 
 }

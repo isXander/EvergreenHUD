@@ -107,6 +107,8 @@ public class ElementArmour extends Element {
 
         HitBox2D hitbox = getHitbox(1, getPosition().getScale());
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
+        if (mc.thePlayer == null)
+            return;
 
         ItemStack item = mc.thePlayer.inventory.getCurrentItem();
         ItemStack helmet = mc.thePlayer.inventory.armorItemInSlot(3);
@@ -143,7 +145,7 @@ public class ElementArmour extends Element {
                 text = stack.getDisplayName();
             float textX = 0, textY = 0;
             switch (this.getAlignment()) {
-                case LEFT:
+                case RIGHT:
                     textX = x - 2 - mc.fontRendererObj.getStringWidth(text);
                     textY = y + 5 - (mc.fontRendererObj.FONT_HEIGHT / 2f);
 
@@ -151,7 +153,7 @@ public class ElementArmour extends Element {
                     if (newWidth > width)
                         width = newWidth;
                     break;
-                case RIGHT:
+                case LEFT:
                     textX = x + 15 + 2;
                     textY = y + 5 - (mc.fontRendererObj.FONT_HEIGHT / 2f);
 
@@ -220,7 +222,7 @@ public class ElementArmour extends Element {
         float hitX, hitY, hitW, hitH;
         hitX = hitY = hitW = hitH = 0;
         switch (getAlignment()) {
-            case LEFT:
+            case RIGHT:
                 hitX = x - width;
                 hitY = y;
                 hitW = width;
@@ -232,7 +234,7 @@ public class ElementArmour extends Element {
                 hitW = width - 24;
                 hitH = height - 4;
                 break;
-            case RIGHT:
+            case LEFT:
                 hitX = x;
                 hitY = y;
                 hitW = width;

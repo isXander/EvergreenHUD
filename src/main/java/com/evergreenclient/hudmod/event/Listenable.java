@@ -15,6 +15,7 @@
 
 package com.evergreenclient.hudmod.event;
 
+import co.uk.isxander.xanderlib.event.PacketEvent;
 import net.minecraft.network.Packet;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
@@ -50,7 +51,7 @@ public interface Listenable {
 
     }
 
-    default void onPacketReceive(Packet<?> packet) {
+    default void onPacketReceive(PacketEvent.Incoming packet) {
 
     }
 

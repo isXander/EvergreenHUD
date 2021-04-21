@@ -72,10 +72,10 @@ public class ElementScoreboard extends Element {
                             addButtons();
                             getPosition().setRawX(getPosition().getRawX(res) - (scoreWidth / 2f) - (scoreWidth / 4f) - (scoreWidth / 8f), res);
                             break;
-                        case RIGHT:
+                        case LEFT:
                             getPosition().setRawX(getPosition().getRawX(res) - (scoreWidth / 2f) - (scoreWidth / 4f) - (scoreWidth / 8f), res);
                             break;
-                        case LEFT:
+                        case RIGHT:
                             getPosition().setRawX(getPosition().getRawX(res) + (scoreWidth / 2f) + (scoreWidth / 4f) + (scoreWidth / 8f), res);
                             break;
                     }
@@ -174,7 +174,7 @@ public class ElementScoreboard extends Element {
         setBrackets(false);
         setInverted(false);
         setShadow(true);
-        setAlignment(Alignment.LEFT);
+        setAlignment(Alignment.RIGHT);
         setTextColor(new Color(0, 0, 0, 96));
         setBgColor(new Color(0, 0, 0, 80));
         setPaddingWidth(4);

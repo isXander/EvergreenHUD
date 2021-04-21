@@ -15,6 +15,7 @@
 
 package com.evergreenclient.hudmod.command;
 
+import club.sk1er.mods.core.gui.notification.Notifications;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.utils.Multithreading;
 import co.uk.isxander.xanderlib.utils.Version;
@@ -61,21 +62,20 @@ public class EvergreenHudCommand extends CommandBase {
             if (args[0].equalsIgnoreCase("update") || args[0].equalsIgnoreCase("check")) {
                 Multithreading.runAsync(() -> {
                     if (EvergreenHUD.getInstance().isDevelopment()) {
-                        XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "You are on a development version. There are no updates available.");
+                        Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are on a development version. There are no updates available.");
                     } else {
                         Version latest = UpdateChecker.getLatestVersion();
                         if (latest.newerThan(EvergreenHUD.PARSED_VERSION)) {
                             EvergreenHUD.notifyUpdate(latest);
                         } else {
-                            XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "There are no updates available.");
+                            Notifications.INSTANCE.pushNotification("EvergreenHUD", "There are no updates available.");
                         }
                     }
                 });
             } else if (args[0].equalsIgnoreCase("version")) {
-                XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "You are running on version " + EvergreenHUD.VERSION + "\nIf you want to check for updates, use \"/evergreenhud update\"");
+                Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running on version " + EvergreenHUD.VERSION + "\nIf you want to check for updates, use \"/evergreenhud update\"");
             }
-        }
-        else {
+        } else {
             XanderLib.getInstance().getGuiHandler().open(new GuiMain());
         }
     }

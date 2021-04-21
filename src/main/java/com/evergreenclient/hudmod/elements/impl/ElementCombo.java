@@ -15,6 +15,7 @@
 
 package com.evergreenclient.hudmod.elements.impl;
 
+import co.uk.isxander.xanderlib.event.PacketEvent;
 import com.evergreenclient.hudmod.elements.Element;
 import com.evergreenclient.hudmod.settings.impl.BooleanSetting;
 import com.evergreenclient.hudmod.settings.impl.IntegerSetting;
@@ -82,15 +83,15 @@ public class ElementCombo extends Element {
     }
 
     @Override
-    public void onPacketReceive(Packet<?> packet) {
-        if (packet instanceof S19PacketEntityStatus) {
-            S19PacketEntityStatus p = (S19PacketEntityStatus) packet;
+    public void onPacketReceive(PacketEvent.Incoming event) {
+        if (event.getPacket() instanceof S19PacketEntityStatus) {
+            S19PacketEntityStatus packet = (S19PacketEntityStatus) event.getPacket();
 
-            if (p.getOpCode() != 2) {
+            if (packet.getOpCode() != 2) {
                 return;
             }
 
-            Entity target = p.getEntity(mc.theWorld);
+            Entity target = packet.getEntity(mc.theWorld);
             if (target == null) {
                 return;
             }

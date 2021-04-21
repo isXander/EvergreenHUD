@@ -191,15 +191,13 @@ public class GuiElementConfig extends GuiScreenElements {
                 ScaledResolution res = new ScaledResolution(mc);
                 if (alignment == LEFT) {
                     alignment = CENTER;
-                    element.getPosition().setRawX(element.getPosition().getRawX(res) - mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2f, res);
-                }
-                else if (alignment == CENTER) {
+                    element.getPosition().setRawX(element.getPosition().getRawX(res) + mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2f, res);
+                } else if (alignment == CENTER) {
                     alignment = RIGHT;
-                    element.getPosition().setRawX(element.getPosition().getRawX(res) - mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2f, res);
-                }
-                else if (alignment == RIGHT) {
+                    element.getPosition().setRawX(element.getPosition().getRawX(res) + mc.fontRendererObj.getStringWidth(element.getDisplayString()) / 2f, res);
+                } else if (alignment == RIGHT) {
                     alignment = LEFT;
-                    element.getPosition().setRawX(element.getPosition().getRawX(res) + mc.fontRendererObj.getStringWidth(element.getDisplayString()), res);
+                    element.getPosition().setRawX(element.getPosition().getRawX(res) - mc.fontRendererObj.getStringWidth(element.getDisplayString()), res);
                 }
                 element.setAlignment(alignment);
                 button.displayString = "Alignment: " + element.getAlignment().getName();

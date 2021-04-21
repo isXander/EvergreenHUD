@@ -15,10 +15,10 @@
 
 package com.evergreenclient.hudmod.elements;
 
+import co.uk.isxander.xanderlib.utils.Constants;
 import com.evergreenclient.hudmod.config.ElementConfig;
 import com.evergreenclient.hudmod.config.MainConfig;
 import com.evergreenclient.hudmod.event.EventManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -28,9 +28,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementManager {
-
-    private final Minecraft mc = Minecraft.getMinecraft();
+public class ElementManager implements Constants {
 
     private final List<Element> currentElements;
 

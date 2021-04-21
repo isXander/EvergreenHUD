@@ -24,6 +24,8 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class GuiScreenElements extends GuiScreenExt {
@@ -32,6 +34,12 @@ public class GuiScreenElements extends GuiScreenExt {
     protected Element lastClicked = null;
     protected Map<Element, Map.Entry<Float, Float>> movables = new HashMap<>();
     protected float offX = 0, offY = 0;
+    private final DecimalFormat df;
+
+    public GuiScreenElements() {
+        df = new DecimalFormat("#.###");
+        df.setRoundingMode(RoundingMode.FLOOR);
+    }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -56,12 +64,13 @@ public class GuiScreenElements extends GuiScreenExt {
         movables.forEach((e, p) -> {
             e.getPosition().setScaledX(MathUtils.lerp(e.getPosition().getXScaled(), p.getKey(), partialTicks * 3));
             e.getPosition().setScaledY(MathUtils.lerp(e.getPosition().getYScaled(), p.getValue(), partialTicks * 3));
+
             // Remove element once it is done moving
-            if (e.getPosition().getXScaled() == p.getKey() && e.getPosition().getYScaled() == p.getValue()) {
+            if (dragging != e && MathUtils.precision(e.getPosition().getXScaled(), 4) == MathUtils.precision(p.getKey(), 4) && MathUtils.precision(e.getPosition().getYScaled(), 4) == MathUtils.precision(p.getValue(), 4)) {
                 toRemove.add(e);
             }
         });
-        toRemove.parallelStream().forEach((e) -> movables.remove(e));
+        toRemove.forEach((e) -> movables.remove(e));
     }
 
     @Override
