@@ -1,9 +1,6 @@
 package co.uk.isxander.xanderlib.installer;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -21,6 +18,8 @@ import java.util.Map;
 
 public class XanderLibInstaller {
 
+    // What version of XanderLib does this mod use
+    public static final String DESIRED_VERSION = "0.3";
     private static final String VERSION_URL = "https://raw.githubusercontent.com/isXander/XanderLib/main/version.json";
     private static File dataDir = null;
     private static boolean isInstalled = false;
@@ -37,20 +36,22 @@ public class XanderLibInstaller {
         if (!dataDir.exists()) {
             dataDir.mkdirs();
         }
-        File jar = new File(dataDir, "xanderlib.jar");
-        System.out.println("XanderLib Jar: " + jar.getPath());
+
         File data = new File(dataDir, "metadata.json");
         System.out.println("Metadata Json: " + data.getPath());
-        JsonHolder metadata = readFile(data);
-        JsonHolder latestVersion = fetchJSON(VERSION_URL);
-        String latest = latestVersion.optString("version");
 
-        if (!jar.exists() || !metadata.optString("version").equalsIgnoreCase(latest)) {
-            if (jar.exists()) {
-                jar.delete();
-            }
 
-            download("https://static.isxander.co.uk/mods/xanderlib/" + latest + ".jar", latest, jar, metadata);
+        File jar = new File(dataDir, "/" + DESIRED_VERSION + "/xanderlib.jar");
+        new File(dataDir, "/" + DESIRED_VERSION).mkdirs();
+        System.out.println("XanderLib Jar: " + jar.getPath());
+        JsonHolder versionData = fetchJSON(VERSION_URL);
+
+        boolean metaExists = data.exists();
+        JsonHolder metadata = null;
+        if (metaExists)
+            metadata = readFile(data);
+        if (!metaExists || !metadata.has("installed_versions") || !jsonArrayContains(metadata.optJSONArray("installed_versions"), DESIRED_VERSION)) {
+            download("https://static.isxander.co.uk/mods/xanderlib/" + DESIRED_VERSION + ".jar", DESIRED_VERSION, jar, metadata);
         }
 
         addToClasspath(jar);
@@ -60,6 +61,14 @@ public class XanderLibInstaller {
         return 0;
     }
 
+    public static boolean inClasspath() {
+        try {
+            Class.forName("co.uk.isxander.xanderlib.XanderLib", false, XanderLibInstaller.class.getClassLoader());
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 
     public static void addToClasspath(File file) {
         try {
@@ -95,7 +104,13 @@ public class XanderLibInstaller {
             while ((read = is.read(buffer)) > 0) {
                 outputStream.write(buffer, 0, read);
             }
-            FileUtils.write(new File(dataDir, "metadata.json"), versionData.put("version", version).toString(), Charset.defaultCharset());
+
+            JsonArray arr = versionData.optJSONArray("installed_versions");
+            if (!jsonArrayContains(arr, version))
+                arr.add(new JsonPrimitive(version));
+            versionData.put("installed_versions", (JsonElement) arr);
+
+            FileUtils.write(new File(dataDir, "metadata.json"), versionData.toString(), Charset.defaultCharset());
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -114,6 +129,16 @@ public class XanderLibInstaller {
             }
         }
         return true;
+    }
+
+    // gson 2.3 would be pretty useful
+    private static boolean jsonArrayContains(JsonArray arr, String val) {
+        for (JsonElement entry : arr) {
+            String str = entry.getAsString();
+            if (str != null && str.equals(val))
+                return true;
+        }
+        return false;
     }
 
     private static JsonHolder readFile(File in) {
@@ -166,6 +191,7 @@ public class XanderLibInstaller {
         return "Failed to fetch";
     }
 
+    // kudos to modcore for json holder
     static class JsonHolder {
         private JsonObject object;
 
@@ -201,6 +227,22 @@ public class XanderLibInstaller {
             return this;
         }
 
+        public void mergeNotOverride(JsonHolder merge) {
+            merge(merge, false);
+        }
+
+        public void mergeOverride(JsonHolder merge) {
+            merge(merge, true);
+        }
+
+        public void merge(JsonHolder merge, boolean override) {
+            JsonObject object = merge.getObject();
+            for (String s : merge.getKeys()) {
+                if (override || !this.has(s))
+                    put(s, object.get(s));
+            }
+        }
+
         private void put(String s, JsonElement element) {
             this.object.add(s, element);
         }
@@ -210,9 +252,95 @@ public class XanderLibInstaller {
             return this;
         }
 
+        public JsonHolder put(String key, int value) {
+            object.addProperty(key, value);
+            return this;
+        }
+
+        public JsonHolder put(String key, double value) {
+            object.addProperty(key, value);
+            return this;
+        }
+
+        public JsonHolder put(String key, long value) {
+            object.addProperty(key, value);
+            return this;
+        }
+
+        private JsonHolder defaultOptJSONObject(String key, JsonObject fallBack) {
+            try {
+                return new JsonHolder(object.get(key).getAsJsonObject());
+            } catch (Exception e) {
+                return new JsonHolder(fallBack);
+            }
+        }
+
+        public JsonArray defaultOptJSONArray(String key, JsonArray fallback) {
+            try {
+                return object.get(key).getAsJsonArray();
+            } catch (Exception e) {
+                return fallback;
+            }
+        }
+
+        public JsonArray optJSONArray(String key) {
+            return defaultOptJSONArray(key, new JsonArray());
+        }
+
+
         public boolean has(String key) {
             return object.has(key);
         }
+
+        public long optLong(String key, long fallback) {
+            try {
+                return object.get(key).getAsLong();
+            } catch (Exception e) {
+                return fallback;
+            }
+        }
+
+        public long optLong(String key) {
+            return optLong(key, 0);
+        }
+
+        public boolean optBoolean(String key, boolean fallback) {
+            try {
+                return object.get(key).getAsBoolean();
+            } catch (Exception e) {
+                return fallback;
+            }
+        }
+
+        public boolean optBoolean(String key) {
+            return optBoolean(key, false);
+        }
+
+        public JsonObject optActualJSONObject(String key) {
+            try {
+                return object.get(key).getAsJsonObject();
+            } catch (Exception e) {
+                return new JsonObject();
+            }
+        }
+
+        public JsonHolder optJSONObject(String key) {
+            return defaultOptJSONObject(key, new JsonObject());
+        }
+
+
+        public int optInt(String key, int fallBack) {
+            try {
+                return object.get(key).getAsInt();
+            } catch (Exception e) {
+                return fallBack;
+            }
+        }
+
+        public int optInt(String key) {
+            return optInt(key, 0);
+        }
+
 
         public String defaultOptString(String key, String fallBack) {
             try {
@@ -226,6 +354,15 @@ public class XanderLibInstaller {
             return defaultOptString(key, "");
         }
 
+
+        public double optDouble(String key, double fallBack) {
+            try {
+                return object.get(key).getAsDouble();
+            } catch (Exception e) {
+                return fallBack;
+            }
+        }
+
         public List<String> getKeys() {
             List<String> tmp = new ArrayList<>();
             for (Map.Entry<String, JsonElement> e : object.entrySet()) {
@@ -234,10 +371,35 @@ public class XanderLibInstaller {
             return tmp;
         }
 
+        public double optDouble(String key) {
+            return optDouble(key, 0.0);
+        }
+
+
         public JsonObject getObject() {
             return object;
         }
 
+        public boolean isNull(String key) {
+            return object.has(key) && object.get(key).isJsonNull();
+        }
+
+        public JsonHolder put(String values, JsonHolder values1) {
+            return put(values, values1.getObject());
+        }
+
+        public JsonHolder put(String values, JsonObject object) {
+            this.object.add(values, object);
+            return this;
+        }
+
+        public void put(String blacklisted, JsonArray jsonElements) {
+            this.object.add(blacklisted, jsonElements);
+        }
+
+        public void remove(String header) {
+            object.remove(header);
+        }
     }
 
 

@@ -13,7 +13,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "2.0-beta3"
-group = "com.evergreenclient"
+group = "co.uk.isxander"
 archivesBaseName = "evergreenhud"
 
 targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
@@ -48,7 +48,7 @@ jar {
     archiveName = "[$minecraft.version-$version] EvergreenHUD.jar"
 
     manifest {
-        attributes "FMLCorePlugin": "com.evergreenclient.hudmod.forge.FMLLoadingPlugin",
+        attributes "FMLCorePlugin": "co.uk.isxander.evergreenhud.forge.FMLLoadingPlugin",
                 "ModSide": "CLIENT",
                 "FMLCorePluginContainsFMLMod": "Yes, yes it does"
     }
