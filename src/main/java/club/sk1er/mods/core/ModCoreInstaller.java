@@ -291,7 +291,7 @@ public class ModCoreInstaller {
 
 
     //Added because we need to use before ModCore is loaded
-    static class JsonHolder {
+    public static class JsonHolder {
         private JsonObject object;
 
         public JsonHolder(JsonObject object) {
@@ -342,7 +342,7 @@ public class ModCoreInstaller {
             }
         }
 
-        private void put(String s, JsonElement element) {
+        public void put(String s, JsonElement element) {
             this.object.add(s, element);
         }
 
