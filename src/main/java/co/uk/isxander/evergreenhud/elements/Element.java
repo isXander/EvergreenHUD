@@ -19,10 +19,7 @@ import co.uk.isxander.evergreenhud.event.Listenable;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiElementConfig;
 import co.uk.isxander.evergreenhud.settings.impl.*;
 import co.uk.isxander.evergreenhud.utils.Alignment;
-import co.uk.isxander.xanderlib.utils.Constants;
-import co.uk.isxander.xanderlib.utils.HitBox2D;
-import co.uk.isxander.xanderlib.utils.MathUtils;
-import co.uk.isxander.xanderlib.utils.Position;
+import co.uk.isxander.xanderlib.utils.*;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
@@ -128,7 +125,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
                 float posY = y / getPosition().getScale();
 
                 if (chroma)
-                    drawChromaString(getDisplayString(), posX, posY, renderShadow(), false);
+                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow(), false);
                 else
                     mc.fontRendererObj.drawString(getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
                 break;
@@ -137,7 +134,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
                 posY = y / getPosition().getScale();
 
                 if (chroma)
-                    drawChromaString(getDisplayString(), posX, posY, renderShadow(), true);
+                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow(), true);
                 else
                     drawCenteredString(mc.fontRendererObj, getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
                 break;
@@ -146,7 +143,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
                 posY = y / getPosition().getScale();
 
                 if (chroma)
-                    drawChromaString(getDisplayString(), posX, posY, renderShadow(), false);
+                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow(), false);
                 else
                     mc.fontRendererObj.drawString(getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
                 break;
@@ -157,23 +154,6 @@ public abstract class Element extends Gui implements Listenable, Constants {
 
     public void drawCenteredString(FontRenderer fontRendererIn, String text, float x, float y, int color, boolean shadow) {
         fontRendererIn.drawString(text, x - fontRendererIn.getStringWidth(text) / 2f, y, color, shadow);
-    }
-
-    protected void drawChromaString(String text, float x, float y, boolean shadow, boolean centered) {
-        if (centered)
-            x -= mc.fontRendererObj.getStringWidth(text) / 2f;
-
-        for (char c : text.toCharArray()) {
-            int i = getChroma(x, y).getRGB();
-            String tmp = String.valueOf(c);
-            mc.fontRendererObj.drawString(tmp, x, y, i, shadow);
-            x += mc.fontRendererObj.getStringWidth(tmp);
-        }
-    }
-
-    private Color getChroma(double x, double y) {
-        float v = 2000.0f;
-        return new Color(Color.HSBtoRGB((float)((System.currentTimeMillis() - x * 10.0 * 1.0 - y * 10.0 * 1.0) % v) / v, 0.8f, 0.8f));
     }
 
     public HitBox2D getHitbox(float posScale, float sizeScale) {

@@ -75,7 +75,7 @@ public class ElementImage extends Element {
             public void addButtons() {
                 super.addButtons();
                 this.buttonList = this.buttonList.stream().filter(b -> b.id != 2).collect(Collectors.toList());
-                this.buttonList.add(new BetterGuiSlider(2, left(), getRow(0), 120, 20, "Scale: ", "%", 1, 300, element.getPosition().getScale() * 100f, false, true, this, "Controls the size of the element."));
+                this.buttonList.add(new BetterGuiSlider(2, left(), getRow(0), 120, 20, "Scale: ", "%", 50, 200, element.getPosition().getScale() * 100f, false, true, this, "Controls the size of the element."));
             }
         };
     }

@@ -15,7 +15,6 @@
 
 package co.uk.isxander.evergreenhud.gui.screens;
 
-import co.uk.isxander.xanderlib.utils.MathUtils;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.Element;
 import net.minecraft.client.gui.ScaledResolution;
@@ -23,22 +22,12 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.util.*;
 
 public class GuiScreenElements extends GuiScreenExt {
 
     protected Element dragging = null;
     protected Element lastClicked = null;
-    protected Map<Element, Map.Entry<Float, Float>> movables = new HashMap<>();
     protected float offX = 0, offY = 0;
-    private final DecimalFormat df;
-
-    public GuiScreenElements() {
-        df = new DecimalFormat("#.###");
-        df.setRoundingMode(RoundingMode.FLOOR);
-    }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -47,29 +36,17 @@ public class GuiScreenElements extends GuiScreenExt {
         ScaledResolution res = new ScaledResolution(mc);
 
         for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
-            e.renderGuiOverlay(lastClicked != null && lastClicked == e);
             e.render(new RenderGameOverlayEvent(partialTicks, res));
+            e.renderGuiOverlay(lastClicked != null && lastClicked == e);
         }
 
-        float x = ((float)Mouse.getEventX()) * ((float)this.width) / ((float)this.mc.displayWidth);
-        float y = ((float)this.height) - ((float)Mouse.getEventY()) * ((float)this.height) / ((float)this.mc.displayHeight) - 1f;
+        float x = ((float)Mouse.getX()) * ((float)this.width) / ((float)this.mc.displayWidth);
+        float y = ((float)this.height) - ((float)Mouse.getY()) * ((float)this.height) / ((float)this.mc.displayHeight) - 1f;
 
         if (dragging != null) {
-            movables.put(dragging, new AbstractMap.SimpleEntry<>(
-                    MathUtils.getPercent(x - offX, 0, res.getScaledWidth()),
-                    MathUtils.getPercent(y - offY, 0, res.getScaledHeight())));
+            dragging.getPosition().setRawX(x - offX, res);
+            dragging.getPosition().setRawY(y - offY, res);
         }
-        List<Element> toRemove = new ArrayList<>();
-        movables.forEach((e, p) -> {
-            e.getPosition().setScaledX(MathUtils.lerp(e.getPosition().getXScaled(), p.getKey(), partialTicks * 3));
-            e.getPosition().setScaledY(MathUtils.lerp(e.getPosition().getYScaled(), p.getValue(), partialTicks * 3));
-
-            // Remove element once it is done moving
-            if (dragging != e && MathUtils.precision(e.getPosition().getXScaled(), 4) == MathUtils.precision(p.getKey(), 4) && MathUtils.precision(e.getPosition().getYScaled(), 4) == MathUtils.precision(p.getValue(), 4)) {
-                toRemove.add(e);
-            }
-        });
-        toRemove.forEach((e) -> movables.remove(e));
     }
 
     @Override

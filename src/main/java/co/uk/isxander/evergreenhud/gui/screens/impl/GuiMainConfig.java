@@ -41,8 +41,8 @@ public class GuiMainConfig extends GuiScreenElements {
     private void addButtons() {
         this.buttonList.clear();
 
-        this.buttonList.add(new GuiButtonAlt(0, width / 2 + 1,      height - 20, 90, 20, "Finished"));
-        this.buttonList.add(new GuiButtonAlt(1, width / 2 - 90 - 1, height - 20, 90, 20, "Reset"));
+        this.buttonList.add(new GuiButtonAlt(0, width / 2,      height - 20, 90, 20, "Finished"));
+        this.buttonList.add(new GuiButtonAlt(1, width / 2 - 90, height - 20, 90, 20, "Reset"));
 
         this.buttonList.add(new GuiButtonAlt(2, left(), getRow(0), 242, 20, "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonAlt(3, left(), getRow(1), 120, 20, "Show in Chat: " + (manager.doShowInChat() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));

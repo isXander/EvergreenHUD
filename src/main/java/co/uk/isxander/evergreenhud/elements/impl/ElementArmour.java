@@ -20,6 +20,7 @@ import co.uk.isxander.evergreenhud.gui.screens.impl.GuiElementConfig;
 import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
+import co.uk.isxander.xanderlib.utils.GuiUtils;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.evergreenhud.settings.Setting;
 import co.uk.isxander.evergreenhud.utils.Alignment;
@@ -179,7 +180,7 @@ public class ElementArmour extends Element {
                 textX -= width;
             }
             if (this.useChroma()) {
-                drawChromaString(text, textX, textY, renderShadow(), false);
+                GuiUtils.drawChromaString(mc.fontRendererObj, text, textX, textY, renderShadow(), false);
             } else {
                 mc.fontRendererObj.drawString(text, textX, textY, this.getTextColor().getRGB(), renderShadow());
             }

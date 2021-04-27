@@ -69,7 +69,7 @@ public class EvergreenHUD implements Constants {
 
     private boolean reset = false;
 
-    private KeyBinding keybind = new KeyBinding("Open GUI", Keyboard.KEY_HOME, "Evergreen");
+    private KeyBinding keybind = new KeyBinding("Open GUI", Keyboard.KEY_HOME, "EvergreenHUD");
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
@@ -88,16 +88,14 @@ public class EvergreenHUD implements Constants {
         XanderLib.getInstance().getGuiEditor().addModifier(GuiOptions.class, new AbstractGuiModifier() {
             @Override
             public void onInitGuiPost(GuiScreen screen, List<GuiButton> buttonList) {
-                buttonList.add(new GuiButton(991, screen.width / 2 + 5, screen.height / 6 + 24 - 6, 150, 20, "EvergreenHUD..."));
+                if (mc.theWorld != null)
+                    buttonList.add(new GuiButton(991, screen.width / 2 + 5, screen.height / 6 + 24 - 6, 150, 20, "EvergreenHUD..."));
             }
 
             @Override
             public void onActionPerformedPost(GuiScreen screen, List<GuiButton> buttonList, GuiButton button) {
                 if (button.id == 991) {
-                    if (mc.thePlayer != null && mc.theWorld != null)
-                        mc.displayGuiScreen(new GuiMain());
-                    else
-                        Notifications.INSTANCE.pushNotification("EvergreenHUD", "You must be in a world to configure the mod.");
+                    mc.displayGuiScreen(new GuiMain());
                 }
             }
         });

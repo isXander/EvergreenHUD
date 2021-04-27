@@ -50,7 +50,11 @@ public interface Listenable {
 
     }
 
-    default void onPacketReceive(PacketEvent.Incoming packet) {
+    default void onPacketReceive(PacketEvent.Incoming event) {
+
+    }
+
+    default void onPacketSend(PacketEvent.Outgoing event) {
 
     }
 
