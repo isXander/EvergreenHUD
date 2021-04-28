@@ -40,11 +40,13 @@ public class ElementCoordinates extends Element {
     public IntegerSetting accuracy;
     public BooleanSetting trailingZeros;
     public ArraySetting type;
+    public IntegerSetting verticalSpacing;
 
     @Override
     public void initialise() {
         addSettings(showCoord = new BooleanSetting("Show Name", "Show X: Y: and Z: before the values.", true));
         addSettings(type = new ArraySetting("Display Type", "How the coordinates are displayed.", "Vertical", new String[]{"Vertical", "Horizontal"}));
+        addSettings(verticalSpacing = new IntegerSetting("Vertical Spacing", "How far apart each line will be.", 2, 0, 5, ""));
         addSettings(showX = new BooleanSetting("Show X", "Show the X coordinate.", true));
         addSettings(showY = new BooleanSetting("Show Y", "Show the Y coordinate.", true));
         addSettings(showZ = new BooleanSetting("Show Z", "Show the Z coordinate.", true));
@@ -69,7 +71,7 @@ public class ElementCoordinates extends Element {
 
         int i = 0;
         for (String line : getMultiValue()) {
-            float posY = ((y / getPosition().getScale()) + (mc.fontRendererObj.FONT_HEIGHT * i) + (2f * i));
+            float posY = ((y / getPosition().getScale()) + (mc.fontRendererObj.FONT_HEIGHT * i) + (verticalSpacing.get() * i));
             switch (getAlignment()) {
                 case RIGHT:
                     float posX = (x - mc.fontRendererObj.getStringWidth(line)) / getPosition().getScale();
@@ -151,7 +153,7 @@ public class ElementCoordinates extends Element {
         width *= sizeScale;
 
         float extraWidth = getPaddingWidth() * sizeScale;
-        float height = ((mc.fontRendererObj.FONT_HEIGHT * value.size()) + (2 * (value.size() - 1))) * sizeScale;
+        float height = ((mc.fontRendererObj.FONT_HEIGHT * value.size()) + (verticalSpacing.get() * (value.size() - 1))) * sizeScale;
         float extraHeight = getPaddingHeight() * sizeScale;
         float x = getPosition().getRawX(res) / posScale;
         float y = getPosition().getRawY(res) / posScale;

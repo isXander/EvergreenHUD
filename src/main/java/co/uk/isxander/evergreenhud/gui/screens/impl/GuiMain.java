@@ -44,7 +44,7 @@ public class GuiMain extends GuiScreenElements {
         GlStateManager.pushMatrix();
         float scale = 2;
         GlStateManager.scale(scale, scale, 0);
-        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "EvergreenHUD " + EvergreenHUD.VERSION, (int)(width / 2 / scale), (int)(5 / scale), -1);
+        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "EvergreenHUD " + EvergreenHUD.MOD_VERSION, (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, EvergreenHUD.UPDATE_NAME, width / 2, 25, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);

@@ -18,6 +18,7 @@ package co.uk.isxander.evergreenhud.elements.impl;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.evergreenhud.settings.impl.StringSetting;
+import co.uk.isxander.evergreenhud.utils.StringUtils;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.hypixel.locraw.LocationParsed;
 import co.uk.isxander.xanderlib.utils.MinecraftUtils;
@@ -46,6 +47,9 @@ public class ElementHypixelMode extends Element {
         String friendlyName = location.getMode();
         if (friendlyName == null || location.isLobby())
             return inLobbyMessage.get();
+
+        friendlyName = friendlyName.replaceAll("_", " ");
+        friendlyName = StringUtils.capitalize(friendlyName);
 
         return friendlyName;
     }

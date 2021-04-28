@@ -73,7 +73,7 @@ public class EvergreenHudCommand extends CommandBase {
                     }
                 });
             } else if (args[0].equalsIgnoreCase("version")) {
-                Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running on version " + EvergreenHUD.VERSION + "\nIf you want to check for updates, use \"/evergreenhud update\"");
+                Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running on version " + EvergreenHUD.MOD_VERSION + "\nIf you want to check for updates, use \"/evergreenhud update\"");
             }
         } else {
             XanderLib.getInstance().getGuiHandler().open(new GuiMain());

@@ -46,15 +46,15 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-@Mod(modid = EvergreenHUD.MOD_ID, name = EvergreenHUD.NAME, version = EvergreenHUD.VERSION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]")
+@Mod(modid = EvergreenHUD.MOD_ID, name = EvergreenHUD.MOD_NAME, version = EvergreenHUD.MOD_VERSION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]")
 public class EvergreenHUD implements Constants {
 
     public static final String MOD_ID = "evergreenhud";
-    public static final String NAME = "EvergreenHUD";
-    public static final String VERSION = "2.0";
+    public static final String MOD_NAME = "EvergreenHUD";
+    public static final String MOD_VERSION = "2.0";
     public static final String UPDATE_NAME = "the next step.";
 
-    public static final Version PARSED_VERSION = new Version(VERSION);
+    public static final Version PARSED_VERSION = new Version(MOD_VERSION);
     public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
     public static final File DATA_DIR = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud");
 
