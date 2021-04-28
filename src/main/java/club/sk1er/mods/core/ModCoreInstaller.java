@@ -34,7 +34,7 @@ import java.util.Map;
 import java.util.Set;
 
 /*
-    Created by Sk1er for use in all mods. Install under exact package name each time.
+ * Created by Sk1er for use in all mods. Install under exact package name each time.
  */
 public class ModCoreInstaller {
 
