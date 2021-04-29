@@ -18,6 +18,7 @@ package co.uk.isxander.evergreenhud;
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
+import co.uk.isxander.evergreenhud.elements.impl.ElementText;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.ui.editor.AbstractGuiModifier;
 import co.uk.isxander.xanderlib.utils.Constants;
@@ -99,6 +100,13 @@ public class EvergreenHUD implements Constants {
                 }
             }
         });
+
+        if (isFirstLaunch()) {
+            ElementText textElement = new ElementText();
+            textElement.text.set("Thank you for downloading EvergreenHUD! Use /evergreenhud to get to the configuration.");
+            getElementManager().addElement(textElement);
+            getElementManager().getElementConfig().save();
+        }
     }
 
     @Mod.EventHandler

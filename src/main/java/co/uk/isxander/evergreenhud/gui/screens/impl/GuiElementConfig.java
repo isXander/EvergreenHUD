@@ -131,7 +131,7 @@ public class GuiElementConfig extends GuiScreenElements {
                 }
                 textInput.setDescription(setting.getName() + ": " + setting.getDescription());
                 textInput.setEnableBackgroundDrawing(true);
-                textInput.setMaxStringLength(120);
+                textInput.setMaxStringLength(256);
                 textInput.setVisible(true);
                 textInput.setEnableBackgroundDrawing(true);
                 textInput.setCanLoseFocus(true);

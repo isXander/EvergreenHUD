@@ -18,6 +18,7 @@ package co.uk.isxander.evergreenhud.elements.impl;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.settings.impl.StringSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import net.minecraft.util.EnumChatFormatting;
 
 public class ElementText extends Element {
 
@@ -35,7 +36,12 @@ public class ElementText extends Element {
 
     @Override
     protected String getValue() {
-        return text.get();
+        return convertColorCodes(text.get());
+    }
+
+    private String convertColorCodes(String text) {
+        text = text.replaceAll("&([a-fA-F0-9])", "\u00A7$1");
+        return text;
     }
 
     @Override
