@@ -276,6 +276,8 @@ public abstract class Element extends Gui implements Listenable, Constants {
                 custom.addProperty(s.getJsonKey(), ((ArraySetting) s).getIndex());
             else if (s instanceof StringSetting)
                 custom.addProperty(s.getJsonKey(), ((StringSetting)s).get());
+            else if (s instanceof EnumSetting)
+                custom.addProperty(s.getJsonKey(), ((EnumSetting<?>) s).getIndex());
         }
         settings.add("custom", custom);
 
@@ -329,6 +331,8 @@ public abstract class Element extends Gui implements Listenable, Constants {
                         ((ArraySetting) s).set(custom.optInt(key));
                     else if (s instanceof StringSetting)
                         ((StringSetting) s).set(custom.optString(key));
+                    else if (s instanceof EnumSetting)
+                        ((EnumSetting<?>) s).set(custom.optInt(key));
                     break;
                 }
             }

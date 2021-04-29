@@ -24,6 +24,7 @@ import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.settings.Setting;
 import co.uk.isxander.evergreenhud.settings.impl.*;
 import co.uk.isxander.evergreenhud.utils.Alignment;
+import co.uk.isxander.evergreenhud.utils.StringUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
@@ -136,6 +137,9 @@ public class GuiElementConfig extends GuiScreenElements {
                 textInput.setCanLoseFocus(true);
                 textInput.setFocused(false);
                 textFieldList.add(textInput);
+            } else if (s instanceof EnumSetting) {
+                EnumSetting<?> setting = (EnumSetting<?>) s;
+                this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, setting.getName() + ": " + StringUtils.capitalize(setting.get().name().replaceAll("_", " ")), setting.getDescription()));
             }
             customButtons.put(id, s);
 
@@ -221,6 +225,10 @@ public class GuiElementConfig extends GuiScreenElements {
                 } else if (s instanceof ButtonSetting) {
                     ButtonSetting setting = (ButtonSetting) s;
                     setting.get().run();
+                } else if (s instanceof EnumSetting) {
+                    EnumSetting<?> setting = (EnumSetting<?>) s;
+                    setting.next();
+                    button.displayString = setting.getName() + ": " + StringUtils.capitalize(setting.get().name().replaceAll("_", " "));
                 }
                 break;
         }
