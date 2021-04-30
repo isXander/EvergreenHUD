@@ -7,6 +7,7 @@ is the best HUD mod out there for 1.8.
 #### Announcement
 I would love if someone could work on a multi-version system for the mod as I
 think it could become very popular for fabric players and maybe even modpacks.
+
 *Contact me on discord @ isXander#0162*
 
 #### Links
@@ -74,6 +75,6 @@ Please make sure to make a useful contribution that will benefit either the user
 
 ## License
 
-This project is licensed under the [LGPL 3.0](LICENSE) 
+This project is licensed under the [GPL 3.0](LICENSE)
 GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for
 details

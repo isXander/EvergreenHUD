@@ -55,6 +55,7 @@ public class GuiElementConfig extends GuiScreenElements {
 
     @Override
     public void initGui() {
+        Keyboard.enableRepeatEvents(true);
         addButtons();
     }
 
@@ -301,5 +302,11 @@ public class GuiElementConfig extends GuiScreenElements {
         for (GuiTextField textField : textFieldList) {
             textField.mouseClicked(mouseX, mouseY, mouseButton);
         }
+    }
+
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        Keyboard.enableRepeatEvents(false);
     }
 }

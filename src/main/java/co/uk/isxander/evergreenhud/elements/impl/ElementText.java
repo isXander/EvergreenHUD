@@ -40,8 +40,7 @@ public class ElementText extends Element {
     }
 
     private String convertColorCodes(String text) {
-        text = text.replaceAll("&([a-fA-F0-9])", "\u00A7$1");
-        return text;
+        return text.replaceAll("&([a-fA-F0-9])", "\u00A7$1");
     }
 
     @Override

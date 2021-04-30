@@ -87,7 +87,7 @@ public class ElementCoordinates extends Element {
                     if (useChroma())
                         GuiUtils.drawChromaString(mc.fontRendererObj, line, posX, posY, renderShadow(), true);
                     else
-                        drawCenteredString(mc.fontRendererObj, line, posX, posY, getTextColor().getRGB(), renderShadow());
+                        GuiUtils.drawCenteredString(mc.fontRendererObj, line, posX, posY, getTextColor().getRGB(), renderShadow());
                     break;
                 case LEFT:
                     posX = x / getPosition().getScale();
@@ -150,6 +150,7 @@ public class ElementCoordinates extends Element {
         for (String line : value) {
             width = Math.max(width, mc.fontRendererObj.getStringWidth(line));
         }
+        width = Math.max(10, width);
         width *= sizeScale;
 
         float extraWidth = getPaddingWidth() * sizeScale;

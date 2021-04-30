@@ -15,10 +15,10 @@
 
 package co.uk.isxander.evergreenhud.command;
 
+import club.sk1er.mods.core.ModCore;
 import club.sk1er.mods.core.gui.notification.Notifications;
+import club.sk1er.mods.core.util.Multithreading;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
-import co.uk.isxander.xanderlib.XanderLib;
-import co.uk.isxander.xanderlib.utils.Multithreading;
 import co.uk.isxander.xanderlib.utils.Version;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.update.UpdateChecker;
@@ -76,7 +76,7 @@ public class EvergreenHudCommand extends CommandBase {
                 Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running on version " + EvergreenHUD.MOD_VERSION + "\nIf you want to check for updates, use \"/evergreenhud update\"");
             }
         } else {
-            XanderLib.getInstance().getGuiHandler().open(new GuiMain());
+            ModCore.getInstance().getGuiHandler().open(new GuiMain());
         }
     }
 

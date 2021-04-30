@@ -136,7 +136,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
                 if (chroma)
                     GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow(), true);
                 else
-                    drawCenteredString(mc.fontRendererObj, getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
+                    GuiUtils.drawCenteredString(mc.fontRendererObj, getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
                 break;
             case LEFT:
                 posX = x / getPosition().getScale();
@@ -152,14 +152,10 @@ public abstract class Element extends Gui implements Listenable, Constants {
         mc.mcProfiler.endSection();
     }
 
-    public void drawCenteredString(FontRenderer fontRendererIn, String text, float x, float y, int color, boolean shadow) {
-        fontRendererIn.drawString(text, x - fontRendererIn.getStringWidth(text) / 2f, y, color, shadow);
-    }
-
     public HitBox2D getHitbox(float posScale, float sizeScale) {
         HitBox2D hitbox = null;
         ScaledResolution res = new ScaledResolution(mc);
-        float width = mc.fontRendererObj.getStringWidth(getDisplayString()) * sizeScale;
+        float width = Math.max(mc.fontRendererObj.getStringWidth(getDisplayString()), 10) * sizeScale;
         float extraWidth = getPaddingWidth() * sizeScale;
         float height = mc.fontRendererObj.FONT_HEIGHT * sizeScale;
         float extraHeight = getPaddingHeight() * sizeScale;

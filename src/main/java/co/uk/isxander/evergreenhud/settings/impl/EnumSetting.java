@@ -66,7 +66,7 @@ public class EnumSetting<T extends Enum<?>> extends Setting {
         if (i > this.options.getEnumConstants().length - 1)
             i = 0;
         set(i);
-        return this.options.getEnumConstants()[index];
+        return cached;
     }
 
     public T previous() {
@@ -74,7 +74,7 @@ public class EnumSetting<T extends Enum<?>> extends Setting {
         if (i < 0)
             i = this.options.getEnumConstants().length - 1;
         set(i);
-        return this.options.getEnumConstants()[index];
+        return cached;
     }
 
     protected boolean onChange(int currentIndex, int newIndex) {
