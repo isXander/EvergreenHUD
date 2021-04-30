@@ -16,6 +16,7 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.xanderlib.utils.MathUtils;
 import co.uk.isxander.evergreenhud.elements.ElementData;
@@ -29,9 +30,11 @@ public class ElementMemory extends Element {
     private long lastUpdated = 0L;
 
     public BooleanSetting trailingZeros;
+    public ArraySetting displayMode;
 
     @Override
     public void initialise() {
+        addSettings(displayMode = new ArraySetting("Display", "How the value will be displayed.", "Absolute", new String[]{"Absolute", "Percentage"}));
         addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Add zeroes to match the accuracy.", false));
     }
 
@@ -49,9 +52,15 @@ public class ElementMemory extends Element {
     @Override
     public void onClientTick(TickEvent.ClientTickEvent event) {
         if (lastUpdated < System.currentTimeMillis() - 1000L) {
-            DecimalFormat df = new DecimalFormat(trailingZeros.get() ? "0.0%" : "#.#%");
-            memDisplay = df.format(MathUtils.getPercent(bytesToMb(Runtime.getRuntime().totalMemory() -
-                    Runtime.getRuntime().freeMemory()), 0, bytesToMb(Runtime.getRuntime().maxMemory())));
+            if (displayMode.get().equalsIgnoreCase("absolute")) {
+                DecimalFormat df = new DecimalFormat((trailingZeros.get() ? "0.0" : "#.#"));
+                memDisplay = df.format(bytesToMb(Runtime.getRuntime().totalMemory() -
+                        Runtime.getRuntime().freeMemory()) / 1024f) + " GB";
+            } else {
+                DecimalFormat df = new DecimalFormat((trailingZeros.get() ? "0.0%" : "#.#") + (displayMode.get().equalsIgnoreCase("percentage") ? "%" : " GB"));
+                memDisplay = df.format(MathUtils.getPercent(bytesToMb(Runtime.getRuntime().totalMemory() -
+                        Runtime.getRuntime().freeMemory()), 0, bytesToMb(Runtime.getRuntime().maxMemory())));
+            }
             lastUpdated = System.currentTimeMillis();
         }
     }

@@ -38,11 +38,6 @@ public class ElementPitch extends Element {
     }
 
     @Override
-    public ElementType getType() {
-        return ElementType.PITCH;
-    }
-
-    @Override
     protected String getValue() {
         return new DecimalFormat(trailingZeros.get() ? "0.0" : "#.#").format(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationPitch));
     }

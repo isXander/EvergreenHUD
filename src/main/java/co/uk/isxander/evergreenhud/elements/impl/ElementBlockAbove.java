@@ -73,7 +73,8 @@ public class ElementBlockAbove extends Element {
             if (state == null) continue;
             Block b = state.getBlock();
             if (b != Blocks.air && b != Blocks.water && b != Blocks.lava && b != Blocks.ladder && b != Blocks.vine
-                    && b != Blocks.wall_sign && b != Blocks.standing_banner && b != Blocks.wall_banner && b != Blocks.standing_sign) {
+                    && b != Blocks.wall_sign && b != Blocks.standing_banner && b != Blocks.wall_banner && b != Blocks.standing_sign
+                    && !b.getMaterial().blocksMovement()) {
                 if (i <= notifyHeight.get() && (blockDistance > notifyHeight.get() || blockDistance == 0)) {
                     if (notify.get())
                         mc.thePlayer.playSound("random.orb", 0.1f, 0.5f);

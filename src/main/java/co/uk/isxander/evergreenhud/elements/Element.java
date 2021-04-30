@@ -86,7 +86,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
 
     public abstract String getDisplayTitle();
 
-    public ElementType getType() {
+    public final ElementType getType() {
         return ElementType.getType(this);
     }
 
