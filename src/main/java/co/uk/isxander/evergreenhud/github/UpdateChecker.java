@@ -13,7 +13,7 @@
  * isXander @ business.isxander@gmail.com
  */
 
-package co.uk.isxander.evergreenhud.update;
+package co.uk.isxander.evergreenhud.github;
 
 import co.uk.isxander.xanderlib.utils.HttpsUtils;
 import co.uk.isxander.xanderlib.utils.Version;
@@ -22,7 +22,7 @@ import co.uk.isxander.evergreenhud.EvergreenHUD;
 
 public class UpdateChecker {
 
-    private static final String URL = "https://raw.githubusercontent.com/Evergreen-Client/EvergreenHUD/main/version.json";
+    private static final String URL = "https://raw.githubusercontent.com/isXander/EvergreenHUD/main/version.json";
 
     public static Version getLatestVersion() {
         String out = HttpsUtils.getString(URL);

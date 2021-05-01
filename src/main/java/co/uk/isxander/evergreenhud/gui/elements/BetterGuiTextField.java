@@ -42,7 +42,7 @@ public class BetterGuiTextField extends GuiTextField {
     public void drawTextBoxDescription(Minecraft mc, int mouseX, int mouseY) {
         super.drawTextBox();
         if (!description.trim().equals("") && mouseX >= this.xPosition && mouseX <= this.xPosition + this.width && mouseY >= this.yPosition && mouseY <= this.yPosition + this.height) {
-            GuiUtils.drawHoveringText(Collections.singletonList(description), mouseX, mouseY, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, -1, Minecraft.getMinecraft().fontRendererObj);
+            GuiUtils.drawHoveringText(Collections.singletonList(description), mouseX, mouseY, mc.displayWidth, mc.displayHeight, -1, mc.fontRendererObj);
             GlStateManager.disableLighting();
         }
     }

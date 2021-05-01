@@ -36,6 +36,7 @@ import java.util.Set;
 /*
  * Created by Sk1er for use in all mods. Install under exact package name each time.
  */
+@SuppressWarnings("all")
 public class ModCoreInstaller {
 
     private static final String VERSION_URL = "https://api.sk1er.club/modcore_versions";

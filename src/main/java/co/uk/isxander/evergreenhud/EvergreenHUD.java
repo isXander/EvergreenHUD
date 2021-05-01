@@ -19,6 +19,7 @@ import club.sk1er.mods.core.ModCore;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
 import co.uk.isxander.evergreenhud.elements.impl.ElementText;
+import co.uk.isxander.evergreenhud.github.BlacklistManager;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.ui.editor.AbstractGuiModifier;
 import co.uk.isxander.xanderlib.utils.Constants;
@@ -26,8 +27,7 @@ import co.uk.isxander.xanderlib.utils.Version;
 import co.uk.isxander.evergreenhud.command.EvergreenHudCommand;
 import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
-import co.uk.isxander.evergreenhud.update.UpdateChecker;
-import net.minecraft.client.Minecraft;
+import co.uk.isxander.evergreenhud.github.UpdateChecker;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -52,12 +52,12 @@ public class EvergreenHUD implements Constants {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String MOD_NAME = "EvergreenHUD";
-    public static final String MOD_VERSION = "2.0";
+    public static final String MOD_VERSION = "2.0-pre4";
     public static final String UPDATE_NAME = "the next step.";
 
     public static final Version PARSED_VERSION = new Version(MOD_VERSION);
     public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
-    public static final File DATA_DIR = new File(Minecraft.getMinecraft().mcDataDir, "config/evergreenhud");
+    public static final File DATA_DIR = new File(mc.mcDataDir, "config/evergreenhud");
 
     @Mod.Instance(EvergreenHUD.MOD_ID)
     private static EvergreenHUD instance;
@@ -67,6 +67,7 @@ public class EvergreenHUD implements Constants {
 
     private boolean firstLaunch = false;
     private boolean versionTwoFirstLaunch = false;
+    private boolean disabled = false;
 
     private boolean reset = false;
 
@@ -76,6 +77,10 @@ public class EvergreenHUD implements Constants {
     public void init(FMLInitializationEvent event) {
         ModCore.getInstance().initialize(mc.mcDataDir);
         XanderLib.getInstance().initPhase();
+
+        disabled = BlacklistManager.isVersionBlacklisted(MOD_VERSION);
+        if (disabled)
+            return;
 
         firstLaunch = !DATA_DIR.exists();
         versionTwoFirstLaunch = !ElementConfig.CONFIG_FILE.exists();
@@ -111,6 +116,28 @@ public class EvergreenHUD implements Constants {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        if (disabled) {
+            Notifications.INSTANCE.pushNotification("EvergreenHUD",
+                    "The current version of this mod has been blacklisted.\n"
+                    + "Please check the discord server for updates.\n"
+                    + "Click to join the discord.",
+
+            () -> {
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                    try {
+                        Desktop.getDesktop().browse(new URI("https://discord.gg/AJv5ZnNT8q"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "Unfortunately, your computer does not seem to support web-browsing.");
+                }
+                return null;
+            });
+
+            return;
+        }
+
         Version latestVersion = UpdateChecker.getLatestVersion();
         Version currentVersion = EvergreenHUD.PARSED_VERSION;
         if (latestVersion.newerThan(currentVersion)) {
@@ -146,7 +173,7 @@ public class EvergreenHUD implements Constants {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (keybind.isPressed())
-            Minecraft.getMinecraft().displayGuiScreen(new GuiMain());
+            mc.displayGuiScreen(new GuiMain());
     }
 
     public static void notifyUpdate(Version latestVersion) {

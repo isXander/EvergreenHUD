@@ -122,12 +122,7 @@ public class XanderLibInstaller {
 
     // gson 2.3 would be pretty useful
     private static boolean jsonArrayContains(JsonArray arr, String val) {
-        for (JsonElement entry : arr) {
-            String str = entry.getAsString();
-            if (str != null && str.equals(val))
-                return true;
-        }
-        return false;
+        return arr.contains(new JsonPrimitive(val));
     }
 
     private static JsonHolder readFile(File in) {

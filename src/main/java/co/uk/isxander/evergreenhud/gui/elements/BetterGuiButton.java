@@ -23,8 +23,6 @@ import java.util.Collections;
 
 public class BetterGuiButton extends GuiButtonAlt {
 
-    private static final Minecraft mc = Minecraft.getMinecraft();
-
     public String description;
 
     public BetterGuiButton(int id, int xPos, int yPos, String displayString, String description) {

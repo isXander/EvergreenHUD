@@ -21,7 +21,7 @@ import club.sk1er.mods.core.util.Multithreading;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.xanderlib.utils.Version;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
-import co.uk.isxander.evergreenhud.update.UpdateChecker;
+import co.uk.isxander.evergreenhud.github.UpdateChecker;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 
@@ -42,7 +42,8 @@ public class EvergreenHudCommand extends CommandBase {
                 "evergreenhud",
                 "hud",
                 "evergreen",
-                "hudmod"
+                "hudmod",
+                "xanderhud"
         ));
     }
 
