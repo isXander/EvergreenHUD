@@ -1,8 +1,8 @@
 package co.uk.isxander.evergreenhud.github;
 
+import co.uk.isxander.evergreenhud.utils.JsonUtils;
 import co.uk.isxander.xanderlib.utils.HttpsUtils;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
-import com.google.gson.JsonPrimitive;
 
 public class BlacklistManager {
 
@@ -14,7 +14,7 @@ public class BlacklistManager {
         BetterJsonObject json = new BetterJsonObject(out);
 
         if (json.optBoolean("all", false)) return true;
-        return json.get("versions").getAsJsonArray().contains(new JsonPrimitive(version));
+        return JsonUtils.jsonArrayContains(json.get("versions").getAsJsonArray(), version);
     }
 
 }

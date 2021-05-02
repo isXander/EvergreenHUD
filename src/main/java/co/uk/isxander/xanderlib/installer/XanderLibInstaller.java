@@ -1,6 +1,7 @@
 package co.uk.isxander.xanderlib.installer;
 
 import club.sk1er.mods.core.ModCoreInstaller;
+import co.uk.isxander.evergreenhud.utils.JsonUtils;
 import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -50,7 +51,7 @@ public class XanderLibInstaller {
         JsonHolder metadata = null;
         if (metaExists)
             metadata = readFile(data);
-        if (!metaExists || !metadata.has("installed_versions") || !jsonArrayContains(metadata.optJSONArray("installed_versions"), DESIRED_VERSION)) {
+        if (!metaExists || !metadata.has("installed_versions") || !JsonUtils.jsonArrayContains(metadata.optJSONArray("installed_versions"), DESIRED_VERSION)) {
             download("https://static.isxander.co.uk/mods/xanderlib/" + DESIRED_VERSION + ".jar", DESIRED_VERSION, jar, metadata);
         }
 
@@ -95,7 +96,7 @@ public class XanderLibInstaller {
             }
 
             JsonArray arr = versionData.optJSONArray("installed_versions");
-            if (!jsonArrayContains(arr, version))
+            if (!JsonUtils.jsonArrayContains(arr, version))
                 arr.add(new JsonPrimitive(version));
             versionData.put("installed_versions", (JsonElement) arr);
 
@@ -118,11 +119,6 @@ public class XanderLibInstaller {
             }
         }
         return true;
-    }
-
-    // gson 2.3 would be pretty useful
-    private static boolean jsonArrayContains(JsonArray arr, String val) {
-        return arr.contains(new JsonPrimitive(val));
     }
 
     private static JsonHolder readFile(File in) {
