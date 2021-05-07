@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud;
 
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.mods.core.gui.notification.Notifications;
+import co.uk.isxander.evergreenhud.addon.AddonManager;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
 import co.uk.isxander.evergreenhud.elements.impl.ElementText;
 import co.uk.isxander.evergreenhud.github.BlacklistManager;
@@ -63,6 +64,7 @@ public class EvergreenHUD implements Constants {
     private static EvergreenHUD instance;
 
     private ElementManager elementManager;
+    private AddonManager addonManager;
     private boolean development;
 
     private boolean firstLaunch = false;
@@ -85,8 +87,12 @@ public class EvergreenHUD implements Constants {
         firstLaunch = !DATA_DIR.exists();
         versionTwoFirstLaunch = !ElementConfig.CONFIG_FILE.exists();
 
+        addonManager = new AddonManager();
+        addonManager.discoverAddons();
+
         ClientCommandHandler.instance.registerCommand(new EvergreenHudCommand());
         ClientRegistry.registerKeyBinding(keybind);
+        addonManager.initAddons();
         MinecraftForge.EVENT_BUS.register(elementManager = new ElementManager());
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -198,6 +204,10 @@ public class EvergreenHUD implements Constants {
 
     public ElementManager getElementManager() {
         return elementManager;
+    }
+
+    public AddonManager getAddonManager() {
+        return addonManager;
     }
 
     public void notifyConfigReset() {

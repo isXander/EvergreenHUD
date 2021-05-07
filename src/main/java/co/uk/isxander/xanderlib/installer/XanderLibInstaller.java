@@ -1,6 +1,7 @@
 package co.uk.isxander.xanderlib.installer;
 
 import club.sk1er.mods.core.ModCoreInstaller;
+import co.uk.isxander.evergreenhud.addon.AddonManager;
 import co.uk.isxander.evergreenhud.utils.JsonUtils;
 import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
@@ -20,7 +21,7 @@ import club.sk1er.mods.core.ModCoreInstaller.JsonHolder;
 public class XanderLibInstaller {
 
     // What version of XanderLib does this mod use
-    public static final String DESIRED_VERSION = "0.3";
+    public static final String DESIRED_VERSION = "0.4";
     private static final String VERSION_URL = "https://raw.githubusercontent.com/isXander/XanderLib/main/version.json";
     private static File dataDir = null;
     private static boolean isInstalled = false;

@@ -87,4 +87,9 @@ public class EventManager implements Constants {
         listenables.stream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onPacketReceive(event)));
     }
 
+    @SubscribeEvent
+    public void onPacketSend(PacketEvent.Outgoing event) {
+        listenables.stream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onPacketSend(event)));
+    }
+
 }

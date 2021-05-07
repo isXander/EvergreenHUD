@@ -81,18 +81,29 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return meta;
     }
 
+    /**
+     * @return the text to display on the HUD element
+     */
     protected abstract String getValue();
 
+    /**
+     * @return the prefix/suffix of the value
+     */
     public abstract String getDisplayTitle();
 
-    public final ElementType getType() {
-        return ElementType.getType(this);
+    public final String getType() {
+        return ElementType.instance.getType(this);
     }
 
     public GuiElementConfig getElementConfigGui() {
         return new GuiElementConfig(this);
     }
 
+    /**
+     * Combines the value and display title together
+     *
+     * @return the text that will be rendered
+     */
     public String getDisplayString() {
         String builder = "";
         if (showBrackets())
@@ -108,6 +119,8 @@ public abstract class Element extends Gui implements Listenable, Constants {
     }
 
     /**
+     * Renders to the screen.
+     *
      * This can be overwritten if element has a very specific way of displaying itself
      */
     public void render(RenderGameOverlayEvent event) {
@@ -151,6 +164,13 @@ public abstract class Element extends Gui implements Listenable, Constants {
         mc.mcProfiler.endSection();
     }
 
+    /**
+     * Gets the box around the text
+     *
+     * @param posScale the gl scale
+     * @param sizeScale the modified scale
+     * @return hitbox for rendering & gui
+     */
     public HitBox2D getHitbox(float posScale, float sizeScale) {
         HitBox2D hitbox = null;
         ScaledResolution res = new ScaledResolution(mc);
@@ -174,6 +194,11 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return hitbox;
     }
 
+    /**
+     * Reset all settings to their default value
+     *
+     * @param save whether or not to save the new config
+     */
     public void resetSettings(boolean save) {
         pos = Position.getPositionWithRawPositioning(10, 10, 1, new ScaledResolution(mc));
         title = true;

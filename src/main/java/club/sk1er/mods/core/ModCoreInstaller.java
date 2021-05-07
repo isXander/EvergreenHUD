@@ -1,5 +1,6 @@
 package club.sk1er.mods.core;
 
+import co.uk.isxander.evergreenhud.addon.AddonManager;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -146,12 +147,11 @@ public class ModCoreInstaller {
         return 0;
     }
 
-
     public static void addToClasspath(File file) {
         try {
             URL url = file.toURI().toURL();
 
-            ClassLoader classLoader = ModCoreInstaller.class.getClassLoader();
+            ClassLoader classLoader = AddonManager.class.getClassLoader();
             Method method = classLoader.getClass().getDeclaredMethod("addURL", URL.class);
             method.setAccessible(true);
             method.invoke(classLoader, url);

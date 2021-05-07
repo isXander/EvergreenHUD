@@ -46,7 +46,7 @@ public class ElementConfig implements Constants {
         JsonArray array = new JsonArray();
         for (Element element : manager.getCurrentElements()) {
             BetterJsonObject obj = new BetterJsonObject();
-            obj.addProperty("type", element.getType().name());
+            obj.addProperty("type", element.getType());
             obj.add("settings", element.generateJson());
             array.add(obj.getData());
         }
@@ -86,7 +86,7 @@ public class ElementConfig implements Constants {
         JsonArray array = root.getData().getAsJsonArray("elements");
         array.forEach((jsonElement) -> {
             BetterJsonObject elementConfig = new BetterJsonObject(jsonElement.getAsJsonObject());
-            Element element = ElementType.valueOf(elementConfig.optString("type")).getElement();
+            Element element = ElementType.instance.getElement(elementConfig.optString("type"));
             if (element != null) {
                 element.loadJson(new BetterJsonObject(elementConfig.get("settings").getAsJsonObject()));
                 manager.addElement(element);
@@ -98,9 +98,9 @@ public class ElementConfig implements Constants {
         EvergreenHUD.LOGGER.info("Converting old configuration system.");
 
         List<Element> availableElements = new ArrayList<>();
-        for (ElementType type : ElementType.values()) {
-            availableElements.add(type.getElement());
-        }
+        ElementType.instance.getTypes().forEach((name, clazz) -> {
+            availableElements.add(ElementType.instance.getElement(name));
+        });
 
         for (File config : OLD_CONFIG_FOLDER.listFiles()) {
             for (Element element : availableElements) {
@@ -115,14 +115,6 @@ public class ElementConfig implements Constants {
 
                     if (root.optBoolean("enabled")) {
                         element.loadJson(root);
-
-                        // Add image
-//                        if (ElementType.getType(element) == ElementType.IMAGE) {
-//                            ((StringSetting) element.getCustomSettings().stream()
-//                                    .filter(s -> s.getName().equalsIgnoreCase("file path"))
-//                                    .findFirst()
-//                                    .get()).set(ElementImage.imageFile.getPath());
-//                        }
 
                         manager.addElement(element);
                     }

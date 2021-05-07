@@ -26,6 +26,7 @@ import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -45,9 +46,14 @@ public class GuiAddElement extends GuiScreenElements {
         int column = 0;
         int row = 0;
         int index = 1;
-        List<ElementType> elements = Arrays.stream(ElementType.values()).sorted(Comparator.comparing(o -> o.getElement().getMetadata().getName())).collect(Collectors.toList());
-        for (ElementType type : elements) {
-            Element e = type.getElement();
+
+        List<Element> elements = new ArrayList<>();
+        ElementType.instance.getTypes().forEach((name, elementClass) -> {
+            elements.add(ElementType.instance.getElement(name));
+        });
+        elements.sort(Comparator.comparing(o -> o.getMetadata().getName()));
+
+        for (Element e : elements) {
             if (startY + (row * buttonHeight + row * buttonGap) > height - 60 && index - 1 < elements.size()) {
                 column++;
                 row = 0;

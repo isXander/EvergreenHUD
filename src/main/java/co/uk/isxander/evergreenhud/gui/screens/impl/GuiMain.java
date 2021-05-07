@@ -47,6 +47,7 @@ public class GuiMain extends GuiScreenElements {
         drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "EvergreenHUD " + EvergreenHUD.MOD_VERSION, (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, EvergreenHUD.UPDATE_NAME, width / 2, 25, -1);
+        mc.fontRendererObj.drawString("Addon Count: " + EvergreenHUD.getInstance().getAddonManager().addons.size(), 2, height - mc.fontRendererObj.FONT_HEIGHT - 2, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
