@@ -17,7 +17,6 @@ package co.uk.isxander.evergreenhud.config;
 
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
-import co.uk.isxander.evergreenhud.elements.ElementType;
 import co.uk.isxander.xanderlib.utils.Constants;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
@@ -86,7 +85,7 @@ public class ElementConfig implements Constants {
         JsonArray array = root.getData().getAsJsonArray("elements");
         array.forEach((jsonElement) -> {
             BetterJsonObject elementConfig = new BetterJsonObject(jsonElement.getAsJsonObject());
-            Element element = ElementType.instance.getElement(elementConfig.optString("type"));
+            Element element = manager.getNewElementInstance(elementConfig.optString("type"));
             if (element != null) {
                 element.loadJson(new BetterJsonObject(elementConfig.get("settings").getAsJsonObject()));
                 manager.addElement(element);
@@ -98,8 +97,8 @@ public class ElementConfig implements Constants {
         EvergreenHUD.LOGGER.info("Converting old configuration system.");
 
         List<Element> availableElements = new ArrayList<>();
-        ElementType.instance.getTypes().forEach((name, clazz) -> {
-            availableElements.add(ElementType.instance.getElement(name));
+        manager.getAvailableElements().forEach((name, clazz) -> {
+            availableElements.add(manager.getNewElementInstance(name));
         });
 
         for (File config : OLD_CONFIG_FOLDER.listFiles()) {

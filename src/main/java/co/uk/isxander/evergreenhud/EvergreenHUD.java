@@ -87,13 +87,16 @@ public class EvergreenHUD implements Constants {
         firstLaunch = !DATA_DIR.exists();
         versionTwoFirstLaunch = !ElementConfig.CONFIG_FILE.exists();
 
-        addonManager = new AddonManager();
-        addonManager.discoverAddons();
-
         ClientCommandHandler.instance.registerCommand(new EvergreenHudCommand());
         ClientRegistry.registerKeyBinding(keybind);
-        addonManager.initAddons();
+
+        addonManager = new AddonManager();
+        addonManager.discoverAddons();
         MinecraftForge.EVENT_BUS.register(elementManager = new ElementManager());
+        addonManager.onInit();
+        elementManager.loadConfigs();
+        addonManager.onConfigLoad();
+
         MinecraftForge.EVENT_BUS.register(this);
 
 

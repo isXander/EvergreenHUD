@@ -15,16 +15,25 @@
 
 package co.uk.isxander.evergreenhud.addon;
 
-import co.uk.isxander.evergreenhud.elements.ElementType;
+import co.uk.isxander.evergreenhud.elements.ElementManager;
 
 public abstract class EvergreenAddon {
 
     /**
      * Initialise elements here
      *
-     * @see ElementType#registerElement(String, Class)
+     * @see ElementManager#registerElement(String, Class)
      */
-    public abstract void init();
+    public void init() {
+
+    }
+
+    /**
+     * Called when the config is loaded
+     */
+    public void configLoad() {
+
+    }
 
     /**
      * Information about the addon.

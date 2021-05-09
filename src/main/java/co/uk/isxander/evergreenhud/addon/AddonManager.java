@@ -47,9 +47,15 @@ public class AddonManager {
         logger.info(String.format("Completed: Took %s ms and found %s addons.", System.currentTimeMillis() - time, addons.size()));
     }
 
-    public void initAddons() {
+    public void onInit() {
         for (EvergreenAddon addon : addons) {
             addon.init();
+        }
+    }
+
+    public void onConfigLoad() {
+        for (EvergreenAddon addon : addons) {
+            addon.configLoad();
         }
     }
 

@@ -92,7 +92,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
     public abstract String getDisplayTitle();
 
     public final String getType() {
-        return ElementType.instance.getType(this);
+        return EvergreenHUD.getInstance().getElementManager().getElementIdentifier(this);
     }
 
     public GuiElementConfig getElementConfigGui() {

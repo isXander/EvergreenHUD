@@ -15,7 +15,9 @@
 
 package co.uk.isxander.evergreenhud.elements;
 
+import co.uk.isxander.evergreenhud.elements.impl.*;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
+import co.uk.isxander.evergreenhud.utils.BreakException;
 import co.uk.isxander.xanderlib.utils.Constants;
 import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.config.MainConfig;
@@ -26,11 +28,12 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class ElementManager implements Constants {
 
+    private final Map<String, Class<? extends Element>> availableElements;
     private final List<Element> currentElements;
 
     /* Config */
@@ -44,12 +47,89 @@ public class ElementManager implements Constants {
     private final Logger logger;
 
     public ElementManager() {
+        this.logger = LogManager.getLogger("Evergreen Manager");
+
+        this.availableElements = new HashMap<>();
         this.currentElements = new ArrayList<>();
         this.mainConfig = new MainConfig(this);
         this.elementConfig = new ElementConfig(this);
         resetConfig();
 
-        this.logger = LogManager.getLogger("Evergreen Manager");
+        registerNormals();
+    }
+
+    private void registerNormals() {
+        registerElement("ARMOUR", ElementArmour.class);
+        registerElement("BIOME", ElementBiome.class);
+        registerElement("BLOCK_ABOVE", ElementBlockAbove.class);
+        registerElement("CHUNK_UPDATES", ElementChunkUpdates.class);
+        registerElement("COMBO", ElementCombo.class);
+        registerElement("COORDS", ElementCoordinates.class);
+        registerElement("CPS", ElementCps.class);
+        registerElement("DAY", ElementDay.class);
+        registerElement("DIRECTION", ElementDirection.class);
+        registerElement("ENTITY_COUNT", ElementEntityCount.class);
+        registerElement("FPS", ElementFps.class);
+        registerElement("HYPIXEL_GAME", ElementHypixelGame.class);
+        registerElement("HYPIXEL_MAP", ElementHypixelMap.class);
+        registerElement("HYPIXEL_MODE", ElementHypixelMode.class);
+        registerElement("IMAGE", ElementImage.class);
+        registerElement("LIGHT", ElementLight.class);
+        registerElement("MEMORY", ElementMemory.class);
+        registerElement("PING", ElementPing.class);
+        registerElement("PITCH", ElementPitch.class);
+        registerElement("PLAYER_PREVIEW", ElementPlayerPreview.class);
+        registerElement("REACH", ElementReach.class);
+        registerElement("SERVER", ElementServer.class);
+        registerElement("SPEED", ElementSpeed.class);
+        registerElement("TEXT", ElementText.class);
+        registerElement("TIME", ElementTime.class);
+        registerElement("YAW", ElementYaw.class);
+    }
+
+    /**
+     * Registers an element to Evergreen
+     *
+     * @param name the internal name of the element. Example: MY_NEW_ELEMENT
+     * @param type class of your element
+     */
+    public void registerElement(String name, Class<? extends Element> type) {
+        availableElements.putIfAbsent(name, type);
+    }
+
+    public Class<? extends Element> getElementClass(String name) {
+        return availableElements.get(name);
+    }
+
+    public Element getNewElementInstance(String name) {
+        try {
+            return getElementClass(name).newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String getElementIdentifier(Element element) {
+        AtomicReference<String> name = new AtomicReference<>();
+        try {
+            availableElements.forEach((k, v) -> {
+                if (v.equals(element.getClass())) {
+                    name.set(k);
+                    throw new BreakException();
+                }
+            });
+        } catch (BreakException e) {
+        }
+
+        return name.get();
+    }
+
+    public Map<String, Class<? extends Element>> getAvailableElements() {
+        return Collections.unmodifiableMap(availableElements);
+    }
+
+    public void loadConfigs() {
         this.getElementConfig().load();
         this.getMainConfig().load();
     }

@@ -15,11 +15,11 @@
 
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
+import co.uk.isxander.evergreenhud.elements.ElementManager;
 import co.uk.isxander.evergreenhud.gui.elements.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.Element;
-import co.uk.isxander.evergreenhud.elements.ElementType;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
@@ -27,10 +27,8 @@ import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class GuiAddElement extends GuiScreenElements {
 
@@ -47,9 +45,10 @@ public class GuiAddElement extends GuiScreenElements {
         int row = 0;
         int index = 1;
 
+        ElementManager manager = EvergreenHUD.getInstance().getElementManager();
         List<Element> elements = new ArrayList<>();
-        ElementType.instance.getTypes().forEach((name, elementClass) -> {
-            elements.add(ElementType.instance.getElement(name));
+        manager.getAvailableElements().forEach((name, elementClass) -> {
+            elements.add(manager.getNewElementInstance(name));
         });
         elements.sort(Comparator.comparing(o -> o.getMetadata().getName()));
 
