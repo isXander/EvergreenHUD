@@ -379,6 +379,8 @@ public abstract class Element extends Gui implements Listenable, Constants {
 
         BetterJsonObject custom = new BetterJsonObject();
         for (Setting s : getCustomSettings()) {
+            if (!s.shouldAddToConfig()) continue;
+
             if (s instanceof BooleanSetting)
                 custom.addProperty(s.getJsonKey(), ((BooleanSetting)s).get());
             else if (s instanceof IntegerSetting)
