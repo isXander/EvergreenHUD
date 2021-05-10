@@ -60,7 +60,7 @@ public class BooleanSetting extends Setting {
     }
 
     protected boolean onChange(boolean oldValue, boolean newValue) {
-        return true;
+        return !isDisabled();
     }
 
     @Override

@@ -15,7 +15,7 @@ buildscript {
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "2.0-pre4"
+version = "2.0-pre5"
 group = "co.uk.isxander"
 archivesBaseName = "evergreenhud"
 

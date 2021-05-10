@@ -71,7 +71,7 @@ public class IntegerSetting extends Setting {
     }
 
     protected boolean onChange(int currentVal, int newVal) {
-        return true;
+        return !isDisabled();
     }
 
     public int getMin() {

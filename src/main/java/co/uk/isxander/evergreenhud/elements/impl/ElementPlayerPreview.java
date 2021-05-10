@@ -17,10 +17,9 @@ package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
-import co.uk.isxander.evergreenhud.settings.impl.DoubleSetting;
+import co.uk.isxander.evergreenhud.settings.impl.FloatSetting;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import net.apolloclient.utils.GLRenderer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -31,11 +30,11 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class ElementPlayerPreview extends Element {
 
-    public DoubleSetting rotation;
+    public FloatSetting rotation;
 
     @Override
     public void initialise() {
-        addSettings(rotation = new DoubleSetting("Rotation", "The rotation of the player.", 0, 0, 360, " deg"));
+        addSettings(rotation = new FloatSetting("Rotation", "The rotation of the player.", 0, 0, 360, " deg"));
     }
 
     @Override
@@ -138,9 +137,9 @@ public class ElementPlayerPreview extends Element {
         ScaledResolution res = new ScaledResolution(mc);
 
         float width = 80 * sizeScale;
-        float extraWidth = getPaddingWidth() * sizeScale;
+        float extraWidth = getPaddingWidth().get() * sizeScale;
         float height = 120 * sizeScale;
-        float extraHeight = getPaddingHeight() * sizeScale;
+        float extraHeight = getPaddingHeight().get() * sizeScale;
         float x = getPosition().getRawX(res) - (width / 2f) / posScale;
         float y = getPosition().getRawY(res) - height + (height / 8f) + (height / 128f) / posScale;
 

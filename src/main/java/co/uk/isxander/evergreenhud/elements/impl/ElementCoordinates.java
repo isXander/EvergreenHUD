@@ -72,30 +72,30 @@ public class ElementCoordinates extends Element {
         int i = 0;
         for (String line : getMultiValue()) {
             float posY = ((y / getPosition().getScale()) + (mc.fontRendererObj.FONT_HEIGHT * i) + (verticalSpacing.get() * i));
-            switch (getAlignment()) {
+            switch (getAlignment().get()) {
                 case RIGHT:
                     float posX = (x - mc.fontRendererObj.getStringWidth(line)) / getPosition().getScale();
 
-                    if (useChroma())
-                        GuiUtils.drawChromaString(mc.fontRendererObj, line, posX, posY, renderShadow(), false);
+                    if (useChroma().get())
+                        GuiUtils.drawChromaString(mc.fontRendererObj, line, posX, posY, renderShadow().get(), false);
                     else
-                        mc.fontRendererObj.drawString(line, posX, posY, getTextColor().getRGB(), renderShadow());
+                        mc.fontRendererObj.drawString(line, posX, posY, getTextColor().getRGB(), renderShadow().get());
                     break;
                 case CENTER:
                     posX = x / getPosition().getScale();
 
-                    if (useChroma())
-                        GuiUtils.drawChromaString(mc.fontRendererObj, line, posX, posY, renderShadow(), true);
+                    if (useChroma().get())
+                        GuiUtils.drawChromaString(mc.fontRendererObj, line, posX, posY, renderShadow().get(), true);
                     else
-                        GuiUtils.drawCenteredString(mc.fontRendererObj, line, posX, posY, getTextColor().getRGB(), renderShadow());
+                        GuiUtils.drawCenteredString(mc.fontRendererObj, line, posX, posY, getTextColor().getRGB(), renderShadow().get());
                     break;
                 case LEFT:
                     posX = x / getPosition().getScale();
 
-                    if (useChroma())
-                        GuiUtils.drawChromaString(mc.fontRendererObj, line, posX, posY, renderShadow(), false);
+                    if (useChroma().get())
+                        GuiUtils.drawChromaString(mc.fontRendererObj, line, posX, posY, renderShadow().get(), false);
                     else
-                        mc.fontRendererObj.drawString(line, posX, posY, getTextColor().getRGB(), renderShadow());
+                        mc.fontRendererObj.drawString(line, posX, posY, getTextColor().getRGB(), renderShadow().get());
                     break;
             }
 
@@ -122,19 +122,19 @@ public class ElementCoordinates extends Element {
         for (int i = 0; i < accuracy.get(); i++) sb.append(formatter);
         DecimalFormat df = new DecimalFormat(sb.toString());
         if (type.get().equalsIgnoreCase("vertical")) {
-            if (showX.get()) lines.add((showBrackets() ? "[" : "") + (showCoord.get() ? "X: " : "") + df.format(mc.thePlayer.posX) + (showBrackets() ? "]" : ""));
-            if (showY.get()) lines.add((showBrackets() ? "[" : "") + (showCoord.get() ? "Y: " : "") + df.format(mc.thePlayer.posY) + (showBrackets() ? "]" : ""));
-            if (showZ.get()) lines.add((showBrackets() ? "[" : "") + (showCoord.get() ? "Z: " : "") + df.format(mc.thePlayer.posZ) + (showBrackets() ? "]" : ""));
+            if (showX.get()) lines.add((showBrackets().get() ? "[" : "") + (showCoord.get() ? "X: " : "") + df.format(mc.thePlayer.posX) + (showBrackets().get() ? "]" : ""));
+            if (showY.get()) lines.add((showBrackets().get() ? "[" : "") + (showCoord.get() ? "Y: " : "") + df.format(mc.thePlayer.posY) + (showBrackets().get() ? "]" : ""));
+            if (showZ.get()) lines.add((showBrackets().get() ? "[" : "") + (showCoord.get() ? "Z: " : "") + df.format(mc.thePlayer.posZ) + (showBrackets().get() ? "]" : ""));
         } else {
             String builder = "";
             if (showX.get()) builder += (showCoord.get() ? "X: " : "") + df.format(mc.thePlayer.posX) + (showY.get() || showZ.get() ? ", " : "");
             if (showY.get()) builder += (showCoord.get() ? "Y: " : "") + df.format(mc.thePlayer.posY) + (showZ.get() ? ", " : "");
             if (showZ.get()) builder += (showCoord.get() ? "Z: " : "") + df.format(mc.thePlayer.posZ);
 
-            if (isInverted()) builder = getDisplayTitle() + " " + builder;
+            if (isInverted().get()) builder = getDisplayTitle() + " " + builder;
             else builder = builder + " " + getDisplayTitle();
 
-            if (showBrackets()) builder = "[" + builder + "]";
+            if (showBrackets().get()) builder = "[" + builder + "]";
             lines.add(builder);
         }
         return lines;
@@ -153,12 +153,12 @@ public class ElementCoordinates extends Element {
         width = Math.max(10, width);
         width *= sizeScale;
 
-        float extraWidth = getPaddingWidth() * sizeScale;
+        float extraWidth = getPaddingWidth().get() * sizeScale;
         float height = ((mc.fontRendererObj.FONT_HEIGHT * value.size()) + (verticalSpacing.get() * (value.size() - 1))) * sizeScale;
-        float extraHeight = getPaddingHeight() * sizeScale;
+        float extraHeight = getPaddingHeight().get() * sizeScale;
         float x = getPosition().getRawX(res) / posScale;
         float y = getPosition().getRawY(res) / posScale;
-        switch (getAlignment()) {
+        switch (getAlignment().get()) {
             case RIGHT:
                 hitbox = new HitBox2D(x - (width / sizeScale) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
                 break;

@@ -54,6 +54,7 @@ public class ElementManager implements Constants {
         this.mainConfig = new MainConfig(this);
         this.elementConfig = new ElementConfig(this);
         resetConfig();
+        //mainConfig.load();
 
         registerNormals();
     }

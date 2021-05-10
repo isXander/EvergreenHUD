@@ -24,11 +24,13 @@ import java.util.Date;
 
 public class ElementTime extends Element {
 
-    private BooleanSetting twelveHour;
+    public BooleanSetting twelveHour;
+    public BooleanSetting showSeconds;
 
     @Override
     public void initialise() {
         addSettings(twelveHour = new BooleanSetting("Twelve Hour", "If the clock will be 12 hour or 24 hour.", false));
+        addSettings(showSeconds = new BooleanSetting("Show Seconds", "If the clock is to show seconds.", false));
     }
 
     @Override
@@ -38,7 +40,7 @@ public class ElementTime extends Element {
 
     @Override
     protected String getValue() {
-        return new SimpleDateFormat((twelveHour.get() ? "hh:mm a" : "HH:mm")).format(new Date()).toUpperCase();
+        return new SimpleDateFormat(String.format((twelveHour.get() ? "hh:mm%s a" : "HH:mm%s"), (showSeconds.get() ? ":ss" : ""))).format(new Date()).toUpperCase();
     }
 
     @Override

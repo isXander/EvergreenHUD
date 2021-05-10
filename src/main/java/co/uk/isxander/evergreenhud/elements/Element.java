@@ -46,31 +46,153 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return manager.isEnabled();
     }
 
-    /* Config */
-    private Position pos;
-    private boolean title;
-    private boolean brackets;
-    private boolean shadow;
-    private boolean chroma;
-    private boolean inverted;
-    private float paddingWidth;
-    private float paddingHeight;
-    private Alignment alignment;
     private final List<Setting> customSettings;
 
+    /* Config */
+    private Position pos;
+    private BooleanSetting title;
+    private BooleanSetting brackets;
+    private BooleanSetting shadow;
+    private BooleanSetting chroma;
+    private BooleanSetting inverted;
+    private FloatSetting paddingWidth;
+    private FloatSetting paddingHeight;
+    private EnumSetting<Alignment> alignment;
+
     /* Color */
-    private Color textColor;
-    private Color bgColor;
+    private IntegerSetting textR;
+    private IntegerSetting textG;
+    private IntegerSetting textB;
+
+    private IntegerSetting backR;
+    private IntegerSetting backG;
+    private IntegerSetting backB;
+    private IntegerSetting backA;
 
     protected final Logger logger;
     private final ElementData meta;
 
     public Element() {
         this.customSettings = new ArrayList<>();
+        registerDefaultSettings();
         resetSettings(false);
         this.meta = metadata();
         this.logger = LogManager.getLogger(getMetadata().getName());
         initialise();
+    }
+
+    private void registerDefaultSettings() {
+        addSettings(new IntegerSetting("Scale", "How big the element is displayed.", 100, 50, 200, "%", false) {
+            @Override
+            public int get() {
+                return (int) (getPosition().getScale() * 100f);
+            }
+
+            @Override
+            public void set(int newVal) {
+                getPosition().setScale(newVal / 100f);
+            }
+
+            @Override
+            public boolean shouldAddToConfig() {
+                return false;
+            }
+        });
+
+        addSettings(brackets = new BooleanSetting("Brackets", "If there are square brackets before and after the text.", false) {
+            @Override
+            public boolean isDisabled() {
+                return !useBracketsSetting();
+            }
+        });
+        addSettings(title = new BooleanSetting("Title", "If the text has the element name in it.", true) {
+            @Override
+            public boolean isDisabled() {
+                return !useTitleSetting();
+            }
+        });
+        addSettings(inverted = new BooleanSetting("Invert Title", "If the title is rendered after the value.", false) {
+            @Override
+            public boolean isDisabled() {
+                return !useInvertedSetting();
+            }
+        });
+
+        addSettings(textR = new IntegerSetting("Text Red", "How much red is in the color of the text.", 255, 0, 255, "") {
+            @Override
+            public boolean isDisabled() {
+                return !useTextColorSetting();
+            }
+        });
+        addSettings(textG = new IntegerSetting("Text Green", "How much green is in the color of the text.", 255, 0, 255, "") {
+            @Override
+            public boolean isDisabled() {
+                return !useTextColorSetting();
+            }
+        });
+        addSettings(textB = new IntegerSetting("Text Blue", "How much blue is in the color of the text.", 255, 0, 255, "") {
+            @Override
+            public boolean isDisabled() {
+                return !useTextColorSetting();
+            }
+        });
+        addSettings(chroma = new BooleanSetting("Chroma Text", "If the color of the text is a multicolored mess.", false) {
+            @Override
+            public boolean isDisabled() {
+                return !useChromaSetting();
+            }
+        });
+
+        addSettings(backR = new IntegerSetting("Background Red", "How much red is in the color of the background.", 0, 0, 255, "") {
+            @Override
+            public boolean isDisabled() {
+                return !useBgColorSetting();
+            }
+        });
+        addSettings(backG = new IntegerSetting("Background Green", "How much green is in the color of the background.", 0, 0, 255, "") {
+            @Override
+            public boolean isDisabled() {
+                return !useBgColorSetting();
+            }
+        });
+        addSettings(backB = new IntegerSetting("Background Blue", "How much blue is in the color of the background.", 0, 0, 255, "") {
+            @Override
+            public boolean isDisabled() {
+                return !useBgColorSetting();
+            }
+        });
+        addSettings(backA = new IntegerSetting("Background Alpha", "How much alpha is in the color of the background.", 100, 0, 255, "") {
+            @Override
+            public boolean isDisabled() {
+                return !useBgColorSetting();
+            }
+        });
+
+        addSettings(shadow = new BooleanSetting("Shadow", "If the text has a shadow.", true) {
+            @Override
+            public boolean isDisabled() {
+                return !useShadowSetting();
+            }
+        });
+        addSettings(alignment = new EnumSetting<Alignment>("Alignment", "When the text grows or shrinks in size, which way the element will move.", Alignment.LEFT) {
+            @Override
+            public boolean isDisabled() {
+                return !useAlignmentSetting();
+            }
+        });
+
+        addSettings(paddingWidth = new FloatSetting("Padding Width", "How much extra width the background box will have.", 4f, 0f, 12f, "") {
+            @Override
+            public boolean isDisabled() {
+                return !usePaddingSetting();
+            }
+        });
+        addSettings(paddingHeight = new FloatSetting("Padding Height", "How much extra height the background box will have.", 4f, 0f, 12f, "") {
+            @Override
+            public boolean isDisabled() {
+                return !usePaddingSetting();
+            }
+        });
     }
 
     public abstract void initialise();
@@ -106,14 +228,14 @@ public abstract class Element extends Gui implements Listenable, Constants {
      */
     public String getDisplayString() {
         String builder = "";
-        if (showBrackets())
+        if (showBrackets().get())
             builder += "[";
-        if (showTitle() && !isInverted() && useTitleSetting())
+        if (showTitle().get() && !isInverted().get() && useTitleSetting())
             builder += getDisplayTitle() + ": ";
         builder += getValue();
-        if (showTitle() && isInverted() && useTitleSetting())
+        if (showTitle().get() && isInverted().get() && useTitleSetting())
             builder += " " + getDisplayTitle();
-        if (showBrackets())
+        if (showBrackets().get())
             builder += "]";
         return builder;
     }
@@ -131,33 +253,33 @@ public abstract class Element extends Gui implements Listenable, Constants {
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
         GlStateManager.pushMatrix();
         GlStateManager.scale(getPosition().getScale(), getPosition().getScale(), 0);
-        switch (getAlignment()) {
+        switch (getAlignment().get()) {
             case RIGHT:
                 float posX = (x - mc.fontRendererObj.getStringWidth(getDisplayString())) / getPosition().getScale();
                 float posY = y / getPosition().getScale();
 
-                if (chroma)
-                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow(), false);
+                if (useChroma().get())
+                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow().get(), false);
                 else
-                    mc.fontRendererObj.drawString(getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
+                    mc.fontRendererObj.drawString(getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow().get());
                 break;
             case CENTER:
                 posX = x / getPosition().getScale();
                 posY = y / getPosition().getScale();
 
-                if (chroma)
-                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow(), true);
+                if (useChroma().get())
+                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow().get(), true);
                 else
-                    GuiUtils.drawCenteredString(mc.fontRendererObj, getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
+                    GuiUtils.drawCenteredString(mc.fontRendererObj, getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow().get());
                 break;
             case LEFT:
                 posX = x / getPosition().getScale();
                 posY = y / getPosition().getScale();
 
-                if (chroma)
-                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow(), false);
+                if (useChroma().get())
+                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow().get(), false);
                 else
-                    mc.fontRendererObj.drawString(getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow());
+                    mc.fontRendererObj.drawString(getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow().get());
                 break;
         }
         GlStateManager.popMatrix();
@@ -175,12 +297,12 @@ public abstract class Element extends Gui implements Listenable, Constants {
         HitBox2D hitbox = null;
         ScaledResolution res = new ScaledResolution(mc);
         float width = Math.max(mc.fontRendererObj.getStringWidth(getDisplayString()), 10) * sizeScale;
-        float extraWidth = getPaddingWidth() * sizeScale;
+        float extraWidth = getPaddingWidth().get() * sizeScale;
         float height = mc.fontRendererObj.FONT_HEIGHT * sizeScale;
-        float extraHeight = getPaddingHeight() * sizeScale;
+        float extraHeight = getPaddingHeight().get() * sizeScale;
         float x = getPosition().getRawX(res) / posScale;
         float y = getPosition().getRawY(res) / posScale;
-        switch (getAlignment()) {
+        switch (getAlignment().get()) {
             case RIGHT:
                 hitbox = new HitBox2D(x - (width / sizeScale) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
                 break;
@@ -201,15 +323,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
      */
     public void resetSettings(boolean save) {
         pos = Position.getPositionWithRawPositioning(10, 10, 1, new ScaledResolution(mc));
-        title = true;
-        brackets = false;
-        inverted = false;
-        shadow = true;
-        alignment = Alignment.LEFT;
-        textColor = new Color(255, 255, 255, 255);
-        bgColor = new Color(0, 0, 0, 100);
-        paddingWidth = 4;
-        paddingHeight = 4;
+
         for (Setting s : customSettings)
             s.reset();
         if (save)
@@ -221,7 +335,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
 
     public void renderGuiOverlay(boolean selected) {
         HitBox2D hitbox = getHitbox(1, getPosition().getScale());
-        // doesnt play well with background on so find a way to make it look accurate
+        // doesnt play well with background on so find a way to make it look good
         //GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, new Color(255, 255, 255, 50));
         GLRenderer.drawHollowRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, 1, (selected ? new Color(255, 255, 255, 175) : new Color(175, 175, 175, 100)));
         GlStateManager.pushMatrix();
@@ -262,27 +376,6 @@ public abstract class Element extends Gui implements Listenable, Constants {
         settings.addProperty("x", getPosition().getXScaled());
         settings.addProperty("y", getPosition().getYScaled());
         settings.addProperty("scale", getPosition().getScale());
-        settings.addProperty("title", showTitle());
-        settings.addProperty("brackets", showBrackets());
-        settings.addProperty("inverted", isInverted());
-        settings.addProperty("chroma", useChroma());
-        settings.addProperty("shadow", renderShadow());
-        settings.addProperty("align", getAlignment().ordinal());
-
-        BetterJsonObject textCol = new BetterJsonObject();
-        textCol.addProperty("r", getTextColor().getRed());
-        textCol.addProperty("g", getTextColor().getGreen());
-        textCol.addProperty("b", getTextColor().getBlue());
-        settings.add("textColor", textCol);
-
-        BetterJsonObject bgCol = new BetterJsonObject();
-        bgCol.addProperty("r", getBgColor().getRed());
-        bgCol.addProperty("g", getBgColor().getGreen());
-        bgCol.addProperty("b", getBgColor().getBlue());
-        bgCol.addProperty("a", getBgColor().getAlpha());
-        bgCol.addProperty("padding_width", getPaddingWidth());
-        bgCol.addProperty("padding_height", getPaddingHeight());
-        settings.add("bgColor", bgCol);
 
         BetterJsonObject custom = new BetterJsonObject();
         for (Setting s : getCustomSettings()) {
@@ -290,8 +383,8 @@ public abstract class Element extends Gui implements Listenable, Constants {
                 custom.addProperty(s.getJsonKey(), ((BooleanSetting)s).get());
             else if (s instanceof IntegerSetting)
                 custom.addProperty(s.getJsonKey(), ((IntegerSetting)s).get());
-            else if (s instanceof DoubleSetting)
-                custom.addProperty(s.getJsonKey(), ((DoubleSetting)s).get());
+            else if (s instanceof FloatSetting)
+                custom.addProperty(s.getJsonKey(), ((FloatSetting)s).get());
             else if (s instanceof ArraySetting)
                 custom.addProperty(s.getJsonKey(), ((ArraySetting) s).getIndex());
             else if (s instanceof StringSetting)
@@ -299,7 +392,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
             else if (s instanceof EnumSetting)
                 custom.addProperty(s.getJsonKey(), ((EnumSetting<?>) s).getIndex());
         }
-        settings.add("custom", custom);
+        settings.add("dynamic", custom);
 
         return settings;
     }
@@ -308,36 +401,8 @@ public abstract class Element extends Gui implements Listenable, Constants {
         getPosition().setScaledX(root.optFloat("x"));
         getPosition().setScaledY(root.optFloat("y"));
         getPosition().setScale(root.optFloat("scale", 1.0f));
-        setTitle(root.optBoolean("title", true));
-        setBrackets(root.optBoolean("brackets", false));
-        setInverted(root.optBoolean("inverted", false));
-        setChroma(root.optBoolean("chroma", false));
-        setShadow(root.optBoolean("shadow", true));
 
-        // Swapped Left and Right alignment
-        // Code will be removed in v2.1
-        if (root.has("alignment")) {
-            EvergreenHUD.LOGGER.info("Converting Alignments");
-            Alignment alignment = Alignment.values()[root.optInt("alignment", 0)];
-            if (alignment == Alignment.LEFT) {
-                alignment = Alignment.RIGHT;
-            } else if (alignment == Alignment.RIGHT) {
-                alignment = Alignment.LEFT;
-            }
-            setAlignment(alignment);
-        } else {
-            setAlignment(Alignment.values()[root.optInt("align", 0)]);
-        }
-
-        BetterJsonObject textColor = new BetterJsonObject(root.get("textColor").getAsJsonObject());
-        setTextColor(new Color(textColor.optInt("r", 255), textColor.optInt("g", 255), textColor.optInt("b", 255)));
-
-        BetterJsonObject bgColor = new BetterJsonObject(root.get("bgColor").getAsJsonObject());
-        setBgColor(new Color(bgColor.optInt("r", 255), bgColor.optInt("g", 255), bgColor.optInt("b", 255), bgColor.optInt("a", 255)));
-        setPaddingWidth(bgColor.optFloat("padding_width", 4));
-        setPaddingHeight(bgColor.optFloat("padding_height", 4));
-
-        BetterJsonObject custom = new BetterJsonObject(root.get("custom").getAsJsonObject());
+        BetterJsonObject custom = new BetterJsonObject(root.get("dynamic").getAsJsonObject());
         for (String key : custom.getAllKeys()) {
             for (Setting s : getCustomSettings()) {
                 if (s.getJsonKey().equals(key)) {
@@ -345,8 +410,8 @@ public abstract class Element extends Gui implements Listenable, Constants {
                         ((BooleanSetting) s).set(custom.optBoolean(key));
                     else if (s instanceof IntegerSetting)
                         ((IntegerSetting) s).set(custom.optInt(key));
-                    else if (s instanceof DoubleSetting)
-                        ((DoubleSetting) s).set(custom.optDouble(key));
+                    else if (s instanceof FloatSetting)
+                        ((FloatSetting) s).set(custom.optFloat(key));
                     else if (s instanceof ArraySetting)
                         ((ArraySetting) s).set(custom.optInt(key));
                     else if (s instanceof StringSetting)
@@ -393,7 +458,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return true;
     }
 
-    public boolean showTitle() {
+    public BooleanSetting showTitle() {
         return title;
     }
 
@@ -401,7 +466,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return true;
     }
 
-    public boolean showBrackets() {
+    public BooleanSetting showBrackets() {
         return brackets;
     }
 
@@ -409,7 +474,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return true;
     }
 
-    public boolean useChroma() {
+    public BooleanSetting useChroma() {
         return chroma;
     }
 
@@ -417,7 +482,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return true;
     }
 
-    public boolean isInverted() {
+    public BooleanSetting isInverted() {
         return inverted;
     }
 
@@ -425,12 +490,14 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return true;
     }
 
-    public void setInverted(boolean inverted) {
-        this.inverted = inverted;
+    public Color getTextColor() {
+       return new Color(textR.get(), textG.get(), textB.get(), 255);
     }
 
-    public Color getTextColor() {
-        return textColor;
+    public void setTextColor(int r, int g, int b) {
+        textR.set(r);
+        textG.set(g);
+        textB.set(b);
     }
 
     public boolean useTextColorSetting() {
@@ -438,22 +505,21 @@ public abstract class Element extends Gui implements Listenable, Constants {
     }
 
     public Color getBgColor() {
-        return bgColor;
+        return new Color(backR.get(), backG.get(), backB.get(), backA.get());
+    }
+
+    public void setBgColor(int r, int g, int b, int a) {
+        backR.set(r);
+        backG.set(g);
+        backB.set(b);
+        backA.set(a);
     }
 
     public boolean useBgColorSetting() {
         return true;
     }
 
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public void setBgColor(Color bgColor) {
-        this.bgColor = bgColor;
-    }
-
-    public Alignment getAlignment() {
+    public EnumSetting<Alignment> getAlignment() {
         return alignment;
     }
 
@@ -461,11 +527,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return true;
     }
 
-    public void setAlignment(Alignment alignment) {
-        this.alignment = alignment;
-    }
-
-    public boolean renderShadow() {
+    public BooleanSetting renderShadow() {
         return shadow;
     }
 
@@ -473,27 +535,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return true;
     }
 
-    public void setTitle(boolean title) {
-        this.title = title;
-    }
-
-    public void setBrackets(boolean brackets) {
-        this.brackets = brackets;
-    }
-
-    public void setTextColor(Color color) {
-        this.textColor = color;
-    }
-
-    public void setChroma(boolean chroma) {
-        this.chroma = chroma;
-    }
-
-    public void setShadow(boolean shadow) {
-        this.shadow = shadow;
-    }
-
-    public float getPaddingWidth() {
+    public FloatSetting getPaddingWidth() {
         return paddingWidth;
     }
 
@@ -501,15 +543,12 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return true;
     }
 
-    public void setPaddingWidth(float paddingWidth) {
-        this.paddingWidth = paddingWidth;
-    }
-
-    public float getPaddingHeight() {
+    public FloatSetting getPaddingHeight() {
         return paddingHeight;
     }
 
-    public void setPaddingHeight(float paddingHeight) {
-        this.paddingHeight = paddingHeight;
+    public void setPosition(Position newPos) {
+        this.pos = newPos;
     }
+
 }

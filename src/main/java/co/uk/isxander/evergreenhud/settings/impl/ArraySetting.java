@@ -113,7 +113,7 @@ public class  ArraySetting extends Setting {
     }
 
     protected boolean onChange(int currentIndex, int newIndex) {
-        return true;
+        return !isDisabled();
     }
 
     public List<String> options() {

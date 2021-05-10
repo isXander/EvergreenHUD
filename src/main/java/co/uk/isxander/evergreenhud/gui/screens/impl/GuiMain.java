@@ -32,6 +32,7 @@ public class GuiMain extends GuiScreenElements {
     public void initGui() {
         this.buttonList.add(new GuiButtonAlt(0, width / 2,      height - 20, 90, 20, "Config"));
         this.buttonList.add(new GuiButtonAlt(1, width / 2 - 90, height - 20, 90, 20, "Add"));
+        this.buttonList.add(new GuiButtonAlt(2, width - 80,     height - 20, 90, 20, "Convert"));
 
         if (!EvergreenHUD.getInstance().getElementManager().isEnabled())
             XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "The mod is disabled. You will not see the hud in-game unless you enable it.");
@@ -60,6 +61,8 @@ public class GuiMain extends GuiScreenElements {
             case 1:
                 mc.displayGuiScreen(new GuiAddElement());
                 break;
+            case 2:
+                mc.displayGuiScreen(new GuiConfigConverter());
         }
     }
 

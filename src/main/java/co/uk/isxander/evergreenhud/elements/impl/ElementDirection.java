@@ -22,7 +22,7 @@ import co.uk.isxander.evergreenhud.elements.ElementData;
 
 public class ElementDirection extends Element {
 
-    private BooleanSetting abbreviated;
+    public BooleanSetting abbreviated;
 
     @Override
     public void initialise() {

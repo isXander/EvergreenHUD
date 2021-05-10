@@ -78,7 +78,7 @@ public class EnumSetting<T extends Enum<?>> extends Setting {
     }
 
     protected boolean onChange(int currentIndex, int newIndex) {
-        return true;
+        return !isDisabled();
     }
 
     public Class<T> getType() {

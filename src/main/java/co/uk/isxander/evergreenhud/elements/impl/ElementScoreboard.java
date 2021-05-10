@@ -66,9 +66,9 @@ public class ElementScoreboard extends Element {
                 super.actionPerformed(button);
                 ScaledResolution res = new ScaledResolution(mc);
                 if (button.id == 16) {
-                    switch (getAlignment()) {
+                    switch (getAlignment().get()) {
                         case CENTER:
-                            setAlignment(Alignment.RIGHT);
+                            getAlignment().set(Alignment.RIGHT);
                             addButtons();
                             getPosition().setRawX(getPosition().getRawX(res) - (scoreWidth / 2f) - (scoreWidth / 4f) - (scoreWidth / 8f), res);
                             break;
@@ -148,8 +148,8 @@ public class ElementScoreboard extends Element {
             String points = (showNumbers.get() ? EnumChatFormatting.RED + "" + s.getScorePoints() : "");
             float lineY = y - i * mc.fontRendererObj.FONT_HEIGHT;
             GLRenderer.drawRectangle(x - 2, lineY, maxStrWidth, mc.fontRendererObj.FONT_HEIGHT, getBgColor());
-            mc.fontRendererObj.drawString(name, x, lineY, 553648127, renderShadow());
-            mc.fontRendererObj.drawString(points, lineRight - mc.fontRendererObj.getStringWidth(points) - 3, lineY, 553648127, renderShadow());
+            mc.fontRendererObj.drawString(name, x, lineY, 553648127, renderShadow().get());
+            mc.fontRendererObj.drawString(points, lineRight - mc.fontRendererObj.getStringWidth(points) - 3, lineY, 553648127, renderShadow().get());
 
             if (i == sortedScores.size()) {
                 String title = o.getDisplayName();
@@ -159,7 +159,7 @@ public class ElementScoreboard extends Element {
                 // Part of the value rect
                 GLRenderer.drawRectangle(x - 2, lineY - 1, maxStrWidth, 1, getBgColor());
                 //drawRect(x - 2, lineY - 1, lineRight, lineY, 1342177280);
-                mc.fontRendererObj.drawString(title, x + maxStrWidth / 2f - mc.fontRendererObj.getStringWidth(title) / 2f, lineY - mc.fontRendererObj.FONT_HEIGHT, 553648127, renderShadow());
+                mc.fontRendererObj.drawString(title, x + maxStrWidth / 2f - mc.fontRendererObj.getStringWidth(title) / 2f, lineY - mc.fontRendererObj.FONT_HEIGHT, 553648127, renderShadow().get());
             }
         }
 
@@ -170,15 +170,7 @@ public class ElementScoreboard extends Element {
     public void resetSettings(boolean save) {
         getPosition().setScaledY(0.5f);
         getPosition().setScaledX(1f);
-        setTitle(false);
-        setBrackets(false);
-        setInverted(false);
-        setShadow(true);
-        setAlignment(Alignment.RIGHT);
-        setTextColor(new Color(0, 0, 0, 96));
-        setBgColor(new Color(0, 0, 0, 80));
-        setPaddingWidth(4);
-        setPaddingHeight(4);
+
         for (Setting s : getCustomSettings())
             s.reset();
         if (save)

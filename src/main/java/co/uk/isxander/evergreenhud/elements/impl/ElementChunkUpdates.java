@@ -2,7 +2,7 @@ package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
-import co.uk.isxander.evergreenhud.settings.impl.DoubleSetting;
+import co.uk.isxander.evergreenhud.settings.impl.FloatSetting;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -11,11 +11,11 @@ public class ElementChunkUpdates extends Element {
     private long time = 0L;
     private String chunkUpdates = "0";
 
-    public DoubleSetting updateTime;
+    public FloatSetting updateTime;
 
     @Override
     public void initialise() {
-        addSettings(updateTime = new DoubleSetting("Update Time", "How often the counter updates.", 1, 0.5, 10, " secs"));
+        addSettings(updateTime = new FloatSetting("Update Time", "How often the counter updates.", 1, 0.5f, 10, " secs"));
     }
 
     @Override

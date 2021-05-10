@@ -24,7 +24,7 @@ import java.io.File;
 public class MainConfig {
 
     private static final int VERSION = 1;
-    public static final File CONFIG_FILE = new File(EvergreenHUD.DATA_DIR, "config/evergreenhud/config.json");
+    public static final File CONFIG_FILE = new File(EvergreenHUD.DATA_DIR, "config.json");
 
     private final ElementManager manager;
 

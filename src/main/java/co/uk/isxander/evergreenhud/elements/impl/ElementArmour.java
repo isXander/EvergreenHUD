@@ -147,7 +147,7 @@ public class ElementArmour extends Element {
             else if (this.textDisplay.get().equalsIgnoreCase("name"))
                 text = stack.getDisplayName();
             float textX = 0, textY = 0;
-            switch (this.getAlignment()) {
+            switch (this.getAlignment().get()) {
                 case RIGHT:
                     textX = x - 2 - mc.fontRendererObj.getStringWidth(text);
                     textY = y + 5 - (mc.fontRendererObj.FONT_HEIGHT / 2f);
@@ -174,19 +174,19 @@ public class ElementArmour extends Element {
                     break;
             }
             textY += offset + 4;
-            if (getAlignment() == Alignment.LEFT) {
+            if (getAlignment().get() == Alignment.LEFT) {
                 textX -= width / 2f;
-            } else if (getAlignment() == Alignment.CENTER) {
+            } else if (getAlignment().get() == Alignment.CENTER) {
                 textX -= width;
             }
-            if (this.useChroma()) {
-                GuiUtils.drawChromaString(mc.fontRendererObj, text, textX, textY, renderShadow(), false);
+            if (this.useChroma().get()) {
+                GuiUtils.drawChromaString(mc.fontRendererObj, text, textX, textY, renderShadow().get(), false);
             } else {
-                mc.fontRendererObj.drawString(text, textX, textY, this.getTextColor().getRGB(), renderShadow());
+                mc.fontRendererObj.drawString(text, textX, textY, this.getTextColor().getRGB(), renderShadow().get());
             }
-            if (getAlignment() == Alignment.LEFT) {
+            if (getAlignment().get() == Alignment.LEFT) {
                 x -= width / 2f;
-            } else if (getAlignment() == Alignment.CENTER) {
+            } else if (getAlignment().get() == Alignment.CENTER) {
                 x -= width;
             }
 
@@ -202,9 +202,9 @@ public class ElementArmour extends Element {
             RenderHelper.disableStandardItemLighting();
 
             if (listType.get().equalsIgnoreCase("down"))
-                offset += 10 + spacing.get() + (this.getAlignment() == Alignment.CENTER ? mc.fontRendererObj.FONT_HEIGHT + 2 : 0);
+                offset += 10 + spacing.get() + (this.getAlignment().get() == Alignment.CENTER ? mc.fontRendererObj.FONT_HEIGHT + 2 : 0);
             else
-                offset -= 10 + spacing.get() + (this.getAlignment() == Alignment.CENTER ? mc.fontRendererObj.FONT_HEIGHT + 2 : 0);
+                offset -= 10 + spacing.get() + (this.getAlignment().get() == Alignment.CENTER ? mc.fontRendererObj.FONT_HEIGHT + 2 : 0);
 
             index++;
         }
@@ -219,12 +219,12 @@ public class ElementArmour extends Element {
         ScaledResolution res = new ScaledResolution(mc);
         float x = getPosition().getRawX(res);
         float y = getPosition().getRawY(res);
-        float extraWidth = getPaddingWidth() * sizeScale;
-        float extraHeight = getPaddingHeight() * sizeScale;
+        float extraWidth = getPaddingWidth().get() * sizeScale;
+        float extraHeight = getPaddingHeight().get() * sizeScale;
 
         float hitX, hitY, hitW, hitH;
         hitX = hitY = hitW = hitH = 0;
-        switch (getAlignment()) {
+        switch (getAlignment().get()) {
             case RIGHT:
                 hitX = x - width;
                 hitY = y;

@@ -19,7 +19,7 @@ public abstract class Setting {
 
     private final String name;
     private final String description;
-    private boolean internal;
+    private final boolean internal;
 
     protected Setting(String name, String description, boolean internal) {
         this.name = name;
@@ -51,6 +51,14 @@ public abstract class Setting {
 
     public final String getJsonKey() {
         return name.replace(" ", "").toLowerCase();
+    }
+
+    public boolean isDisabled() {
+        return false;
+    }
+
+    public boolean shouldAddToConfig() {
+        return true;
     }
 
 }

@@ -63,7 +63,7 @@ public class ElementImage extends Element {
     private boolean changed = false;
     private float scaleMod = 1;
 
-    private StringSetting fileLocation;
+    public StringSetting fileLocation;
     public BooleanSetting mirror;
     public ArraySetting rotation;
     public BooleanSetting autoScale;
@@ -184,7 +184,7 @@ public class ElementImage extends Element {
             @Override
             protected boolean onChange(int currentIndex, int newIndex) {
                 changed = true;
-                return true;
+                return !isDisabled();
             }
         });
         addSettings(autoScale = new BooleanSetting("Auto Scale", "Automatically scales your image to a constant size depending on the scale.", true));
@@ -251,8 +251,8 @@ public class ElementImage extends Element {
         float width = (float)imageDimension.getWidth() * sizeScale * scaleMod;
         float height = (float)imageDimension.getHeight() * sizeScale * scaleMod;
 
-        float extraWidth = getPaddingWidth() * sizeScale;
-        float extraHeight = getPaddingHeight() * sizeScale;
+        float extraWidth = getPaddingWidth().get() * sizeScale;
+        float extraHeight = getPaddingHeight().get() * sizeScale;
         float x = getPosition().getRawX(res) / posScale;
         float y = getPosition().getRawY(res) / posScale;
 

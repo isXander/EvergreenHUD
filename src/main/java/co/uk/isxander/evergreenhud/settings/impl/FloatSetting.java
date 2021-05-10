@@ -17,14 +17,14 @@ package co.uk.isxander.evergreenhud.settings.impl;
 
 import co.uk.isxander.evergreenhud.settings.Setting;
 
-public class DoubleSetting extends Setting {
+public class FloatSetting extends Setting {
 
-    private final double def;
-    private double val;
-    private final double min, max;
+    private final float def;
+    private float val;
+    private final float min, max;
     private final String suffix;
 
-    public DoubleSetting(String name, String description, double val, double min, double max, String suffix, boolean internal) {
+    public FloatSetting(String name, String description, float val, float min, float max, String suffix, boolean internal) {
         super(name, description, internal);
         this.val = this.def = val;
         this.min = min;
@@ -32,7 +32,7 @@ public class DoubleSetting extends Setting {
         this.suffix = suffix;
     }
 
-    public DoubleSetting(String name, double val, double min, double max, String suffix, boolean internal) {
+    public FloatSetting(String name, float val, float min, float max, String suffix, boolean internal) {
         super(name, "", internal);
         this.val = this.def = val;
         this.min = min;
@@ -40,7 +40,7 @@ public class DoubleSetting extends Setting {
         this.suffix = suffix;
     }
 
-    public DoubleSetting(String name, String description, double val, double min, double max, String suffix) {
+    public FloatSetting(String name, String description, float val, float min, float max, String suffix) {
         super(name, description);
         this.val = this.def = val;
         this.min = min;
@@ -48,7 +48,7 @@ public class DoubleSetting extends Setting {
         this.suffix = suffix;
     }
 
-    public DoubleSetting(String name, double val, double min, double max, String suffix) {
+    public FloatSetting(String name, float val, float min, float max, String suffix) {
         super(name);
         this.val = this.def = val;
         this.min = min;
@@ -56,19 +56,19 @@ public class DoubleSetting extends Setting {
         this.suffix = suffix;
     }
 
-    public double get() {
+    public float get() {
         return val;
     }
 
-    public void set(double newVal) {
+    public void set(float newVal) {
         this.val = newVal;
     }
 
-    public double getMin() {
+    public float getMin() {
         return min;
     }
 
-    public double getMax() {
+    public float getMax() {
         return max;
     }
 
