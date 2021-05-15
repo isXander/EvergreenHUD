@@ -1,17 +1,13 @@
 package co.uk.isxander.xanderlib.installer;
 
 import club.sk1er.mods.core.ModCoreInstaller;
-import co.uk.isxander.evergreenhud.addon.AddonManager;
 import co.uk.isxander.evergreenhud.utils.JsonUtils;
 import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -21,7 +17,7 @@ import club.sk1er.mods.core.ModCoreInstaller.JsonHolder;
 public class XanderLibInstaller {
 
     // What version of XanderLib does this mod use
-    public static final String DESIRED_VERSION = "0.4";
+    public static final String DESIRED_VERSION = "0.5";
     private static final String VERSION_URL = "https://raw.githubusercontent.com/isXander/XanderLib/main/version.json";
     private static File dataDir = null;
     private static boolean isInstalled = false;
@@ -46,12 +42,11 @@ public class XanderLibInstaller {
         File jar = new File(dataDir, "/" + DESIRED_VERSION + "/xanderlib.jar");
         new File(dataDir, "/" + DESIRED_VERSION).mkdirs();
         System.out.println("XanderLib Jar: " + jar.getPath());
-        JsonHolder versionData = fetchJSON(VERSION_URL);
 
         boolean metaExists = data.exists();
         JsonHolder metadata = null;
         if (metaExists)
-            metadata = readFile(data);
+            metadata = ModCoreInstaller.readFile(data);
         if (!metaExists || !metadata.has("installed_versions") || !JsonUtils.jsonArrayContains(metadata.optJSONArray("installed_versions"), DESIRED_VERSION)) {
             download("https://static.isxander.co.uk/mods/xanderlib/" + DESIRED_VERSION + ".jar", DESIRED_VERSION, jar, metadata);
         }
@@ -120,56 +115,6 @@ public class XanderLibInstaller {
             }
         }
         return true;
-    }
-
-    private static JsonHolder readFile(File in) {
-        try {
-            return new JsonHolder(FileUtils.readFileToString(in, Charset.defaultCharset()));
-        } catch (IOException ignored) {
-
-        }
-        return new JsonHolder();
-    }
-
-    public static JsonHolder fetchJSON(String url) {
-        return new JsonHolder(fetchString(url));
-    }
-
-    public static String fetchString(String url) {
-        url = url.replace(" ", "%20");
-        System.out.println("Fetching " + url);
-
-        HttpURLConnection connection = null;
-        InputStream is = null;
-        try {
-            URL u = new URL(url);
-            connection = (HttpURLConnection) u.openConnection();
-            connection.setRequestMethod("GET");
-            connection.setUseCaches(true);
-            connection.addRequestProperty("User-Agent", "Mozilla/4.76 (XanderLib Automatic Installer)");
-            connection.setReadTimeout(15000);
-            connection.setConnectTimeout(15000);
-            connection.setDoOutput(true);
-            is = connection.getInputStream();
-            return IOUtils.toString(is, Charset.defaultCharset());
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.disconnect();
-                }
-
-                if (is != null) {
-                    is.close();
-                }
-            } catch (Exception e) {
-                System.out.println("Failed to clean up XanderLib Automatic Installer.");
-                e.printStackTrace();
-            }
-        }
-
-        return "Failed to fetch";
     }
 
 }

@@ -17,10 +17,13 @@ package co.uk.isxander.evergreenhud.gui.screens;
 
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.snapping.SnapPoint;
+import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.input.Mouse;
 
+import java.awt.*;
 import java.io.IOException;
 
 public class GuiScreenElements extends GuiScreenExt {
@@ -30,8 +33,8 @@ public class GuiScreenElements extends GuiScreenExt {
     protected float offX = 0, offY = 0;
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
+    public void drawScreen(int mouseXInt, int mouseYInt, float partialTicks) {
+        super.drawScreen(mouseXInt, mouseYInt, partialTicks);
 
         ScaledResolution res = new ScaledResolution(mc);
 
@@ -40,12 +43,57 @@ public class GuiScreenElements extends GuiScreenExt {
             e.renderGuiOverlay(lastClicked != null && lastClicked == e);
         }
 
-        float x = ((float)Mouse.getX()) * ((float)this.width) / ((float)this.mc.displayWidth);
-        float y = ((float)this.height) - ((float)Mouse.getY()) * ((float)this.height) / ((float)this.mc.displayHeight) - 1f;
+        float mouseX = ((float)Mouse.getX()) * ((float)this.width) / ((float)this.mc.displayWidth);
+        float mouseY = ((float)this.height) - ((float)Mouse.getY()) * ((float)this.height) / ((float)this.mc.displayHeight) - 1f;
 
         if (dragging != null) {
-            dragging.getPosition().setRawX(x - offX, res);
-            dragging.getPosition().setRawY(y - offY, res);
+            float elementX = mouseX - offX;
+            float elementY = mouseY - offY;
+
+            if (false) {
+                boolean foundPoint = false;
+                for (SnapPoint localPoint : dragging.getSnapPoints()) {
+                    float localX = localPoint.calculateX(res);
+                    float localY = localPoint.calculateY(res);
+                    for (Element element : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
+                        if (dragging == element) continue;
+
+                        for (SnapPoint foreignPoint : element.getSnapPoints()) {
+                            float foreignX = foreignPoint.calculateX(res);
+                            float foreignY = foreignPoint.calculateY(res);
+
+                            SnapPoint.SnapAxis axis = foreignPoint.calculateSnappingAxis(localPoint, res);
+
+                            if (axis == null) {
+                                continue;
+                            }
+
+                            if (axis == SnapPoint.SnapAxis.X) {
+                                if (elementY > localY + SnapPoint.MAX_SNAP_DIST || elementY < localY - SnapPoint.MAX_SNAP_DIST) {
+                                    foundPoint = true;
+                                    continue;
+                                }
+                                elementY = localY + (foreignY - localY);
+                            } else {
+                                if (elementX > localX + SnapPoint.MAX_SNAP_DIST || elementX < localX - SnapPoint.MAX_SNAP_DIST) {
+                                    foundPoint = true;
+                                    continue;
+                                }
+                                elementX = localX + (foreignX - localX);
+                            }
+                            GLRenderer.drawLine(localX, localY, foreignX, foreignY, 1, new Color(255, 0, 0));
+
+                            foundPoint = true;
+                            break;
+                        }
+                        if (foundPoint) break;
+                    }
+                    if (foundPoint) break;
+                }
+            }
+
+            dragging.getPosition().setRawX(elementX, res);
+            dragging.getPosition().setRawY(elementY, res);
         }
     }
 
@@ -56,7 +104,7 @@ public class GuiScreenElements extends GuiScreenExt {
         boolean clickedElement = false;
         for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
             e.onMouseClicked(mouseX, mouseY);
-            if (e.getHitbox(1, e.getPosition().getScale()).doesPositionOverlap(mouseX, mouseY)) {
+            if (e.calculateHitbox(1, e.getPosition().getScale()).doesPositionOverlap(mouseX, mouseY)) {
                 lastClicked = dragging = e;
                 offX = mouseX - e.getPosition().getRawX(res);
                 offY = mouseY - e.getPosition().getRawY(res);
@@ -75,6 +123,13 @@ public class GuiScreenElements extends GuiScreenExt {
         super.mouseReleased(mouseX, mouseY, state);
         dragging = null;
         offX = offY = 0;
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        super.keyTyped(typedChar, keyCode);
+
+
     }
 
     @Override

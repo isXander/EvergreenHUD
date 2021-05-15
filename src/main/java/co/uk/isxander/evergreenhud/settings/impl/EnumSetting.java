@@ -9,29 +9,29 @@ public class EnumSetting<T extends Enum<?>> extends Setting {
     private T cached;
     private int index;
 
-    public EnumSetting(String name, String description, T current, boolean internal) {
-        super(name, description, internal);
+    public EnumSetting(String name, String category, String description, T current, boolean internal) {
+        super(name, description, category, internal);
         this.options = (Class<T>) current.getClass();
         this.cached = current;
         this.def = this.index = current.ordinal();
     }
 
-    public EnumSetting(String name, String description, T current) {
-        super(name, description);
+    public EnumSetting(String name, String category, String description, T current) {
+        super(name, description, category);
         this.options = (Class<T>) current.getClass();
         this.cached = current;
         this.def = this.index = current.ordinal();
     }
 
-    public EnumSetting(String name, T current, boolean internal) {
-        super(name, "", internal);
+    public EnumSetting(String name, String category, T current, boolean internal) {
+        super(name, "", category, internal);
         this.options = (Class<T>) current.getClass();
         this.cached = current;
         this.index = this.def = current.ordinal();
     }
 
-    public EnumSetting(String name, T current) {
-        super(name);
+    public EnumSetting(String name, String category, T current) {
+        super(name, category);
         this.options = (Class<T>) current.getClass();
         this.cached = current;
         this.index = this.def = current.ordinal();

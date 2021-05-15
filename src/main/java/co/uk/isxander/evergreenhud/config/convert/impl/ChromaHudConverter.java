@@ -129,13 +129,13 @@ public class ChromaHudConverter extends ConfigConverter {
                 element.getPosition().setScaledY(element.getPosition().getYScaled() + (i * changeY));
                 element.setTextColor(textCol.getRed(), textCol.getGreen(), textCol.getBlue());
                 if (useBg) {
-                    element.getPaddingWidth().set(1);
-                    element.getPaddingHeight().set(1);
+                    element.getPaddingWidthSetting().set(1);
+                    element.getPaddingHeightSetting().set(1);
                 } else {
                     element.setBgColor(0, 0, 0, 0);
                 }
-                element.useChroma().set(chroma);
-                element.renderShadow().set(shadow);
+                element.getChromaSetting().set(chroma);
+                element.getTextModeSetting().set((shadow ? Element.TextMode.SHADOW : Element.TextMode.NORMAL));
 
                 if (element instanceof ElementCoordinates) {
                     ElementCoordinates coords = (ElementCoordinates) element;

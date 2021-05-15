@@ -22,23 +22,23 @@ public class StringSetting extends Setting {
     private final String def;
     private String val;
 
-    public StringSetting(String name, String description, String def, boolean internal) {
-        super(name, description, internal);
+    public StringSetting(String name, String category, String description, String def, boolean internal) {
+        super(name, description, category, internal);
         this.val = this.def = def;
     }
 
-    public StringSetting(String name, String def, boolean internal) {
-        super(name, "", internal);
+    public StringSetting(String name, String category, String def, boolean internal) {
+        super(name, "", category, internal);
         this.val = this.def = def;
     }
 
-    public StringSetting(String name, String description, String def) {
-        super(name, description);
+    public StringSetting(String name, String category, String description, String def) {
+        super(name, description, category);
         this.val = this.def = def;
     }
 
-    public StringSetting(String name, String def) {
-        super(name);
+    public StringSetting(String name, String category, String def) {
+        super(name, category);
         this.val = this.def = def;
     }
 

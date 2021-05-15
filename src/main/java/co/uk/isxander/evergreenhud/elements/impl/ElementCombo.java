@@ -40,9 +40,9 @@ public class ElementCombo extends Element {
 
     @Override
     public void initialise() {
-        addSettings(alwaysShowCount = new BooleanSetting("Persistent Count", "Determines if the No Hit String shows.", false));
-        addSettings(secondsComboDiscard = new IntegerSetting("Discard Time", "How many seconds until the combo is set to 0.", 3, 1, 10, " secs"));
-        addSettings(noHitString = new StringSetting("No Hit Message", "What message is shown when no combo is in progress.", "None"));
+        addSettings(alwaysShowCount = new BooleanSetting("Persistent Count", "Functionality", "Determines if the No Hit String shows.", false));
+        addSettings(secondsComboDiscard = new IntegerSetting("Discard Time", "Functionality", "How many seconds until the combo is set to 0.", 3, 1, 10, " secs"));
+        addSettings(noHitString = new StringSetting("No Hit Message", "Display", "What message is shown when no combo is in progress.", "None"));
     }
 
     @Override

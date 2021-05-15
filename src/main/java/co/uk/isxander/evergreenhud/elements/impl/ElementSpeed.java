@@ -39,13 +39,13 @@ public class ElementSpeed extends Element {
 
     @Override
     public void initialise() {
-        addSettings(speedUnit = new EnumSetting<>("Unit", "What unit of speed to display.", SpeedUnit.METERS_PER_SEC));
-        addSettings(accuracy = new IntegerSetting("Accuracy", "How many decimal places the value should display.", 2, 0, 4, " places"));
-        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Add zeroes to match the accuracy.", false));
-        addSettings(suffix = new BooleanSetting("Suffix", "If the value should be suffixed with \"ms\"", false));
-        addSettings(useX = new BooleanSetting("Use X", "Use the x coordinate when calculating the speed.", true));
-        addSettings(useY = new BooleanSetting("Use Y", "Use the y coordinate when calculating the speed.", true));
-        addSettings(useZ = new BooleanSetting("Use Z", "Use the z coordinate when calculating the speed.", true));
+        addSettings(speedUnit = new EnumSetting<>("Unit", "Functionality", "What unit of speed to display.", SpeedUnit.METERS_PER_SEC));
+        addSettings(accuracy = new IntegerSetting("Accuracy", "Display", "How many decimal places the value should display.", 2, 0, 4, " places"));
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Display", "Add zeroes to match the accuracy.", false));
+        addSettings(suffix = new BooleanSetting("Suffix", "Display", "If the value should be suffixed with the specified unit.", false));
+        addSettings(useX = new BooleanSetting("Use X", "Functionality", "Use the x coordinate when calculating the speed.", true));
+        addSettings(useY = new BooleanSetting("Use Y", "Functionality", "Use the y coordinate when calculating the speed.", true));
+        addSettings(useZ = new BooleanSetting("Use Z", "Functionality", "Use the z coordinate when calculating the speed.", true));
     }
 
     @Override

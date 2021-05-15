@@ -16,31 +16,23 @@
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
-import co.uk.isxander.evergreenhud.gui.elements.BetterGuiButton;
-import co.uk.isxander.evergreenhud.gui.elements.BetterGuiTextField;
-import co.uk.isxander.evergreenhud.gui.elements.BetterGuiSlider;
-import co.uk.isxander.evergreenhud.gui.elements.GuiButtonAlt;
+import co.uk.isxander.evergreenhud.gui.elements.*;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.settings.Setting;
 import co.uk.isxander.evergreenhud.settings.impl.*;
-import co.uk.isxander.evergreenhud.utils.Alignment;
 import co.uk.isxander.evergreenhud.utils.StringUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraftforge.fml.client.config.GuiSlider;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static co.uk.isxander.evergreenhud.utils.Alignment.*;
 
 public class GuiElementConfig extends GuiScreenElements {
 
@@ -48,9 +40,11 @@ public class GuiElementConfig extends GuiScreenElements {
 
     protected final Map<Integer, Setting> customButtons = new HashMap<>();
     protected final List<BetterGuiTextField> textFieldList = new ArrayList<>();
+    protected String currentCategory;
 
     public GuiElementConfig(Element element) {
         this.element = element;
+        this.currentCategory = null;
     }
 
     @Override
@@ -66,11 +60,23 @@ public class GuiElementConfig extends GuiScreenElements {
         this.buttonList.add(new GuiButtonAlt(0, width / 2, height - 20, 90, 20, "Finished"));
         this.buttonList.add(new GuiButtonAlt(1, width / 2 - 90, height - 20, 90, 20, "Reset"));
 
+        List<String> categories = new ArrayList<>();
         int id = 2;
+        for (Setting s : element.getCustomSettings()) {
+            if (!categories.contains(s.getCategory())) {
+                categories.add(s.getCategory());
+            }
+        }
+
         int row = 0;
         for (Setting s : element.getCustomSettings()) {
             if (s.isInternal() || s.isDisabled())
                 continue;
+
+            if (currentCategory != null) {
+                if (!s.getCategory().equalsIgnoreCase(currentCategory))
+                    continue;
+            }
 
             int x = (id % 2 == 0 ? left() : right());
             int y = getRow(row);
@@ -143,7 +149,6 @@ public class GuiElementConfig extends GuiScreenElements {
                 break;
             case 1:
                 element.resetSettings(true);
-                addButtons();
                 break;
             default:
                 Setting s = customButtons.get(button.id);
@@ -164,6 +169,7 @@ public class GuiElementConfig extends GuiScreenElements {
                 }
                 break;
         }
+        addButtons();
     }
 
     @Override

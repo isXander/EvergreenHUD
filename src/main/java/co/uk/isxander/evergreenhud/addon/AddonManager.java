@@ -15,7 +15,6 @@
 
 package co.uk.isxander.evergreenhud.addon;
 
-import co.uk.isxander.evergreenhud.EvergreenHUD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;

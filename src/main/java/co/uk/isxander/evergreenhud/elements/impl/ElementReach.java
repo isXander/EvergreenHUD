@@ -38,7 +38,7 @@ public class ElementReach extends Element {
 
     @Override
     public void initialise() {
-        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Add zeroes to match the accuracy.", false));
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Display", "Add zeroes to match the accuracy.", false));
     }
 
     @Override

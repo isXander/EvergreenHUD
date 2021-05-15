@@ -80,7 +80,7 @@ public class ModCoreInstaller {
         ModCoreInstaller.error = error;
     }
 
-    private static JsonHolder readFile(File in) {
+    public static JsonHolder readFile(File in) {
         try {
             return new JsonHolder(FileUtils.readFileToString(in));
         } catch (IOException ignored) {

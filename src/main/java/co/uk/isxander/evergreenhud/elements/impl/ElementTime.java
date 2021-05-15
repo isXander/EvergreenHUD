@@ -29,8 +29,8 @@ public class ElementTime extends Element {
 
     @Override
     public void initialise() {
-        addSettings(twelveHour = new BooleanSetting("Twelve Hour", "If the clock will be 12 hour or 24 hour.", false));
-        addSettings(showSeconds = new BooleanSetting("Show Seconds", "If the clock is to show seconds.", false));
+        addSettings(twelveHour = new BooleanSetting("Twelve Hour", "Display", "If the clock will be 12 hour or 24 hour.", false));
+        addSettings(showSeconds = new BooleanSetting("Show Seconds", "Display", "If the clock is to show seconds.", false));
     }
 
     @Override

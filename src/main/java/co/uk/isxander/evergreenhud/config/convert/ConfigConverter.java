@@ -17,7 +17,6 @@ package co.uk.isxander.evergreenhud.config.convert;
 
 import co.uk.isxander.evergreenhud.elements.ElementManager;
 import co.uk.isxander.xanderlib.utils.Constants;
-import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

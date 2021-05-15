@@ -34,8 +34,8 @@ public class ElementBlockAbove extends Element {
 
     @Override
     public void initialise() {
-        addSettings(notify = new BooleanSetting("Notify", "Make a noise when the block gets too close.", false));
-        addSettings(notifyHeight = new IntegerSetting("Notify Height", "How close the block needs to be before notifying.", 3, 1, 10, " blocks"));
+        addSettings(notify = new BooleanSetting("Notify", "Sound", "Make a noise when the block gets too close.", false));
+        addSettings(notifyHeight = new IntegerSetting("Notify Height", "Functionality", "How close the block needs to be before notifying.", 3, 1, 10, " blocks"));
     }
 
     @Override

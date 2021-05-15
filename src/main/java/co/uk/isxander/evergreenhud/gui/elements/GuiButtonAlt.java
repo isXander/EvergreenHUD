@@ -18,7 +18,6 @@ package co.uk.isxander.evergreenhud.gui.elements;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
-import net.minecraftforge.fml.client.config.GuiUtils;
 
 import java.awt.*;
 

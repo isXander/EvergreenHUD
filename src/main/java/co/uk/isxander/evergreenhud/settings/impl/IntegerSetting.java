@@ -24,32 +24,32 @@ public class IntegerSetting extends Setting {
     private final int min, max;
     private final String suffix;
 
-    public IntegerSetting(String name, String description, int val, int min, int max, String suffix, boolean internal) {
-        super(name, description, internal);
+    public IntegerSetting(String name, String category, String description, int val, int min, int max, String suffix, boolean internal) {
+        super(name, description, category, internal);
         this.val = this.def = val;
         this.min = min;
         this.max = max;
         this.suffix = suffix;
     }
 
-    public IntegerSetting(String name, int val, int min, int max, String suffix, boolean internal) {
-        super(name, "", internal);
+    public IntegerSetting(String name, String category, int val, int min, int max, String suffix, boolean internal) {
+        super(name, "", category, internal);
         this.val = this.def = val;
         this.min = min;
         this.max = max;
         this.suffix = suffix;
     }
 
-    public IntegerSetting(String name, String description, int val, int min, int max, String suffix) {
-        super(name, description);
+    public IntegerSetting(String name, String category, String description, int val, int min, int max, String suffix) {
+        super(name, description, category);
         this.val = this.def = val;
         this.min = min;
         this.max = max;
         this.suffix = suffix;
     }
 
-    public IntegerSetting(String name, int val, int min, int max, String suffix) {
-        super(name);
+    public IntegerSetting(String name, String category, int val, int min, int max, String suffix) {
+        super(name, category);
         this.val = this.def = val;
         this.min = min;
         this.max = max;

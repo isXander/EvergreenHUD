@@ -28,7 +28,7 @@ public class ElementPitch extends Element {
 
     @Override
     public void initialise() {
-        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Add zeroes to match the accuracy.", true));
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Display", "Add zeroes to match the accuracy.", true));
     }
 
     @Override

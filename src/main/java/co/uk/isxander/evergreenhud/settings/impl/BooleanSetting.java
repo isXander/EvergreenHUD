@@ -22,23 +22,23 @@ public class BooleanSetting extends Setting {
     private final boolean def;
     private boolean value;
 
-    public BooleanSetting(String name, String description, boolean def, boolean internal) {
-        super(name, description, internal);
+    public BooleanSetting(String name, String category, String description, boolean def, boolean internal) {
+        super(name, description, category, internal);
         this.value = this.def = def;
     }
 
-    public BooleanSetting(String name, boolean def, boolean internal) {
-        super(name, "", internal);
+    public BooleanSetting(String name, String category, boolean def, boolean internal) {
+        super(name, "", category, internal);
         this.value = this.def = def;
     }
 
-    public BooleanSetting(String name, String description, boolean def) {
-        super(name, description);
+    public BooleanSetting(String name, String category, String description, boolean def) {
+        super(name, description ,category);
         this.value = this.def = def;
     }
 
-    public BooleanSetting(String name, boolean def) {
-        super(name);
+    public BooleanSetting(String name, String category, boolean def) {
+        super(name, category);
         this.value = this.def = def;
     }
 

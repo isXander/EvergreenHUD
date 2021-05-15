@@ -120,7 +120,7 @@ public class ElementManager implements Constants {
                     throw new BreakException();
                 }
             });
-        } catch (BreakException e) {
+        } catch (BreakException ignored) {
         }
 
         return name.get();
@@ -128,11 +128,6 @@ public class ElementManager implements Constants {
 
     public Map<String, Class<? extends Element>> getAvailableElements() {
         return Collections.unmodifiableMap(availableElements);
-    }
-
-    public void loadConfigs() {
-        this.getElementConfig().load();
-        this.getMainConfig().load();
     }
 
     public void resetConfig() {

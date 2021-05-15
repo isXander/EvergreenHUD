@@ -15,9 +15,9 @@
 
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
+import club.sk1er.mods.core.gui.notification.Notifications;
 import co.uk.isxander.evergreenhud.gui.elements.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
-import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -35,7 +35,7 @@ public class GuiMain extends GuiScreenElements {
         this.buttonList.add(new GuiButtonAlt(2, width - 80,     height - 20, 90, 20, "Convert"));
 
         if (!EvergreenHUD.getInstance().getElementManager().isEnabled())
-            XanderLib.getInstance().getNotificationManager().push("EvergreenHUD", "The mod is disabled. You will not see the hud in-game unless you enable it.");
+            Notifications.INSTANCE.pushNotification("EvergreenHUD", "The mod is disabled. You will not see the hud in-game unless you enable it.");
 
     }
 

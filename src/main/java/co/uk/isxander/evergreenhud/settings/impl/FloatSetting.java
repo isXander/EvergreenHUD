@@ -24,32 +24,32 @@ public class FloatSetting extends Setting {
     private final float min, max;
     private final String suffix;
 
-    public FloatSetting(String name, String description, float val, float min, float max, String suffix, boolean internal) {
-        super(name, description, internal);
+    public FloatSetting(String name, String category, String description, float val, float min, float max, String suffix, boolean internal) {
+        super(name, description, category, internal);
         this.val = this.def = val;
         this.min = min;
         this.max = max;
         this.suffix = suffix;
     }
 
-    public FloatSetting(String name, float val, float min, float max, String suffix, boolean internal) {
-        super(name, "", internal);
+    public FloatSetting(String name, String category, float val, float min, float max, String suffix, boolean internal) {
+        super(name, "", category, internal);
         this.val = this.def = val;
         this.min = min;
         this.max = max;
         this.suffix = suffix;
     }
 
-    public FloatSetting(String name, String description, float val, float min, float max, String suffix) {
-        super(name, description);
+    public FloatSetting(String name, String category, String description, float val, float min, float max, String suffix) {
+        super(name, description, category);
         this.val = this.def = val;
         this.min = min;
         this.max = max;
         this.suffix = suffix;
     }
 
-    public FloatSetting(String name, float val, float min, float max, String suffix) {
-        super(name);
+    public FloatSetting(String name, String category, float val, float min, float max, String suffix) {
+        super(name, category);
         this.val = this.def = val;
         this.min = min;
         this.max = max;

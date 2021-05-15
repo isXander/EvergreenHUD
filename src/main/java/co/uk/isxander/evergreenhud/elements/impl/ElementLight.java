@@ -13,7 +13,7 @@ public class ElementLight extends Element {
 
     @Override
     public void initialise() {
-        addSettings(displayMode = new ArraySetting("Display", "How the value is displayed.", "Absolute", new String[]{"Absolute", "Percentage"}));
+        addSettings(displayMode = new ArraySetting("Mode", "Display", "How the value is displayed.", "Absolute", new String[]{"Absolute", "Percentage"}));
     }
 
     @Override

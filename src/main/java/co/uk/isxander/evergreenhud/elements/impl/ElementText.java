@@ -18,7 +18,6 @@ package co.uk.isxander.evergreenhud.elements.impl;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.settings.impl.StringSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
-import net.minecraft.util.EnumChatFormatting;
 
 public class ElementText extends Element {
 
@@ -26,7 +25,7 @@ public class ElementText extends Element {
 
     @Override
     public void initialise() {
-        addSettings(text = new StringSetting("Text Element", "What the value will display.", "Text Element"));
+        addSettings(text = new StringSetting("Text Element", "Display", "What the value will display.", "Text Element"));
     }
 
     @Override

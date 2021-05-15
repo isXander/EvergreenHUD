@@ -19,20 +19,22 @@ public abstract class Setting {
 
     private final String name;
     private final String description;
+    private final String category;
     private final boolean internal;
 
-    protected Setting(String name, String description, boolean internal) {
+    protected Setting(String name, String description, String category, boolean internal) {
         this.name = name;
         this.description = description;
+        this.category = category;
         this.internal = internal;
     }
 
-    protected Setting(String name, String description) {
-        this(name, description, false);
+    protected Setting(String name, String description, String category) {
+        this(name, description, category, false);
     }
 
-    protected Setting(String name) {
-        this(name, "", false);
+    protected Setting(String name, String category) {
+        this(name, "", category);
     }
 
     public abstract void reset();
@@ -43,6 +45,10 @@ public abstract class Setting {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getCategory() {
+        return category;
     }
 
     public boolean isInternal() {

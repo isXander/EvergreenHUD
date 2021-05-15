@@ -20,56 +20,56 @@ import co.uk.isxander.evergreenhud.settings.Setting;
 import java.util.Arrays;
 import java.util.List;
 
-public class  ArraySetting extends Setting {
+public class ArraySetting extends Setting {
 
     private final List<String> options;
     private final int def;
     private int index;
 
-    public ArraySetting(String name, String description, String current, boolean internal, String... options) {
-        super(name, description, internal);
+    public ArraySetting(String name, String category, String description, String current, boolean internal, String... options) {
+        super(name, description, category, internal);
         this.options = Arrays.asList(options);
         this.index = this.def = this.options.indexOf(current);
     }
 
-    public ArraySetting(String name, String description, int current, boolean internal, String... options) {
-        super(name, description, internal);
+    public ArraySetting(String name, String category, String description, int current, boolean internal, String... options) {
+        super(name, description, category, internal);
         this.options = Arrays.asList(options);
         this.index = this.def = current;
     }
 
-    public ArraySetting(String name, String description, String current, String... options) {
-        super(name, description);
+    public ArraySetting(String name, String category, String description, String current, String... options) {
+        super(name, description, category);
         this.options = Arrays.asList(options);
         this.index = this.def = this.options.indexOf(current);
     }
 
-    public ArraySetting(String name, String description, int current, String... options) {
-        super(name, description);
+    public ArraySetting(String name, String category, String description, int current, String... options) {
+        super(name, description, category);
         this.options = Arrays.asList(options);
         this.index = this.def = current;
     }
 
-    public ArraySetting(String name, String current, boolean internal, String... options) {
-        super(name, "", internal);
+    public ArraySetting(String name, String category, String current, boolean internal, String... options) {
+        super(name, "", category, internal);
         this.options = Arrays.asList(options);
         this.index = this.def = this.options.indexOf(current);
     }
 
-    public ArraySetting(String name, int current, boolean internal, String... options) {
-        super(name, "", internal);
+    public ArraySetting(String name, String category, int current, boolean internal, String... options) {
+        super(name, "", category, internal);
         this.options = Arrays.asList(options);
         this.index = this.def = current;
     }
 
-    public ArraySetting(String name, String current, String... options) {
-        super(name);
+    public ArraySetting(String name, String category, String current, String... options) {
+        super(name, category);
         this.options = Arrays.asList(options);
         this.index = this.def = this.options.indexOf(current);
     }
 
-    public ArraySetting(String name, int current, String... options) {
-        super(name);
+    public ArraySetting(String name, String category, int current, String... options) {
+        super(name, category);
         this.options = Arrays.asList(options);
         this.index = this.def = current;
     }

@@ -35,7 +35,7 @@ public class ElementCps extends Element {
 
     @Override
     public void initialise() {
-        addSettings(button = new ArraySetting("Button", "Which button to display.", "Both", new String[]{"Left", "Right", "Both"}));
+        addSettings(button = new ArraySetting("Button", "Display", "Which button to display.", "Both", new String[]{"Left", "Right", "Both"}));
     }
 
     @Override

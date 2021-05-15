@@ -34,8 +34,8 @@ public class ElementMemory extends Element {
 
     @Override
     public void initialise() {
-        addSettings(displayMode = new ArraySetting("Display", "How the value will be displayed.", "Absolute", new String[]{"Absolute", "Percentage"}));
-        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Add zeroes to match the accuracy.", false));
+        addSettings(displayMode = new ArraySetting("Mode", "Display", "How the value will be displayed.", "Absolute", new String[]{"Absolute", "Percentage"}));
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Display", "Add zeroes to match the accuracy.", false));
     }
 
     @Override

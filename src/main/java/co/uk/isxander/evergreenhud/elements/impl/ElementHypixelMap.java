@@ -15,12 +15,12 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
+import club.sk1er.mods.core.util.MinecraftUtils;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.evergreenhud.settings.impl.StringSetting;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.hypixel.locraw.LocationParsed;
-import co.uk.isxander.xanderlib.utils.MinecraftUtils;
 
 public class ElementHypixelMap extends Element {
 
@@ -29,8 +29,8 @@ public class ElementHypixelMap extends Element {
 
     @Override
     public void initialise() {
-        addSettings(notHypixelMessage = new StringSetting("Not Hypixel Message", "What message is displayed when you are not connected to Hypixel", "None"));
-        addSettings(inLobbyMessage = new StringSetting("In Lobby Message", "What message is displayed when you are in a lobby.", "None"));
+        addSettings(notHypixelMessage = new StringSetting("Not Hypixel Message", "Display", "What message is displayed when you are not connected to Hypixel", "None"));
+        addSettings(inLobbyMessage = new StringSetting("In Lobby Message", "Display", "What message is displayed when you are in a lobby.", "None"));
     }
 
     @Override

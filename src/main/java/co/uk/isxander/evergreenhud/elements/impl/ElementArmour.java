@@ -23,7 +23,6 @@ import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.xanderlib.utils.GuiUtils;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.evergreenhud.settings.Setting;
-import co.uk.isxander.evergreenhud.utils.Alignment;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.GuiButton;
@@ -49,15 +48,15 @@ public class ElementArmour extends Element {
 
     @Override
     public void initialise() {
-        addSettings(helmet = new BooleanSetting("Show Helmet", true));
-        addSettings(chestplate = new BooleanSetting("Show Chestplate", true));
-        addSettings(leggings = new BooleanSetting("Show Leggings", true));
-        addSettings(boots = new BooleanSetting("Show Boots", true));
-        addSettings(item = new BooleanSetting("Show Item", true));
-        addSettings(showCount = new BooleanSetting("Show Count", true));
-        addSettings(spacing = new IntegerSetting("Spacing", 5, 0, 10, ""));
-        addSettings(listType = new ArraySetting("List Type", "Which way the list should expand if an item is added.", "Down", new String[]{"Down", "Up"}));
-        addSettings(textDisplay = new ArraySetting("Text", "What information should be displayed next to the item.", "Durability", new String[]{"Durability", "Name", "None"}));
+        addSettings(helmet = new BooleanSetting("Show Helmet", "Display", true));
+        addSettings(chestplate = new BooleanSetting("Show Chestplate", "Display", true));
+        addSettings(leggings = new BooleanSetting("Show Leggings", "Display", true));
+        addSettings(boots = new BooleanSetting("Show Boots", "Display", true));
+        addSettings(item = new BooleanSetting("Show Item", "Display", true));
+        addSettings(showCount = new BooleanSetting("Show Count", "Misc", true));
+        addSettings(spacing = new IntegerSetting("Spacing", "Misc", 5, 0, 10, ""));
+        addSettings(listType = new ArraySetting("List Type", "Misc", "Which way the list should expand if an item is added.", "Down", new String[]{"Down", "Up"}));
+        addSettings(textDisplay = new ArraySetting("Text", "Misc", "What information should be displayed next to the item.", "Durability", new String[]{"Durability", "Name", "None"}));
     }
 
     @Override
@@ -108,7 +107,7 @@ public class ElementArmour extends Element {
     public void render(RenderGameOverlayEvent event) {
         ScaledResolution res = event.resolution;
 
-        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
+        HitBox2D hitbox = calculateHitbox(1, getPosition().getScale());
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
         if (mc.thePlayer == null)
             return;
@@ -147,7 +146,7 @@ public class ElementArmour extends Element {
             else if (this.textDisplay.get().equalsIgnoreCase("name"))
                 text = stack.getDisplayName();
             float textX = 0, textY = 0;
-            switch (this.getAlignment().get()) {
+            switch (this.getAlignmentSetting().get()) {
                 case RIGHT:
                     textX = x - 2 - mc.fontRendererObj.getStringWidth(text);
                     textY = y + 5 - (mc.fontRendererObj.FONT_HEIGHT / 2f);
@@ -174,19 +173,16 @@ public class ElementArmour extends Element {
                     break;
             }
             textY += offset + 4;
-            if (getAlignment().get() == Alignment.LEFT) {
+            if (getAlignmentSetting().get() == Alignment.LEFT) {
                 textX -= width / 2f;
-            } else if (getAlignment().get() == Alignment.CENTER) {
+            } else if (getAlignmentSetting().get() == Alignment.CENTER) {
                 textX -= width;
             }
-            if (this.useChroma().get()) {
-                GuiUtils.drawChromaString(mc.fontRendererObj, text, textX, textY, renderShadow().get(), false);
-            } else {
-                mc.fontRendererObj.drawString(text, textX, textY, this.getTextColor().getRGB(), renderShadow().get());
-            }
-            if (getAlignment().get() == Alignment.LEFT) {
+            GuiUtils.drawString(mc.fontRendererObj, text, textX, textY, getTextModeSetting().get() == TextMode.SHADOW, getTextModeSetting().get() == TextMode.BORDER, getChromaSetting().get(), false, getTextColor().getRGB());
+
+            if (getAlignmentSetting().get() == Alignment.LEFT) {
                 x -= width / 2f;
-            } else if (getAlignment().get() == Alignment.CENTER) {
+            } else if (getAlignmentSetting().get() == Alignment.CENTER) {
                 x -= width;
             }
 
@@ -202,9 +198,9 @@ public class ElementArmour extends Element {
             RenderHelper.disableStandardItemLighting();
 
             if (listType.get().equalsIgnoreCase("down"))
-                offset += 10 + spacing.get() + (this.getAlignment().get() == Alignment.CENTER ? mc.fontRendererObj.FONT_HEIGHT + 2 : 0);
+                offset += 10 + spacing.get() + (this.getAlignmentSetting().get() == Alignment.CENTER ? mc.fontRendererObj.FONT_HEIGHT + 2 : 0);
             else
-                offset -= 10 + spacing.get() + (this.getAlignment().get() == Alignment.CENTER ? mc.fontRendererObj.FONT_HEIGHT + 2 : 0);
+                offset -= 10 + spacing.get() + (this.getAlignmentSetting().get() == Alignment.CENTER ? mc.fontRendererObj.FONT_HEIGHT + 2 : 0);
 
             index++;
         }
@@ -215,16 +211,16 @@ public class ElementArmour extends Element {
     }
 
     @Override
-    public HitBox2D getHitbox(float posScale, float sizeScale) {
+    public HitBox2D calculateHitbox(float posScale, float sizeScale) {
         ScaledResolution res = new ScaledResolution(mc);
         float x = getPosition().getRawX(res);
         float y = getPosition().getRawY(res);
-        float extraWidth = getPaddingWidth().get() * sizeScale;
-        float extraHeight = getPaddingHeight().get() * sizeScale;
+        float extraWidth = getPaddingWidthSetting().get() * sizeScale;
+        float extraHeight = getPaddingHeightSetting().get() * sizeScale;
 
         float hitX, hitY, hitW, hitH;
         hitX = hitY = hitW = hitH = 0;
-        switch (getAlignment().get()) {
+        switch (getAlignmentSetting().get()) {
             case RIGHT:
                 hitX = x - width;
                 hitY = y;

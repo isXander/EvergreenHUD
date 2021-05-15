@@ -44,14 +44,19 @@ public class ElementCoordinates extends Element {
 
     @Override
     public void initialise() {
-        addSettings(showCoord = new BooleanSetting("Show Name", "Show X: Y: and Z: before the values.", true));
-        addSettings(type = new ArraySetting("Display Type", "How the coordinates are displayed.", "Vertical", new String[]{"Vertical", "Horizontal"}));
-        addSettings(verticalSpacing = new IntegerSetting("Vertical Spacing", "How far apart each line will be.", 2, 0, 5, ""));
-        addSettings(showX = new BooleanSetting("Show X", "Show the X coordinate.", true));
-        addSettings(showY = new BooleanSetting("Show Y", "Show the Y coordinate.", true));
-        addSettings(showZ = new BooleanSetting("Show Z", "Show the Z coordinate.", true));
-        addSettings(accuracy = new IntegerSetting("Accuracy", "How many decimal places the value should display.", 0, 0, 4, " places"));
-        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Add zeroes to match the accuracy.", false));
+        addSettings(showCoord = new BooleanSetting("Show Name", "Display", "Show X: Y: and Z: before the values.", true));
+        addSettings(type = new ArraySetting("Display Type", "Display", "How the coordinates are displayed.", "Vertical", new String[]{"Vertical", "Horizontal"}));
+        addSettings(verticalSpacing = new IntegerSetting("Vertical Spacing", "Display", "How far apart each line will be.", 2, 0, 5, "") {
+            @Override
+            public boolean isDisabled() {
+                return type.getIndex() != 0;
+            }
+        });
+        addSettings(showX = new BooleanSetting("Show X", "Display", "Show the X coordinate.", true));
+        addSettings(showY = new BooleanSetting("Show Y", "Display", "Show the Y coordinate.", true));
+        addSettings(showZ = new BooleanSetting("Show Z", "Display", "Show the Z coordinate.", true));
+        addSettings(accuracy = new IntegerSetting("Accuracy", "Functionality", "How many decimal places the value should display.", 0, 0, 4, " places"));
+        addSettings(trailingZeros = new BooleanSetting("Trailing Zeros", "Functionality", "Add zeroes to match the accuracy.", false));
     }
 
     @Override
@@ -62,40 +67,40 @@ public class ElementCoordinates extends Element {
     @Override
     public void render(RenderGameOverlayEvent event) {
         mc.mcProfiler.startSection(getMetadata().getName());
-        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
+
+        float scale = getPosition().getScale();
+        boolean chroma = getChromaSetting().get();
+        TextMode textMode = getTextModeSetting().get();
+        int color = getTextColor().getRGB();
+
+        HitBox2D hitbox = calculateHitbox(1, scale);
         float x = getPosition().getRawX(event.resolution);
         float y = getPosition().getRawY(event.resolution);
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
         GlStateManager.pushMatrix();
-        GlStateManager.scale(getPosition().getScale(), getPosition().getScale(), 0);
+        GlStateManager.scale(scale, scale, 0);
 
         int i = 0;
         for (String line : getMultiValue()) {
             float posY = ((y / getPosition().getScale()) + (mc.fontRendererObj.FONT_HEIGHT * i) + (verticalSpacing.get() * i));
-            switch (getAlignment().get()) {
+            switch (getAlignmentSetting().get()) {
                 case RIGHT:
-                    float posX = (x - mc.fontRendererObj.getStringWidth(line)) / getPosition().getScale();
+                    float posX = (x - mc.fontRendererObj.getStringWidth(line)) / scale;
 
-                    if (useChroma().get())
-                        GuiUtils.drawChromaString(mc.fontRendererObj, line, posX, posY, renderShadow().get(), false);
-                    else
-                        mc.fontRendererObj.drawString(line, posX, posY, getTextColor().getRGB(), renderShadow().get());
+                    GuiUtils.drawString(mc.fontRendererObj, line, posX, posY, textMode == TextMode.SHADOW, textMode == TextMode.BORDER, chroma, false, color);
+
                     break;
                 case CENTER:
-                    posX = x / getPosition().getScale();
+                    posX = x / scale;
 
-                    if (useChroma().get())
-                        GuiUtils.drawChromaString(mc.fontRendererObj, line, posX, posY, renderShadow().get(), true);
-                    else
-                        GuiUtils.drawCenteredString(mc.fontRendererObj, line, posX, posY, getTextColor().getRGB(), renderShadow().get());
+                    GuiUtils.drawString(mc.fontRendererObj, line, posX, posY, textMode == TextMode.SHADOW, textMode == TextMode.BORDER, chroma, true, color);
+
                     break;
                 case LEFT:
-                    posX = x / getPosition().getScale();
+                    posX = x / scale;
 
-                    if (useChroma().get())
-                        GuiUtils.drawChromaString(mc.fontRendererObj, line, posX, posY, renderShadow().get(), false);
-                    else
-                        mc.fontRendererObj.drawString(line, posX, posY, getTextColor().getRGB(), renderShadow().get());
+                    GuiUtils.drawString(mc.fontRendererObj, line, posX, posY, textMode == TextMode.SHADOW, textMode == TextMode.BORDER, chroma, false, color);
+
                     break;
             }
 
@@ -122,26 +127,26 @@ public class ElementCoordinates extends Element {
         for (int i = 0; i < accuracy.get(); i++) sb.append(formatter);
         DecimalFormat df = new DecimalFormat(sb.toString());
         if (type.get().equalsIgnoreCase("vertical")) {
-            if (showX.get()) lines.add((showBrackets().get() ? "[" : "") + (showCoord.get() ? "X: " : "") + df.format(mc.thePlayer.posX) + (showBrackets().get() ? "]" : ""));
-            if (showY.get()) lines.add((showBrackets().get() ? "[" : "") + (showCoord.get() ? "Y: " : "") + df.format(mc.thePlayer.posY) + (showBrackets().get() ? "]" : ""));
-            if (showZ.get()) lines.add((showBrackets().get() ? "[" : "") + (showCoord.get() ? "Z: " : "") + df.format(mc.thePlayer.posZ) + (showBrackets().get() ? "]" : ""));
+            if (showX.get()) lines.add((getBracketsSetting().get() ? "[" : "") + (showCoord.get() ? "X: " : "") + df.format(mc.thePlayer.posX) + (getBracketsSetting().get() ? "]" : ""));
+            if (showY.get()) lines.add((getBracketsSetting().get() ? "[" : "") + (showCoord.get() ? "Y: " : "") + df.format(mc.thePlayer.posY) + (getBracketsSetting().get() ? "]" : ""));
+            if (showZ.get()) lines.add((getBracketsSetting().get() ? "[" : "") + (showCoord.get() ? "Z: " : "") + df.format(mc.thePlayer.posZ) + (getBracketsSetting().get() ? "]" : ""));
         } else {
             String builder = "";
             if (showX.get()) builder += (showCoord.get() ? "X: " : "") + df.format(mc.thePlayer.posX) + (showY.get() || showZ.get() ? ", " : "");
             if (showY.get()) builder += (showCoord.get() ? "Y: " : "") + df.format(mc.thePlayer.posY) + (showZ.get() ? ", " : "");
             if (showZ.get()) builder += (showCoord.get() ? "Z: " : "") + df.format(mc.thePlayer.posZ);
 
-            if (isInverted().get()) builder = getDisplayTitle() + " " + builder;
+            if (getInvertTitleSetting().get()) builder = getDisplayTitle() + " " + builder;
             else builder = builder + " " + getDisplayTitle();
 
-            if (showBrackets().get()) builder = "[" + builder + "]";
+            if (getBracketsSetting().get()) builder = "[" + builder + "]";
             lines.add(builder);
         }
         return lines;
     }
 
     @Override
-    public HitBox2D getHitbox(float posScale, float sizeScale) {
+    public HitBox2D calculateHitbox(float posScale, float sizeScale) {
         HitBox2D hitbox = null;
         ScaledResolution res = new ScaledResolution(mc);
         List<String> value = getMultiValue();
@@ -153,12 +158,12 @@ public class ElementCoordinates extends Element {
         width = Math.max(10, width);
         width *= sizeScale;
 
-        float extraWidth = getPaddingWidth().get() * sizeScale;
+        float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float height = ((mc.fontRendererObj.FONT_HEIGHT * value.size()) + (verticalSpacing.get() * (value.size() - 1))) * sizeScale;
-        float extraHeight = getPaddingHeight().get() * sizeScale;
+        float extraHeight = getPaddingHeightSetting().get() * sizeScale;
         float x = getPosition().getRawX(res) / posScale;
         float y = getPosition().getRawY(res) / posScale;
-        switch (getAlignment().get()) {
+        switch (getAlignmentSetting().get()) {
             case RIGHT:
                 hitbox = new HitBox2D(x - (width / sizeScale) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
                 break;

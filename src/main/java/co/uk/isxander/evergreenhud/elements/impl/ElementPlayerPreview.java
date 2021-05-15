@@ -34,7 +34,7 @@ public class ElementPlayerPreview extends Element {
 
     @Override
     public void initialise() {
-        addSettings(rotation = new FloatSetting("Rotation", "The rotation of the player.", 0, 0, 360, " deg"));
+        addSettings(rotation = new FloatSetting("Rotation", "Render", "The rotation of the player.", 0, 0, 360, " deg"));
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ElementPlayerPreview extends Element {
     }
 
     @Override
-    public boolean useShadowSetting() {
+    public boolean useTextModeSetting() {
         return false;
     }
 
@@ -86,7 +86,7 @@ public class ElementPlayerPreview extends Element {
     public void render(RenderGameOverlayEvent event) {
         GlStateManager.pushMatrix();
         GlStateManager.enableDepth();
-        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
+        HitBox2D hitbox = calculateHitbox(1, getPosition().getScale());
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
 
         EntityPlayerSP ent = mc.thePlayer;
@@ -133,13 +133,13 @@ public class ElementPlayerPreview extends Element {
     }
 
     @Override
-    public HitBox2D getHitbox(float posScale, float sizeScale) {
+    public HitBox2D calculateHitbox(float posScale, float sizeScale) {
         ScaledResolution res = new ScaledResolution(mc);
 
         float width = 80 * sizeScale;
-        float extraWidth = getPaddingWidth().get() * sizeScale;
+        float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float height = 120 * sizeScale;
-        float extraHeight = getPaddingHeight().get() * sizeScale;
+        float extraHeight = getPaddingHeightSetting().get() * sizeScale;
         float x = getPosition().getRawX(res) - (width / 2f) / posScale;
         float y = getPosition().getRawY(res) - height + (height / 8f) + (height / 128f) / posScale;
 
@@ -148,6 +148,6 @@ public class ElementPlayerPreview extends Element {
 
     @Override
     public String getDisplayTitle() {
-        return null;
+        return "Player Preview";
     }
 }

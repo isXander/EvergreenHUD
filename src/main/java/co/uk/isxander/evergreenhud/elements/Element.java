@@ -15,10 +15,10 @@
 
 package co.uk.isxander.evergreenhud.elements;
 
+import co.uk.isxander.evergreenhud.elements.snapping.SnapPoint;
 import co.uk.isxander.evergreenhud.event.Listenable;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiElementConfig;
 import co.uk.isxander.evergreenhud.settings.impl.*;
-import co.uk.isxander.evergreenhud.utils.Alignment;
 import co.uk.isxander.xanderlib.utils.*;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
@@ -47,12 +47,13 @@ public abstract class Element extends Gui implements Listenable, Constants {
     }
 
     private final List<Setting> customSettings;
+    private final List<SnapPoint> snapPoints;
 
     /* Config */
     private Position pos;
-    private BooleanSetting title;
+    private StringSetting titleText;
     private BooleanSetting brackets;
-    private BooleanSetting shadow;
+    private EnumSetting<TextMode> textMode;
     private BooleanSetting chroma;
     private BooleanSetting inverted;
     private FloatSetting paddingWidth;
@@ -76,13 +77,26 @@ public abstract class Element extends Gui implements Listenable, Constants {
         this.customSettings = new ArrayList<>();
         registerDefaultSettings();
         resetSettings(false);
+        this.snapPoints = new ArrayList<>();
+        registerSnapPoints();
         this.meta = metadata();
         this.logger = LogManager.getLogger(getMetadata().getName());
         initialise();
     }
 
+    private void registerSnapPoints() {
+        snapPoints.add(new SnapPoint(this, 0, 0));
+        snapPoints.add(new SnapPoint(this, 0, 1));
+        snapPoints.add(new SnapPoint(this, 1, 0));
+        snapPoints.add(new SnapPoint(this, 1, 1));
+        snapPoints.add(new SnapPoint(this, 0, 0.5f));
+        snapPoints.add(new SnapPoint(this, 1, 0.5f));
+        snapPoints.add(new SnapPoint(this, 0.5f, 0));
+        snapPoints.add(new SnapPoint(this, 0.5f, 1));
+    }
+
     private void registerDefaultSettings() {
-        addSettings(new IntegerSetting("Scale", "How big the element is displayed.", 100, 50, 200, "%", false) {
+        addSettings(new IntegerSetting("Scale", "Display", "How big the element is displayed.", 100, 50, 200, "%", false) {
             @Override
             public int get() {
                 return (int) (getPosition().getScale() * 100f);
@@ -99,95 +113,94 @@ public abstract class Element extends Gui implements Listenable, Constants {
             }
         });
 
-        addSettings(brackets = new BooleanSetting("Brackets", "If there are square brackets before and after the text.", false) {
+        addSettings(brackets = new BooleanSetting("Brackets", "Display", "If there are square brackets before and after the text.", false) {
             @Override
             public boolean isDisabled() {
                 return !useBracketsSetting();
             }
         });
-        addSettings(title = new BooleanSetting("Title", "If the text has the element name in it.", true) {
+        addSettings(titleText = new StringSetting("Title", "Display", "What is displayed before or after the value.", getDisplayTitle()) {
             @Override
             public boolean isDisabled() {
                 return !useTitleSetting();
             }
         });
-        addSettings(inverted = new BooleanSetting("Invert Title", "If the title is rendered after the value.", false) {
+        addSettings(inverted = new BooleanSetting("Invert Title", "Display", "If the title is rendered after the value.", false) {
             @Override
             public boolean isDisabled() {
                 return !useInvertedSetting();
             }
         });
 
-        addSettings(textR = new IntegerSetting("Text Red", "How much red is in the color of the text.", 255, 0, 255, "") {
+        addSettings(textR = new IntegerSetting("Text Red", "Color", "How much red is in the color of the text.", 255, 0, 255, "") {
             @Override
             public boolean isDisabled() {
                 return !useTextColorSetting();
             }
         });
-        addSettings(textG = new IntegerSetting("Text Green", "How much green is in the color of the text.", 255, 0, 255, "") {
+        addSettings(textG = new IntegerSetting("Text Green", "Color", "How much green is in the color of the text.", 255, 0, 255, "") {
             @Override
             public boolean isDisabled() {
                 return !useTextColorSetting();
             }
         });
-        addSettings(textB = new IntegerSetting("Text Blue", "How much blue is in the color of the text.", 255, 0, 255, "") {
+        addSettings(textB = new IntegerSetting("Text Blue", "Color", "How much blue is in the color of the text.", 255, 0, 255, "") {
             @Override
             public boolean isDisabled() {
                 return !useTextColorSetting();
             }
         });
-        addSettings(chroma = new BooleanSetting("Chroma Text", "If the color of the text is a multicolored mess.", false) {
+        addSettings(chroma = new BooleanSetting("Chroma Text", "Color", "If the color of the text is a multicolored mess.", false) {
             @Override
             public boolean isDisabled() {
                 return !useChromaSetting();
             }
         });
 
-        addSettings(backR = new IntegerSetting("Background Red", "How much red is in the color of the background.", 0, 0, 255, "") {
+        addSettings(backR = new IntegerSetting("Background Red", "Color", "How much red is in the color of the background.", 0, 0, 255, "") {
             @Override
             public boolean isDisabled() {
                 return !useBgColorSetting();
             }
         });
-        addSettings(backG = new IntegerSetting("Background Green", "How much green is in the color of the background.", 0, 0, 255, "") {
+        addSettings(backG = new IntegerSetting("Background Green", "Color", "How much green is in the color of the background.", 0, 0, 255, "") {
             @Override
             public boolean isDisabled() {
                 return !useBgColorSetting();
             }
         });
-        addSettings(backB = new IntegerSetting("Background Blue", "How much blue is in the color of the background.", 0, 0, 255, "") {
+        addSettings(backB = new IntegerSetting("Background Blue", "Color", "How much blue is in the color of the background.", 0, 0, 255, "") {
             @Override
             public boolean isDisabled() {
                 return !useBgColorSetting();
             }
         });
-        addSettings(backA = new IntegerSetting("Background Alpha", "How much alpha is in the color of the background.", 100, 0, 255, "") {
+        addSettings(backA = new IntegerSetting("Background Alpha", "Color", "How much alpha is in the color of the background.", 100, 0, 255, "") {
             @Override
             public boolean isDisabled() {
                 return !useBgColorSetting();
             }
         });
-
-        addSettings(shadow = new BooleanSetting("Shadow", "If the text has a shadow.", true) {
+        addSettings(textMode = new EnumSetting<TextMode>("Text Mode", "Display", "How should the text be rendered.", TextMode.SHADOW) {
             @Override
             public boolean isDisabled() {
-                return !useShadowSetting();
+                return !useTextModeSetting();
             }
         });
-        addSettings(alignment = new EnumSetting<Alignment>("Alignment", "When the text grows or shrinks in size, which way the element will move.", Alignment.LEFT) {
+        addSettings(alignment = new EnumSetting<Alignment>("Alignment", "Display", "When the text grows or shrinks in size, which way the element will move.", Alignment.LEFT) {
             @Override
             public boolean isDisabled() {
                 return !useAlignmentSetting();
             }
         });
 
-        addSettings(paddingWidth = new FloatSetting("Padding Width", "How much extra width the background box will have.", 4f, 0f, 12f, "") {
+        addSettings(paddingWidth = new FloatSetting("Padding Width", "Display", "How much extra width the background box will have.", 4f, 0f, 12f, "") {
             @Override
             public boolean isDisabled() {
                 return !usePaddingSetting();
             }
         });
-        addSettings(paddingHeight = new FloatSetting("Padding Height", "How much extra height the background box will have.", 4f, 0f, 12f, "") {
+        addSettings(paddingHeight = new FloatSetting("Padding Height", "Display", "How much extra height the background box will have.", 4f, 0f, 12f, "") {
             @Override
             public boolean isDisabled() {
                 return !usePaddingSetting();
@@ -195,7 +208,9 @@ public abstract class Element extends Gui implements Listenable, Constants {
         });
     }
 
-    public abstract void initialise();
+    public void initialise() {
+
+    }
 
     // performance: avoid repeat initialization
     protected abstract ElementData metadata();
@@ -227,15 +242,16 @@ public abstract class Element extends Gui implements Listenable, Constants {
      * @return the text that will be rendered
      */
     public String getDisplayString() {
+        boolean showTitle = !getTitleTextSetting().get().trim().isEmpty();
         String builder = "";
-        if (showBrackets().get())
+        if (getBracketsSetting().get())
             builder += "[";
-        if (showTitle().get() && !isInverted().get() && useTitleSetting())
-            builder += getDisplayTitle() + ": ";
+        if (showTitle && !getInvertTitleSetting().get() && useTitleSetting())
+            builder += getTitleTextSetting().get() + ": ";
         builder += getValue();
-        if (showTitle().get() && isInverted().get() && useTitleSetting())
-            builder += " " + getDisplayTitle();
-        if (showBrackets().get())
+        if (showTitle && getInvertTitleSetting().get() && useTitleSetting())
+            builder += " " + getTitleTextSetting().get();
+        if (getBracketsSetting().get())
             builder += "]";
         return builder;
     }
@@ -247,39 +263,39 @@ public abstract class Element extends Gui implements Listenable, Constants {
      */
     public void render(RenderGameOverlayEvent event) {
         mc.mcProfiler.startSection(getMetadata().getName());
-        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
+
+        String displayString = getDisplayString();
+        float scale = getPosition().getScale();
+        boolean chroma = getChromaSetting().get();
+        TextMode textMode = getTextModeSetting().get();
+        int color = getTextColor().getRGB();
+
+        HitBox2D hitbox = calculateHitbox(1, scale);
         float x = getPosition().getRawX(event.resolution);
         float y = getPosition().getRawY(event.resolution);
         GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
         GlStateManager.pushMatrix();
-        GlStateManager.scale(getPosition().getScale(), getPosition().getScale(), 0);
-        switch (getAlignment().get()) {
-            case RIGHT:
-                float posX = (x - mc.fontRendererObj.getStringWidth(getDisplayString())) / getPosition().getScale();
-                float posY = y / getPosition().getScale();
+        GlStateManager.scale(scale, scale, 0);
 
-                if (useChroma().get())
-                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow().get(), false);
-                else
-                    mc.fontRendererObj.drawString(getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow().get());
+        float posY = y / scale;
+        switch (getAlignmentSetting().get()) {
+            case RIGHT:
+                float posX = (x - mc.fontRendererObj.getStringWidth(displayString)) / scale;
+
+                GuiUtils.drawString(mc.fontRendererObj, displayString, posX, posY, textMode == TextMode.SHADOW, textMode == TextMode.BORDER, chroma, false, color);
+
                 break;
             case CENTER:
-                posX = x / getPosition().getScale();
-                posY = y / getPosition().getScale();
+                posX = x / scale;
 
-                if (useChroma().get())
-                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow().get(), true);
-                else
-                    GuiUtils.drawCenteredString(mc.fontRendererObj, getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow().get());
+                GuiUtils.drawString(mc.fontRendererObj, displayString, posX, posY, textMode == TextMode.SHADOW, textMode == TextMode.BORDER, chroma, true, color);
+
                 break;
             case LEFT:
-                posX = x / getPosition().getScale();
-                posY = y / getPosition().getScale();
+                posX = x / scale;
 
-                if (useChroma().get())
-                    GuiUtils.drawChromaString(mc.fontRendererObj, getDisplayString(), posX, posY, renderShadow().get(), false);
-                else
-                    mc.fontRendererObj.drawString(getDisplayString(), posX, posY, getTextColor().getRGB(), renderShadow().get());
+                GuiUtils.drawString(mc.fontRendererObj, displayString, posX, posY, textMode == TextMode.SHADOW, textMode == TextMode.BORDER, chroma, false, color);
+
                 break;
         }
         GlStateManager.popMatrix();
@@ -293,16 +309,16 @@ public abstract class Element extends Gui implements Listenable, Constants {
      * @param sizeScale the modified scale
      * @return hitbox for rendering & gui
      */
-    public HitBox2D getHitbox(float posScale, float sizeScale) {
+    public HitBox2D calculateHitbox(float posScale, float sizeScale) {
         HitBox2D hitbox = null;
         ScaledResolution res = new ScaledResolution(mc);
         float width = Math.max(mc.fontRendererObj.getStringWidth(getDisplayString()), 10) * sizeScale;
-        float extraWidth = getPaddingWidth().get() * sizeScale;
+        float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float height = mc.fontRendererObj.FONT_HEIGHT * sizeScale;
-        float extraHeight = getPaddingHeight().get() * sizeScale;
+        float extraHeight = getPaddingHeightSetting().get() * sizeScale;
         float x = getPosition().getRawX(res) / posScale;
         float y = getPosition().getRawY(res) / posScale;
-        switch (getAlignment().get()) {
+        switch (getAlignmentSetting().get()) {
             case RIGHT:
                 hitbox = new HitBox2D(x - (width / sizeScale) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
                 break;
@@ -334,7 +350,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
     private static final ResourceLocation deleteIcon = new ResourceLocation("evergreenhud/textures/delete.png");
 
     public void renderGuiOverlay(boolean selected) {
-        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
+        HitBox2D hitbox = calculateHitbox(1, getPosition().getScale());
         // doesnt play well with background on so find a way to make it look good
         //GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, new Color(255, 255, 255, 50));
         GLRenderer.drawHollowRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, 1, (selected ? new Color(255, 255, 255, 175) : new Color(175, 175, 175, 100)));
@@ -352,7 +368,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
     }
 
     public void onMouseClicked(float mouseX, float mouseY) {
-        HitBox2D hitbox = getHitbox(1, getPosition().getScale());
+        HitBox2D hitbox = calculateHitbox(1, getPosition().getScale());
         double iconWidth = 384 * 0.02f * MathUtils.clamp01(getPosition().getScale());
         double iconHeight = 384 * 0.02f * MathUtils.clamp01(getPosition().getScale());
         if (mouseX >= hitbox.x && mouseX <= hitbox.x + iconWidth && mouseY >= hitbox.y + hitbox.height - iconHeight && mouseY <= hitbox.y + hitbox.height) {
@@ -439,6 +455,10 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return customSettings;
     }
 
+    public List<SnapPoint> getSnapPoints() {
+        return snapPoints;
+    }
+
     public void onAdded() {
 
     }
@@ -460,35 +480,35 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return true;
     }
 
-    public BooleanSetting showTitle() {
-        return title;
+    public StringSetting getTitleTextSetting() {
+        return titleText;
     }
 
-    public boolean useTitleSetting() {
+    protected boolean useTitleSetting() {
         return true;
     }
 
-    public BooleanSetting showBrackets() {
+    public BooleanSetting getBracketsSetting() {
         return brackets;
     }
 
-    public boolean useBracketsSetting() {
+    protected boolean useBracketsSetting() {
         return true;
     }
 
-    public BooleanSetting useChroma() {
+    public BooleanSetting getChromaSetting() {
         return chroma;
     }
 
-    public boolean useChromaSetting() {
+    protected boolean useChromaSetting() {
         return true;
     }
 
-    public BooleanSetting isInverted() {
+    public BooleanSetting getInvertTitleSetting() {
         return inverted;
     }
 
-    public boolean useInvertedSetting() {
+    protected boolean useInvertedSetting() {
         return true;
     }
 
@@ -502,7 +522,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
         textB.set(b);
     }
 
-    public boolean useTextColorSetting() {
+    protected boolean useTextColorSetting() {
         return true;
     }
 
@@ -517,35 +537,35 @@ public abstract class Element extends Gui implements Listenable, Constants {
         backA.set(a);
     }
 
-    public boolean useBgColorSetting() {
+    protected boolean useBgColorSetting() {
         return true;
     }
 
-    public EnumSetting<Alignment> getAlignment() {
+    public EnumSetting<Alignment> getAlignmentSetting() {
         return alignment;
     }
 
-    public boolean useAlignmentSetting() {
+    protected boolean useAlignmentSetting() {
         return true;
     }
 
-    public BooleanSetting renderShadow() {
-        return shadow;
+    public EnumSetting<TextMode> getTextModeSetting() {
+        return textMode;
     }
 
-    public boolean useShadowSetting() {
+    protected boolean useTextModeSetting() {
         return true;
     }
 
-    public FloatSetting getPaddingWidth() {
+    public FloatSetting getPaddingWidthSetting() {
         return paddingWidth;
     }
 
-    public boolean usePaddingSetting() {
+    protected boolean usePaddingSetting() {
         return true;
     }
 
-    public FloatSetting getPaddingHeight() {
+    public FloatSetting getPaddingHeightSetting() {
         return paddingHeight;
     }
 
@@ -553,4 +573,15 @@ public abstract class Element extends Gui implements Listenable, Constants {
         this.pos = newPos;
     }
 
+    public enum TextMode {
+        NORMAL,
+        SHADOW,
+        BORDER
+    }
+
+    public enum Alignment {
+        LEFT,
+        CENTER,
+        RIGHT
+    }
 }

@@ -15,7 +15,7 @@ public class ElementChunkUpdates extends Element {
 
     @Override
     public void initialise() {
-        addSettings(updateTime = new FloatSetting("Update Time", "How often the counter updates.", 1, 0.5f, 10, " secs"));
+        addSettings(updateTime = new FloatSetting("Update Time", "Functionality", "How often the counter updates.", 1, 0.5f, 10, " secs"));
     }
 
     @Override

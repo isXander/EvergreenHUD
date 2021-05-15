@@ -26,7 +26,7 @@ public class ElementDirection extends Element {
 
     @Override
     public void initialise() {
-        addSettings(abbreviated = new BooleanSetting("Abbreviated", "If the direction should be abbreviated to \"N\" from \"North\"", true));
+        addSettings(abbreviated = new BooleanSetting("Abbreviated", "Display", "If the direction should be abbreviated to \"N\" from \"North\"", true));
     }
 
     @Override
