@@ -17,11 +17,6 @@ public class ElementEntityCount extends Element {
     }
 
     @Override
-    public void initialise() {
-
-    }
-
-    @Override
     protected ElementData metadata() {
         return new ElementData("Entity Count", "How many entities are currently being rendered.");
     }
@@ -42,7 +37,7 @@ public class ElementEntityCount extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Entities";
     }
 

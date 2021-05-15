@@ -37,7 +37,7 @@ public class ElementChunkUpdates extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Updates";
     }
 

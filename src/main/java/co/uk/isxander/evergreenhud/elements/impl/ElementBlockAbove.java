@@ -89,7 +89,7 @@ public class ElementBlockAbove extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Above";
     }
 }

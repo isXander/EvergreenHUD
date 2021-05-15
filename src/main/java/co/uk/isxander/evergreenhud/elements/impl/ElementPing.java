@@ -24,11 +24,6 @@ public class ElementPing extends Element {
     private int ping = 0;
 
     @Override
-    public void initialise() {
-
-    }
-
-    @Override
     public ElementData metadata() {
         return new ElementData("Ping Display", "Shows the delay in ms for your actions to be sent to the server.");
     }
@@ -44,7 +39,7 @@ public class ElementPing extends Element {
 
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Ping";
     }
 

@@ -23,11 +23,6 @@ import net.minecraft.world.chunk.Chunk;
 public class ElementBiome extends Element {
 
     @Override
-    public void initialise() {
-
-    }
-
-    @Override
     public ElementData metadata() {
         return new ElementData("Biome Display", "Displays the current biome you are standing in.");
     }
@@ -48,7 +43,7 @@ public class ElementBiome extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Biome";
     }
 

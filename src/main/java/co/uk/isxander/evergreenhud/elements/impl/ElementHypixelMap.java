@@ -51,7 +51,7 @@ public class ElementHypixelMap extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Map";
     }
 

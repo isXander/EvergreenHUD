@@ -70,7 +70,7 @@ public class ElementMemory extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Mem";
     }
 

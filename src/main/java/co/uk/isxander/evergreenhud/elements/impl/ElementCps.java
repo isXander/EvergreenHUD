@@ -61,7 +61,7 @@ public class ElementCps extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "CPS";
     }
 

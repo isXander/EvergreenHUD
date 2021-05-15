@@ -48,7 +48,7 @@ public class ElementImage extends Element {
 
     private static final String textureName = "EVERGREEN_IMAGE_ELEMENT";
     private static final File imageFile = new File(EvergreenHUD.DATA_DIR, "image.png");
-    private static final ResourceLocation unknownImage = new ResourceLocation("evergreenhud/textures/unknown.png");
+    private static final ResourceLocation unknownImage = new ResourceLocation("evergreenhud", "textures/unknown.png");
     private static final float imgSize = 60;
 
     private Dimension imageDimension;
@@ -60,63 +60,6 @@ public class ElementImage extends Element {
     public BooleanSetting mirror;
     public ArraySetting rotation;
     public BooleanSetting autoScale;
-
-    @Override
-    public boolean useAlignmentSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTitleSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useInvertedSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useBracketsSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTextColorSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useChromaSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTextModeSetting() {
-        return false;
-    }
-
-    private File getImageFile() {
-        if (fileLocation.get().equals("") || !new File(fileLocation.get()).exists()) {
-            if (!imageFile.exists()) {
-                copyNullImage();
-            }
-            fileLocation.set(imageFile.getPath());
-        }
-
-        return new File(fileLocation.get());
-    }
-
-    private void copyNullImage() {
-        try {
-            Files.copy(ElementImage.class.getResourceAsStream("/assets/" + unknownImage.getResourceDomain() + "/" + unknownImage.getResourcePath()), imageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            BufferedImage img = ImageIO.read(imageFile);
-            imageDimension = new Dimension(img.getWidth(), img.getHeight());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ReportedException(CrashReport.makeCrashReport(e, "Failed to copy image."));
-        }
-    }
 
     @Override
     public void resetSettings(boolean save) {
@@ -222,7 +165,7 @@ public class ElementImage extends Element {
     }
 
     @Override
-    public HitBox2D calculateHitbox(float posScale, float sizeScale) {
+    public HitBox2D calculateHitbox(float gl, float sizeScale) {
         ScaledResolution res = new ScaledResolution(mc);
 
         float width = (float)imageDimension.getWidth() * sizeScale * scaleMod;
@@ -230,8 +173,8 @@ public class ElementImage extends Element {
 
         float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float extraHeight = getPaddingHeightSetting().get() * sizeScale;
-        float x = getPosition().getRawX(res) / posScale;
-        float y = getPosition().getRawY(res) / posScale;
+        float x = getPosition().getRawX(res) / gl;
+        float y = getPosition().getRawY(res) / gl;
 
         return new HitBox2D(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
     }
@@ -248,14 +191,71 @@ public class ElementImage extends Element {
         imageDimension = new Dimension((rotation.getIndex() % 2 == 1 ? img.getHeight() : img.getWidth()), (rotation.getIndex() % 2 == 1 ? img.getWidth() : img.getHeight()));
     }
 
+    private File getImageFile() {
+        if (fileLocation.get().equals("") || !new File(fileLocation.get()).exists()) {
+            if (!imageFile.exists()) {
+                copyNullImage();
+            }
+            fileLocation.set(imageFile.getPath());
+        }
+
+        return new File(fileLocation.get());
+    }
+
+    private void copyNullImage() {
+        try {
+            Files.copy(ElementImage.class.getResourceAsStream("/assets/" + unknownImage.getResourceDomain() + "/" + unknownImage.getResourcePath()), imageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+            BufferedImage img = ImageIO.read(imageFile);
+            imageDimension = new Dimension(img.getWidth(), img.getHeight());
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new ReportedException(CrashReport.makeCrashReport(e, "Failed to copy image."));
+        }
+    }
+
     @Override
     protected String getValue() {
         return "";
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Image";
+    }
+
+    @Override
+    public boolean useAlignmentSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useTitleSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useInvertedSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useBracketsSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useTextColorSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useChromaSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useTextModeSetting() {
+        return false;
     }
 
 }

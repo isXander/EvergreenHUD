@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ElementConfig implements Constants {
 
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
     public static final File OLD_CONFIG_FOLDER = new File(EvergreenHUD.DATA_DIR, "elements");
     public static final File CONFIG_FILE = new File(EvergreenHUD.DATA_DIR, "elements.json");
 
@@ -74,8 +74,12 @@ public class ElementConfig implements Constants {
             save();
             return;
         }
-        // new config version so we need to reset the config
-        if (root.optInt("version") != VERSION) {
+
+        boolean v2 = false;
+        if (root.optInt("version") == 2) {
+            manager.getLogger().warn("Converting Element Config v2 -> v3. Conversion issues may arise");
+            v2 = true;
+        } else if (root.optInt("version") != VERSION) {
             manager.getLogger().warn("Resetting configuration! Older or newer config version detected.");
             EvergreenHUD.getInstance().notifyConfigReset();
             save();
@@ -83,23 +87,32 @@ public class ElementConfig implements Constants {
         }
 
         JsonArray array = root.getData().getAsJsonArray("elements");
+        boolean finalVer = v2;
         array.forEach((jsonElement) -> {
             BetterJsonObject elementConfig = new BetterJsonObject(jsonElement.getAsJsonObject());
             Element element = manager.getNewElementInstance(elementConfig.optString("type"));
             if (element != null) {
-                element.loadJson(new BetterJsonObject(elementConfig.get("settings").getAsJsonObject()));
+                BetterJsonObject settings = elementConfig.getObj("settings");
+                if (finalVer) {
+                    element.loadJsonOld(settings);
+                } else {
+                    element.loadJson(settings);
+                }
+
                 manager.addElement(element);
             }
         });
+
+        if (v2) save();
     }
 
     public void loadOld() {
         EvergreenHUD.LOGGER.info("Converting old configuration system.");
 
         List<Element> availableElements = new ArrayList<>();
-        manager.getAvailableElements().forEach((name, clazz) -> {
-            availableElements.add(manager.getNewElementInstance(name));
-        });
+        manager.getAvailableElements().forEach((name, clazz) ->
+            availableElements.add(manager.getNewElementInstance(name))
+        );
 
         for (File config : OLD_CONFIG_FOLDER.listFiles()) {
             for (Element element : availableElements) {
@@ -113,7 +126,7 @@ public class ElementConfig implements Constants {
                     }
 
                     if (root.optBoolean("enabled")) {
-                        element.loadJson(root);
+                        element.loadJsonOld(root);
 
                         manager.addElement(element);
                     }

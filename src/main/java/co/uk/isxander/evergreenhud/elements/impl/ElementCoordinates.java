@@ -136,8 +136,8 @@ public class ElementCoordinates extends Element {
             if (showY.get()) builder += (showCoord.get() ? "Y: " : "") + df.format(mc.thePlayer.posY) + (showZ.get() ? ", " : "");
             if (showZ.get()) builder += (showCoord.get() ? "Z: " : "") + df.format(mc.thePlayer.posZ);
 
-            if (getInvertTitleSetting().get()) builder = getDisplayTitle() + " " + builder;
-            else builder = builder + " " + getDisplayTitle();
+            if (getInvertTitleSetting().get()) builder = getDefaultDisplayTitle() + " " + builder;
+            else builder = builder + " " + getDefaultDisplayTitle();
 
             if (getBracketsSetting().get()) builder = "[" + builder + "]";
             lines.add(builder);
@@ -146,7 +146,7 @@ public class ElementCoordinates extends Element {
     }
 
     @Override
-    public HitBox2D calculateHitbox(float posScale, float sizeScale) {
+    public HitBox2D calculateHitbox(float gl, float sizeScale) {
         HitBox2D hitbox = null;
         ScaledResolution res = new ScaledResolution(mc);
         List<String> value = getMultiValue();
@@ -161,8 +161,8 @@ public class ElementCoordinates extends Element {
         float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float height = ((mc.fontRendererObj.FONT_HEIGHT * value.size()) + (verticalSpacing.get() * (value.size() - 1))) * sizeScale;
         float extraHeight = getPaddingHeightSetting().get() * sizeScale;
-        float x = getPosition().getRawX(res) / posScale;
-        float y = getPosition().getRawY(res) / posScale;
+        float x = getPosition().getRawX(res) / gl;
+        float y = getPosition().getRawY(res) / gl;
         switch (getAlignmentSetting().get()) {
             case RIGHT:
                 hitbox = new HitBox2D(x - (width / sizeScale) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
@@ -188,7 +188,7 @@ public class ElementCoordinates extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Coords";
     }
 

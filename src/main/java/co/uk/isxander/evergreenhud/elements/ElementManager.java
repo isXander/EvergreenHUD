@@ -63,6 +63,7 @@ public class ElementManager implements Constants {
         registerElement("ARMOUR", ElementArmour.class);
         registerElement("BIOME", ElementBiome.class);
         registerElement("BLOCK_ABOVE", ElementBlockAbove.class);
+        registerElement("CHUNK_COUNT", ElementChunkRenderCount.class);
         registerElement("CHUNK_UPDATES", ElementChunkUpdates.class);
         registerElement("COMBO", ElementCombo.class);
         registerElement("COORDS", ElementCoordinates.class);

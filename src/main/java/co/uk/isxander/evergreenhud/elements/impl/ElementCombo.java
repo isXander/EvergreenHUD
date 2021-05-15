@@ -59,7 +59,7 @@ public class ElementCombo extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Combo";
     }
 

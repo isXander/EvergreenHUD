@@ -44,7 +44,7 @@ public class ElementDirection extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Direction";
     }
 

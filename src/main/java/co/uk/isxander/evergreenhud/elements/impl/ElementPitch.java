@@ -42,7 +42,7 @@ public class ElementPitch extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Pitch";
     }
 

@@ -6,11 +6,6 @@ import co.uk.isxander.evergreenhud.elements.ElementData;
 public class ElementDay extends Element {
 
     @Override
-    public void initialise() {
-
-    }
-
-    @Override
     protected ElementData metadata() {
         return new ElementData("Day Counter", "Displays the current day in the world.");
     }
@@ -24,7 +19,7 @@ public class ElementDay extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Day";
     }
 

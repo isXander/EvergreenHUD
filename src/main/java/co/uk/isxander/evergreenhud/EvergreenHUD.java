@@ -33,6 +33,7 @@ import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.evergreenhud.github.UpdateChecker;
 import net.minecraft.client.gui.*;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.ForgeVersion;
@@ -58,7 +59,7 @@ public class EvergreenHUD implements Constants {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String MOD_NAME = "EvergreenHUD";
-    public static final String MOD_VERSION = "2.0-pre4";
+    public static final String MOD_VERSION = "2.0-pre5";
     public static final String UPDATE_NAME = "the next step.";
 
     public static final Version PARSED_VERSION = new Version(MOD_VERSION);
@@ -89,11 +90,11 @@ public class EvergreenHUD implements Constants {
 
         ProgressManager.ProgressBar progress = ProgressManager.push("EvergreenHUD", 10);
 
-        progress.step("Checking If Version Blacklisted");
+        progress.step("Blacklist Check");
         blacklisted = BlacklistManager.isVersionBlacklisted(MOD_VERSION);
         if (blacklisted) disable();
 
-        progress.step("Checking Forge Install");
+        progress.step("Forge Check");
         if (ForgeVersion.getBuildVersion() < 2318 && ForgeVersion.getBuildVersion() != 0) {
             disable();
             ModCore.getInstance().getGuiHandler().open(new GuiOldForge());
@@ -104,11 +105,11 @@ public class EvergreenHUD implements Constants {
             return;
         }
 
-        progress.step("Checking Evergreen Install");
+        progress.step("Evergreen Check");
         firstLaunch = !DATA_DIR.exists();
         versionTwoFirstLaunch = !ElementConfig.CONFIG_FILE.exists();
 
-        progress.step("Registering Minecraft Hooks");
+        progress.step("Registering Hooks");
         ClientCommandHandler.instance.registerCommand(new EvergreenHudCommand());
         ClientRegistry.registerKeyBinding(keybind);
         XanderLib.getInstance().getGuiEditor().addModifier(GuiOptions.class, new AbstractGuiModifier() {
@@ -133,9 +134,9 @@ public class EvergreenHUD implements Constants {
         MinecraftForge.EVENT_BUS.register(elementManager = new ElementManager());
         progress.step("Initialising Addons");
         addonManager.onInit();
-        progress.step("Loading Main Configuration");
+        progress.step("Loading Main Config");
         elementManager.getMainConfig().load();
-        progress.step("Loading Element Configurations");
+        progress.step("Loading Element Configs");
         elementManager.getElementConfig().load();
         addonManager.onConfigLoad();
 

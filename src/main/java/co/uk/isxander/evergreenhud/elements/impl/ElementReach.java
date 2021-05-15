@@ -52,7 +52,7 @@ public class ElementReach extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Reach";
     }
 

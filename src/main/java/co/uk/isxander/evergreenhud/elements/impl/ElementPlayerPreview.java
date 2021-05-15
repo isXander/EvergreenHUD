@@ -43,46 +43,6 @@ public class ElementPlayerPreview extends Element {
     }
 
     @Override
-    protected String getValue() {
-        return null;
-    }
-
-    @Override
-    public boolean useTextModeSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useChromaSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTitleSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useAlignmentSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTextColorSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useBracketsSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useInvertedSetting() {
-        return false;
-    }
-
-    @Override
     public void render(RenderGameOverlayEvent event) {
         GlStateManager.pushMatrix();
         GlStateManager.enableDepth();
@@ -133,21 +93,61 @@ public class ElementPlayerPreview extends Element {
     }
 
     @Override
-    public HitBox2D calculateHitbox(float posScale, float sizeScale) {
+    public HitBox2D calculateHitbox(float gl, float sizeScale) {
         ScaledResolution res = new ScaledResolution(mc);
 
         float width = 80 * sizeScale;
         float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float height = 120 * sizeScale;
         float extraHeight = getPaddingHeightSetting().get() * sizeScale;
-        float x = getPosition().getRawX(res) - (width / 2f) / posScale;
-        float y = getPosition().getRawY(res) - height + (height / 8f) + (height / 128f) / posScale;
+        float x = getPosition().getRawX(res) - (width / 2f) / gl;
+        float y = getPosition().getRawY(res) - height + (height / 8f) + (height / 128f) / gl;
 
         return new HitBox2D(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
     }
 
     @Override
-    public String getDisplayTitle() {
+    protected String getValue() {
+        return "null";
+    }
+
+    @Override
+    public String getDefaultDisplayTitle() {
         return "Player Preview";
+    }
+
+    @Override
+    public boolean useTextModeSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useChromaSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useTitleSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useAlignmentSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useTextColorSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useBracketsSetting() {
+        return false;
+    }
+
+    @Override
+    public boolean useInvertedSetting() {
+        return false;
     }
 }

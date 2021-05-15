@@ -211,7 +211,7 @@ public class ElementArmour extends Element {
     }
 
     @Override
-    public HitBox2D calculateHitbox(float posScale, float sizeScale) {
+    public HitBox2D calculateHitbox(float gl, float sizeScale) {
         ScaledResolution res = new ScaledResolution(mc);
         float x = getPosition().getRawX(res);
         float y = getPosition().getRawY(res);
@@ -243,7 +243,7 @@ public class ElementArmour extends Element {
         if (listType.get().equalsIgnoreCase("up"))
             hitY -= height;
 
-        return new HitBox2D(hitX / posScale - extraWidth, hitY / posScale - extraHeight, hitW * sizeScale + (extraWidth * 2), hitH * sizeScale + (extraHeight * 2));
+        return new HitBox2D(hitX / gl - extraWidth, hitY / gl - extraHeight, hitW * sizeScale + (extraWidth * 2), hitH * sizeScale + (extraHeight * 2));
     }
 
     @Override
@@ -257,7 +257,7 @@ public class ElementArmour extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "";
     }
 

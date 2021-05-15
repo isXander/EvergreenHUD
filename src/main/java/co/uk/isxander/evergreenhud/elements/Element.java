@@ -119,7 +119,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
                 return !useBracketsSetting();
             }
         });
-        addSettings(titleText = new StringSetting("Title", "Display", "What is displayed before or after the value.", getDisplayTitle()) {
+        addSettings(titleText = new StringSetting("Title", "Display", "What is displayed before or after the value.", getDefaultDisplayTitle()) {
             @Override
             public boolean isDisabled() {
                 return !useTitleSetting();
@@ -224,9 +224,9 @@ public abstract class Element extends Gui implements Listenable, Constants {
     protected abstract String getValue();
 
     /**
-     * @return the prefix/suffix of the value
+     * @return the default display title
      */
-    public abstract String getDisplayTitle();
+    public abstract String getDefaultDisplayTitle();
 
     public final String getType() {
         return EvergreenHUD.getInstance().getElementManager().getElementIdentifier(this);
@@ -305,19 +305,19 @@ public abstract class Element extends Gui implements Listenable, Constants {
     /**
      * Gets the box around the text
      *
-     * @param posScale the gl scale
+     * @param gl the gl scale
      * @param sizeScale the modified scale
      * @return hitbox for rendering & gui
      */
-    public HitBox2D calculateHitbox(float posScale, float sizeScale) {
+    public HitBox2D calculateHitbox(float gl, float sizeScale) {
         HitBox2D hitbox = null;
         ScaledResolution res = new ScaledResolution(mc);
         float width = Math.max(mc.fontRendererObj.getStringWidth(getDisplayString()), 10) * sizeScale;
         float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float height = mc.fontRendererObj.FONT_HEIGHT * sizeScale;
         float extraHeight = getPaddingHeightSetting().get() * sizeScale;
-        float x = getPosition().getRawX(res) / posScale;
-        float y = getPosition().getRawY(res) / posScale;
+        float x = getPosition().getRawX(res) / gl;
+        float y = getPosition().getRawY(res) / gl;
         switch (getAlignmentSetting().get()) {
             case RIGHT:
                 hitbox = new HitBox2D(x - (width / sizeScale) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
@@ -346,8 +346,8 @@ public abstract class Element extends Gui implements Listenable, Constants {
             EvergreenHUD.getInstance().getElementManager().getElementConfig().save();
     }
 
-    private static final ResourceLocation settingsIcon = new ResourceLocation("evergreenhud/textures/settings.png");
-    private static final ResourceLocation deleteIcon = new ResourceLocation("evergreenhud/textures/delete.png");
+    private static final ResourceLocation settingsIcon = new ResourceLocation("evergreenhud", "textures/settings.png");
+    private static final ResourceLocation deleteIcon = new ResourceLocation("evergreenhud","textures/delete.png");
 
     public void renderGuiOverlay(boolean selected) {
         HitBox2D hitbox = calculateHitbox(1, getPosition().getScale());
@@ -416,8 +416,8 @@ public abstract class Element extends Gui implements Listenable, Constants {
     }
 
     public void loadJson(BetterJsonObject root) {
-        getPosition().setScaledX(root.optFloat("x"));
-        getPosition().setScaledY(root.optFloat("y"));
+        getPosition().setScaledX(root.optFloat("x", 0.5f));
+        getPosition().setScaledY(root.optFloat("y", 0.5f));
         getPosition().setScale(root.optFloat("scale", 1.0f));
 
         BetterJsonObject custom = new BetterJsonObject(root.get("dynamic").getAsJsonObject());
@@ -441,6 +441,46 @@ public abstract class Element extends Gui implements Listenable, Constants {
             }
         }
         onSettingsLoad();
+    }
+
+    public void loadJsonOld(BetterJsonObject root) {
+        if (!root.optBoolean("title", true)) {
+            titleText.set("");
+        }
+        brackets.set(root.optBoolean("brackets", false));
+        inverted.set(root.optBoolean("inverted", false));
+        chroma.set(root.optBoolean("chroma", false));
+        textMode.set((root.optBoolean("shadow", true) ? TextMode.SHADOW : TextMode.NORMAL));
+
+        if (root.has("alignment")) {
+            Alignment alignment = Alignment.values()[root.optInt("alignment", 0)];
+
+            if (alignment == Alignment.LEFT) {
+                alignment = Alignment.RIGHT;
+            } else if (alignment == Alignment.RIGHT) {
+                alignment = Alignment.LEFT;
+            }
+
+            this.alignment.set(alignment);
+        }
+        if (root.has("align")) {
+            alignment.set(Alignment.values()[root.optInt("align", 0)]);
+        }
+
+        BetterJsonObject textColor = new BetterJsonObject(root.get("textColor").getAsJsonObject());
+        textR.set(textColor.optInt("r"));
+        textG.set(textColor.optInt("g"));
+        textB.set(textColor.optInt("b"));
+
+        BetterJsonObject bgColor = new BetterJsonObject(root.get("bgColor").getAsJsonObject());
+        backR.set(bgColor.optInt("r"));
+        backG.set(bgColor.optInt("g"));
+        backB.set(bgColor.optInt("b"));
+        backA.set(bgColor.optInt("a"));
+        paddingWidth.set(bgColor.optFloat("padding_width"));
+        paddingHeight.set(bgColor.optFloat("padding_height"));
+
+        loadJson(root);
     }
 
     protected void onSettingsLoad() {
@@ -474,10 +514,6 @@ public abstract class Element extends Gui implements Listenable, Constants {
 
     public Position getPosition() {
         return pos;
-    }
-
-    public boolean useScaleSetting() {
-        return true;
     }
 
     public StringSetting getTitleTextSetting() {

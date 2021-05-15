@@ -37,7 +37,7 @@ public class ElementLight extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "Light";
     }
 

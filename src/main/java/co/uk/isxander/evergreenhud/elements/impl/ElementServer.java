@@ -21,11 +21,6 @@ import co.uk.isxander.evergreenhud.elements.ElementData;
 public class ElementServer extends Element {
 
     @Override
-    public void initialise() {
-
-    }
-
-    @Override
     public ElementData metadata() {
         return new ElementData("Server IP", "Shows the current server IP.");
     }
@@ -36,7 +31,7 @@ public class ElementServer extends Element {
     }
 
     @Override
-    public String getDisplayTitle() {
+    public String getDefaultDisplayTitle() {
         return "IP";
     }
 
