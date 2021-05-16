@@ -65,7 +65,6 @@ public class ElementImage extends Element {
     public void resetSettings(boolean save) {
         super.resetSettings(save);
 
-        imageFile.delete();
         copyNullImage();
     }
 
@@ -127,9 +126,10 @@ public class ElementImage extends Element {
     @Override
     public void render(RenderGameOverlayEvent event) {
         mc.mcProfiler.startSection(getMetadata().getName());
-        if (changed) {
+        if (changed || currentImage == null) {
             // Reload the texture
-            mc.getTextureManager().deleteTexture(currentImage);
+            if (currentImage != null)
+                mc.getTextureManager().deleteTexture(currentImage);
             try {
                 cacheResourceLocation();
             } catch (IOException e) {
@@ -187,7 +187,6 @@ public class ElementImage extends Element {
         img = ImageUtils.rotate(img, this.rotation.getIndex() * 90);
 
         currentImage = mc.getTextureManager().getDynamicTextureLocation(textureName, new DynamicTexture(img));
-        System.out.println(currentImage);
         imageDimension = new Dimension((rotation.getIndex() % 2 == 1 ? img.getHeight() : img.getWidth()), (rotation.getIndex() % 2 == 1 ? img.getWidth() : img.getHeight()));
     }
 
