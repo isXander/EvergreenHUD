@@ -480,6 +480,12 @@ public abstract class Element extends Gui implements Listenable, Constants {
         paddingWidth.set(bgColor.optFloat("padding_width"));
         paddingHeight.set(bgColor.optFloat("padding_height"));
 
+        if (root.has("custom")) {
+            BetterJsonObject custom = root.getObj("custom");
+            root.getData().remove("custom");
+            root.add("dynamic", custom);
+        }
+
         loadJson(root);
     }
 
