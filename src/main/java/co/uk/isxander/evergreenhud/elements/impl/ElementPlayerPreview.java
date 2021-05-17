@@ -19,6 +19,7 @@ import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.evergreenhud.settings.impl.FloatSetting;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
+import co.uk.isxander.xanderlib.utils.Resolution;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
@@ -94,7 +95,7 @@ public class ElementPlayerPreview extends Element {
 
     @Override
     public HitBox2D calculateHitbox(float gl, float sizeScale) {
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = Resolution.get();
 
         float width = 80 * sizeScale;
         float extraWidth = getPaddingWidthSetting().get() * sizeScale;

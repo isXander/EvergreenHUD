@@ -18,9 +18,12 @@ package co.uk.isxander.evergreenhud.gui.screens;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.snapping.SnapPoint;
+import co.uk.isxander.xanderlib.utils.MathUtils;
+import co.uk.isxander.xanderlib.utils.Resolution;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.awt.*;
@@ -33,10 +36,15 @@ public class GuiScreenElements extends GuiScreenExt {
     protected float offX = 0, offY = 0;
 
     @Override
+    public void initGui() {
+        Keyboard.enableRepeatEvents(true);
+    }
+
+    @Override
     public void drawScreen(int mouseXInt, int mouseYInt, float partialTicks) {
         super.drawScreen(mouseXInt, mouseYInt, partialTicks);
 
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = Resolution.get();
 
         for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
             e.render(new RenderGameOverlayEvent(partialTicks, res));
@@ -100,7 +108,7 @@ public class GuiScreenElements extends GuiScreenExt {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = Resolution.get();
         boolean clickedElement = false;
         for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
             e.onMouseClicked(mouseX, mouseY);
@@ -129,11 +137,29 @@ public class GuiScreenElements extends GuiScreenExt {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
 
+        ScaledResolution res = Resolution.get();
+        if (lastClicked != null) {
+            switch (keyCode) {
+                case Keyboard.KEY_UP:
+                    lastClicked.getPosition().setRawY(MathUtils.clamp(lastClicked.getPosition().getRawY(res) - 2, 0, res.getScaledHeight() - 1), res);
+                    break;
+                case Keyboard.KEY_DOWN:
+                    lastClicked.getPosition().setRawY(MathUtils.clamp(lastClicked.getPosition().getRawY(res) + 2, 0, res.getScaledHeight() - 1), res);
+                    break;
+                case Keyboard.KEY_LEFT:
+                    lastClicked.getPosition().setRawX(MathUtils.clamp(lastClicked.getPosition().getRawX(res) - 2, 0, res.getScaledWidth() - 1), res);
+                    break;
+                case Keyboard.KEY_RIGHT:
+                    lastClicked.getPosition().setRawX(MathUtils.clamp(lastClicked.getPosition().getRawX(res) + 2, 0, res.getScaledWidth() - 1), res);
+                    break;
+            }
+        }
 
     }
 
     @Override
     public void onGuiClosed() {
+        Keyboard.enableRepeatEvents(false);
         EvergreenHUD.getInstance().getElementManager().getElementConfig().save();
     }
 

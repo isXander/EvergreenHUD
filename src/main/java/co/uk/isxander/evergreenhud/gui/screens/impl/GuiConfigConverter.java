@@ -29,6 +29,8 @@ public class GuiConfigConverter extends GuiScreenElements {
 
     @Override
     public void initGui() {
+        super.initGui();
+
         this.buttonList.add(new GuiButtonAlt(0, width / 2 - 90 - 1, height - 20, 182, 20, "Back"));
 
         this.buttonList.add(new GuiButtonAlt(1, left(), getRow(0), 242, 20, "ChromaHUD"));

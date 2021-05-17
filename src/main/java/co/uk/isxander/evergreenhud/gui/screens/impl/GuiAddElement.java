@@ -34,6 +34,8 @@ public class GuiAddElement extends GuiScreenElements {
 
     @Override
     public void initGui() {
+        super.initGui();
+
         this.buttonList.add(new GuiButtonAlt(0, width / 2 - 90 - 1, height - 20, 182, 20, "Back"));
 
         final int startY = 50;

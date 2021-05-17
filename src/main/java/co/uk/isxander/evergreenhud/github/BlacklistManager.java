@@ -1,8 +1,8 @@
 package co.uk.isxander.evergreenhud.github;
 
-import co.uk.isxander.evergreenhud.utils.JsonUtils;
 import co.uk.isxander.xanderlib.utils.HttpsUtils;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
+import co.uk.isxander.xanderlib.utils.json.JsonUtils;
 
 public class BlacklistManager {
 

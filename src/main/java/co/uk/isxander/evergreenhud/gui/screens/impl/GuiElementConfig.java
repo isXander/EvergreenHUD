@@ -20,7 +20,7 @@ import co.uk.isxander.evergreenhud.gui.elements.*;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.settings.Setting;
 import co.uk.isxander.evergreenhud.settings.impl.*;
-import co.uk.isxander.evergreenhud.utils.StringUtils;
+import co.uk.isxander.xanderlib.utils.StringUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
@@ -49,7 +49,7 @@ public class GuiElementConfig extends GuiScreenElements {
 
     @Override
     public void initGui() {
-        Keyboard.enableRepeatEvents(true);
+        super.initGui();
         addButtons();
     }
 
@@ -113,7 +113,7 @@ public class GuiElementConfig extends GuiScreenElements {
                 textFieldList.add(textInput);
             } else if (s instanceof EnumSetting) {
                 EnumSetting<?> setting = (EnumSetting<?>) s;
-                this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, setting.getName() + ": " + StringUtils.capitalize(setting.get().name().replaceAll("_", " ")), setting.getDescription()));
+                this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, setting.getName() + ": " + StringUtils.capitalizeEnum(setting.get().name().replaceAll("_", " ")), setting.getDescription()));
             }
             customButtons.put(id, s);
 
@@ -165,7 +165,7 @@ public class GuiElementConfig extends GuiScreenElements {
                 } else if (s instanceof EnumSetting) {
                     EnumSetting<?> setting = (EnumSetting<?>) s;
                     setting.next();
-                    button.displayString = setting.getName() + ": " + StringUtils.capitalize(setting.get().name().replaceAll("_", " "));
+                    button.displayString = setting.getName() + ": " + StringUtils.capitalizeEnum(setting.get().name().replaceAll("_", " "));
                 }
                 break;
         }
@@ -174,11 +174,15 @@ public class GuiElementConfig extends GuiScreenElements {
 
     @Override
     public void sliderUpdated(GuiSlider button) {
+        System.out.println("updated!!!");
         Setting s = customButtons.get(button.id);
+        System.out.println(s);
         if (s instanceof IntegerSetting) {
+            System.out.println("integer!!!");
             IntegerSetting setting = (IntegerSetting) s;
             setting.set(button.getValueInt());
         } else if (s instanceof FloatSetting) {
+            System.out.println("float!!!");
             FloatSetting setting = (FloatSetting) s;
             setting.set((float) button.getValue());
         }
@@ -207,9 +211,4 @@ public class GuiElementConfig extends GuiScreenElements {
         }
     }
 
-    @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
-        Keyboard.enableRepeatEvents(false);
-    }
 }

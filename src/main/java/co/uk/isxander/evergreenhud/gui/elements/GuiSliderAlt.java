@@ -66,10 +66,17 @@ public class GuiSliderAlt extends GuiSlider {
     }
 
     @Override
+    public boolean mousePressed(Minecraft par1Minecraft, int par2, int par3) {
+        boolean pressy = super.mousePressed(par1Minecraft, par2, par3);
+        System.out.println(pressy);
+        return pressy;
+    }
+
+    @Override
     protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
-            if (this.dragging)
-            {
+            if (this.dragging) {
+                System.out.println("AND its dragging on the button");
                 this.sliderValue = (mouseX - (this.xPosition + 4)) / (float)(this.width - 8);
                 updateSlider();
             }

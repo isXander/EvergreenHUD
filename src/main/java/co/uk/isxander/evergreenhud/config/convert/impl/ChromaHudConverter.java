@@ -21,6 +21,7 @@ import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
 import co.uk.isxander.evergreenhud.elements.impl.*;
 import co.uk.isxander.xanderlib.utils.Position;
+import co.uk.isxander.xanderlib.utils.Resolution;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -84,7 +85,7 @@ public class ChromaHudConverter extends ConfigConverter {
 
     private void processElements(ElementManager manager) {
         JsonArray elementArray = chromaHudConfig.get("elements").getAsJsonArray();
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = Resolution.get();
 
         for (JsonElement part : elementArray) {
             if (!part.isJsonObject()) {

@@ -22,6 +22,7 @@ import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.xanderlib.utils.GuiUtils;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
+import co.uk.isxander.xanderlib.utils.Resolution;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -148,7 +149,7 @@ public class ElementCoordinates extends Element {
     @Override
     public HitBox2D calculateHitbox(float gl, float sizeScale) {
         HitBox2D hitbox = null;
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = Resolution.get();
         List<String> value = getMultiValue();
 
         float width = 10;

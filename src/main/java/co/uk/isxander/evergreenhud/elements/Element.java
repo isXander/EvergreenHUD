@@ -311,7 +311,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
      */
     public HitBox2D calculateHitbox(float gl, float sizeScale) {
         HitBox2D hitbox = null;
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = Resolution.get();
         float width = Math.max(mc.fontRendererObj.getStringWidth(getDisplayString()), 10) * sizeScale;
         float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float height = mc.fontRendererObj.FONT_HEIGHT * sizeScale;
@@ -338,7 +338,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
      * @param save whether or not to save the new config
      */
     public void resetSettings(boolean save) {
-        pos = Position.getPositionWithRawPositioning(10, 10, 1, new ScaledResolution(mc));
+        pos = Position.getPositionWithRawPositioning(10, 10, 1, Resolution.get());
 
         for (Setting s : customSettings)
             s.reset();

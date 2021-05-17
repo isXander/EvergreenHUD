@@ -24,6 +24,7 @@ import co.uk.isxander.xanderlib.utils.GuiUtils;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.evergreenhud.settings.Setting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.xanderlib.utils.Resolution;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
@@ -77,7 +78,7 @@ public class ElementArmour extends Element {
                 super.actionPerformed(button);
                 Setting s = customButtons.get(button.id);
                 if (s != null && s.equals(listType)) {
-                    ScaledResolution res = new ScaledResolution(mc);
+                    ScaledResolution res = Resolution.get();
                     if (listType.get().equalsIgnoreCase("up"))
                         getPosition().setRawY(getPosition().getRawY(res) + getHeight(), res);
                     else
@@ -212,7 +213,7 @@ public class ElementArmour extends Element {
 
     @Override
     public HitBox2D calculateHitbox(float gl, float sizeScale) {
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = Resolution.get();
         float x = getPosition().getRawX(res);
         float y = getPosition().getRawY(res);
         float extraWidth = getPaddingWidthSetting().get() * sizeScale;

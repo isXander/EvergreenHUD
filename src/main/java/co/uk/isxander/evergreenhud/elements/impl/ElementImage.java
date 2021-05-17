@@ -25,6 +25,7 @@ import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.ImageUtils;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.xanderlib.utils.Resolution;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -166,7 +167,7 @@ public class ElementImage extends Element {
 
     @Override
     public HitBox2D calculateHitbox(float gl, float sizeScale) {
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = Resolution.get();
 
         float width = (float)imageDimension.getWidth() * sizeScale * scaleMod;
         float height = (float)imageDimension.getHeight() * sizeScale * scaleMod;

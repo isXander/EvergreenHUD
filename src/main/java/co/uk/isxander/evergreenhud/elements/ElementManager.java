@@ -17,7 +17,7 @@ package co.uk.isxander.evergreenhud.elements;
 
 import co.uk.isxander.evergreenhud.elements.impl.*;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
-import co.uk.isxander.evergreenhud.utils.BreakException;
+import co.uk.isxander.xanderlib.utils.BreakException;
 import co.uk.isxander.xanderlib.utils.Constants;
 import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.config.MainConfig;

@@ -26,6 +26,8 @@ public class FMLLoadingPlugin implements IFMLLoadingPlugin {
     @Override
     public String[] getASMTransformerClass() {
         int initialize = ModCoreInstaller.initialize(Launch.minecraftHome, "1.8.9");
+
+        // ModCore has been successfully installed. Now initialise XanderLib
         XanderLibInstaller.initialize(Launch.minecraftHome);
 
         if (ModCoreInstaller.isErrored() || initialize != 0 && initialize != -1) {

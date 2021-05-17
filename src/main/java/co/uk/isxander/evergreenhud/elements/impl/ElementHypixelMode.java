@@ -19,9 +19,9 @@ import club.sk1er.mods.core.util.MinecraftUtils;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.evergreenhud.settings.impl.StringSetting;
-import co.uk.isxander.evergreenhud.utils.StringUtils;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.hypixel.locraw.LocationParsed;
+import co.uk.isxander.xanderlib.utils.StringUtils;
 
 public class ElementHypixelMode extends Element {
 
@@ -49,7 +49,7 @@ public class ElementHypixelMode extends Element {
             return inLobbyMessage.get();
 
         friendlyName = friendlyName.replaceAll("_", " ");
-        friendlyName = StringUtils.capitalize(friendlyName);
+        friendlyName = StringUtils.capitalizeEnum(friendlyName);
 
         return friendlyName;
     }

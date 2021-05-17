@@ -17,9 +17,9 @@ package co.uk.isxander.evergreenhud;
 
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.mods.core.gui.notification.Notifications;
+import club.sk1er.mods.core.util.MinecraftUtils;
 import club.sk1er.mods.core.util.Multithreading;
 import co.uk.isxander.evergreenhud.addon.AddonManager;
-import co.uk.isxander.evergreenhud.config.convert.impl.ChromaHudConverter;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
 import co.uk.isxander.evergreenhud.elements.impl.ElementText;
 import co.uk.isxander.evergreenhud.github.BlacklistManager;
@@ -33,7 +33,6 @@ import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.evergreenhud.github.UpdateChecker;
 import net.minecraft.client.gui.*;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.ForgeVersion;
@@ -61,8 +60,8 @@ public class EvergreenHUD implements Constants {
     public static final String MOD_NAME = "EvergreenHUD";
     public static final String MOD_VERSION = "2.0-pre5";
     public static final String UPDATE_NAME = "the next step.";
+    public static final boolean RELEASE = false;
 
-    public static final Version PARSED_VERSION = new Version(MOD_VERSION);
     public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
     public static final File DATA_DIR = new File(mc.mcDataDir, "config/evergreenhud");
 
@@ -177,14 +176,15 @@ public class EvergreenHUD implements Constants {
         if (disabled) return;
 
         Multithreading.runAsync(() -> {
-            Version latestVersion = UpdateChecker.getLatestVersion();
-            Version currentVersion = EvergreenHUD.PARSED_VERSION;
-            if (latestVersion.newerThan(currentVersion)) {
-                LOGGER.warn("Discovered new version: " + latestVersion + ". Current Version: " + currentVersion);
-                notifyUpdate(latestVersion);
-            } else if (!Version.sameVersion(latestVersion, currentVersion)) {
-                LOGGER.warn("Running on Development Version");
+            if (MinecraftUtils.isDevelopment()) {
+                LOGGER.warn("Running on non-public version. Skipped update check.");
                 development = true;
+            } else {
+                String version = UpdateChecker.getNeededVersion();
+                if (!version.equalsIgnoreCase(EvergreenHUD.MOD_VERSION)) {
+                    LOGGER.warn("Mod is out of date. " + EvergreenHUD.MOD_VERSION + " > " + version);
+                    notifyUpdate(version);
+                }
             }
         });
 
@@ -204,8 +204,8 @@ public class EvergreenHUD implements Constants {
             mc.displayGuiScreen(new GuiMain());
     }
 
-    public static void notifyUpdate(Version latestVersion) {
-        Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running an outdated version.\nCurrent: " + EvergreenHUD.PARSED_VERSION + "\nLatest: " + latestVersion.toString() + "\n\nClick here to download.", () -> {
+    public static void notifyUpdate(String latestVersion) {
+        Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running an outdated version.\nCurrent: " + EvergreenHUD.MOD_VERSION + "\nLatest: " + latestVersion + "\n\nClick here to download.", () -> {
             if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
                 try {
                     Desktop.getDesktop().browse(new URI("https://short.evergreenclient.com/GlYH5z"));

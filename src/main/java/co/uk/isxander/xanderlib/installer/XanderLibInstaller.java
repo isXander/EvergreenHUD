@@ -1,7 +1,6 @@
 package co.uk.isxander.xanderlib.installer;
 
 import club.sk1er.mods.core.ModCoreInstaller;
-import co.uk.isxander.evergreenhud.utils.JsonUtils;
 import com.google.gson.*;
 import org.apache.commons.io.FileUtils;
 
@@ -17,7 +16,7 @@ import club.sk1er.mods.core.ModCoreInstaller.JsonHolder;
 public class XanderLibInstaller {
 
     // What version of XanderLib does this mod use
-    public static final String DESIRED_VERSION = "0.5";
+    public static final String DESIRED_VERSION = "0.6";
     private static final String VERSION_URL = "https://raw.githubusercontent.com/isXander/XanderLib/main/version.json";
     private static File dataDir = null;
     private static boolean isInstalled = false;
@@ -47,7 +46,7 @@ public class XanderLibInstaller {
         JsonHolder metadata = null;
         if (metaExists)
             metadata = ModCoreInstaller.readFile(data);
-        if (!metaExists || !metadata.has("installed_versions") || !JsonUtils.jsonArrayContains(metadata.optJSONArray("installed_versions"), DESIRED_VERSION)) {
+        if (!metaExists || !metadata.has("installed_versions") || !jsonArrayContains(metadata.optJSONArray("installed_versions"), DESIRED_VERSION)) {
             download("https://static.isxander.co.uk/mods/xanderlib/" + DESIRED_VERSION + ".jar", DESIRED_VERSION, jar, metadata);
         }
 
@@ -92,7 +91,7 @@ public class XanderLibInstaller {
             }
 
             JsonArray arr = versionData.optJSONArray("installed_versions");
-            if (!JsonUtils.jsonArrayContains(arr, version))
+            if (!jsonArrayContains(arr, version))
                 arr.add(new JsonPrimitive(version));
             versionData.put("installed_versions", (JsonElement) arr);
 
@@ -115,6 +114,19 @@ public class XanderLibInstaller {
             }
         }
         return true;
+    }
+
+    private static boolean jsonArrayContains(JsonArray arr, String value) {
+        for (JsonElement element : arr) {
+            if (element.isJsonPrimitive()) {
+                JsonPrimitive primitive = (JsonPrimitive) element;
+                if (primitive.isString()) {
+                    if (primitive.getAsString().equals(value)) return true;
+                }
+            }
+        }
+
+        return false;
     }
 
 }

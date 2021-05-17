@@ -23,16 +23,19 @@ import co.uk.isxander.evergreenhud.EvergreenHUD;
 public class UpdateChecker {
 
     private static final String URL = "https://raw.githubusercontent.com/isXander/EvergreenHUD/main/version.json";
+    private static BetterJsonObject cache = null;
 
-    public static Version getLatestVersion() {
-        String out = HttpsUtils.getString(URL);
-        if (out == null) return new Version(0, 0, 0);
-        BetterJsonObject json = new BetterJsonObject(out);
-        return new Version(json.optString("latest_v2"));
+    public static String getNeededVersion() {
+        if (cache == null) cache();
+
+        if (EvergreenHUD.RELEASE)
+            return cache.optString("release");
+        else
+            return cache.optString("prerelease");
     }
 
-    public static boolean updateAvailable() {
-        return getLatestVersion().newerThan(EvergreenHUD.PARSED_VERSION);
+    public static void cache() {
+        cache = new BetterJsonObject(HttpsUtils.getString(URL));
     }
 
 }

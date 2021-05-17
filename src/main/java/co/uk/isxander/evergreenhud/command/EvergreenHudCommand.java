@@ -22,10 +22,7 @@ import club.sk1er.mods.core.util.Multithreading;
 import co.uk.isxander.evergreenhud.addon.EvergreenAddon;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
-import co.uk.isxander.evergreenhud.utils.ClipboardUtils;
-import co.uk.isxander.xanderlib.utils.Constants;
-import co.uk.isxander.xanderlib.utils.MathUtils;
-import co.uk.isxander.xanderlib.utils.Version;
+import co.uk.isxander.xanderlib.utils.*;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.github.UpdateChecker;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
@@ -81,8 +78,8 @@ public class EvergreenHudCommand extends CommandBase implements Constants {
                         if (EvergreenHUD.getInstance().isDevelopment()) {
                             Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are on a development version. There are no updates available.");
                         } else {
-                            Version latest = UpdateChecker.getLatestVersion();
-                            if (latest.newerThan(EvergreenHUD.PARSED_VERSION)) {
+                            String latest = UpdateChecker.getNeededVersion();
+                            if (!latest.equalsIgnoreCase(EvergreenHUD.MOD_VERSION)) {
                                 EvergreenHUD.notifyUpdate(latest);
                             } else {
                                 Notifications.INSTANCE.pushNotification("EvergreenHUD", "There are no updates available.");
@@ -162,10 +159,8 @@ public class EvergreenHudCommand extends CommandBase implements Constants {
 
                     Multithreading.runAsync(() -> {
                         OkHttpClient client = new OkHttpClient();
-                        Request request = new Request.Builder()
-                                .url("https://hst.sh/documents")
+                        Request request = HttpsUtils.setupRequest("https://hst.sh/documents")
                                 .post(RequestBody.create(MediaType.parse("text/utf-8"), sb.toString()))
-                                .addHeader("User-Agent", "EvergreenHUD/" + EvergreenHUD.MOD_VERSION)
                                 .build();
                         try (Response response = client.newCall(request).execute()) {
                             String string = response.body().string();
