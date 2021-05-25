@@ -137,9 +137,9 @@ public class GuiAddElement extends GuiScreenExt {
         GlStateManager.pushMatrix();
         float scale = 2;
         GlStateManager.scale(scale, scale, 0);
-        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "Element Manager", (int)(width / 2 / scale), (int)(5 / scale), -1);
+        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "Add Element", (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
-        drawCenteredString(mc.fontRendererObj, "Manage all the elements in the mod!", width / 2, 25, -1);
+        drawCenteredString(mc.fontRendererObj, "Add a new element to your screen.", width / 2, 25, -1);
 
         this.searchField.drawTextBox();
         this.searchField.drawTextBoxDescription(mc, mouseX, mouseY);

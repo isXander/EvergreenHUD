@@ -92,21 +92,21 @@ public class ElementImage extends BackgroundElement {
                 }
             }).start();
         }));
-        addSettings(mirror = new BooleanSetting("Mirror", "Render", "If the image is flipped horizontally.", false) {
+        addSettings(mirror = new BooleanSetting("Mirror", "Image", "If the image is flipped horizontally.", false) {
             @Override
             protected boolean onChange(boolean oldValue, boolean newValue) {
                 changed = true;
                 return true;
             }
         });
-        addSettings(rotation = new ArraySetting("Rotation", "Render", "How will the image be rotated. (Image should be square for best result.)", 0, "0 deg", "90 deg", "180 deg", "270 deg") {
+        addSettings(rotation = new ArraySetting("Rotation", "Image", "How will the image be rotated. (Image should be square for best result.)", 0, "0 deg", "90 deg", "180 deg", "270 deg") {
             @Override
             protected boolean onChange(int currentIndex, int newIndex) {
                 changed = true;
                 return !isDisabled();
             }
         });
-        addSettings(autoScale = new BooleanSetting("Auto Scale", "Render", "Automatically scales your image to a constant size depending on the scale.", true));
+        addSettings(autoScale = new BooleanSetting("Auto Scale", "Image", "Automatically scales your image to a constant size depending on the scale.", true));
     }
 
     @Override

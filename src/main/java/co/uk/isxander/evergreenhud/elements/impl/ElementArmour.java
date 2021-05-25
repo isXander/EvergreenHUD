@@ -43,7 +43,6 @@ import java.util.List;
 
 public class ElementArmour extends TextElement {
 
-    public EnumSetting<Alignment> alignment;
     public BooleanSetting helmet, chestplate, leggings, boots, item, showCount;
     public IntegerSetting spacing;
     public ArraySetting listType, textDisplay;
@@ -58,9 +57,9 @@ public class ElementArmour extends TextElement {
         addSettings(boots = new BooleanSetting("Show Boots", "Armour", true));
         addSettings(item = new BooleanSetting("Show Item", "Armour", true));
         addSettings(showCount = new BooleanSetting("Show Count", "Armour", true));
-        addSettings(spacing = new IntegerSetting("Spacing", "Render", 5, 0, 10, ""));
-        addSettings(listType = new ArraySetting("List Type", "Render", "Which way the list should expand if an item is added.", "Down", new String[]{"Down", "Up"}));
-        addSettings(textDisplay = new ArraySetting("Text", "Render", "What information should be displayed next to the item.", "Durability", new String[]{"Durability", "Name", "None"}));
+        addSettings(spacing = new IntegerSetting("Spacing", "Display", 5, 0, 10, ""));
+        addSettings(listType = new ArraySetting("List Type", "Display", "Which way the list should expand if an item is added.", "Down", new String[]{"Down", "Up"}));
+        addSettings(textDisplay = new ArraySetting("Text", "Display", "What information should be displayed next to the item.", "Durability", new String[]{"Durability", "Name", "None"}));
     }
 
     @Override
@@ -134,7 +133,7 @@ public class ElementArmour extends TextElement {
             else if (this.textDisplay.get().equalsIgnoreCase("name"))
                 text = stack.getDisplayName();
             float textX = 0, textY = 0;
-            switch (this.alignment.get()) {
+            switch (this.getAlignmentSetting().get()) {
                 case RIGHT:
                     textX = x - 2 - mc.fontRendererObj.getStringWidth(text);
                     textY = y + 5 - (mc.fontRendererObj.FONT_HEIGHT / 2f);
@@ -161,16 +160,16 @@ public class ElementArmour extends TextElement {
                     break;
             }
             textY += offset + 4;
-            if (alignment.get() == Alignment.LEFT) {
+            if (getAlignmentSetting().get() == Alignment.LEFT) {
                 textX -= width / 2f;
-            } else if (alignment.get() == Alignment.CENTER) {
+            } else if (getAlignmentSetting().get() == Alignment.CENTER) {
                 textX -= width;
             }
             GuiUtils.drawString(mc.fontRendererObj, text, textX, textY, getTextModeSetting().get() == TextMode.SHADOW, getTextModeSetting().get() == TextMode.BORDER, getChromaSetting().get(), false, getTextColor().getRGB());
 
-            if (alignment.get() == Alignment.LEFT) {
+            if (getAlignmentSetting().get() == Alignment.LEFT) {
                 x -= width / 2f;
-            } else if (alignment.get() == Alignment.CENTER) {
+            } else if (getAlignmentSetting().get() == Alignment.CENTER) {
                 x -= width;
             }
 

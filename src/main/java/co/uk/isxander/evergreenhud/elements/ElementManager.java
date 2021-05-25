@@ -40,9 +40,6 @@ public class ElementManager implements Constants {
     private final MainConfig mainConfig;
     private final ElementConfig elementConfig;
     private boolean enabled;
-    private boolean showInChat;
-    private boolean showInDebug;
-    private boolean showUnderGui;
 
     private final Logger logger;
 
@@ -133,9 +130,6 @@ public class ElementManager implements Constants {
 
     public void resetConfig() {
         this.enabled = true;
-        this.showInChat = true;
-        this.showInDebug = false;
-        this.showUnderGui = true;
     }
 
     public List<Element> getCurrentElements() {
@@ -153,9 +147,8 @@ public class ElementManager implements Constants {
             boolean inDebug = mc.gameSettings.showDebugInfo;
             boolean inGui = mc.currentScreen != null && !(mc.currentScreen instanceof GuiScreenElements) && !(mc.currentScreen instanceof GuiChat);
 
-            boolean shouldRender = (mc.inGameHasFocus && !inDebug) || (showInChat && inChat) || (showInDebug && inDebug && !(!showInChat && inChat)) || (showUnderGui && inGui);
-            if (shouldRender) {
-                for (Element e : currentElements) {
+            for (Element e : currentElements) {
+                if ((mc.inGameHasFocus && !inDebug) || (e.getShowInChat().get() && inChat) || (e.getShowInDebug().get() && inDebug && !(!e.getShowInChat().get() && inChat)) || (e.getShowUnderGui().get() && inGui)) {
                     e.render(event.partialTicks, RenderOrigin.HUD);
                 }
             }
@@ -195,27 +188,4 @@ public class ElementManager implements Constants {
         this.enabled = enabled;
     }
 
-    public boolean doShowInChat() {
-        return showInChat;
-    }
-
-    public void setShowInChat(boolean showInChat) {
-        this.showInChat = showInChat;
-    }
-
-    public boolean doShowInDebug() {
-        return showInDebug;
-    }
-
-    public void setShowInDebug(boolean showInDebug) {
-        this.showInDebug = showInDebug;
-    }
-
-    public boolean isShowUnderGui() {
-        return showUnderGui;
-    }
-
-    public void setShowUnderGui(boolean showUnderGui) {
-        this.showUnderGui = showUnderGui;
-    }
 }

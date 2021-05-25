@@ -45,9 +45,6 @@ public class GuiMainConfig extends GuiScreenElements {
         this.buttonList.add(new GuiButtonAlt(1, width / 2 - 90, height - 20, 90, 20, "Reset"));
 
         this.buttonList.add(new GuiButtonAlt(2, left(), getRow(0), 242, 20, "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonAlt(3, left(), getRow(1), 120, 20, "Show in Chat: " + (manager.doShowInChat() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonAlt(4, right(), getRow(1), 120, 20, "Show in Debug: " + (manager.doShowInDebug() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonAlt(5, left(), getRow(2), 120, 20, "Show Under Gui: " + (manager.isShowUnderGui() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
     }
 
     @Override
@@ -76,18 +73,6 @@ public class GuiMainConfig extends GuiScreenElements {
             case 2:
                 manager.setEnabled(!manager.isEnabled());
                 button.displayString = "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
-                break;
-            case 3:
-                manager.setShowInChat(!manager.doShowInChat());
-                button.displayString = "Show in Chat: " + (manager.doShowInChat() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
-                break;
-            case 4:
-                manager.setShowInDebug(!manager.doShowInDebug());
-                button.displayString = "Show in Debug: " + (manager.doShowInDebug() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
-                break;
-            case 5:
-                manager.setShowUnderGui(!manager.isShowUnderGui());
-                button.displayString = "Show Under Gui: " + (manager.isShowUnderGui() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
         }
     }

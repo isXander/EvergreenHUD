@@ -49,6 +49,9 @@ public abstract class Element extends Gui implements Listenable, Constants {
 
     /* Config */
     private Position position;
+    private BooleanSetting showInChat;
+    private BooleanSetting showUnderGui;
+    private BooleanSetting showInDebug;
 
     protected final Logger logger;
     private final ElementData meta;
@@ -92,6 +95,9 @@ public abstract class Element extends Gui implements Listenable, Constants {
                 return false;
             }
         });
+        addSettings(showInChat = new BooleanSetting("Show In Chat", "Visibility", "Whether or not element should be displayed in the chat menu. (Takes priority over show under gui)", false));
+        addSettings(showInDebug = new BooleanSetting("Show In F3", "Visibility", "Whether or not element should be displayed when the debug menu is open.", false));
+        addSettings(showUnderGui = new BooleanSetting("Show Under GUIs", "Visibility", "Whether or not element should be displayed when you have a gui open.", true));
     }
 
     public void initialise() {
@@ -293,5 +299,17 @@ public abstract class Element extends Gui implements Listenable, Constants {
 
     public Position getPosition() {
         return position;
+    }
+
+    public BooleanSetting getShowInChat() {
+        return showInChat;
+    }
+
+    public BooleanSetting getShowUnderGui() {
+        return showUnderGui;
+    }
+
+    public BooleanSetting getShowInDebug() {
+        return showInDebug;
     }
 }

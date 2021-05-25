@@ -51,7 +51,7 @@ public class GuiElementConfig extends GuiScreenElements {
 
         List<String> categories = new ArrayList<>();
         for (Setting setting : element.getCustomSettings()) {
-            if (!categories.contains(setting.getCategory())) {
+            if (!setting.isInternal() && !categories.contains(setting.getCategory())) {
                 categories.add(setting.getCategory());
             }
         }

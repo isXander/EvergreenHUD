@@ -49,18 +49,12 @@ public class MainConfig {
             return;
         }
         manager.setEnabled(root.optBoolean("enabled"));
-        manager.setShowInChat(root.optBoolean("chat"));
-        manager.setShowInDebug(root.optBoolean("debug"));
-        manager.setShowUnderGui(root.optBoolean("gui"));
     }
 
     public void save() {
         BetterJsonObject root = new BetterJsonObject();
         root.addProperty("version", VERSION);
         root.addProperty("enabled", manager.isEnabled());
-        root.addProperty("chat", manager.doShowInChat());
-        root.addProperty("debug", manager.doShowInDebug());
-        root.addProperty("gui", manager.isShowUnderGui());
 
         root.writeToFile(CONFIG_FILE);
     }
