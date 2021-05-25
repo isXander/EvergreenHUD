@@ -15,21 +15,20 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.RenderOrigin;
+import co.uk.isxander.evergreenhud.elements.type.BackgroundElement;
 import co.uk.isxander.evergreenhud.settings.impl.FloatSetting;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.Resolution;
-import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-public class ElementPlayerPreview extends Element {
+public class ElementPlayerPreview extends BackgroundElement {
 
     public FloatSetting rotation;
 
@@ -40,19 +39,18 @@ public class ElementPlayerPreview extends Element {
 
     @Override
     protected ElementData metadata() {
-        return new ElementData("Player Preview", "Renders the player like in your inventory.");
+        return new ElementData("Player Preview", "Renders the player like in your inventory.", "Advanced");
     }
 
     @Override
-    public void render(RenderGameOverlayEvent event) {
+    public void render(float partialTicks, RenderOrigin origin) {
         GlStateManager.pushMatrix();
         GlStateManager.enableDepth();
-        HitBox2D hitbox = calculateHitbox(1, getPosition().getScale());
-        GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
+        super.render(partialTicks, origin);
 
         EntityPlayerSP ent = mc.thePlayer;
-        float posX = getPosition().getRawX(event.resolution);
-        float posY = getPosition().getRawY(event.resolution);
+        float posX = getPosition().getRawX(Resolution.get());
+        float posY = getPosition().getRawY(Resolution.get());
         float scale = getPosition().getScale() * 50;
 
         GlStateManager.enableColorMaterial();
@@ -94,12 +92,12 @@ public class ElementPlayerPreview extends Element {
     }
 
     @Override
-    public HitBox2D calculateHitbox(float gl, float sizeScale) {
+    public HitBox2D calculateHitBox(float gl, float sizeScale) {
         ScaledResolution res = Resolution.get();
 
-        float width = 80 * sizeScale;
+        float width = getHitBoxWidth() * sizeScale;
         float extraWidth = getPaddingWidthSetting().get() * sizeScale;
-        float height = 120 * sizeScale;
+        float height = getHitBoxHeight() * sizeScale;
         float extraHeight = getPaddingHeightSetting().get() * sizeScale;
         float x = getPosition().getRawX(res) - (width / 2f) / gl;
         float y = getPosition().getRawY(res) - height + (height / 8f) + (height / 128f) / gl;
@@ -108,47 +106,12 @@ public class ElementPlayerPreview extends Element {
     }
 
     @Override
-    protected String getValue() {
-        return "null";
+    protected float getHitBoxWidth() {
+        return 80f;
     }
 
     @Override
-    public String getDefaultDisplayTitle() {
-        return "Player Preview";
-    }
-
-    @Override
-    public boolean useTextModeSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useChromaSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTitleSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useAlignmentSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTextColorSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useBracketsSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useInvertedSetting() {
-        return false;
+    protected float getHitBoxHeight() {
+        return 120f;
     }
 }

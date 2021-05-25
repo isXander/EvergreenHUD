@@ -15,17 +15,17 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import net.minecraft.client.network.NetworkPlayerInfo;
 
-public class ElementPing extends Element {
+public class ElementPing extends SimpleTextElement {
 
     private int ping = 0;
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Ping Display", "Shows the delay in ms for your actions to be sent to the server.");
+        return new ElementData("Ping Display", "Shows the delay in ms for your actions to be sent to the server.", "Combat");
     }
 
     @Override

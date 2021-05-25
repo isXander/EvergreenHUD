@@ -24,7 +24,7 @@ import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.xanderlib.utils.*;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
-import co.uk.isxander.evergreenhud.github.UpdateChecker;
+import co.uk.isxander.evergreenhud.repo.UpdateChecker;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.renderer.OpenGlHelper;
@@ -92,7 +92,16 @@ public class EvergreenHudCommand extends CommandBase implements Constants {
                     break;
                 case "support":
                 case "debug":
+                    boolean reduced = false;
+                    if (args.length > 1) {
+                        reduced = args[1].equalsIgnoreCase("reduced");
+                    }
+
                     StringBuilder sb = new StringBuilder();
+
+                    if (reduced) {
+                        sb.append("REDUCED DEBUG\n\n");
+                    }
 
                     sb.append("--- EvergreenHUD Info ---").append("\n");
                     sb.append("Version: ").append(EvergreenHUD.MOD_VERSION).append("\n");
@@ -101,10 +110,15 @@ public class EvergreenHudCommand extends CommandBase implements Constants {
                     sb.append("--- EvergreenHUD Elements ---").append("\n");
                     for (Element element : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
                         sb.append("[").append(element.getMetadata().getName()).append("](");
-                        for (String configLine : element.generateJson().toPrettyString().split("\n")) {
-                            sb.append("\n").append("    ").append(configLine);
+                        if (!reduced) {
+                            for (String configLine : element.generateJson().toPrettyString().split("\n")) {
+                                sb.append("\n").append("    ").append(configLine);
+                            }
+                            sb.append("\n");
+                        } else {
+                            sb.append("reduced");
                         }
-                        sb.append("\n)\n");
+                        sb.append(")\n");
                     }
                     sb.append("\n");
 

@@ -16,7 +16,7 @@ import club.sk1er.mods.core.ModCoreInstaller.JsonHolder;
 public class XanderLibInstaller {
 
     // What version of XanderLib does this mod use
-    public static final String DESIRED_VERSION = "0.6";
+    public static final String DESIRED_VERSION = "0.8";
     private static final String VERSION_URL = "https://raw.githubusercontent.com/isXander/XanderLib/main/version.json";
     private static File dataDir = null;
     private static boolean isInstalled = false;
@@ -33,14 +33,10 @@ public class XanderLibInstaller {
         if (!dataDir.exists()) {
             dataDir.mkdirs();
         }
-
         File data = new File(dataDir, "metadata.json");
-        System.out.println("Metadata Json: " + data.getPath());
-
 
         File jar = new File(dataDir, "/" + DESIRED_VERSION + "/xanderlib.jar");
         new File(dataDir, "/" + DESIRED_VERSION).mkdirs();
-        System.out.println("XanderLib Jar: " + jar.getPath());
 
         boolean metaExists = data.exists();
         JsonHolder metadata = null;
@@ -53,7 +49,6 @@ public class XanderLibInstaller {
         ModCoreInstaller.addToClasspath(jar);
 
         isInstalled = true;
-        System.out.println("XanderLib is now installed.");
         return 0;
     }
 
@@ -91,8 +86,10 @@ public class XanderLibInstaller {
             }
 
             JsonArray arr = versionData.optJSONArray("installed_versions");
+            JsonPrimitive versionPrim = new JsonPrimitive(version);
             if (!jsonArrayContains(arr, version))
-                arr.add(new JsonPrimitive(version));
+                arr.add(versionPrim);
+            versionData.put("version", versionPrim);
             versionData.put("installed_versions", (JsonElement) arr);
 
             FileUtils.write(new File(dataDir, "metadata.json"), versionData.toString(), Charset.defaultCharset());

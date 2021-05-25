@@ -16,6 +16,7 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
@@ -25,22 +26,24 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
-public class ElementBlockAbove extends Element {
+public class ElementBlockAbove extends SimpleTextElement {
 
     private int blockDistance = 0;
 
     public BooleanSetting notify;
     public IntegerSetting notifyHeight;
+    public IntegerSetting checkAmount;
 
     @Override
     public void initialise() {
         addSettings(notify = new BooleanSetting("Notify", "Sound", "Make a noise when the block gets too close.", false));
         addSettings(notifyHeight = new IntegerSetting("Notify Height", "Functionality", "How close the block needs to be before notifying.", 3, 1, 10, " blocks"));
+        addSettings(checkAmount = new IntegerSetting("Check Amount", "Functionality", "How many blocks the element measures before stopping. (Turning this to a high value may cause lag.)", 10, 1, 30, " blocks"));
     }
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Block Above", "Tells you if there is a block above your head. Useful for games like bedwars.");
+        return new ElementData("Block Above", "Tells you if there is a block above your head. Useful for games like bedwars.", "Hypixel");
     }
 
     @Override
@@ -51,21 +54,16 @@ public class ElementBlockAbove extends Element {
     @Override
     public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
         if (mc.theWorld == null) return;
-
-//                || mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX + 1, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ + 1)).getBlock() != Blocks.air
-//                || mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX + 1, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ)).getBlock() != Blocks.air
-//                || mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX + 1, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ - 1)).getBlock() != Blocks.air
-//                || mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ + 1)).getBlock() != Blocks.air
-//                || mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ - 1)).getBlock() != Blocks.air
-//                || mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX - 1, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ - 1)).getBlock() != Blocks.air
-//                || mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX - 1, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ)).getBlock() != Blocks.air
-//                || mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX - 1, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ + 1)).getBlock() != Blocks.air)
+        if (event.entity != mc.thePlayer) return;
 
         boolean above = false;
-        for (int i = 1; i < 10 + 1; i++) {
+        for (int i = 1; i < checkAmount.get() + 1; i++) {
+            BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ);
+            if (blockPos.getY() > 255) break;
+
             IBlockState state;
             try {
-                state = mc.theWorld.getBlockState(new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ));
+                state = mc.theWorld.getBlockState(blockPos);
             } catch (NullPointerException e) {
                 continue;
             }
@@ -73,8 +71,7 @@ public class ElementBlockAbove extends Element {
             if (state == null) continue;
             Block b = state.getBlock();
             if (b != Blocks.air && b != Blocks.water && b != Blocks.lava && b != Blocks.ladder && b != Blocks.vine
-                    && b != Blocks.wall_sign && b != Blocks.standing_banner && b != Blocks.wall_banner && b != Blocks.standing_sign
-                    && !b.getMaterial().blocksMovement()) {
+                    && b != Blocks.wall_sign && b != Blocks.standing_banner && b != Blocks.wall_banner && b != Blocks.standing_sign) {
                 if (i <= notifyHeight.get() && (blockDistance > notifyHeight.get() || blockDistance == 0)) {
                     if (notify.get())
                         mc.thePlayer.playSound("random.orb", 0.1f, 0.5f);

@@ -17,7 +17,7 @@ package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.config.convert.impl.ChromaHudConverter;
-import co.uk.isxander.evergreenhud.gui.elements.GuiButtonAlt;
+import co.uk.isxander.evergreenhud.gui.components.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
@@ -29,8 +29,6 @@ public class GuiConfigConverter extends GuiScreenElements {
 
     @Override
     public void initGui() {
-        super.initGui();
-
         this.buttonList.add(new GuiButtonAlt(0, width / 2 - 90 - 1, height - 20, 182, 20, "Back"));
 
         this.buttonList.add(new GuiButtonAlt(1, left(), getRow(0), 242, 20, "ChromaHUD"));

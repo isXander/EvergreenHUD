@@ -15,7 +15,7 @@
 
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
-import co.uk.isxander.evergreenhud.gui.elements.GuiButtonAlt;
+import co.uk.isxander.evergreenhud.gui.components.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
 import net.minecraft.client.gui.GuiButton;
@@ -35,7 +35,6 @@ public class GuiMainConfig extends GuiScreenElements {
 
     @Override
     public void initGui() {
-        super.initGui();
         addButtons();
     }
 
@@ -102,7 +101,6 @@ public class GuiMainConfig extends GuiScreenElements {
 
     @Override
     public void onGuiClosed() {
-        super.onGuiClosed();
         manager.getMainConfig().save();
     }
 }

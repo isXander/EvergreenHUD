@@ -15,12 +15,12 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.xanderlib.utils.Facing;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 
-public class ElementDirection extends Element {
+public class ElementDirection extends SimpleTextElement {
 
     public BooleanSetting abbreviated;
 
@@ -31,7 +31,7 @@ public class ElementDirection extends Element {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Direction", "Shows what direction you are facing.");
+        return new ElementData("Direction", "Shows what direction you are facing.", "Simple");
     }
 
     @Override

@@ -15,17 +15,20 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.RenderOrigin;
+import co.uk.isxander.evergreenhud.elements.type.BackgroundElement;
+import co.uk.isxander.evergreenhud.elements.type.TextElement;
+import co.uk.isxander.evergreenhud.elements.type.TextElement.Alignment;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiElementConfig;
 import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
+import co.uk.isxander.evergreenhud.settings.impl.EnumSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.xanderlib.utils.GuiUtils;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.evergreenhud.settings.Setting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.xanderlib.utils.Resolution;
-import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -33,14 +36,14 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class ElementArmour extends Element {
+public class ElementArmour extends TextElement {
 
+    public EnumSetting<Alignment> alignment;
     public BooleanSetting helmet, chestplate, leggings, boots, item, showCount;
     public IntegerSetting spacing;
     public ArraySetting listType, textDisplay;
@@ -49,20 +52,20 @@ public class ElementArmour extends Element {
 
     @Override
     public void initialise() {
-        addSettings(helmet = new BooleanSetting("Show Helmet", "Display", true));
-        addSettings(chestplate = new BooleanSetting("Show Chestplate", "Display", true));
-        addSettings(leggings = new BooleanSetting("Show Leggings", "Display", true));
-        addSettings(boots = new BooleanSetting("Show Boots", "Display", true));
-        addSettings(item = new BooleanSetting("Show Item", "Display", true));
-        addSettings(showCount = new BooleanSetting("Show Count", "Misc", true));
-        addSettings(spacing = new IntegerSetting("Spacing", "Misc", 5, 0, 10, ""));
-        addSettings(listType = new ArraySetting("List Type", "Misc", "Which way the list should expand if an item is added.", "Down", new String[]{"Down", "Up"}));
-        addSettings(textDisplay = new ArraySetting("Text", "Misc", "What information should be displayed next to the item.", "Durability", new String[]{"Durability", "Name", "None"}));
+        addSettings(helmet = new BooleanSetting("Show Helmet", "Armour", true));
+        addSettings(chestplate = new BooleanSetting("Show Chestplate", "Armour", true));
+        addSettings(leggings = new BooleanSetting("Show Leggings", "Armour", true));
+        addSettings(boots = new BooleanSetting("Show Boots", "Armour", true));
+        addSettings(item = new BooleanSetting("Show Item", "Armour", true));
+        addSettings(showCount = new BooleanSetting("Show Count", "Armour", true));
+        addSettings(spacing = new IntegerSetting("Spacing", "Render", 5, 0, 10, ""));
+        addSettings(listType = new ArraySetting("List Type", "Render", "Which way the list should expand if an item is added.", "Down", new String[]{"Down", "Up"}));
+        addSettings(textDisplay = new ArraySetting("Text", "Render", "What information should be displayed next to the item.", "Durability", new String[]{"Durability", "Name", "None"}));
     }
 
     @Override
     public ElementData metadata() {
-        return new ElementData("ArmourHUD", "Displays what you are wearing and holding.");
+        return new ElementData("ArmourHUD", "Displays what you are wearing and holding.", "Advanced");
     }
 
     protected int getHeight() {
@@ -90,26 +93,10 @@ public class ElementArmour extends Element {
     }
 
     @Override
-    public boolean useBracketsSetting() {
-        return false;
-    }
+    public void render(float partialTicks, RenderOrigin origin) {
+        ScaledResolution res = Resolution.get();
 
-    @Override
-    public boolean useInvertedSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTitleSetting() {
-        return false;
-    }
-
-    @Override
-    public void render(RenderGameOverlayEvent event) {
-        ScaledResolution res = event.resolution;
-
-        HitBox2D hitbox = calculateHitbox(1, getPosition().getScale());
-        GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
+        super.render(partialTicks, origin);
         if (mc.thePlayer == null)
             return;
 
@@ -147,7 +134,7 @@ public class ElementArmour extends Element {
             else if (this.textDisplay.get().equalsIgnoreCase("name"))
                 text = stack.getDisplayName();
             float textX = 0, textY = 0;
-            switch (this.getAlignmentSetting().get()) {
+            switch (this.alignment.get()) {
                 case RIGHT:
                     textX = x - 2 - mc.fontRendererObj.getStringWidth(text);
                     textY = y + 5 - (mc.fontRendererObj.FONT_HEIGHT / 2f);
@@ -174,16 +161,16 @@ public class ElementArmour extends Element {
                     break;
             }
             textY += offset + 4;
-            if (getAlignmentSetting().get() == Alignment.LEFT) {
+            if (alignment.get() == Alignment.LEFT) {
                 textX -= width / 2f;
-            } else if (getAlignmentSetting().get() == Alignment.CENTER) {
+            } else if (alignment.get() == Alignment.CENTER) {
                 textX -= width;
             }
             GuiUtils.drawString(mc.fontRendererObj, text, textX, textY, getTextModeSetting().get() == TextMode.SHADOW, getTextModeSetting().get() == TextMode.BORDER, getChromaSetting().get(), false, getTextColor().getRGB());
 
-            if (getAlignmentSetting().get() == Alignment.LEFT) {
+            if (alignment.get() == Alignment.LEFT) {
                 x -= width / 2f;
-            } else if (getAlignmentSetting().get() == Alignment.CENTER) {
+            } else if (alignment.get() == Alignment.CENTER) {
                 x -= width;
             }
 
@@ -212,7 +199,7 @@ public class ElementArmour extends Element {
     }
 
     @Override
-    public HitBox2D calculateHitbox(float gl, float sizeScale) {
+    public HitBox2D calculateHitBox(float gl, float sizeScale) {
         ScaledResolution res = Resolution.get();
         float x = getPosition().getRawX(res);
         float y = getPosition().getRawY(res);
@@ -245,16 +232,6 @@ public class ElementArmour extends Element {
             hitY -= height;
 
         return new HitBox2D(hitX / gl - extraWidth, hitY / gl - extraHeight, hitW * sizeScale + (extraWidth * 2), hitH * sizeScale + (extraHeight * 2));
-    }
-
-    @Override
-    public String getDisplayString() {
-        return "";
-    }
-
-    @Override
-    protected String getValue() {
-        return "";
     }
 
     @Override

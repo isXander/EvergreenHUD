@@ -15,7 +15,7 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.xanderlib.utils.MathUtils;
@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.text.DecimalFormat;
 
-public class ElementMemory extends Element {
+public class ElementMemory extends SimpleTextElement {
 
     private String memDisplay = "";
     private long lastUpdated = 0L;
@@ -40,7 +40,7 @@ public class ElementMemory extends Element {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Memory", "Shows how much memory minecraft is utilising.");
+        return new ElementData("Memory", "Shows how much memory minecraft is utilising.", "Simple");
     }
 
     @Override

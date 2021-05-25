@@ -17,14 +17,15 @@ package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 
-public class ElementBiome extends Element {
+public class ElementBiome extends SimpleTextElement {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Biome Display", "Displays the current biome you are standing in.");
+        return new ElementData("Biome Display", "Displays the current biome you are standing in.", "Simple");
     }
 
     @Override

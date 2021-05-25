@@ -16,6 +16,7 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -24,7 +25,7 @@ import org.lwjgl.input.Mouse;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElementCps extends Element {
+public class ElementCps extends SimpleTextElement {
 
     private final List<Long> left = new ArrayList<>();
     private boolean leftPressed;
@@ -40,7 +41,7 @@ public class ElementCps extends Element {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("CPS Mod", "Shows how many times you can click in a second.");
+        return new ElementData("CPS Mod", "Shows how many times you can click in a second.", "Combat");
     }
 
     @Override

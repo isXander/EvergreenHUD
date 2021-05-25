@@ -15,14 +15,14 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import net.minecraft.util.MathHelper;
 
 import java.text.DecimalFormat;
 
-public class ElementPitch extends Element {
+public class ElementPitch extends SimpleTextElement {
 
     public BooleanSetting trailingZeros;
 
@@ -33,7 +33,7 @@ public class ElementPitch extends Element {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Pitch Display", "Shows the player's rotation pitch. Useful for bridging.");
+        return new ElementData("Pitch Display", "Shows the player's rotation pitch. Useful for bridging.", "Simple");
     }
 
     @Override

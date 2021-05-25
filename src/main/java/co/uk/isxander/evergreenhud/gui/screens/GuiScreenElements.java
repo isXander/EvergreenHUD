@@ -17,12 +17,12 @@ package co.uk.isxander.evergreenhud.gui.screens;
 
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.RenderOrigin;
 import co.uk.isxander.evergreenhud.elements.snapping.SnapPoint;
 import co.uk.isxander.xanderlib.utils.MathUtils;
 import co.uk.isxander.xanderlib.utils.Resolution;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -35,10 +35,6 @@ public class GuiScreenElements extends GuiScreenExt {
     protected Element lastClicked = null;
     protected float offX = 0, offY = 0;
 
-    @Override
-    public void initGui() {
-        Keyboard.enableRepeatEvents(true);
-    }
 
     @Override
     public void drawScreen(int mouseXInt, int mouseYInt, float partialTicks) {
@@ -47,7 +43,7 @@ public class GuiScreenElements extends GuiScreenExt {
         ScaledResolution res = Resolution.get();
 
         for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
-            e.render(new RenderGameOverlayEvent(partialTicks, res));
+            e.render(partialTicks, RenderOrigin.GUI);
             e.renderGuiOverlay(lastClicked != null && lastClicked == e);
         }
 
@@ -112,7 +108,7 @@ public class GuiScreenElements extends GuiScreenExt {
         boolean clickedElement = false;
         for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
             e.onMouseClicked(mouseX, mouseY);
-            if (e.calculateHitbox(1, e.getPosition().getScale()).doesPositionOverlap(mouseX, mouseY)) {
+            if (e.calculateHitBox(1, e.getPosition().getScale()).doesPositionOverlap(mouseX, mouseY)) {
                 lastClicked = dragging = e;
                 offX = mouseX - e.getPosition().getRawX(res);
                 offY = mouseY - e.getPosition().getRawY(res);
@@ -159,7 +155,6 @@ public class GuiScreenElements extends GuiScreenExt {
 
     @Override
     public void onGuiClosed() {
-        Keyboard.enableRepeatEvents(false);
         EvergreenHUD.getInstance().getElementManager().getElementConfig().save();
     }
 

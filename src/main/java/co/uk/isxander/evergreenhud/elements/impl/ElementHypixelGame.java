@@ -16,14 +16,14 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import club.sk1er.mods.core.util.MinecraftUtils;
-import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.StringSetting;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.hypixel.locraw.GameType;
 import co.uk.isxander.xanderlib.hypixel.locraw.LocationParsed;
 
-public class ElementHypixelGame extends Element {
+public class ElementHypixelGame extends SimpleTextElement {
 
     public StringSetting notHypixelMessage;
 
@@ -34,7 +34,7 @@ public class ElementHypixelGame extends Element {
 
     @Override
     protected ElementData metadata() {
-        return new ElementData("Hypixel Game", "Displays what game you are currently playing on Hypixel");
+        return new ElementData("Hypixel Game", "Displays what game you are currently playing on Hypixel", "Hypixel");
     }
 
     @Override

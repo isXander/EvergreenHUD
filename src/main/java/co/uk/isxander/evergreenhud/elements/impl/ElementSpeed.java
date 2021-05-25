@@ -16,6 +16,7 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.EnumSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
@@ -25,7 +26,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.text.DecimalFormat;
 
-public class ElementSpeed extends Element {
+public class ElementSpeed extends SimpleTextElement {
 
     private double speed = 0;
 
@@ -50,7 +51,7 @@ public class ElementSpeed extends Element {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Speed Display", "Displays the blocks per second speed of the player.");
+        return new ElementData("Speed Display", "Displays the blocks per second speed of the player.", "Simple");
     }
 
     @Override

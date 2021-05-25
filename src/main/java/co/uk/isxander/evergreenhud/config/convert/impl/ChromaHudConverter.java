@@ -20,6 +20,7 @@ import co.uk.isxander.evergreenhud.config.convert.ConfigConverter;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
 import co.uk.isxander.evergreenhud.elements.impl.*;
+import co.uk.isxander.evergreenhud.elements.type.TextElement;
 import co.uk.isxander.xanderlib.utils.Position;
 import co.uk.isxander.xanderlib.utils.Resolution;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
@@ -126,21 +127,25 @@ public class ChromaHudConverter extends ConfigConverter {
                 }
 
                 Element element = manager.getNewElementInstance(evergreenId);
-                element.setPosition(position);
+                element.getPosition().set(position);
                 element.getPosition().setScaledY(element.getPosition().getYScaled() + (i * changeY));
-                element.setTextColor(textCol.getRed(), textCol.getGreen(), textCol.getBlue());
-                if (useBg) {
-                    element.getPaddingWidthSetting().set(1);
-                    element.getPaddingHeightSetting().set(1);
-                } else {
-                    element.setBgColor(0, 0, 0, 0);
+                if (element instanceof TextElement) {
+                    TextElement textElement = (TextElement) element;
+
+                    textElement.setTextColor(textCol.getRed(), textCol.getGreen(), textCol.getBlue());
+                    if (useBg) {
+                        textElement.getPaddingWidthSetting().set(1);
+                        textElement.getPaddingHeightSetting().set(1);
+                    } else {
+                        textElement.setBgColor(0, 0, 0, 0);
+                    }
+                    textElement.getChromaSetting().set(chroma);
+                    textElement.getTextModeSetting().set((shadow ? TextElement.TextMode.SHADOW : TextElement.TextMode.NORMAL));
                 }
-                element.getChromaSetting().set(chroma);
-                element.getTextModeSetting().set((shadow ? Element.TextMode.SHADOW : Element.TextMode.NORMAL));
+
 
                 if (element instanceof ElementCoordinates) {
                     ElementCoordinates coords = (ElementCoordinates) element;
-                    coords.type.set(item.optInt("state", 1) == 1 ? "Vertical" : "Horizontal");
                     coords.accuracy.set(item.optInt("precision", 0));
                 } else if (element instanceof ElementText) {
                     ElementText text = (ElementText) element;

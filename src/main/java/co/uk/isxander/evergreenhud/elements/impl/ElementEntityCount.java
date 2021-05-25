@@ -1,13 +1,13 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import club.sk1er.mods.core.util.ReflectionUtil;
-import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import net.minecraft.client.renderer.RenderGlobal;
 
 import java.lang.reflect.Field;
 
-public class ElementEntityCount extends Element {
+public class ElementEntityCount extends SimpleTextElement {
 
     private final Field countEntitiesRendered;
 
@@ -18,7 +18,7 @@ public class ElementEntityCount extends Element {
 
     @Override
     protected ElementData metadata() {
-        return new ElementData("Entity Count", "How many entities are currently being rendered.");
+        return new ElementData("Entity Count", "How many entities are currently being rendered.", "Simple");
     }
 
     @Override

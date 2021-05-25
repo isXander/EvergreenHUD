@@ -47,7 +47,7 @@ public class SnapPoint {
     }
 
     public float calculateX(float x) {
-        return x + (element.calculateHitbox(1, element.getPosition().getScale()).width * snapX);
+        return x + (element.calculateHitBox(1, element.getPosition().getScale()).width * snapX);
     }
 
     public float calculateX(ScaledResolution res) {
@@ -55,7 +55,7 @@ public class SnapPoint {
     }
 
     public float calculateY(float y) {
-        return y + (element.calculateHitbox(1, element.getPosition().getScale()).height * snapY);
+        return y + (element.calculateHitBox(1, element.getPosition().getScale()).height * snapY);
     }
 
     public float calculateY(ScaledResolution res) {

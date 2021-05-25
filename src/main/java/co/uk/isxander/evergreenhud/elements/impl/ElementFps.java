@@ -15,15 +15,15 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import net.minecraft.client.Minecraft;
 
-public class ElementFps extends Element {
+public class ElementFps extends SimpleTextElement {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("FPS Display", "Shows your current FPS");
+        return new ElementData("FPS Display", "Shows your current FPS", "Simple");
     }
 
     @Override

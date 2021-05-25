@@ -16,7 +16,8 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import club.sk1er.mods.core.gui.notification.Notifications;
-import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.RenderOrigin;
+import co.uk.isxander.evergreenhud.elements.type.BackgroundElement;
 import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.settings.impl.ButtonSetting;
@@ -33,7 +34,6 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -45,7 +45,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
-public class ElementImage extends Element {
+public class ElementImage extends BackgroundElement {
 
     private static final String textureName = "EVERGREEN_IMAGE_ELEMENT";
     private static final File imageFile = new File(EvergreenHUD.DATA_DIR, "image.png");
@@ -121,12 +121,11 @@ public class ElementImage extends Element {
 
     @Override
     protected ElementData metadata() {
-        return new ElementData("Custom Image", "Renders an image of your choosing.");
+        return new ElementData("Custom Image", "Renders an image of your choosing.", "Advanced");
     }
 
     @Override
-    public void render(RenderGameOverlayEvent event) {
-        mc.mcProfiler.startSection(getMetadata().getName());
+    public void render(float partialTicks, RenderOrigin origin) {
         if (changed || currentImage == null) {
             // Reload the texture
             if (currentImage != null)
@@ -148,8 +147,7 @@ public class ElementImage extends Element {
         } else {
             scaleMod = 1;
         }
-        HitBox2D hitbox = calculateHitbox(1, scale);
-        GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, getBgColor());
+        super.render(partialTicks, origin);
         GlStateManager.scale(scale, scale, 1);
         GlStateManager.enableDepth();
         GlStateManager.color(1f, 1f, 1f, 1f);
@@ -159,14 +157,13 @@ public class ElementImage extends Element {
         double renderWidth = width * scaleMod;
         double renderHeight = height * scaleMod;
 
-        GLRenderer.drawModalRect(this.getPosition().getRawX(event.resolution) / scale, this.getPosition().getRawY(event.resolution) / scale, 0, 0, imageDimension.getWidth(), imageDimension.getHeight(), renderWidth, renderHeight, imageDimension.getWidth(), imageDimension.getHeight());
+        GLRenderer.drawModalRect(this.getPosition().getRawX(Resolution.get()) / scale, this.getPosition().getRawY(Resolution.get()) / scale, 0, 0, imageDimension.getWidth(), imageDimension.getHeight(), renderWidth, renderHeight, imageDimension.getWidth(), imageDimension.getHeight());
 
         GlStateManager.popMatrix();
-        mc.mcProfiler.endSection();
     }
 
     @Override
-    public HitBox2D calculateHitbox(float gl, float sizeScale) {
+    public HitBox2D calculateHitBox(float gl, float sizeScale) {
         ScaledResolution res = Resolution.get();
 
         float width = (float)imageDimension.getWidth() * sizeScale * scaleMod;
@@ -211,51 +208,6 @@ public class ElementImage extends Element {
             e.printStackTrace();
             throw new ReportedException(CrashReport.makeCrashReport(e, "Failed to copy image."));
         }
-    }
-
-    @Override
-    protected String getValue() {
-        return "";
-    }
-
-    @Override
-    public String getDefaultDisplayTitle() {
-        return "Image";
-    }
-
-    @Override
-    public boolean useAlignmentSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTitleSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useInvertedSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useBracketsSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTextColorSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useChromaSetting() {
-        return false;
-    }
-
-    @Override
-    public boolean useTextModeSetting() {
-        return false;
     }
 
 }

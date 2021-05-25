@@ -16,13 +16,14 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ElementTime extends Element {
+public class ElementTime extends SimpleTextElement {
 
     public BooleanSetting twelveHour;
     public BooleanSetting showSeconds;
@@ -35,7 +36,7 @@ public class ElementTime extends Element {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Time Display", "Displays current system time.");
+        return new ElementData("Time Display", "Displays current system time.", "Simple");
     }
 
     @Override

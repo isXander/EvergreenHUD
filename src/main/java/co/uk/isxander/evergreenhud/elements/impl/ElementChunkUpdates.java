@@ -1,12 +1,12 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.FloatSetting;
 import net.minecraft.client.renderer.chunk.RenderChunk;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-public class ElementChunkUpdates extends Element {
+public class ElementChunkUpdates extends SimpleTextElement {
 
     private long time = 0L;
     private String chunkUpdates = "0";
@@ -20,7 +20,7 @@ public class ElementChunkUpdates extends Element {
 
     @Override
     protected ElementData metadata() {
-        return new ElementData("Chunk Updates", "Displays the amount of chunk updates currently taking place.");
+        return new ElementData("Chunk Updates", "Displays the amount of chunk updates currently taking place.", "Simple");
     }
 
     @Override

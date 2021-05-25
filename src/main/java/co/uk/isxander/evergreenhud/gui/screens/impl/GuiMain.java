@@ -16,7 +16,8 @@
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import club.sk1er.mods.core.gui.notification.Notifications;
-import co.uk.isxander.evergreenhud.gui.elements.GuiButtonAlt;
+import co.uk.isxander.evergreenhud.gui.components.BetterGuiTextField;
+import co.uk.isxander.evergreenhud.gui.components.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import net.minecraft.client.gui.GuiButton;
@@ -30,11 +31,10 @@ public class GuiMain extends GuiScreenElements {
 
     @Override
     public void initGui() {
-        super.initGui();
-
         this.buttonList.add(new GuiButtonAlt(0, width / 2,      height - 20, 90, 20, "Config"));
         this.buttonList.add(new GuiButtonAlt(1, width / 2 - 90, height - 20, 90, 20, "Add"));
-        this.buttonList.add(new GuiButtonAlt(2, width - 80,     height - 20, 90, 20, "Convert"));
+        this.buttonList.add(new GuiButtonAlt(2, width / 2 - 90, height - 40, 90, 20, "Convert"));
+        this.buttonList.add(new GuiButtonAlt(3, width / 2, height - 40, 90, 20, "Move"));
 
         if (!EvergreenHUD.getInstance().getElementManager().isEnabled())
             Notifications.INSTANCE.pushNotification("EvergreenHUD", "The mod is disabled. You will not see the hud in-game unless you enable it.");
@@ -65,6 +65,9 @@ public class GuiMain extends GuiScreenElements {
                 break;
             case 2:
                 mc.displayGuiScreen(new GuiConfigConverter());
+                break;
+            case 3:
+                mc.displayGuiScreen(new GuiMoveElements());
         }
     }
 

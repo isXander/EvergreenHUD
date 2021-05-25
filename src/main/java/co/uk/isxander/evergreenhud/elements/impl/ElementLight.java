@@ -2,12 +2,13 @@ package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
 import co.uk.isxander.xanderlib.utils.MathUtils;
 import net.minecraft.util.BlockPos;
 import net.minecraft.world.chunk.Chunk;
 
-public class ElementLight extends Element {
+public class ElementLight extends SimpleTextElement {
 
     public ArraySetting displayMode;
 
@@ -18,7 +19,7 @@ public class ElementLight extends Element {
 
     @Override
     protected ElementData metadata() {
-        return new ElementData("Light Level", "Get the current light level of where you are standing.");
+        return new ElementData("Light Level", "Get the current light level of where you are standing.", "Simple");
     }
 
     @Override

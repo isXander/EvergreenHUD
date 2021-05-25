@@ -15,14 +15,14 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 
-public class ElementServer extends Element {
+public class ElementServer extends SimpleTextElement {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Server IP", "Shows the current server IP.");
+        return new ElementData("Server IP", "Shows the current server IP.", "Simple");
     }
 
     @Override

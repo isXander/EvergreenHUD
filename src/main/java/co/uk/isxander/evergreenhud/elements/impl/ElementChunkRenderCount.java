@@ -15,10 +15,10 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 
-public class ElementChunkRenderCount extends Element {
+public class ElementChunkRenderCount extends SimpleTextElement {
 
     @Override
     public void initialise() {
@@ -27,7 +27,7 @@ public class ElementChunkRenderCount extends Element {
 
     @Override
     protected ElementData metadata() {
-        return new ElementData("Chunk Counter", "Displays how many chunks are currently being rendered.");
+        return new ElementData("Chunk Counter", "Displays how many chunks are currently being rendered.", "Simple");
     }
 
     @Override

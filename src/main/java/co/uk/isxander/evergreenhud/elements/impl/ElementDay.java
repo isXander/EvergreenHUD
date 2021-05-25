@@ -1,13 +1,13 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 
-public class ElementDay extends Element {
+public class ElementDay extends SimpleTextElement {
 
     @Override
     protected ElementData metadata() {
-        return new ElementData("Day Counter", "Displays the current day in the world.");
+        return new ElementData("Day Counter", "Displays the current day in the world.", "Simple");
     }
 
     @Override

@@ -15,7 +15,7 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.xanderlib.event.PacketEvent;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
@@ -26,7 +26,7 @@ import net.minecraft.network.play.server.S19PacketEntityStatus;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-public class ElementCombo extends Element {
+public class ElementCombo extends SimpleTextElement {
 
     private long sentAttackTime;
     private long lastHitTime;
@@ -47,7 +47,7 @@ public class ElementCombo extends Element {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Combo Counter", "Shows the amount of hits you get before you are attacked.");
+        return new ElementData("Combo Counter", "Shows the amount of hits you get before you are attacked.", "Combat");
     }
 
     @Override

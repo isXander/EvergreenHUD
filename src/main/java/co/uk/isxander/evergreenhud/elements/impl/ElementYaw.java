@@ -15,14 +15,14 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import net.minecraft.util.MathHelper;
 
 import java.text.DecimalFormat;
 
-public class ElementYaw extends Element {
+public class ElementYaw extends SimpleTextElement {
 
     public BooleanSetting trailingZeros;
 
@@ -33,7 +33,7 @@ public class ElementYaw extends Element {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Yaw Display", "Shows the player's rotation yaw. Useful for bridging.");
+        return new ElementData("Yaw Display", "Shows the player's rotation yaw. Useful for bridging.", "Simple");
     }
 
     @Override

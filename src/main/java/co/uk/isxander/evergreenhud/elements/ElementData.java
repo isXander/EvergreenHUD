@@ -17,11 +17,12 @@ package co.uk.isxander.evergreenhud.elements;
 
 public class ElementData {
 
-    private final String name, description;
+    private final String name, description, category;
 
-    public ElementData(String name, String description) {
+    public ElementData(String name, String description, String category) {
         this.name = name;
         this.description = description;
+        this.category = category;
     }
 
     public String getName() {
@@ -30,5 +31,9 @@ public class ElementData {
 
     public String getDescription() {
         return description;
+    }
+
+    public String getCategory() {
+        return category;
     }
 }

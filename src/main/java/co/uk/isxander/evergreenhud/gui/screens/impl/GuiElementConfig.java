@@ -16,7 +16,7 @@
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
-import co.uk.isxander.evergreenhud.gui.elements.*;
+import co.uk.isxander.evergreenhud.gui.components.*;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.settings.Setting;
 import co.uk.isxander.evergreenhud.settings.impl.*;
@@ -29,10 +29,7 @@ import net.minecraftforge.fml.client.config.GuiSlider;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class GuiElementConfig extends GuiScreenElements {
 
@@ -41,6 +38,7 @@ public class GuiElementConfig extends GuiScreenElements {
     protected final Map<Integer, Setting> customButtons = new HashMap<>();
     protected final List<BetterGuiTextField> textFieldList = new ArrayList<>();
     protected String currentCategory;
+    protected CategoryScrollPane categoryScrollPane;
 
     public GuiElementConfig(Element element) {
         this.element = element;
@@ -49,7 +47,23 @@ public class GuiElementConfig extends GuiScreenElements {
 
     @Override
     public void initGui() {
-        super.initGui();
+        Keyboard.enableRepeatEvents(true);
+
+        List<String> categories = new ArrayList<>();
+        for (Setting setting : element.getCustomSettings()) {
+            if (!categories.contains(setting.getCategory())) {
+                categories.add(setting.getCategory());
+            }
+        }
+        Collections.sort(categories);
+        categories.add(0, "Everything");
+        this.categoryScrollPane = new CategoryScrollPane(width / 8, height, 0, height, 0, 20, width, height, categories, (category, id) -> {
+            if (id == 0) currentCategory = null;
+            else currentCategory = category;
+
+            addButtons();
+        });
+
         addButtons();
     }
 
@@ -60,14 +74,7 @@ public class GuiElementConfig extends GuiScreenElements {
         this.buttonList.add(new GuiButtonAlt(0, width / 2, height - 20, 90, 20, "Finished"));
         this.buttonList.add(new GuiButtonAlt(1, width / 2 - 90, height - 20, 90, 20, "Reset"));
 
-        List<String> categories = new ArrayList<>();
         int id = 2;
-        for (Setting s : element.getCustomSettings()) {
-            if (!categories.contains(s.getCategory())) {
-                categories.add(s.getCategory());
-            }
-        }
-
         int row = 0;
         for (Setting s : element.getCustomSettings()) {
             if (s.isInternal() || s.isDisabled())
@@ -107,7 +114,6 @@ public class GuiElementConfig extends GuiScreenElements {
                 textInput.setEnableBackgroundDrawing(true);
                 textInput.setMaxStringLength(256);
                 textInput.setVisible(true);
-                textInput.setEnableBackgroundDrawing(true);
                 textInput.setCanLoseFocus(true);
                 textInput.setFocused(false);
                 textFieldList.add(textInput);
@@ -132,6 +138,9 @@ public class GuiElementConfig extends GuiScreenElements {
         drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + element.getMetadata().getName(), (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, element.getMetadata().getDescription(), width / 2, 25, -1);
+
+        this.categoryScrollPane.drawScreen(mouseX, mouseY, partialTicks);
+
         super.drawScreen(mouseX, mouseY, partialTicks);
         for (BetterGuiTextField textField : textFieldList) {
             textField.drawTextBox();
@@ -174,15 +183,12 @@ public class GuiElementConfig extends GuiScreenElements {
 
     @Override
     public void sliderUpdated(GuiSlider button) {
-        System.out.println("updated!!!");
         Setting s = customButtons.get(button.id);
         System.out.println(s);
         if (s instanceof IntegerSetting) {
-            System.out.println("integer!!!");
             IntegerSetting setting = (IntegerSetting) s;
             setting.set(button.getValueInt());
         } else if (s instanceof FloatSetting) {
-            System.out.println("float!!!");
             FloatSetting setting = (FloatSetting) s;
             setting.set((float) button.getValue());
         }
@@ -211,4 +217,9 @@ public class GuiElementConfig extends GuiScreenElements {
         }
     }
 
+    @Override
+    public void onGuiClosed() {
+        Keyboard.enableRepeatEvents(false);
+        super.onGuiClosed();
+    }
 }

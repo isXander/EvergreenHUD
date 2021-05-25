@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -29,7 +30,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.text.DecimalFormat;
 
-public class ElementReach extends Element {
+public class ElementReach extends SimpleTextElement {
 
     public BooleanSetting trailingZeros;
 
@@ -43,7 +44,7 @@ public class ElementReach extends Element {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Reach Display", "Shows how far away you are from your enemy.");
+        return new ElementData("Reach Display", "Shows how far away you are from your enemy.", "Combat");
     }
 
     @Override

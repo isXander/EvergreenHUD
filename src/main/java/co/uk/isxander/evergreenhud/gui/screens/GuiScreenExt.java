@@ -15,8 +15,8 @@
 
 package co.uk.isxander.evergreenhud.gui.screens;
 
-import co.uk.isxander.evergreenhud.gui.elements.BetterGuiButton;
-import co.uk.isxander.evergreenhud.gui.elements.BetterGuiSlider;
+import co.uk.isxander.evergreenhud.gui.components.BetterGuiButton;
+import co.uk.isxander.evergreenhud.gui.components.BetterGuiSlider;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.config.GuiSlider;

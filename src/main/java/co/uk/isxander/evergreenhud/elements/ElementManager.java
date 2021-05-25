@@ -148,9 +148,15 @@ public class ElementManager implements Constants {
 
         if (isEnabled()) {
             mc.mcProfiler.startSection("Element Render");
-            if ((mc.inGameHasFocus && !mc.gameSettings.showDebugInfo) || (mc.gameSettings.showDebugInfo && showInDebug) || (mc.currentScreen instanceof GuiChat && showInChat) || (!(mc.currentScreen instanceof GuiChat) && mc.currentScreen != null && showUnderGui && !(mc.currentScreen instanceof GuiScreenElements))) {
+
+            boolean inChat = mc.currentScreen instanceof GuiChat;
+            boolean inDebug = mc.gameSettings.showDebugInfo;
+            boolean inGui = mc.currentScreen != null && !(mc.currentScreen instanceof GuiScreenElements) && !(mc.currentScreen instanceof GuiChat);
+
+            boolean shouldRender = (mc.inGameHasFocus && !inDebug) || (showInChat && inChat) || (showInDebug && inDebug && !(!showInChat && inChat)) || (showUnderGui && inGui);
+            if (shouldRender) {
                 for (Element e : currentElements) {
-                    e.render(event);
+                    e.render(event.partialTicks, RenderOrigin.HUD);
                 }
             }
             mc.mcProfiler.endSection();
