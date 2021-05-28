@@ -27,9 +27,19 @@ public class CategoryScrollPane extends MinScrollingList implements Constants {
     }
 
     @Override
-    public void elementClicked(int index, boolean doubleClick) {
+    public boolean elementClicked(int index, boolean doubleClick) {
+        if (categories.get(index).trim().equalsIgnoreCase("")) return false;
+
         selected = index;
         onClick.onClick(categories.get(index), index);
+
+        return true;
+    }
+
+    @Override
+    public void setIndex(int index) {
+        super.setIndex(index);
+        elementClicked(index, false);
     }
 
     @Override
@@ -48,6 +58,10 @@ public class CategoryScrollPane extends MinScrollingList implements Constants {
             Gui.drawRect(this.left, slotTop, this.right, slotTop + slotHeight, new Color(0, 255, 0, 30).getRGB());
         float y = slotTop + (this.slotHeight / 2f) - (mc.fontRendererObj.FONT_HEIGHT / 2f);
         mc.fontRendererObj.drawString(this.categories.get(slotIdx), this.left + 3, y, -1, true);
+    }
+
+    public List<String> getCategories() {
+        return categories;
     }
 
     public interface ElementClick {

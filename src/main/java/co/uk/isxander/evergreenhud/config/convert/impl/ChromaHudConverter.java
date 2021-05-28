@@ -38,6 +38,7 @@ import java.util.Map;
 
 public class ChromaHudConverter extends ConfigConverter {
 
+    public static final File DEFAULT_DIR = new File(mc.mcDataDir, "config");
     public static final String CONFIG_FILE = "ChromaHUD.cfg";
     public static final Map<String, String> IDENTIFIER_MAP = new HashMap<String, String>() {{
         put("CORDS", "COORDS");
@@ -50,41 +51,46 @@ public class ChromaHudConverter extends ConfigConverter {
         put("TEXT", "TEXT");
         put("TIME", "TIME");
         put("ARMOUR_HUD", "ARMOUR");
-        put("C_COUNTER", "ENTITY_COUNT"); // ik its not the same thing
+        put("C_COUNTER", "CHUNK_COUNT");
     }};
 
-    private final BetterJsonObject chromaHudConfig;
     private int failures;
 
     public ChromaHudConverter(File configFolder) {
         super(configFolder);
         this.failures = 0;
-        try {
-            this.chromaHudConfig = BetterJsonObject.getFromFile(new File(getConfigFolder(), CONFIG_FILE));
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ReportedException(CrashReport.makeCrashReport(e, "Could not process ChromaHUD configuration file."));
-        }
-
     }
 
     @Override
     public void process(ElementManager manager) {
-        processMain(manager);
-        processElements(manager);
+        File configFile = new File(getConfigFolder(), CONFIG_FILE);
 
-        manager.getMainConfig().save();
-        manager.getElementConfig().save();
+        if (!configFile.exists() || configFile.isDirectory()) {
+            Notifications.INSTANCE.pushNotification("Conversion Failed", "Could not find ChromaHUD folder.");
+            return;
+        }
 
-        Notifications.INSTANCE.pushNotification("EvergreenHUD", "ChromaHUD conversion has been completed.\n"
-            + failures + " failures encountered.");
+        try {
+            BetterJsonObject config = BetterJsonObject.getFromFile(new File(getConfigFolder(), CONFIG_FILE));
+
+            processMain(manager, config);
+            processElements(manager, config);
+
+            manager.getMainConfig().save();
+            manager.getElementConfig().save();
+
+            Notifications.INSTANCE.pushNotification("Conversion Completed", "ChromaHUD conversion has been completed.\n"
+                    + failures + " failures encountered.");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void processMain(ElementManager manager) {
+    private void processMain(ElementManager manager, BetterJsonObject chromaHudConfig) {
         manager.setEnabled(chromaHudConfig.optBoolean("enabled", true));
     }
 
-    private void processElements(ElementManager manager) {
+    private void processElements(ElementManager manager, BetterJsonObject chromaHudConfig) {
         JsonArray elementArray = chromaHudConfig.get("elements").getAsJsonArray();
         ScaledResolution res = Resolution.get();
 

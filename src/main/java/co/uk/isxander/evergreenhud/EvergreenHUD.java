@@ -20,6 +20,8 @@ import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.MinecraftUtils;
 import club.sk1er.mods.core.util.Multithreading;
 import co.uk.isxander.evergreenhud.addon.AddonManager;
+import co.uk.isxander.evergreenhud.config.convert.impl.ChromaHudConverter;
+import co.uk.isxander.evergreenhud.config.convert.impl.SimpleHudConverter;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
 import co.uk.isxander.evergreenhud.elements.impl.ElementText;
 import co.uk.isxander.evergreenhud.repo.BlacklistManager;
@@ -31,7 +33,6 @@ import co.uk.isxander.evergreenhud.command.EvergreenHudCommand;
 import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.evergreenhud.repo.UpdateChecker;
-import co.uk.isxander.xanderlib.utils.GuiUtils;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -58,7 +59,7 @@ public class EvergreenHUD implements Constants {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String MOD_NAME = "EvergreenHUD";
-    public static final String MOD_VERSION = "2.0-pre5";
+    public static final String MOD_VERSION = "@BUILD_VER@";
     public static final String UPDATE_NAME = "the next step.";
     public static final boolean RELEASE = false;
 
@@ -142,9 +143,26 @@ public class EvergreenHUD implements Constants {
         progress.step("Finishing Up");
         MinecraftForge.EVENT_BUS.register(this);
 
-        if (isFirstLaunch()) {
+        if (isFirstLaunch() || isVersionTwoFirstLaunch()) {
+            if (new File(ChromaHudConverter.DEFAULT_DIR, ChromaHudConverter.CONFIG_FILE).exists()) {
+                Notifications.INSTANCE.pushNotification("ChromaHUD Detected", "An existing ChromaHUD configuration has been detected. Would you like to convert it to EvergreenHUD?", () -> {
+                    new ChromaHudConverter(ChromaHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
+
+                    return null;
+                });
+            }
+            if (SimpleHudConverter.DEFAULT_DIR.exists()) {
+                Notifications.INSTANCE.pushNotification("SimpleHUD Detected", "An existing SimpleHUD configuration has been detected. Would you like to convert it to EvergreenHUD?", () -> {
+                    new SimpleHudConverter(SimpleHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
+
+                    return null;
+                });
+            }
+
             ElementText textElement = new ElementText();
-            textElement.text.set("Thank you for downloading EvergreenHUD! Use /evergreenhud to get to the configuration.");
+            textElement.getPosition().setScaledX(0.5f);
+            textElement.getPosition().setScaledY(0.5f);
+            textElement.text.set("Use /evergreenhud to configure.");
             getElementManager().addElement(textElement);
             getElementManager().getElementConfig().save();
         }

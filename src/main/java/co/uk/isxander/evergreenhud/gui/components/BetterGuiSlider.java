@@ -26,30 +26,27 @@ public class BetterGuiSlider extends GuiSliderAlt {
 
     public String description;
 
-    private final GuiScreenExt screen;
-
-    public BetterGuiSlider(int id, int xPos, int yPos, int width, int height, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr, GuiScreenExt screen, String description) {
+    public BetterGuiSlider(int id, int xPos, int yPos, int width, int height, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr, String description) {
         super(id, xPos, yPos, width, height, prefix, suf, minVal, maxVal, currentVal, showDec, drawStr);
-        this.screen = screen;
         this.description = description;
     }
 
-    public BetterGuiSlider(int id, int xPos, int yPos, int width, int height, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr, ISlider par, GuiScreenExt screen, String description) {
+    public BetterGuiSlider(int id, int xPos, int yPos, int width, int height, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr, ISlider par, String description) {
         super(id, xPos, yPos, width, height, prefix, suf, minVal, maxVal, currentVal, showDec, drawStr, par);
-        this.screen = screen;
         this.description = description;
     }
 
     public BetterGuiSlider(int id, int xPos, int yPos, String displayStr, double minVal, double maxVal, double currentVal, ISlider par, GuiScreenExt screen, String description) {
         super(id, xPos, yPos, displayStr, minVal, maxVal, currentVal, par);
-        this.screen = screen;
         this.description = description;
     }
 
     @Override
     public void updateSlider() {
         super.updateSlider();
-        this.screen.sliderUpdated(this);
+        System.out.println("---------");
+        System.out.println(displayString);
+        System.out.println("---------");
     }
 
     public void drawButtonDescription(Minecraft mc, int mouseX, int mouseY) {

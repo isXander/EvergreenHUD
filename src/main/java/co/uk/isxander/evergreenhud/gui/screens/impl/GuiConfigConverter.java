@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.config.convert.impl.ChromaHudConverter;
+import co.uk.isxander.evergreenhud.config.convert.impl.SimpleHudConverter;
 import co.uk.isxander.evergreenhud.gui.components.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import net.minecraft.client.gui.GuiButton;
@@ -29,9 +30,12 @@ public class GuiConfigConverter extends GuiScreenElements {
 
     @Override
     public void initGui() {
+        super.initGui();
+
         this.buttonList.add(new GuiButtonAlt(0, width / 2 - 90 - 1, height - 20, 182, 20, "Back"));
 
         this.buttonList.add(new GuiButtonAlt(1, left(), getRow(0), 242, 20, "ChromaHUD"));
+        this.buttonList.add(new GuiButtonAlt(2, left(), getRow(1), 242, 20, "SimpleHUD"));
     }
 
     @Override
@@ -41,7 +45,10 @@ public class GuiConfigConverter extends GuiScreenElements {
                 mc.displayGuiScreen(new GuiMain());
                 break;
             case 1:
-                new ChromaHudConverter(new File(mc.mcDataDir, "config")).process(EvergreenHUD.getInstance().getElementManager());
+                new ChromaHudConverter(ChromaHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
+                break;
+            case 2:
+                new SimpleHudConverter(SimpleHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
                 break;
         }
     }

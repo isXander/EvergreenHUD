@@ -81,7 +81,7 @@ public abstract class MinScrollingList {
 
     protected abstract int getSize();
 
-    protected abstract void elementClicked(int index, boolean doubleClick);
+    protected abstract boolean elementClicked(int index, boolean doubleClick);
 
     protected abstract boolean isSelected(int index);
 
@@ -194,9 +194,10 @@ public abstract class MinScrollingList {
                     int slotIndex = mouseListY / this.slotHeight;
 
                     if (mouseX <= entryRight && slotIndex >= 0 && mouseListY >= 0 && slotIndex < listLength) {
-                        this.elementClicked(slotIndex, slotIndex == this.selectedIndex && System.currentTimeMillis() - this.lastClickTime < 250L);
-                        this.selectedIndex = slotIndex;
-                        this.lastClickTime = System.currentTimeMillis();
+                        if (this.elementClicked(slotIndex, slotIndex == this.selectedIndex && System.currentTimeMillis() - this.lastClickTime < 250L)) {
+                            this.selectedIndex = slotIndex;
+                            this.lastClickTime = System.currentTimeMillis();
+                        }
                     } else if (mouseX <= entryRight && mouseListY < 0) {
                         this.clickHeader(mouseX - this.left, mouseY - this.top + (int) this.scrollDistance - border);
                     }
@@ -343,6 +344,11 @@ public abstract class MinScrollingList {
         GlStateManager.enableAlpha();
         GlStateManager.disableBlend();
         GL11.glDisable(GL11.GL_SCISSOR_TEST);
+    }
+
+    public void setIndex(int index) {
+        this.selectedIndex = index;
+        this.lastClickTime = System.currentTimeMillis();
     }
 
     protected void drawGradientRect(int left, int top, int right, int bottom, int color1, int color2) {

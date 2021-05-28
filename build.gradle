@@ -1,40 +1,52 @@
-buildscript {
-    repositories {
-        maven {
-            name = "jitpack"
-            url = "https://jitpack.io/"
-        }
-        maven {
-            name = "forge"
-            url = "https://maven.minecraftforge.net/"
-        }
-    }
-    dependencies {
-        classpath "com.github.asbyth:ForgeGradle:86b2392"
-    }
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'net.minecraftforge.gradle.forge' version 'b13624b'
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
 
-version = "2.0-pre5"
-group = "co.uk.isxander"
-archivesBaseName = "evergreenhud"
+version = '2.0-pre5'
+group = 'co.uk.isxander'
+archivesBaseName = 'evergreenhud'
 
 targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
+compileJava.options.encoding = 'UTF-8'
 
 minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9"
-    runDir = "run"
-    mappings = "stable_22"
+    version = '1.8.9-11.15.1.2318-1.8.9'
+    runDir = 'run'
+    mappings = 'stable_22'
+    makeObfSourceJar = false
+
+    replace('@BUILD_VER@', project.version)
+}
+
+repositories {
+
+}
+
+configurations {
+    include
+    implementation.extendsFrom(include)
 }
 
 dependencies {
-    provided files("libs/modcore.jar")
-    provided files("libs/xanderlib.jar")
+    provided files('libs/modcore.jar')
+    provided files('libs/xanderlib.jar')
+}
+
+jar {
+    manifest {
+        attributes (
+                'FMLCorePlugin': 'co.uk.isxander.evergreenhud.forge.FMLLoadingPlugin',
+                'ModSide': 'CLIENT',
+                'FMLCorePluginContainsFMLMod': 'Yes, yes it does'
+        )
+    }
 }
 
 processResources {
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+    inputs.property 'version', project.version
+    inputs.property 'mcversion', project.minecraft.version
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
@@ -44,16 +56,6 @@ processResources {
         
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
-    }
-}
-
-jar {
-    archiveName = "[$minecraft.version-$version] EvergreenHUD.jar"
-
-    manifest {
-        attributes "FMLCorePlugin": "co.uk.isxander.evergreenhud.forge.FMLLoadingPlugin",
-                "ModSide": "CLIENT",
-                "FMLCorePluginContainsFMLMod": "Yes, yes it does"
     }
 }
 
@@ -67,3 +69,13 @@ task moveResources {
 
 tasks.moveResources.dependsOn processResources
 tasks.classes.dependsOn moveResources
+
+shadowJar {
+    archiveBaseName.set("[${minecraft.version}-${project.version}] EvergreenHUD")
+    archiveVersion.set('')
+    archiveClassifier.set('')
+    configurations = [project.configurations.include]
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+}
+
+jar.dependsOn shadowJar

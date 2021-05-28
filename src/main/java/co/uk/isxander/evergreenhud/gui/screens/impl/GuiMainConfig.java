@@ -35,6 +35,8 @@ public class GuiMainConfig extends GuiScreenElements {
 
     @Override
     public void initGui() {
+        super.initGui();
+
         addButtons();
     }
 
@@ -86,6 +88,7 @@ public class GuiMainConfig extends GuiScreenElements {
 
     @Override
     public void onGuiClosed() {
+        super.initGui();
         manager.getMainConfig().save();
     }
 }

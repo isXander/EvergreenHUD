@@ -184,13 +184,6 @@ public abstract class Element extends Gui implements Listenable, Constants {
         }
         if (mouseX >= hitbox.x + hitbox.width - iconWidth && mouseX <= hitbox.x + hitbox.width && mouseY >= hitbox.y + hitbox.height - iconHeight && mouseY <= hitbox.y + hitbox.height) {
             EvergreenHUD.getInstance().getElementManager().removeElement(this);
-            // Update the buttons so enabled is false
-            if (mc.currentScreen instanceof GuiElementConfig) {
-                GuiElementConfig gui = (GuiElementConfig) mc.currentScreen;
-                if (gui.element.equals(this)) {
-                    gui.addButtons();
-                }
-            }
         }
     }
 

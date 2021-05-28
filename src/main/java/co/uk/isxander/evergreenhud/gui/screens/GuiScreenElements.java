@@ -19,6 +19,7 @@ import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.RenderOrigin;
 import co.uk.isxander.evergreenhud.elements.snapping.SnapPoint;
+import co.uk.isxander.evergreenhud.gui.screens.impl.GuiElementConfig;
 import co.uk.isxander.xanderlib.utils.MathUtils;
 import co.uk.isxander.xanderlib.utils.Resolution;
 import net.apolloclient.utils.GLRenderer;
@@ -28,6 +29,10 @@ import org.lwjgl.input.Mouse;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class GuiScreenElements extends GuiScreenExt {
 
@@ -35,6 +40,10 @@ public class GuiScreenElements extends GuiScreenExt {
     protected Element lastClicked = null;
     protected float offX = 0, offY = 0;
 
+    @Override
+    public void initGui() {
+        Keyboard.enableRepeatEvents(true);
+    }
 
     @Override
     public void drawScreen(int mouseXInt, int mouseYInt, float partialTicks) {
@@ -106,12 +115,18 @@ public class GuiScreenElements extends GuiScreenExt {
         super.mouseClicked(mouseX, mouseY, mouseButton);
         ScaledResolution res = Resolution.get();
         boolean clickedElement = false;
-        for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
+
+        float x = ((float)Mouse.getX()) * ((float)this.width) / ((float)this.mc.displayWidth);
+        float y = ((float)this.height) - ((float)Mouse.getY()) * ((float)this.height) / ((float)this.mc.displayHeight) - 1f;
+
+        List<Element> reversed = new ArrayList<>(EvergreenHUD.getInstance().getElementManager().getCurrentElements());
+        Collections.reverse(reversed);
+        for (Element e : reversed) {
             e.onMouseClicked(mouseX, mouseY);
             if (e.calculateHitBox(1, e.getPosition().getScale()).doesPositionOverlap(mouseX, mouseY)) {
                 lastClicked = dragging = e;
-                offX = mouseX - e.getPosition().getRawX(res);
-                offY = mouseY - e.getPosition().getRawY(res);
+                offX = x - e.getPosition().getRawX(res);
+                offY = y - e.getPosition().getRawY(res);
                 clickedElement = true;
                 break;
             }
@@ -148,6 +163,19 @@ public class GuiScreenElements extends GuiScreenExt {
                 case Keyboard.KEY_RIGHT:
                     lastClicked.getPosition().setRawX(MathUtils.clamp(lastClicked.getPosition().getRawX(res) + 2, 0, res.getScaledWidth() - 1), res);
                     break;
+                case Keyboard.KEY_RETURN:
+                    if (this instanceof GuiElementConfig) {
+                        GuiElementConfig elementConfig = (GuiElementConfig) this;
+                        if (elementConfig.element == lastClicked) {
+                            break;
+                        }
+                    }
+                    mc.displayGuiScreen(lastClicked.getElementConfigGui());
+                    break;
+                case Keyboard.KEY_DELETE:
+                case Keyboard.KEY_BACK:
+                    EvergreenHUD.getInstance().getElementManager().removeElement(lastClicked);
+                    break;
             }
         }
 
@@ -155,6 +183,7 @@ public class GuiScreenElements extends GuiScreenExt {
 
     @Override
     public void onGuiClosed() {
+        Keyboard.enableRepeatEvents(false);
         EvergreenHUD.getInstance().getElementManager().getElementConfig().save();
     }
 

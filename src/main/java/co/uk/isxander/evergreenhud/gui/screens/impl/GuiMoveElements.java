@@ -10,6 +10,8 @@ public class GuiMoveElements extends GuiScreenElements {
 
     @Override
     public void initGui() {
+        super.initGui();
+
         Notifications.INSTANCE.pushNotification("EvergreenHUD", "Press escape once you are finished!");
     }
 

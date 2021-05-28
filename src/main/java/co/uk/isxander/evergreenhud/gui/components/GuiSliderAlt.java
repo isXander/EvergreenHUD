@@ -66,17 +66,9 @@ public class GuiSliderAlt extends GuiSlider {
     }
 
     @Override
-    public boolean mousePressed(Minecraft par1Minecraft, int par2, int par3) {
-        boolean pressy = super.mousePressed(par1Minecraft, par2, par3);
-        System.out.println(pressy);
-        return pressy;
-    }
-
-    @Override
     protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
         if (this.visible) {
             if (this.dragging) {
-                System.out.println("AND its dragging on the button");
                 this.sliderValue = (mouseX - (this.xPosition + 4)) / (float)(this.width - 8);
                 updateSlider();
             }
@@ -84,5 +76,26 @@ public class GuiSliderAlt extends GuiSlider {
             GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
             GLRenderer.drawRectangle(this.xPosition + (int)(this.sliderValue * (float)(this.width - 8)), this.yPosition, 8, 20, new Color(255, 255, 255, 100));
         }
+    }
+
+    @Override
+    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
+//        System.out.println("-------------");
+//        System.out.println("text: " + displayString);
+//        System.out.println("enabled: " + enabled);
+//        System.out.println("visible: " + visible);
+//        System.out.println("mousex: " + mouseX);
+//        System.out.println("mousey: " + mouseY);
+//        System.out.println("x pos: " + xPosition);
+//        System.out.println("y pos: " + yPosition);
+//        System.out.println("width: " + width);
+//        System.out.println("height: " + height);
+//        System.out.println("x >=: " + (mouseX >= this.xPosition));
+//        System.out.println("y >=: " + (mouseY >= this.yPosition));
+//        System.out.println("x <: " + (mouseX < this.xPosition + this.width));
+//        System.out.println("y <: " + (mouseY < this.yPosition + this.height));
+//        System.out.println("pressed: " + (this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height));
+
+        return super.mousePressed(mc, mouseX, mouseY);
     }
 }

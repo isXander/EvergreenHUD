@@ -47,7 +47,7 @@ public class GuiElementConfig extends GuiScreenElements {
 
     @Override
     public void initGui() {
-        Keyboard.enableRepeatEvents(true);
+        super.initGui();
 
         List<String> categories = new ArrayList<>();
         for (Setting setting : element.getCustomSettings()) {
@@ -55,11 +55,10 @@ public class GuiElementConfig extends GuiScreenElements {
                 categories.add(setting.getCategory());
             }
         }
-        Collections.sort(categories);
-        categories.add(0, "Everything");
+        //Collections.sort(categories);
+        currentCategory = categories.get(0);
         this.categoryScrollPane = new CategoryScrollPane(width / 8, height, 0, height, 0, 20, width, height, categories, (category, id) -> {
-            if (id == 0) currentCategory = null;
-            else currentCategory = category;
+            currentCategory = category;
 
             addButtons();
         });
@@ -92,10 +91,10 @@ public class GuiElementConfig extends GuiScreenElements {
                 this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, setting.getName() + ": " + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF"), setting.getDescription()));
             } else if (s instanceof IntegerSetting) {
                 IntegerSetting setting = (IntegerSetting) s;
-                this.buttonList.add(new BetterGuiSlider(id, x, y, 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), false, true, this, setting.getDescription()));
+                this.buttonList.add(new BetterGuiSlider(id, x, y, 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), false, true, (b) -> setting.set(b.getValueInt()), setting.getDescription()));
             } else if (s instanceof FloatSetting) {
                 FloatSetting setting = (FloatSetting) s;
-                this.buttonList.add(new BetterGuiSlider(id, x, y, 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), true, true, this, setting.getDescription()));
+                this.buttonList.add(new BetterGuiSlider(id, x, y, 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), true, true, (b) -> setting.set((float) b.getValue()), setting.getDescription()));
             } else if (s instanceof ArraySetting) {
                 ArraySetting setting = (ArraySetting) s;
                 this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, setting.getName() + ": " + setting.get(), setting.getDescription()));
@@ -182,19 +181,6 @@ public class GuiElementConfig extends GuiScreenElements {
     }
 
     @Override
-    public void sliderUpdated(GuiSlider button) {
-        Setting s = customButtons.get(button.id);
-        System.out.println(s);
-        if (s instanceof IntegerSetting) {
-            IntegerSetting setting = (IntegerSetting) s;
-            setting.set(button.getValueInt());
-        } else if (s instanceof FloatSetting) {
-            FloatSetting setting = (FloatSetting) s;
-            setting.set((float) button.getValue());
-        }
-    }
-
-    @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         for (GuiTextField textField : textFieldList) {
             textField.textboxKeyTyped(typedChar, keyCode);
@@ -215,11 +201,5 @@ public class GuiElementConfig extends GuiScreenElements {
         for (GuiTextField textField : textFieldList) {
             textField.mouseClicked(mouseX, mouseY, mouseButton);
         }
-    }
-
-    @Override
-    public void onGuiClosed() {
-        Keyboard.enableRepeatEvents(false);
-        super.onGuiClosed();
     }
 }

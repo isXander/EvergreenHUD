@@ -19,12 +19,8 @@ import co.uk.isxander.evergreenhud.gui.components.BetterGuiButton;
 import co.uk.isxander.evergreenhud.gui.components.BetterGuiSlider;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.client.config.GuiSlider;
 
 public class GuiScreenExt extends GuiScreen {
-
-    public void sliderUpdated(GuiSlider button) {
-    }
 
     protected int getRow(int row) {
         return 40 + (row * 22);

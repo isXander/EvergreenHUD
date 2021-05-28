@@ -31,6 +31,8 @@ public class GuiMain extends GuiScreenElements {
 
     @Override
     public void initGui() {
+        super.initGui();
+
         this.buttonList.add(new GuiButtonAlt(0, width / 2,      height - 20, 90, 20, "Config"));
         this.buttonList.add(new GuiButtonAlt(1, width / 2 - 90, height - 20, 90, 20, "Add"));
         this.buttonList.add(new GuiButtonAlt(2, width / 2 - 90, height - 40, 90, 20, "Convert"));

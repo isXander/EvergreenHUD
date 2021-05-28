@@ -67,11 +67,13 @@ public class GuiAddElement extends GuiScreenExt {
                 categories.add(element.getMetadata().getCategory());
             }
         }
-        Collections.sort(categories);
-        categories.add(0, "Everything");
+        //Collections.sort(categories);
+        categories.add("");
+        categories.add("Search");
+        currentCategory = categories.get(0);
 
         this.categoryScrollPane = new CategoryScrollPane(width / 8, height, 0, height, 0, 20, width, height, categories, (category, id) -> {
-            if (id == 0) currentCategory = null;
+            if (category.equals("Search")) currentCategory = null;
             else currentCategory = category;
 
             addButtons(this.searchField.getText());
@@ -144,8 +146,8 @@ public class GuiAddElement extends GuiScreenExt {
         this.searchField.drawTextBox();
         this.searchField.drawTextBoxDescription(mc, mouseX, mouseY);
 
-        String text = EnumChatFormatting.UNDERLINE + "Search Elements...";
-        mc.fontRendererObj.drawString(text, width - 4 - mc.fontRendererObj.getStringWidth(text), height - 25 - mc.fontRendererObj.FONT_HEIGHT, -1, true);
+        String text = "Search Elements";
+        mc.fontRendererObj.drawString(text, width - 4 - mc.fontRendererObj.getStringWidth(text), height - 25 - mc.fontRendererObj.FONT_HEIGHT, 0x999999, true);
 
         this.categoryScrollPane.drawScreen(mouseX, mouseY, partialTicks);
 
@@ -160,7 +162,10 @@ public class GuiAddElement extends GuiScreenExt {
             if (button instanceof ElementButton) {
                 ElementButton eb = (ElementButton) button;
                 EvergreenHUD.getInstance().getElementManager().addElement(eb.getElement());
-                mc.displayGuiScreen(eb.getElement().getElementConfigGui());
+
+                if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                    mc.displayGuiScreen(eb.getElement().getElementConfigGui());
+                }
             }
         }
     }
@@ -172,6 +177,7 @@ public class GuiAddElement extends GuiScreenExt {
             mc.displayGuiScreen(new GuiMain());
 
         if (this.searchField.textboxKeyTyped(typedChar, keyCode)) {
+            this.categoryScrollPane.setIndex(this.categoryScrollPane.getCategories().indexOf("Search"));
             addButtons(this.searchField.getText());
         }
     }
