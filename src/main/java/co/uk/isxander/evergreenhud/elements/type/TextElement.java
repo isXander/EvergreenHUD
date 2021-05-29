@@ -62,54 +62,14 @@ public abstract class TextElement extends BackgroundElement {
     protected void registerDefaultSettings() {
         super.registerDefaultSettings();
 
-        addSettings(brackets = new BooleanSetting("Brackets", "Display", "If there are square brackets before and after the text.", false) {
-            @Override
-            public boolean isDisabled() {
-                return !useBracketsSetting();
-            }
-        });
-        addSettings(titleText = new StringSetting("Title", "Display", "What is displayed before or after the value.", getDefaultDisplayTitle()) {
-            @Override
-            public boolean isDisabled() {
-                return !useTitleSetting();
-            }
-        });
-        addSettings(textR = new IntegerSetting("Text Red", "Color", "How much red is in the color of the text.", 255, 0, 255, "") {
-            @Override
-            public boolean isDisabled() {
-                return !useTextColorSetting();
-            }
-        });
-        addSettings(textG = new IntegerSetting("Text Green", "Color", "How much green is in the color of the text.", 255, 0, 255, "") {
-            @Override
-            public boolean isDisabled() {
-                return !useTextColorSetting();
-            }
-        });
-        addSettings(textB = new IntegerSetting("Text Blue", "Color", "How much blue is in the color of the text.", 255, 0, 255, "") {
-            @Override
-            public boolean isDisabled() {
-                return !useTextColorSetting();
-            }
-        });
-        addSettings(chroma = new BooleanSetting("Chroma Text", "Color", "If the color of the text is a multicolored mess.", false) {
-            @Override
-            public boolean isDisabled() {
-                return !useChromaSetting();
-            }
-        });
-        addSettings(textMode = new EnumSetting<TextMode>("Text Mode", "Display", "How should the text be rendered.", TextMode.SHADOW) {
-            @Override
-            public boolean isDisabled() {
-                return !useTextModeSetting();
-            }
-        });
-        addSettings(alignment = new EnumSetting<Alignment>("Alignment", "Display", "When the text grows or shrinks in size, which way the element will move.", Alignment.LEFT) {
-            @Override
-            public boolean isDisabled() {
-                return !useAlignmentSetting();
-            }
-        });
+        addSettings(brackets = new BooleanSetting("Brackets", "Display", "If there are square brackets before and after the text.", false));
+        addSettings(titleText = new StringSetting("Title", "Display", "What is displayed before or after the value.", getDefaultDisplayTitle()));
+        addSettings(textR = new IntegerSetting("Text Red", "Color", "How much red is in the color of the text.", 255, 0, 255, ""));
+        addSettings(textG = new IntegerSetting("Text Green", "Color", "How much green is in the color of the text.", 255, 0, 255, ""));
+        addSettings(textB = new IntegerSetting("Text Blue", "Color", "How much blue is in the color of the text.", 255, 0, 255, ""));
+        addSettings(chroma = new BooleanSetting("Chroma Text", "Color", "If the color of the text is a multicolored mess.", false));
+        addSettings(textMode = new EnumSetting<>("Text Mode", "Display", "How should the text be rendered.", TextMode.SHADOW));
+        addSettings(alignment = new EnumSetting<>("Alignment", "Display", "When the text grows or shrinks in size, which way the element will move.", Alignment.LEFT));
     }
 
     @Override
@@ -148,24 +108,11 @@ public abstract class TextElement extends BackgroundElement {
         return titleText;
     }
 
-    protected boolean useTitleSetting() {
-        return true;
-    }
-
     public BooleanSetting getBracketsSetting() {
         return brackets;
     }
-
-    protected boolean useBracketsSetting() {
-        return true;
-    }
-
     public BooleanSetting getChromaSetting() {
         return chroma;
-    }
-
-    protected boolean useChromaSetting() {
-        return true;
     }
 
     public Color getTextColor() {
@@ -178,24 +125,12 @@ public abstract class TextElement extends BackgroundElement {
         textB.set(b);
     }
 
-    protected boolean useTextColorSetting() {
-        return true;
-    }
-
     public EnumSetting<Alignment> getAlignmentSetting() {
         return alignment;
     }
 
-    protected boolean useAlignmentSetting() {
-        return true;
-    }
-
     public EnumSetting<TextMode> getTextModeSetting() {
         return textMode;
-    }
-
-    protected boolean useTextModeSetting() {
-        return true;
     }
 
     public enum TextMode {

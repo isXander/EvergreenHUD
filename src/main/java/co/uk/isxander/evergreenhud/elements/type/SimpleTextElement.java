@@ -63,10 +63,10 @@ public abstract class SimpleTextElement extends TextElement {
         String builder = "";
         if (getBracketsSetting().get())
             builder += "[";
-        if (showTitle && !getInvertTitleSetting().get() && useTitleSetting())
+        if (showTitle && !getInvertTitleSetting().get())
             builder += getTitleTextSetting().get() + ": ";
         builder += getValue();
-        if (showTitle && getInvertTitleSetting().get() && useTitleSetting())
+        if (showTitle && getInvertTitleSetting().get())
             builder += " " + getTitleTextSetting().get();
         if (getBracketsSetting().get())
             builder += "]";
@@ -92,12 +92,7 @@ public abstract class SimpleTextElement extends TextElement {
     protected void registerDefaultSettings() {
         super.registerDefaultSettings();
 
-        addSettings(inverted = new BooleanSetting("Invert Title", "Display", "If the title is rendered after the value.", false) {
-            @Override
-            public boolean isDisabled() {
-                return !useInvertedSetting();
-            }
-        });
+        addSettings(inverted = new BooleanSetting("Invert Title", "Display", "If the title is rendered after the value.", false));
     }
 
     @Override
@@ -109,10 +104,6 @@ public abstract class SimpleTextElement extends TextElement {
 
     public BooleanSetting getInvertTitleSetting() {
         return inverted;
-    }
-
-    protected boolean useInvertedSetting() {
-        return true;
     }
 
 }

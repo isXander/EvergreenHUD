@@ -25,7 +25,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraftforge.fml.client.config.GuiSlider;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -177,7 +176,6 @@ public class GuiElementConfig extends GuiScreenElements {
                 }
                 break;
         }
-        addButtons();
     }
 
     @Override

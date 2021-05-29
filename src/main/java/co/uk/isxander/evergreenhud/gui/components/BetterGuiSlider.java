@@ -15,7 +15,6 @@
 
 package co.uk.isxander.evergreenhud.gui.components;
 
-import co.uk.isxander.evergreenhud.gui.screens.GuiScreenExt;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -36,17 +35,9 @@ public class BetterGuiSlider extends GuiSliderAlt {
         this.description = description;
     }
 
-    public BetterGuiSlider(int id, int xPos, int yPos, String displayStr, double minVal, double maxVal, double currentVal, ISlider par, GuiScreenExt screen, String description) {
+    public BetterGuiSlider(int id, int xPos, int yPos, String displayStr, double minVal, double maxVal, double currentVal, ISlider par, String description) {
         super(id, xPos, yPos, displayStr, minVal, maxVal, currentVal, par);
         this.description = description;
-    }
-
-    @Override
-    public void updateSlider() {
-        super.updateSlider();
-        System.out.println("---------");
-        System.out.println(displayString);
-        System.out.println("---------");
     }
 
     public void drawButtonDescription(Minecraft mc, int mouseX, int mouseY) {

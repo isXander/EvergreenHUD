@@ -26,51 +26,15 @@ public abstract class BackgroundElement extends Element {
     protected void registerDefaultSettings() {
         super.registerDefaultSettings();
 
+        addSettings(backR = new IntegerSetting("Background Red", "Color", "How much red is in the color of the background.", 0, 0, 255, ""));
+        addSettings(backG = new IntegerSetting("Background Green", "Color", "How much green is in the color of the background.", 0, 0, 255, ""));
+        addSettings(backB = new IntegerSetting("Background Blue", "Color", "How much blue is in the color of the background.", 0, 0, 255, ""));
+        addSettings(backA = new IntegerSetting("Background Alpha", "Color", "How much alpha is in the color of the background.", 100, 0, 255, ""));
 
-        addSettings(backR = new IntegerSetting("Background Red", "Color", "How much red is in the color of the background.", 0, 0, 255, "") {
-            @Override
-            public boolean isDisabled() {
-                return !useBgColorSetting();
-            }
-        });
-        addSettings(backG = new IntegerSetting("Background Green", "Color", "How much green is in the color of the background.", 0, 0, 255, "") {
-            @Override
-            public boolean isDisabled() {
-                return !useBgColorSetting();
-            }
-        });
-        addSettings(backB = new IntegerSetting("Background Blue", "Color", "How much blue is in the color of the background.", 0, 0, 255, "") {
-            @Override
-            public boolean isDisabled() {
-                return !useBgColorSetting();
-            }
-        });
-        addSettings(backA = new IntegerSetting("Background Alpha", "Color", "How much alpha is in the color of the background.", 100, 0, 255, "") {
-            @Override
-            public boolean isDisabled() {
-                return !useBgColorSetting();
-            }
-        });
+        addSettings(paddingWidth = new FloatSetting("Padding Width", "Background", "How much extra width the background box will have.", 4f, 0f, 12f, ""));
+        addSettings(paddingHeight = new FloatSetting("Padding Height", "Background", "How much extra height the background box will have.", 4f, 0f, 12f, ""));
 
-        addSettings(paddingWidth = new FloatSetting("Padding Width", "Background", "How much extra width the background box will have.", 4f, 0f, 12f, "") {
-            @Override
-            public boolean isDisabled() {
-                return !usePaddingSetting();
-            }
-        });
-        addSettings(paddingHeight = new FloatSetting("Padding Height", "Background", "How much extra height the background box will have.", 4f, 0f, 12f, "") {
-            @Override
-            public boolean isDisabled() {
-                return !usePaddingSetting();
-            }
-        });
-
-        addSettings(cornerRadius = new IntegerSetting("Corner Radius", "Background", "How round are the corners of the background.", 0, 0, 6, "") {
-            @Override
-            public boolean isDisabled() {
-                return !useCornerRadiusSetting();
-            }
-        });
+        addSettings(cornerRadius = new IntegerSetting("Corner Radius", "Background", "How round are the corners of the background.", 0, 0, 6, ""));
     }
 
     @Override
@@ -117,16 +81,8 @@ public abstract class BackgroundElement extends Element {
         backA.set(a);
     }
 
-    protected boolean useBgColorSetting() {
-        return true;
-    }
-
     public FloatSetting getPaddingWidthSetting() {
         return paddingWidth;
-    }
-
-    protected boolean usePaddingSetting() {
-        return true;
     }
 
     public FloatSetting getPaddingHeightSetting() {

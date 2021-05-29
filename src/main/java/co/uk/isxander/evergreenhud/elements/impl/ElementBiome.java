@@ -15,7 +15,6 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import net.minecraft.util.BlockPos;

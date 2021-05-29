@@ -16,7 +16,6 @@
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import club.sk1er.mods.core.gui.notification.Notifications;
-import co.uk.isxander.evergreenhud.gui.components.BetterGuiTextField;
 import co.uk.isxander.evergreenhud.gui.components.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.EvergreenHUD;

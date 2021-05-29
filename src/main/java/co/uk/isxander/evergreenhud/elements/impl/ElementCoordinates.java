@@ -15,19 +15,10 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.Element;
-import co.uk.isxander.evergreenhud.elements.RenderOrigin;
 import co.uk.isxander.evergreenhud.elements.type.MultiLineTextElement;
-import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
-import co.uk.isxander.xanderlib.utils.GuiUtils;
-import co.uk.isxander.xanderlib.utils.HitBox2D;
-import co.uk.isxander.xanderlib.utils.Resolution;
-import net.apolloclient.utils.GLRenderer;
-import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.client.renderer.GlStateManager;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;

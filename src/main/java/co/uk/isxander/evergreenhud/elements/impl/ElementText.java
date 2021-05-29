@@ -43,11 +43,6 @@ public class ElementText extends SimpleTextElement {
     }
 
     @Override
-    public boolean useTitleSetting() {
-        return false;
-    }
-
-    @Override
     public String getDefaultDisplayTitle() {
         return "";
     }

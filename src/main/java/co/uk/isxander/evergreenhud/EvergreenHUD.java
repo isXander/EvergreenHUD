@@ -61,7 +61,7 @@ public class EvergreenHUD implements Constants {
     public static final String MOD_NAME = "EvergreenHUD";
     public static final String MOD_VERSION = "@BUILD_VER@";
     public static final String UPDATE_NAME = "the next step.";
-    public static final boolean RELEASE = false;
+    public static final boolean RELEASE = true;
 
     public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
     public static final File DATA_DIR = new File(mc.mcDataDir, "config/evergreenhud");

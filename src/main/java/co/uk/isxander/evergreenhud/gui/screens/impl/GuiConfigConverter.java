@@ -24,8 +24,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 
-import java.io.File;
-
 public class GuiConfigConverter extends GuiScreenElements {
 
     @Override

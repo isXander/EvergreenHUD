@@ -3,9 +3,7 @@ package co.uk.isxander.evergreenhud.elements.type;
 import co.uk.isxander.evergreenhud.elements.RenderOrigin;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.xanderlib.utils.GuiUtils;
-import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.Resolution;
-import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 
@@ -95,6 +93,6 @@ public abstract class MultiLineTextElement extends TextElement {
     protected void registerDefaultSettings() {
         super.registerDefaultSettings();
 
-        addSettings(verticalSpacing = new IntegerSetting("Vertical Spacing", "Render", "How far apart each line will be.", 2, 0, 5, ""));
+        addSettings(verticalSpacing = new IntegerSetting("Vertical Spacing", "Display", "How far apart each line will be.", 2, 0, 5, ""));
     }
 }

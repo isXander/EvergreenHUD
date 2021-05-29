@@ -78,24 +78,4 @@ public class GuiSliderAlt extends GuiSlider {
         }
     }
 
-    @Override
-    public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-//        System.out.println("-------------");
-//        System.out.println("text: " + displayString);
-//        System.out.println("enabled: " + enabled);
-//        System.out.println("visible: " + visible);
-//        System.out.println("mousex: " + mouseX);
-//        System.out.println("mousey: " + mouseY);
-//        System.out.println("x pos: " + xPosition);
-//        System.out.println("y pos: " + yPosition);
-//        System.out.println("width: " + width);
-//        System.out.println("height: " + height);
-//        System.out.println("x >=: " + (mouseX >= this.xPosition));
-//        System.out.println("y >=: " + (mouseY >= this.yPosition));
-//        System.out.println("x <: " + (mouseX < this.xPosition + this.width));
-//        System.out.println("y <: " + (mouseY < this.yPosition + this.height));
-//        System.out.println("pressed: " + (this.enabled && this.visible && mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height));
-
-        return super.mousePressed(mc, mouseX, mouseY);
-    }
 }

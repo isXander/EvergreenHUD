@@ -4,7 +4,7 @@ plugins {
     id 'net.minecraftforge.gradle.forge' version 'b13624b'
 }
 
-version = '2.0-pre5'
+version = '2.0-RC.1'
 group = 'co.uk.isxander'
 archivesBaseName = 'evergreenhud'
 

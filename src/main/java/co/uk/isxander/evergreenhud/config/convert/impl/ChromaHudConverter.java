@@ -27,8 +27,6 @@ import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import net.minecraft.client.gui.ScaledResolution;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.util.ReportedException;
 
 import java.awt.*;
 import java.io.File;
