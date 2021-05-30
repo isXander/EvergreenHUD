@@ -1,10 +1,9 @@
 plugins {
     id 'java'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'net.minecraftforge.gradle.forge' version 'b13624b'
 }
 
-version = '2.0-RC.1'
+version = '2.0-RC.1.1'
 group = 'co.uk.isxander'
 archivesBaseName = 'evergreenhud'
 
@@ -19,21 +18,13 @@ minecraft {
     replace('@BUILD_VER@', project.version)
 }
 
-repositories {
-
-}
-
-configurations {
-    include
-    implementation.extendsFrom(include)
-}
-
 dependencies {
     provided files('libs/modcore.jar')
     provided files('libs/xanderlib.jar')
 }
 
 jar {
+    archiveName = "[$minecraft.version-$version] EvergreenHUD.jar"
     manifest {
         attributes (
                 'FMLCorePlugin': 'co.uk.isxander.evergreenhud.forge.FMLLoadingPlugin',
@@ -68,13 +59,3 @@ task moveResources {
 
 tasks.moveResources.dependsOn processResources
 tasks.classes.dependsOn moveResources
-
-shadowJar {
-    archiveBaseName.set("[${minecraft.version}-${project.version}] EvergreenHUD")
-    archiveVersion.set('')
-    archiveClassifier.set('')
-    configurations = [project.configurations.include]
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE
-}
-
-jar.dependsOn shadowJar
