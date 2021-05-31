@@ -1,0 +1,13 @@
+* text=auto
+* .java text
+* .kt text
+* .json text
+* .gradle text
+* .properties text
+* .yml text
+* .bat text
+* .md text
+* .info text
+* .txt text
+* .png binary
+* .jar binary
