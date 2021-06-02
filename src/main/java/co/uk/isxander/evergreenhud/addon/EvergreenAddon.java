@@ -15,7 +15,9 @@
 
 package co.uk.isxander.evergreenhud.addon;
 
+import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 
 public abstract class EvergreenAddon {
 
@@ -25,6 +27,15 @@ public abstract class EvergreenAddon {
      * @see ElementManager#registerElement(String, Class)
      */
     public void init() {
+
+    }
+
+    /**
+     * Once EvergreenHUD has been fully loaded
+     *
+     * @see EvergreenHUD#postInit(FMLPostInitializationEvent)
+     */
+    public void postInit() {
 
     }
 

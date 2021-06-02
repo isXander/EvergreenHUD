@@ -70,7 +70,6 @@ public class EvergreenHUD implements Constants {
     private static EvergreenHUD instance;
 
     private ElementManager elementManager;
-    private AddonManager addonManager;
     private boolean development;
 
     private boolean firstLaunch = false;
@@ -88,7 +87,7 @@ public class EvergreenHUD implements Constants {
         ModCore.getInstance().initialize(mc.mcDataDir);
         XanderLib.getInstance().initPhase();
 
-        ProgressManager.ProgressBar progress = ProgressManager.push("EvergreenHUD", 10);
+        ProgressManager.ProgressBar progress = ProgressManager.push("EvergreenHUD", 9);
 
         progress.step("Blacklist Check");
         blacklisted = BlacklistManager.isVersionBlacklisted(MOD_VERSION);
@@ -127,18 +126,15 @@ public class EvergreenHUD implements Constants {
             }
         });
 
-        progress.step("Discovering Addons");
-        addonManager = new AddonManager();
-        addonManager.discoverAddons();
         progress.step("Initialising Element Manager");
         MinecraftForge.EVENT_BUS.register(elementManager = new ElementManager());
         progress.step("Initialising Addons");
-        addonManager.onInit();
+        AddonManager.getInstance().onInit();
         progress.step("Loading Main Config");
         elementManager.getMainConfig().load();
         progress.step("Loading Element Configs");
         elementManager.getElementConfig().load();
-        addonManager.onConfigLoad();
+        AddonManager.getInstance().onConfigLoad();
 
         progress.step("Finishing Up");
         MinecraftForge.EVENT_BUS.register(this);
@@ -210,6 +206,8 @@ public class EvergreenHUD implements Constants {
             reset = false;
             Notifications.INSTANCE.pushNotification("EvergreenHUD", "The configuration has been reset due to a version change that makes your configuration incompatible with the current version.");
         }
+
+        AddonManager.getInstance().onPostInit();
     }
 
     public void disable() {
@@ -244,10 +242,6 @@ public class EvergreenHUD implements Constants {
 
     public ElementManager getElementManager() {
         return elementManager;
-    }
-
-    public AddonManager getAddonManager() {
-        return addonManager;
     }
 
     public void notifyConfigReset() {

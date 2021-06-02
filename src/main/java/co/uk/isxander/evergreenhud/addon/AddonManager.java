@@ -15,6 +15,7 @@
 
 package co.uk.isxander.evergreenhud.addon;
 
+import co.uk.isxander.evergreenhud.EvergreenHUD;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.reflections.Reflections;
@@ -24,38 +25,36 @@ import java.util.List;
 
 public class AddonManager {
 
-    public final List<EvergreenAddon> addons;
-    private final Logger logger;
+    private static AddonManager instance;
 
-    public AddonManager() {
-        logger = LogManager.getLogger("EvergreenHUD Addons");
+    public final List<EvergreenAddon> addons;
+
+    private AddonManager() {
         addons = new ArrayList<>();
     }
 
-    public void discoverAddons() {
-        logger.info("Discovering Addons...");
-        long time = System.currentTimeMillis();
-        Reflections reflections = new Reflections("");
-        for (Class<? extends EvergreenAddon> clazz : reflections.getSubTypesOf(EvergreenAddon.class)) {
-            try {
-                addons.add(clazz.newInstance());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        logger.info(String.format("Completed: Took %s ms and found %s addons.", System.currentTimeMillis() - time, addons.size()));
+    public void registerAddon(EvergreenAddon addon) {
+        addons.add(addon);
+        EvergreenHUD.LOGGER.info("Registered Addon: " + addon.metadata().name);
     }
 
     public void onInit() {
-        for (EvergreenAddon addon : addons) {
-            addon.init();
-        }
+        addons.forEach(EvergreenAddon::init);
+    }
+
+    public void onPostInit() {
+        addons.forEach(EvergreenAddon::postInit);
     }
 
     public void onConfigLoad() {
         for (EvergreenAddon addon : addons) {
             addon.configLoad();
         }
+    }
+
+    public static AddonManager getInstance() {
+        if (instance == null) instance = new AddonManager();
+        return instance;
     }
 
 }

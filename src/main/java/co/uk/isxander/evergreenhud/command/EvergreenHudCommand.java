@@ -19,6 +19,7 @@ import club.sk1er.mods.core.ModCore;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.MinecraftUtils;
 import club.sk1er.mods.core.util.Multithreading;
+import co.uk.isxander.evergreenhud.addon.AddonManager;
 import co.uk.isxander.evergreenhud.addon.EvergreenAddon;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
@@ -124,7 +125,7 @@ public class EvergreenHudCommand extends CommandBase implements Constants {
 
                     sb.append("--- EvergreenHUD Addons ---").append("\n");
                     sb.append("[");
-                    for (EvergreenAddon addon : EvergreenHUD.getInstance().getAddonManager().addons) {
+                    for (EvergreenAddon addon : AddonManager.getInstance().addons) {
                         sb.append("    ").append(addon.metadata().name).append(" v").append(addon.metadata().version).append("\n");
                     }
                     sb.append("]\n\n");

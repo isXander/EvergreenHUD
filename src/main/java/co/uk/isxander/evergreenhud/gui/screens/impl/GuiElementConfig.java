@@ -56,7 +56,7 @@ public class GuiElementConfig extends GuiScreenElements {
         }
         //Collections.sort(categories);
         currentCategory = categories.get(0);
-        this.categoryScrollPane = new CategoryScrollPane(width / 8, height, 0, height, 0, 20, width, height, categories, (category, id) -> {
+        this.categoryScrollPane = new CategoryScrollPane(width / 6, height, 0, height, 0, 20, width, height, categories, (category, id) -> {
             currentCategory = category;
 
             addButtons();

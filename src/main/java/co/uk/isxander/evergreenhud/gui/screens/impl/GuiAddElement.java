@@ -66,7 +66,7 @@ public class GuiAddElement extends GuiScreenExt {
         categories.add("Search");
         currentCategory = categories.get(0);
 
-        this.categoryScrollPane = new CategoryScrollPane(width / 8, height, 0, height, 0, 20, width, height, categories, (category, id) -> {
+        this.categoryScrollPane = new CategoryScrollPane(width / 6, height, 0, height, 0, 20, width, height, categories, (category, id) -> {
             if (category.equals("Search")) currentCategory = null;
             else currentCategory = category;
 

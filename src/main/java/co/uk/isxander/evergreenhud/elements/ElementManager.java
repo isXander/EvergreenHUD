@@ -100,8 +100,10 @@ public class ElementManager implements Constants {
     }
 
     public Element getNewElementInstance(String name) {
+        Class<? extends Element> elementClass = getElementClass(name);
+        if (elementClass == null) return null;
         try {
-            return getElementClass(name).newInstance();
+            return elementClass.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }

@@ -16,6 +16,7 @@
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import club.sk1er.mods.core.gui.notification.Notifications;
+import co.uk.isxander.evergreenhud.addon.AddonManager;
 import co.uk.isxander.evergreenhud.gui.components.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
@@ -51,7 +52,7 @@ public class GuiMain extends GuiScreenElements {
         drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "EvergreenHUD " + EvergreenHUD.MOD_VERSION, (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, EvergreenHUD.UPDATE_NAME, width / 2, 25, -1);
-        mc.fontRendererObj.drawString("Addon Count: " + EvergreenHUD.getInstance().getAddonManager().addons.size(), 2, height - mc.fontRendererObj.FONT_HEIGHT - 2, -1);
+        mc.fontRendererObj.drawString("Addon Count: " + AddonManager.getInstance().addons.size(), 2, height - mc.fontRendererObj.FONT_HEIGHT - 2, -1);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 

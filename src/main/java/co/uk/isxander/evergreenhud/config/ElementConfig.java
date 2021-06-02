@@ -90,7 +90,8 @@ public class ElementConfig implements Constants {
         boolean finalVer = v2;
         array.forEach((jsonElement) -> {
             BetterJsonObject elementConfig = new BetterJsonObject(jsonElement.getAsJsonObject());
-            Element element = manager.getNewElementInstance(elementConfig.optString("type"));
+            String id = elementConfig.optString("type");
+            Element element = manager.getNewElementInstance(id);
             if (element != null) {
                 BetterJsonObject settings = elementConfig.getObj("settings");
                 if (finalVer) {
@@ -100,6 +101,8 @@ public class ElementConfig implements Constants {
                 }
 
                 manager.addElement(element);
+            } else {
+                manager.getLogger().warn("Found unknown element id: " + id + ". Skipped.");
             }
         });
 

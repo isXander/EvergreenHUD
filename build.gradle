@@ -1,9 +1,10 @@
 plugins {
     id 'java'
-    id 'net.minecraftforge.gradle.forge' version 'b13624b'
+    id 'net.minecraftforge.gradle.forge' version 'd583588'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
-version = '2.0-RC.1.1'
+version = '2.0-RC.1.2'
 group = 'co.uk.isxander'
 archivesBaseName = 'evergreenhud'
 
@@ -16,6 +17,13 @@ minecraft {
     mappings = 'stable_22'
 
     replace('@BUILD_VER@', project.version)
+
+    makeObfSourceJar = false
+}
+
+configurations {
+    include
+    implementation.extendsFrom(include)
 }
 
 dependencies {
@@ -23,8 +31,12 @@ dependencies {
     provided files('libs/xanderlib.jar')
 }
 
+def evergreenArchiveName = "EvergreenHUD (${minecraft.version}-${project.version})"
+
 jar {
-    archiveName = "[$minecraft.version-$version] EvergreenHUD.jar"
+    archiveName = "${evergreenArchiveName}.jar"
+    enabled = false
+
     manifest {
         attributes (
                 'FMLCorePlugin': 'co.uk.isxander.evergreenhud.forge.FMLLoadingPlugin',
@@ -40,10 +52,10 @@ processResources {
 
     from(sourceSets.main.resources.srcDirs) {
         include 'mcmod.info'
-                
+
         expand 'version':project.version, 'mcversion':project.minecraft.version
     }
-        
+
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
@@ -59,3 +71,20 @@ task moveResources {
 
 tasks.moveResources.dependsOn processResources
 tasks.classes.dependsOn moveResources
+
+shadowJar {
+    archiveBaseName.set(evergreenArchiveName)
+    archiveVersion.set('')
+    archiveClassifier.set('')
+
+    configurations = [project.configurations.include]
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE
+}
+
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+    }
+}
+
+reobfJar.dependsOn tasks.shadowJar
