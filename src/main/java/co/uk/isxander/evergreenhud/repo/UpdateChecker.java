@@ -27,10 +27,7 @@ public class UpdateChecker {
     public static String getNeededVersion() {
         if (cache == null) cache();
 
-        if (EvergreenHUD.RELEASE)
-            return cache.optString("release");
-        else
-            return cache.optString("prerelease");
+        return cache.optString(EvergreenHUD.CHANNEL.jsonName);
     }
 
     public static void cache() {

@@ -27,6 +27,7 @@ import co.uk.isxander.evergreenhud.elements.ElementManager;
 import co.uk.isxander.evergreenhud.elements.impl.ElementText;
 import co.uk.isxander.evergreenhud.repo.BlacklistManager;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiOldForge;
+import co.uk.isxander.evergreenhud.repo.ReleaseChannel;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.ui.editor.AbstractGuiModifier;
 import co.uk.isxander.xanderlib.utils.Constants;
@@ -63,7 +64,7 @@ public class EvergreenHUD implements Constants {
     public static final String MOD_NAME = "EvergreenHUD";
     public static final String MOD_VERSION = "@BUILD_VER@";
     public static final String UPDATE_NAME = "the next step.";
-    public static final boolean RELEASE = true;
+    public static final ReleaseChannel CHANNEL = ReleaseChannel.BETA;
 
     public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
     public static final File DATA_DIR = new File(mc.mcDataDir, "config/evergreenhud");
