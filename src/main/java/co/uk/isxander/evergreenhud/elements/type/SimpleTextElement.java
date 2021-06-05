@@ -60,17 +60,17 @@ public abstract class SimpleTextElement extends TextElement {
      */
     public String getDisplayString() {
         boolean showTitle = !getTitleTextSetting().get().trim().isEmpty();
-        String builder = "";
+        StringBuilder builder = new StringBuilder();
         if (getBracketsSetting().get())
-            builder += "[";
+            builder.append("[");
         if (showTitle && !getInvertTitleSetting().get())
-            builder += getTitleTextSetting().get() + ": ";
-        builder += getValue();
+            builder.append(getTitleTextSetting().get()).append(": ");
+        builder.append(getValue());
         if (showTitle && getInvertTitleSetting().get())
-            builder += " " + getTitleTextSetting().get();
+            builder.append(" ").append(getTitleTextSetting().get());
         if (getBracketsSetting().get())
-            builder += "]";
-        return builder;
+            builder.append("]");
+        return builder.toString();
     }
 
     /**

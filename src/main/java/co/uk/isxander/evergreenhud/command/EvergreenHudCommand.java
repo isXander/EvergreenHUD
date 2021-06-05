@@ -50,13 +50,13 @@ public class EvergreenHudCommand extends CommandBase implements Constants {
 
     @Override
     public List<String> getCommandAliases() {
-        return new ArrayList<>(Arrays.asList(
+        return Arrays.asList(
                 "evergreenhud",
                 "hud",
                 "evergreen",
                 "hudmod",
                 "xanderhud"
-        ));
+        );
     }
 
     @Override

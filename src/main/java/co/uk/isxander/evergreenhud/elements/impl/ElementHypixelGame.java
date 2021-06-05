@@ -42,11 +42,11 @@ public class ElementHypixelGame extends SimpleTextElement {
         if (!MinecraftUtils.isHypixel())
             return notHypixelMessage.get();
         LocationParsed location = XanderLib.getInstance().getLocrawManager().getCurrentLocation();
-        String friendlyName = location.getGameType().friendlyName();
+        StringBuilder friendlyName = new StringBuilder(location.getGameType().friendlyName());
         if (location.getGameType() != GameType.LIMBO && location.isLobby() && location.getGameType() != GameType.MAIN) {
-            friendlyName += " Lobby";
+            friendlyName.append(" Lobby");
         }
-        return friendlyName;
+        return friendlyName.toString();
     }
 
     @Override

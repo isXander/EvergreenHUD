@@ -77,8 +77,8 @@ public class ChromaHudConverter extends ConfigConverter {
             manager.getMainConfig().save();
             manager.getElementConfig().save();
 
-            Notifications.INSTANCE.pushNotification("Conversion Completed", "ChromaHUD conversion has been completed.\n"
-                    + failures + " failures encountered.");
+            Notifications.INSTANCE.pushNotification("Conversion Completed", "ChromaHUD conversion has been completed."
+                    + (failures > 0 ? "\n" + failures + " failures encountered." : ""));
         } catch (IOException e) {
             e.printStackTrace();
         }

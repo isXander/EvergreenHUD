@@ -21,12 +21,15 @@ import co.uk.isxander.evergreenhud.elements.type.BackgroundElement;
 import co.uk.isxander.evergreenhud.settings.impl.FloatSetting;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.Resolution;
+import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
+
+import java.awt.*;
 
 public class ElementPlayerPreview extends BackgroundElement {
 
@@ -66,7 +69,7 @@ public class ElementPlayerPreview extends BackgroundElement {
         GlStateManager.rotate(135.0F, 0.0F, 1.0F, 0.0F);
         RenderHelper.enableStandardItemLighting();
         GlStateManager.rotate(-135.0F, 0.0F, 1.0F, 0.0F);
-        float rotation = 360 - (float) this.rotation.get();
+        float rotation = 360f - this.rotation.get();
         ent.renderYawOffset = rotation;
         ent.rotationYaw = rotation;
         ent.rotationYawHead = ent.rotationYaw;
@@ -89,6 +92,8 @@ public class ElementPlayerPreview extends BackgroundElement {
         GlStateManager.disableTexture2D();
         GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit);
         GlStateManager.popMatrix();
+
+        //GLRenderer.drawRectangle(posX - 1, posY - 1, 2, 2, new Color(255, 0, 0));
     }
 
     @Override

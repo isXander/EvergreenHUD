@@ -21,14 +21,16 @@ import co.uk.isxander.evergreenhud.elements.ElementData;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Mouse;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
 
 public class ElementCps extends SimpleTextElement {
 
-    private final List<Long> left = new ArrayList<>();
+    private final Deque<Long> left = new ArrayDeque<>();
     private boolean leftPressed;
-    private final List<Long> right = new ArrayList<>();
+    private final Deque<Long> right = new ArrayDeque<>();
     private boolean rightPressed;
 
     public ArraySetting button;
@@ -81,8 +83,15 @@ public class ElementCps extends SimpleTextElement {
             if (pressed) right.add(System.currentTimeMillis());
         }
 
-        left.removeIf(l -> l + 1000 < System.currentTimeMillis());
-        right.removeIf(l -> l + 1000 < System.currentTimeMillis());
+        final long currentTime = System.currentTimeMillis();
+        while ((currentTime - left.getFirst()) > 1000) {
+            left.removeFirst();
+            if (left.isEmpty()) break;
+        }
+        while ((currentTime - right.getFirst()) > 1000) {
+            right.removeFirst();
+            if (right.isEmpty()) break;
+        }
     }
 
 }

@@ -54,42 +54,74 @@ public class EventManager implements Constants {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        listenables.stream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onClientTick(event)));
+        for (Listenable listenable : listenables) {
+            if (listenable.canReceiveEvents()) {
+                listenable.onClientTick(event);
+            }
+        }
     }
 
     @SubscribeEvent
     public void onRenderTick(TickEvent.RenderTickEvent event) {
-        listenables.stream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onRenderTick(event)));
+        for (Listenable listenable : listenables) {
+            if (listenable.canReceiveEvents()) {
+                listenable.onRenderTick(event);
+            }
+        }
     }
 
     @SubscribeEvent
     public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
-        listenables.stream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onRenderGameOverlay(event)));
+        for (Listenable listenable : listenables) {
+            if (listenable.canReceiveEvents()) {
+                listenable.onRenderGameOverlay(event);
+            }
+        }
     }
 
     @SubscribeEvent
     public void onAttackEntity(AttackEntityEvent event) {
-        listenables.stream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onAttackEntity(event)));
+        for (Listenable listenable : listenables) {
+            if (listenable.canReceiveEvents()) {
+                listenable.onAttackEntity(event);
+            }
+        }
     }
 
     @SubscribeEvent
     public void onLivingUpdate(LivingEvent.LivingUpdateEvent event) {
-        listenables.stream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onLivingUpdate(event)));
+        for (Listenable listenable : listenables) {
+            if (listenable.canReceiveEvents()) {
+                listenable.onLivingUpdate(event);
+            }
+        }
     }
 
     @SubscribeEvent
     public void onLivingHurt(LivingHurtEvent event) {
-        listenables.stream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onLivingHurt(event)));
+        for (Listenable listenable : listenables) {
+            if (listenable.canReceiveEvents()) {
+                listenable.onLivingHurt(event);
+            }
+        }
     }
 
     @SubscribeEvent
     public void onPacketReceive(PacketEvent.Incoming event) {
-        listenables.stream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onPacketReceive(event)));
+        for (Listenable listenable : listenables) {
+            if (listenable.canReceiveEvents()) {
+                listenable.onPacketReceive(event);
+            }
+        }
     }
 
     @SubscribeEvent
     public void onPacketSend(PacketEvent.Outgoing event) {
-        listenables.stream().filter(Listenable::canReceiveEvents).forEach((listenable -> listenable.onPacketSend(event)));
+        for (Listenable listenable : listenables) {
+            if (listenable.canReceiveEvents()) {
+                listenable.onPacketSend(event);
+            }
+        }
     }
 
 }

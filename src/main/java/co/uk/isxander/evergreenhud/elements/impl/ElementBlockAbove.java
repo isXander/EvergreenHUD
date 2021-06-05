@@ -19,14 +19,19 @@ import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import com.google.common.collect.Sets;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.init.Blocks;
 import net.minecraft.util.BlockPos;
 import net.minecraftforge.event.entity.living.LivingEvent;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class ElementBlockAbove extends SimpleTextElement {
 
+    private static final Set<Block> EXEMPT_BLOCKS = Sets.newHashSet(Blocks.air, Blocks.water, Blocks.lava, Blocks.ladder, Blocks.vine, Blocks.wall_sign, Blocks.wall_sign, Blocks.standing_sign, Blocks.standing_banner);
     private int blockDistance = 0;
 
     public BooleanSetting notify;
@@ -42,7 +47,7 @@ public class ElementBlockAbove extends SimpleTextElement {
 
     @Override
     public ElementData metadata() {
-        return new ElementData("Block Above", "Tells you if there is a block above your head. Useful for games like bedwars.", "Hypixel");
+        return new ElementData("Block Above", "Tells you if there is a block above your head. Useful for games like bedwars.", "Advanced");
     }
 
     @Override
@@ -69,8 +74,7 @@ public class ElementBlockAbove extends SimpleTextElement {
 
             if (state == null) continue;
             Block b = state.getBlock();
-            if (b != Blocks.air && b != Blocks.water && b != Blocks.lava && b != Blocks.ladder && b != Blocks.vine
-                    && b != Blocks.wall_sign && b != Blocks.standing_banner && b != Blocks.wall_banner && b != Blocks.standing_sign) {
+            if (!EXEMPT_BLOCKS.contains(b)) {
                 if (i <= notifyHeight.get() && (blockDistance > notifyHeight.get() || blockDistance == 0)) {
                     if (notify.get())
                         mc.thePlayer.playSound("random.orb", 0.1f, 0.5f);

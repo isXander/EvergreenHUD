@@ -18,6 +18,7 @@ package co.uk.isxander.evergreenhud;
 import club.sk1er.mods.core.ModCore;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import club.sk1er.mods.core.util.MinecraftUtils;
+import club.sk1er.mods.core.util.ModCoreDesktop;
 import club.sk1er.mods.core.util.Multithreading;
 import co.uk.isxander.evergreenhud.addon.AddonManager;
 import co.uk.isxander.evergreenhud.config.convert.impl.ChromaHudConverter;
@@ -33,6 +34,7 @@ import co.uk.isxander.evergreenhud.command.EvergreenHudCommand;
 import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.evergreenhud.repo.UpdateChecker;
+import kotlin.Unit;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -155,12 +157,7 @@ public class EvergreenHUD implements Constants {
                 });
             }
 
-            ElementText textElement = new ElementText();
-            textElement.getPosition().setScaledX(0.5f);
-            textElement.getPosition().setScaledY(0.5f);
-            textElement.text.set("Use /evergreenhud to configure.");
-            getElementManager().addElement(textElement);
-            getElementManager().getElementConfig().save();
+            Notifications.INSTANCE.pushNotification("EvergreenHUD", "Use /evergreenhud to configure.");
         }
 
         ProgressManager.pop(progress);
@@ -175,16 +172,13 @@ public class EvergreenHUD implements Constants {
                     + "Click to join the discord.",
 
             () -> {
-                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                    try {
-                        Desktop.getDesktop().browse(new URI("https://discord.gg/AJv5ZnNT8q"));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "Unfortunately, your computer does not seem to support web-browsing.");
+                try {
+                    ModCoreDesktop.INSTANCE.browse(new URI("https://discord.gg/AJv5ZnNT8q"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "An error was encountered while trying to open the link.");
                 }
-                return null;
+                return Unit.INSTANCE;
             });
         }
         if (disabled) return;
@@ -222,17 +216,13 @@ public class EvergreenHUD implements Constants {
 
     public static void notifyUpdate(String latestVersion) {
         Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running an outdated version.\nCurrent: " + EvergreenHUD.MOD_VERSION + "\nLatest: " + latestVersion + "\n\nClick here to download.", () -> {
-            if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
-                try {
-                    Desktop.getDesktop().browse(new URI("https://short.evergreenclient.com/GlYH5z"));
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
+            try {
+                ModCoreDesktop.INSTANCE.browse(new URI("https://short.evergreenclient.com/GlYH5z"));
+            } catch (Exception e) {
+                e.printStackTrace();
                 Notifications.INSTANCE.pushNotification("EvergreenHUD", "Unfortunately, your computer does not seem to support web-browsing so the mod could not open the download page.\n\nPlease navigate to \"https://short.evergreenclient.com/GlYH5z\"" );
             }
-            return null;
+            return Unit.INSTANCE;
         });
     }
 

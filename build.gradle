@@ -39,6 +39,7 @@ jar {
 
     manifest {
         attributes (
+                'FMLAT': 'evergreenhud_at.cfg',
                 'FMLCorePlugin': 'co.uk.isxander.evergreenhud.forge.FMLLoadingPlugin',
                 'ModSide': 'CLIENT',
                 'FMLCorePluginContainsFMLMod': 'Yes, yes it does'
@@ -59,6 +60,8 @@ processResources {
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
 }
 
 // Forge does not import resources properly.

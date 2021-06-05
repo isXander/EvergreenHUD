@@ -48,10 +48,7 @@ public class ElementHypixelMode extends SimpleTextElement {
         if (friendlyName == null || location.isLobby())
             return inLobbyMessage.get();
 
-        friendlyName = friendlyName.replaceAll("_", " ");
-        friendlyName = StringUtils.capitalizeEnum(friendlyName);
-
-        return friendlyName;
+        return StringUtils.capitalizeEnum(friendlyName.replace("_", " "));
     }
 
     @Override
