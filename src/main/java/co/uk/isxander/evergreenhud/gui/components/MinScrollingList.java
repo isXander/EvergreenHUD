@@ -1,13 +1,16 @@
 /*
- * Forge Mod Loader
- * Copyright (c) 2012-2013 cpw.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the GNU Lesser Public License v2.1
- * which accompanies this distribution, and is available at
- * http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+ * Copyright (C) isXander [2019 - 2021]
+ * This program comes with ABSOLUTELY NO WARRANTY
+ * This is free software, and you are welcome to redistribute it
+ * under the certain conditions that can be found here
+ * https://www.gnu.org/licenses/gpl-3.0.en.html
  *
- * Contributors:
- *     cpw - implementation
+ * If you have any questions or concerns, please create
+ * an issue on the github page that can be found here
+ * https://github.com/isXander/EvergreenHUD
+ *
+ * If you have a private concern, please contact
+ * isXander @ business.isxander@gmail.com
  */
 
 package co.uk.isxander.evergreenhud.gui.components;
