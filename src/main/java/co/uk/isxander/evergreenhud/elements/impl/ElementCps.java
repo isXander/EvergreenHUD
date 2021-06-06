@@ -72,25 +72,31 @@ public class ElementCps extends SimpleTextElement {
         if (event.phase == TickEvent.Phase.START) return;
 
         boolean pressed = Mouse.isButtonDown(0);
+        //boolean pressed = mc.gameSettings.keyBindAttack.isKeyDown();
         if (pressed != leftPressed) {
             leftPressed = pressed;
             if (pressed) left.add(System.currentTimeMillis());
         }
 
         pressed = Mouse.isButtonDown(1);
+        //pressed = mc.gameSettings.keyBindUseItem.isKeyDown();
         if (pressed != rightPressed) {
             rightPressed = pressed;
             if (pressed) right.add(System.currentTimeMillis());
         }
 
         final long currentTime = System.currentTimeMillis();
-        while ((currentTime - left.getFirst()) > 1000) {
-            left.removeFirst();
-            if (left.isEmpty()) break;
+        if (!left.isEmpty()) {
+            while ((currentTime - left.getFirst()) > 1000) {
+                left.removeFirst();
+                if (left.isEmpty()) break;
+            }
         }
-        while ((currentTime - right.getFirst()) > 1000) {
-            right.removeFirst();
-            if (right.isEmpty()) break;
+        if (!right.isEmpty()) {
+            while ((currentTime - right.getFirst()) > 1000) {
+                right.removeFirst();
+                if (right.isEmpty()) break;
+            }
         }
     }
 

@@ -65,12 +65,7 @@ public class ElementBlockAbove extends SimpleTextElement {
             BlockPos blockPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ);
             if (blockPos.getY() > 255) break;
 
-            IBlockState state;
-            try {
-                state = mc.theWorld.getBlockState(blockPos);
-            } catch (NullPointerException e) {
-                continue;
-            }
+            IBlockState state = mc.theWorld.getBlockState(blockPos);
 
             if (state == null) continue;
             Block b = state.getBlock();
