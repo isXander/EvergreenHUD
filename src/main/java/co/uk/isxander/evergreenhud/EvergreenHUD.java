@@ -21,22 +21,21 @@ import club.sk1er.mods.core.util.MinecraftUtils;
 import club.sk1er.mods.core.util.ModCoreDesktop;
 import club.sk1er.mods.core.util.Multithreading;
 import co.uk.isxander.evergreenhud.addon.AddonManager;
+import co.uk.isxander.evergreenhud.command.EvergreenHudCommand;
+import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.config.convert.impl.ChromaHudConverter;
 import co.uk.isxander.evergreenhud.config.convert.impl.SimpleHudConverter;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
-import co.uk.isxander.evergreenhud.elements.impl.ElementText;
+import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.evergreenhud.repo.BlacklistManager;
-import co.uk.isxander.evergreenhud.gui.screens.impl.GuiOldForge;
 import co.uk.isxander.evergreenhud.repo.ReleaseChannel;
+import co.uk.isxander.evergreenhud.repo.UpdateChecker;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.ui.editor.AbstractGuiModifier;
 import co.uk.isxander.xanderlib.utils.Constants;
-import co.uk.isxander.evergreenhud.command.EvergreenHudCommand;
-import co.uk.isxander.evergreenhud.config.ElementConfig;
-import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
-import co.uk.isxander.evergreenhud.repo.UpdateChecker;
-import kotlin.Unit;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiOptions;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.ForgeVersion;
@@ -45,6 +44,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -52,7 +52,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
 import java.io.File;
 import java.net.URI;
 import java.util.List;
@@ -68,6 +67,7 @@ public class EvergreenHUD implements Constants {
 
     public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
     public static final File DATA_DIR = new File(mc.mcDataDir, "config/evergreenhud");
+    private String version = null;
 
     @Mod.Instance(EvergreenHUD.MOD_ID)
     private static EvergreenHUD instance;
@@ -78,12 +78,13 @@ public class EvergreenHUD implements Constants {
     private boolean firstLaunch = false;
     private boolean versionTwoFirstLaunch = false;
 
-    private boolean disabled = false;
-    private boolean blacklisted = false;
-
+    private boolean notify = false;
     private boolean reset = false;
 
-    private final KeyBinding keybind = new KeyBinding("Open GUI", Keyboard.KEY_HOME, "EvergreenHUD");
+    private final KeyBinding keybind = new KeyBinding("Open EvergreenHUD GUI", Keyboard.KEY_HOME, "EvergreenHUD");
+    private boolean chromaHud = false;
+    private boolean simpleHud = false;
+    private boolean welcome = false;
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
@@ -93,18 +94,17 @@ public class EvergreenHUD implements Constants {
         ProgressManager.ProgressBar progress = ProgressManager.push("EvergreenHUD", 9);
 
         progress.step("Blacklist Check");
-        blacklisted = BlacklistManager.isVersionBlacklisted(MOD_VERSION);
-        if (blacklisted) disable();
+        if (BlacklistManager.isVersionBlacklisted(MOD_VERSION)) {
+            throw new RuntimeException("The current version of this mod has been blacklisted.\n"
+                    + "Please check the discord server for updates.\n"
+                    + "https://discord.gg/AJv5ZnNT8q");
+        }
 
         progress.step("Forge Check");
         if (ForgeVersion.getBuildVersion() < 2318 && ForgeVersion.getBuildVersion() != 0) {
-            disable();
-            ModCore.getInstance().getGuiHandler().open(new GuiOldForge());
-        }
-
-        if (disabled) {
-            ProgressManager.pop(progress);
-            return;
+            throw new RuntimeException("The current version of forge is outdated and causes issues with EvergreenHUD.\n"
+                    + "Please update to Forge 1.8.9 Version 2318.\n"
+                    + "https://maven.minecraftforge.net/net/minecraftforge/forge/1.8.9-11.15.1.2318-1.8.9/forge-1.8.9-11.15.1.2318-1.8.9-installer.jar");
         }
 
         progress.step("Evergreen Check");
@@ -144,21 +144,12 @@ public class EvergreenHUD implements Constants {
 
         if (isFirstLaunch() || isVersionTwoFirstLaunch()) {
             if (new File(ChromaHudConverter.DEFAULT_DIR, ChromaHudConverter.CONFIG_FILE).exists()) {
-                Notifications.INSTANCE.pushNotification("ChromaHUD Detected", "An existing ChromaHUD configuration has been detected. Would you like to convert it to EvergreenHUD?", () -> {
-                    new ChromaHudConverter(ChromaHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
-
-                    return null;
-                });
+                chromaHud = true;
             }
             if (SimpleHudConverter.DEFAULT_DIR.exists()) {
-                Notifications.INSTANCE.pushNotification("SimpleHUD Detected", "An existing SimpleHUD configuration has been detected. Would you like to convert it to EvergreenHUD?", () -> {
-                    new SimpleHudConverter(SimpleHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
-
-                    return null;
-                });
+                simpleHud = true;
             }
-
-            Notifications.INSTANCE.pushNotification("EvergreenHUD", "Use /evergreenhud to configure.");
+            welcome = true;
         }
 
         ProgressManager.pop(progress);
@@ -166,47 +157,54 @@ public class EvergreenHUD implements Constants {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        if (blacklisted) {
-            Notifications.INSTANCE.pushNotification("EvergreenHUD",
-                    "The current version of this mod has been blacklisted.\n"
-                    + "Please check the discord server for updates.\n"
-                    + "Click to join the discord.",
-
-            () -> {
-                try {
-                    ModCoreDesktop.INSTANCE.browse(new URI("https://discord.gg/AJv5ZnNT8q"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "An error was encountered while trying to open the link.");
-                }
-                return Unit.INSTANCE;
-            });
-        }
-        if (disabled) return;
-
         Multithreading.runAsync(() -> {
             if (MinecraftUtils.isDevelopment()) {
                 LOGGER.warn("Running on non-public version. Skipped update check.");
                 development = true;
             } else {
-                String version = UpdateChecker.getNeededVersion();
+                version = UpdateChecker.getNeededVersion();
                 if (!version.equalsIgnoreCase(EvergreenHUD.MOD_VERSION)) {
                     LOGGER.warn("Mod is out of date. " + EvergreenHUD.MOD_VERSION + " > " + version);
-                    notifyUpdate(version);
+                    notify = true;
                 }
             }
         });
+
+        AddonManager.getInstance().onPostInit();
+    }
+
+    @Mod.EventHandler
+    public void onFMLLoadComplete(FMLLoadCompleteEvent event) {
+
+        if (chromaHud) {
+            Notifications.INSTANCE.pushNotification("ChromaHUD Detected", "An existing ChromaHUD configuration has been detected. Would you like to convert it to EvergreenHUD?", () -> {
+                new ChromaHudConverter(ChromaHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
+
+                return null;
+            });
+        }
+
+        if (simpleHud) {
+            Notifications.INSTANCE.pushNotification("SimpleHUD Detected", "An existing SimpleHUD configuration has been detected. Would you like to convert it to EvergreenHUD?", () -> {
+                new SimpleHudConverter(SimpleHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
+
+                return null;
+            });
+        }
+
+        if (welcome) {
+            Notifications.INSTANCE.pushNotification("EvergreenHUD", "Use /evergreenhud to configure.");
+        }
+
+        if (notify) {
+            notifyUpdate(version);
+        }
 
         if (reset) {
             reset = false;
             Notifications.INSTANCE.pushNotification("EvergreenHUD", "The configuration has been reset due to a version change that makes your configuration incompatible with the current version.");
         }
 
-        AddonManager.getInstance().onPostInit();
-    }
-
-    public void disable() {
-        disabled = true;
     }
 
     @SubscribeEvent
@@ -223,7 +221,7 @@ public class EvergreenHUD implements Constants {
                 e.printStackTrace();
                 Notifications.INSTANCE.pushNotification("EvergreenHUD", "Unfortunately, your computer does not seem to support web-browsing so the mod could not open the download page.\n\nPlease navigate to \"https://short.evergreenclient.com/GlYH5z\"" );
             }
-            return Unit.INSTANCE;
+            return null;
         });
     }
 
