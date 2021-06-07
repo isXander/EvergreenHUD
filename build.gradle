@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'net.minecraftforge.gradle.forge' version 'd583588'
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'net.minecraftforge.gradle.forge' version 'da0302a'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 version = '2.0-RC.1.2'
@@ -51,14 +51,8 @@ processResources {
     inputs.property 'version', project.version
     inputs.property 'mcversion', project.minecraft.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+    filesMatching("mcmod.info") {
+        expand "version": project.version, "mcversion": project.minecraft.version
     }
 
     rename '(.+_at.cfg)', 'META-INF/$1'
