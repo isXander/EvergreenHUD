@@ -95,7 +95,7 @@ public class EvergreenHUD implements Constants {
         if (blacklisted) disable();
 
         progress.step("Forge Check");
-        if ((ForgeVersion.getBuildVersion() < 2318 && ForgeVersion.getBuildVersion() != 0) || true) {
+        if (ForgeVersion.getBuildVersion() < 2318 && ForgeVersion.getBuildVersion() != 0) {
             disable();
             ModCore.getInstance().getGuiHandler().open(new GuiOldForge());
         }
