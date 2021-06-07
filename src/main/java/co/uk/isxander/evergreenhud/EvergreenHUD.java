@@ -24,7 +24,6 @@ import co.uk.isxander.evergreenhud.addon.AddonManager;
 import co.uk.isxander.evergreenhud.config.convert.impl.ChromaHudConverter;
 import co.uk.isxander.evergreenhud.config.convert.impl.SimpleHudConverter;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
-import co.uk.isxander.evergreenhud.elements.impl.ElementText;
 import co.uk.isxander.evergreenhud.repo.BlacklistManager;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiOldForge;
 import co.uk.isxander.evergreenhud.repo.ReleaseChannel;
@@ -52,7 +51,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
 import java.io.File;
 import java.net.URI;
 import java.util.List;
@@ -97,12 +95,17 @@ public class EvergreenHUD implements Constants {
         if (blacklisted) disable();
 
         progress.step("Forge Check");
-        if (ForgeVersion.getBuildVersion() < 2318 && ForgeVersion.getBuildVersion() != 0) {
+        if ((ForgeVersion.getBuildVersion() < 2318 && ForgeVersion.getBuildVersion() != 0) || true) {
             disable();
             ModCore.getInstance().getGuiHandler().open(new GuiOldForge());
         }
 
         if (disabled) {
+            // stupid forge throwing exception useless i hate you
+            for (int i = progress.getStep(); i < progress.getSteps(); i++) {
+                progress.step("ABORTED");
+            }
+
             ProgressManager.pop(progress);
             return;
         }
@@ -147,14 +150,14 @@ public class EvergreenHUD implements Constants {
                 Notifications.INSTANCE.pushNotification("ChromaHUD Detected", "An existing ChromaHUD configuration has been detected. Would you like to convert it to EvergreenHUD?", () -> {
                     new ChromaHudConverter(ChromaHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
 
-                    return null;
+                    return Unit.INSTANCE;
                 });
             }
             if (SimpleHudConverter.DEFAULT_DIR.exists()) {
                 Notifications.INSTANCE.pushNotification("SimpleHUD Detected", "An existing SimpleHUD configuration has been detected. Would you like to convert it to EvergreenHUD?", () -> {
                     new SimpleHudConverter(SimpleHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
 
-                    return null;
+                    return Unit.INSTANCE;
                 });
             }
 
@@ -186,7 +189,7 @@ public class EvergreenHUD implements Constants {
 
         Multithreading.runAsync(() -> {
             if (MinecraftUtils.isDevelopment()) {
-                LOGGER.warn("Running on non-public version. Skipped update check.");
+                LOGGER.warn("Running in development environment. Skipped update check.");
                 development = true;
             } else {
                 String version = UpdateChecker.getNeededVersion();

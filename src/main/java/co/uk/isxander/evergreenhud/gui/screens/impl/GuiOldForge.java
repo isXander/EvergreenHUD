@@ -15,39 +15,40 @@
 
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
+import club.sk1er.mods.core.util.ModCoreDesktop;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.util.EnumChatFormatting;
 
-import java.awt.*;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
-public class GuiOldForge extends GuiErrorScreen {
+public class GuiOldForge extends GuiMessageScreen {
 
     public GuiOldForge() {
         super(
-                EnumChatFormatting.RED + EnumChatFormatting.BOLD.toString() + "EvergreenHUD has encountered an issue",
+                EnumChatFormatting.RED + EnumChatFormatting.BOLD.toString() + "EvergreenHUD has encountered an issue!",
                 "",
                 "EvergreenHUD requires a newer forge version.",
                 "Please update your forge installation to continue to use EvergreenHUD.",
                 "",
-                "You " + EnumChatFormatting.BOLD + "WILL " + EnumChatFormatting.RESET + "encounter unexpected crashes if you continue anyway."
+                "It is " + EnumChatFormatting.BOLD + "ESSENTIAL " + EnumChatFormatting.RESET + "that EvergreenHUD should run on the latest version.",
+                "If you should choose to not update and ignore this warning,",
+                "expect random crashes with other modern mods!"
         );
     }
 
     @Override
     public void initGui() {
         this.buttonList.add(new GuiButton(0, width / 2 - 100, height - 50, 200, 20, "Download Recommended Forge"));
-        this.buttonList.add(new GuiButton(1, width / 2 - 100, height - 28, 200, 20, "Continue Without Evergreen"));
+        this.buttonList.add(new GuiButton(1, width / 2 - 100, height - 28, 200, 20, "Continue without EvergreenHUD"));
     }
 
     @Override
-    protected void actionPerformed(GuiButton button) throws IOException {
+    protected void actionPerformed(GuiButton button) {
         if (button.id == 0) {
             try {
-                Desktop.getDesktop().browse(new URI("https://files.minecraftforge.net/net/minecraftforge/forge/index_1.8.9.html"));
+                ModCoreDesktop.INSTANCE.browse(new URI("https://maven.minecraftforge.net/net/minecraftforge/forge/1.8.9-11.15.1.2318-1.8.9/forge-1.8.9-11.15.1.2318-1.8.9-installer.jar"));
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
