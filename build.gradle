@@ -1,6 +1,6 @@
 plugins {
     id 'java'
-    id 'net.minecraftforge.gradle.forge' version 'da0302a'
+    id 'net.minecraftforge.gradle.forge' version '8eba49f'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
