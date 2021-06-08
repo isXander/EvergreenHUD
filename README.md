@@ -78,3 +78,14 @@ Please make sure to make a useful contribution that will benefit either the user
 This project is licensed under the [GPL 3.0](LICENSE)
 GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for
 details
+
+## Credits
+
+![YourKit Logo](https://www.yourkit.com/images/yklogo.png) 
+
+YourKit supports open source projects with innovative and intelligent tools
+for monitoring and profiling Java and .NET applications.
+YourKit is the creator of 
+[YourKit Java Profiler](https://www.yourkit.com/java/profiler/),
+[YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/),
+[YourKit YouMonitor](https://www.yourkit.com/youmonitor).
