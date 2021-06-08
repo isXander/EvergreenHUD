@@ -21,6 +21,7 @@ think it could become very popular for fabric players and maybe even modpacks.
 - [Contributing](#contributing)
 - [Authors](#authors)
 - [License](#license)
+- [Credits](#credits)
 
 ## Getting Started
 
@@ -80,6 +81,8 @@ GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for
 details
 
 ## Credits
+
+#### EvergreenHUD would not be possible without the help from these softwares:
 
 ![YourKit Logo](https://www.yourkit.com/images/yklogo.png) 
 
