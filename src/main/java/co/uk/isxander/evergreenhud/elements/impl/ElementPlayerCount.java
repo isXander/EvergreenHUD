@@ -48,7 +48,7 @@ public class ElementPlayerCount extends SimpleTextElement {
 
     @Override
     protected ElementData metadata() {
-        return new ElementData("Player Count", "How many players are currently connected to the server.", "Simple", "Test notice!", 1);
+        return new ElementData("Player Count", "How many players are currently connected to the server.", "Simple");
     }
 
     @Override
