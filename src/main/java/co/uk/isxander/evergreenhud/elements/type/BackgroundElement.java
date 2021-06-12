@@ -56,7 +56,12 @@ public abstract class BackgroundElement extends Element {
     public void render(float partialTicks, RenderOrigin origin) {
         float scale = getPosition().getScale();
         HitBox2D hitbox = calculateHitBox(1, scale);
-        GLRenderer.drawRoundedRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, cornerRadius.get(), getBgColor());
+        Color bgCol = getBgColor();
+        if (cornerRadius.get() == 0) {
+            GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol);
+        } else {
+            GLRenderer.drawRoundedRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, cornerRadius.get(), bgCol);
+        }
     }
 
     @Override

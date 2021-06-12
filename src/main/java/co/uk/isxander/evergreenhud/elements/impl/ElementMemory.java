@@ -57,7 +57,7 @@ public class ElementMemory extends SimpleTextElement {
                 memDisplay = df.format(bytesToMb(Runtime.getRuntime().totalMemory() -
                         Runtime.getRuntime().freeMemory()) / 1024f) + " GB";
             } else {
-                DecimalFormat df = new DecimalFormat((trailingZeros.get() ? "0.0%" : "#.#") + (displayMode.get().equalsIgnoreCase("percentage") ? "%" : " GB"));
+                DecimalFormat df = new DecimalFormat(trailingZeros.get() ? "0.0%" : "#.#%");
                 memDisplay = df.format(MathUtils.getPercent(bytesToMb(Runtime.getRuntime().totalMemory() -
                         Runtime.getRuntime().freeMemory()), 0, bytesToMb(Runtime.getRuntime().maxMemory())));
             }

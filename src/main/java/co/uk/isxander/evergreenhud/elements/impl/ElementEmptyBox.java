@@ -16,26 +16,31 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.ElementData;
-import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
+import co.uk.isxander.evergreenhud.elements.type.BackgroundElement;
 
-public class ElementChunkRenderCount extends SimpleTextElement {
+public class ElementEmptyBox extends BackgroundElement {
+
+    @Override
+    public void initialise() {
+        getPaddingWidthSetting().setMin(1f);
+        getPaddingWidthSetting().setMax(500f);
+        getPaddingWidthSetting().setMin(1f);
+        getPaddingWidthSetting().setMax(500f);
+        setBgColor(0, 0, 0, 255);
+    }
 
     @Override
     protected ElementData metadata() {
-        return new ElementData("Chunk Counter", "Displays how many chunks are currently being rendered.", "Simple");
+        return new ElementData("Empty Box", "No text, no anything. Can be used to censor parts of your screen.", "Other");
     }
 
     @Override
-    protected String getValue() {
-        if (mc.renderGlobal == null || mc.renderGlobal.viewFrustum == null)
-            return "Unknown";
-
-        return mc.renderGlobal.getDebugInfoRenders().split("/")[0].substring(3);
+    protected float getHitBoxWidth() {
+        return 50f;
     }
 
     @Override
-    public String getDefaultDisplayTitle() {
-        return "Chunks";
+    protected float getHitBoxHeight() {
+        return 50f;
     }
-
 }

@@ -44,7 +44,6 @@ public class SimpleHudConverter extends ConfigConverter {
         put("Memory.json", "MEMORY");
         put("Ping.json", "PING");
         put("Player View.json", "PLAYER_PREVIEW");
-        put("Potion Effects.json", null);
         put("Reach Display.json", "REACH");
         put("Server Address.json", "SERVER");
         put("Simple Text.json", "TEXT");

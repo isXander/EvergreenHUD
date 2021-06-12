@@ -21,6 +21,7 @@ import co.uk.isxander.evergreenhud.gui.components.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
@@ -28,6 +29,10 @@ import org.lwjgl.input.Keyboard;
 import java.io.IOException;
 
 public class GuiMain extends GuiScreenElements {
+
+    public GuiMain(GuiScreen parentScreen) {
+        super(parentScreen);
+    }
 
     @Override
     public void initGui() {
@@ -49,10 +54,10 @@ public class GuiMain extends GuiScreenElements {
         GlStateManager.pushMatrix();
         float scale = 2;
         GlStateManager.scale(scale, scale, 0);
-        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "EvergreenHUD " + EvergreenHUD.MOD_VERSION, (int)(width / 2 / scale), (int)(5 / scale), -1);
+        drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "EvergreenHUD", (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
-        drawCenteredString(mc.fontRendererObj, EvergreenHUD.UPDATE_NAME, width / 2, 25, -1);
-        mc.fontRendererObj.drawString("Addon Count: " + AddonManager.getInstance().addons.size(), 2, height - mc.fontRendererObj.FONT_HEIGHT - 2, -1);
+        drawCenteredString(mc.fontRendererObj, EvergreenHUD.MOD_VERSION + "-" + EvergreenHUD.CHANNEL.jsonName.toUpperCase(), width / 2, 25, -1);
+        mc.fontRendererObj.drawString("Addon Count: " + AddonManager.getInstance().addons.size(), 2, height - mc.fontRendererObj.FONT_HEIGHT - 2, -1, true);
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
@@ -60,16 +65,16 @@ public class GuiMain extends GuiScreenElements {
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
             case 0:
-                mc.displayGuiScreen(new GuiMainConfig(EvergreenHUD.getInstance().getElementManager()));
+                mc.displayGuiScreen(new GuiMainConfig(EvergreenHUD.getInstance().getElementManager(), this));
                 break;
             case 1:
-                mc.displayGuiScreen(new GuiAddElement());
+                mc.displayGuiScreen(new GuiAddElement(this));
                 break;
             case 2:
-                mc.displayGuiScreen(new GuiConfigConverter());
+                mc.displayGuiScreen(new GuiConfigConverter(this));
                 break;
             case 3:
-                mc.displayGuiScreen(new GuiMoveElements());
+                mc.displayGuiScreen(new GuiMoveElements(this));
         }
     }
 
@@ -77,7 +82,7 @@ public class GuiMain extends GuiScreenElements {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
         if (keyCode == Keyboard.KEY_ESCAPE)
-            mc.displayGuiScreen(null);
+            mc.displayGuiScreen(getParentScreen());
     }
 
 }

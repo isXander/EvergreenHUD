@@ -17,9 +17,14 @@ package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenExt;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 
 public class GuiCredits extends GuiScreenExt {
+
+    public GuiCredits(GuiScreen parentScreen) {
+        super(parentScreen);
+    }
 
     @Override
     public void initGui() {
@@ -36,14 +41,8 @@ public class GuiCredits extends GuiScreenExt {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.id == 0) {
-            mc.displayGuiScreen(new GuiMain());
+            mc.displayGuiScreen(getParentScreen());
         }
     }
 
-    @Override
-    public void onGuiClosed() {
-        super.onGuiClosed();
-
-        mc.displayGuiScreen(new GuiMain());
-    }
 }

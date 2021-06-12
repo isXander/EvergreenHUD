@@ -50,6 +50,11 @@ public class ElementPlayerPreview extends BackgroundElement {
         GlStateManager.pushMatrix();
         GlStateManager.enableDepth();
         super.render(partialTicks, origin);
+        if (mc.thePlayer == null) {
+            GlStateManager.disableDepth();
+            GlStateManager.popMatrix();
+            return;
+        }
 
         EntityPlayerSP ent = mc.thePlayer;
         float posX = getPosition().getRawX(Resolution.get());

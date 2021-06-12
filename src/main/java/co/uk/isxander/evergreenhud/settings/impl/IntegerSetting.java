@@ -21,7 +21,7 @@ public class IntegerSetting extends Setting {
 
     private final int def;
     private int val;
-    private final int min, max;
+    private int min, max;
     private final String suffix;
 
     public IntegerSetting(String name, String category, String description, int val, int min, int max, String suffix, boolean internal) {
@@ -70,6 +70,10 @@ public class IntegerSetting extends Setting {
             this.val = newVal;
     }
 
+    public int getDefault() {
+        return this.def;
+    }
+
     protected boolean onChange(int currentVal, int newVal) {
         return !isDisabled();
     }
@@ -80,6 +84,14 @@ public class IntegerSetting extends Setting {
 
     public int getMax() {
         return max;
+    }
+
+    public void setMin(int min) {
+        this.min = min;
+    }
+
+    public void setMax(int max) {
+        this.max = max;
     }
 
     public String getSuffix() {

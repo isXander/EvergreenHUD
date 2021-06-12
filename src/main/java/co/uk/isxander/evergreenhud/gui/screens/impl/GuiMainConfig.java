@@ -19,6 +19,7 @@ import co.uk.isxander.evergreenhud.gui.components.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
@@ -29,7 +30,8 @@ public class GuiMainConfig extends GuiScreenElements {
 
     private final ElementManager manager;
 
-    public GuiMainConfig(ElementManager manager) {
+    public GuiMainConfig(ElementManager manager, GuiScreen parent) {
+        super(parent);
         this.manager = manager;
     }
 
@@ -47,6 +49,7 @@ public class GuiMainConfig extends GuiScreenElements {
         this.buttonList.add(new GuiButtonAlt(1, width / 2 - 90, height - 20, 90, 20, "Reset"));
 
         this.buttonList.add(new GuiButtonAlt(2, left(), getRow(0), 242, 20, "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonAlt(3, left(), getRow(1), 242, 20, "Alternate Look: " + (manager.isUseAlternateLook() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
     }
 
     @Override
@@ -66,7 +69,7 @@ public class GuiMainConfig extends GuiScreenElements {
         super.actionPerformed(button);
         switch (button.id) {
             case 0:
-                mc.displayGuiScreen(new GuiMain());
+                mc.displayGuiScreen(new GuiMain(this));
                 break;
             case 1:
                 manager.resetConfig();
@@ -76,6 +79,10 @@ public class GuiMainConfig extends GuiScreenElements {
                 manager.setEnabled(!manager.isEnabled());
                 button.displayString = "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
+            case 3:
+                manager.setUseAlternateLook(!manager.isUseAlternateLook());
+                button.displayString = "Alternate Look: " + (manager.isUseAlternateLook() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                break;
         }
     }
 
@@ -83,12 +90,6 @@ public class GuiMainConfig extends GuiScreenElements {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
         if (keyCode == Keyboard.KEY_ESCAPE)
-            mc.displayGuiScreen(new GuiMain());
-    }
-
-    @Override
-    public void onGuiClosed() {
-        super.initGui();
-        manager.getMainConfig().save();
+            mc.displayGuiScreen(getParentScreen());
     }
 }

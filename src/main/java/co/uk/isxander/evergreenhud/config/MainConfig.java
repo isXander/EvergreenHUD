@@ -48,13 +48,15 @@ public class MainConfig {
             save();
             return;
         }
-        manager.setEnabled(root.optBoolean("enabled"));
+        manager.setEnabled(root.optBoolean("enabled", true));
+        manager.setUseAlternateLook(root.optBoolean("alternate_look", true));
     }
 
     public void save() {
         BetterJsonObject root = new BetterJsonObject();
         root.addProperty("version", VERSION);
         root.addProperty("enabled", manager.isEnabled());
+        root.addProperty("alternate_look", manager.isUseAlternateLook());
 
         root.writeToFile(CONFIG_FILE);
     }

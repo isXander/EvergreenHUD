@@ -201,7 +201,7 @@ public class EvergreenHudCommand extends CommandBase implements Constants {
                     Notifications.INSTANCE.pushNotification("EvergreenHUD", "Unknown subcommand.\nUsage: " + getCommandUsage(null));
             }
         } else {
-            ModCore.getInstance().getGuiHandler().open(new GuiMain());
+            ModCore.getInstance().getGuiHandler().open(new GuiMain(null));
         }
     }
 

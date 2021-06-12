@@ -17,12 +17,30 @@ package co.uk.isxander.evergreenhud.elements;
 
 public class ElementData {
 
-    private final String name, description, category;
+    private final String name, description, category, notice;
+    private final int maxInstances;
 
     public ElementData(String name, String description, String category) {
+        this(name, description, category, null, Integer.MAX_VALUE);
+    }
+
+    public ElementData(String name, String description, String category, String notice) {
+        this(name, description, category, notice, Integer.MAX_VALUE);
+    }
+
+    public ElementData(String name, String description, String category, int maxInstances) {
+        this(name, description, category, null, maxInstances);
+    }
+
+    public ElementData(String name, String description, String category, String notice, int maxInstances) {
+        if (maxInstances < 1)
+            throw new IllegalStateException("Element max instances needs to be at least 1.");
+
         this.name = name;
         this.description = description;
         this.category = category;
+        this.notice = notice;
+        this.maxInstances = maxInstances;
     }
 
     public String getName() {
@@ -35,5 +53,13 @@ public class ElementData {
 
     public String getCategory() {
         return category;
+    }
+
+    public String getNotice() {
+        return notice;
+    }
+
+    public int getMaxInstances() {
+        return maxInstances;
     }
 }

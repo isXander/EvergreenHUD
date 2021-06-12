@@ -35,11 +35,13 @@ import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.evergreenhud.repo.UpdateChecker;
 import kotlin.Unit;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ProgressManager;
@@ -54,14 +56,14 @@ import org.lwjgl.input.Keyboard;
 import java.io.File;
 import java.net.URI;
 import java.util.List;
+import java.util.Set;
 
-@Mod(modid = EvergreenHUD.MOD_ID, name = EvergreenHUD.MOD_NAME, version = EvergreenHUD.MOD_VERSION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]")
+@Mod(modid = EvergreenHUD.MOD_ID, name = EvergreenHUD.MOD_NAME, version = EvergreenHUD.MOD_VERSION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", guiFactory = "co.uk.isxander.evergreenhud.forge.EvergreenGuiFactory")
 public class EvergreenHUD implements Constants {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String MOD_NAME = "EvergreenHUD";
     public static final String MOD_VERSION = "@BUILD_VER@";
-    public static final String UPDATE_NAME = "the next step.";
     public static final ReleaseChannel CHANNEL = ReleaseChannel.BETA;
 
     public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
@@ -127,7 +129,7 @@ public class EvergreenHUD implements Constants {
             @Override
             public void onActionPerformedPost(GuiScreen screen, List<GuiButton> buttonList, GuiButton button) {
                 if (button.id == 991) {
-                    mc.displayGuiScreen(new GuiMain());
+                    mc.displayGuiScreen(new GuiMain(null));
                 }
             }
         });
@@ -215,7 +217,7 @@ public class EvergreenHUD implements Constants {
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
         if (keybind.isPressed())
-            mc.displayGuiScreen(new GuiMain());
+            mc.displayGuiScreen(new GuiMain(null));
     }
 
     public static void notifyUpdate(String latestVersion) {
@@ -252,6 +254,29 @@ public class EvergreenHUD implements Constants {
 
     public boolean isVersionTwoFirstLaunch() {
         return this.versionTwoFirstLaunch;
+    }
+
+    public static class ConfigFactory implements IModGuiFactory {
+
+        @Override
+        public void initialize(Minecraft minecraftInstance) {
+
+        }
+
+        @Override
+        public Class<? extends GuiScreen> mainConfigGuiClass() {
+            return GuiMain.class;
+        }
+
+        @Override
+        public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
+            return null;
+        }
+
+        @Override
+        public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
+            return null;
+        }
     }
 
 }

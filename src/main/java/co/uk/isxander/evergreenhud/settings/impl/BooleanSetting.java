@@ -46,6 +46,10 @@ public class BooleanSetting extends Setting {
         return value;
     }
 
+    public boolean getDefault() {
+        return def;
+    }
+
     public void set(boolean newVal) {
         if (onChange(value, newVal))
             value = newVal;

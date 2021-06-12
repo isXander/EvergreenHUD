@@ -40,8 +40,6 @@ public class ChromaHudConverter extends ConfigConverter {
     public static final String CONFIG_FILE = "ChromaHUD.cfg";
     public static final Map<String, String> IDENTIFIER_MAP = new HashMap<String, String>() {{
         put("CORDS", "COORDS");
-        put("ARROW_COUNT", null);
-        put("POTION", null);
         put("PING", "PING");
         put("DIRECTION", "DIRECTION");
         put("CPS", "CPS");

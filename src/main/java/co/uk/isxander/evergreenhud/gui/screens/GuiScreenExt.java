@@ -22,6 +22,12 @@ import net.minecraft.client.gui.GuiScreen;
 
 public class GuiScreenExt extends GuiScreen {
 
+    private final GuiScreen parentScreen;
+
+    public GuiScreenExt(GuiScreen parentScreen) {
+        this.parentScreen = parentScreen;
+    }
+
     protected int getRow(int row) {
         return 40 + (row * 22);
     }
@@ -44,5 +50,9 @@ public class GuiScreenExt extends GuiScreen {
                 ((BetterGuiSlider)button).drawButtonDescription(mc, mouseX, mouseY);
             }
         }
+    }
+
+    public GuiScreen getParentScreen() {
+        return parentScreen;
     }
 }

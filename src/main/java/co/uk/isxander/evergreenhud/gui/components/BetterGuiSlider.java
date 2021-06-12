@@ -41,7 +41,7 @@ public class BetterGuiSlider extends GuiSliderAlt {
     }
 
     public void drawButtonDescription(Minecraft mc, int mouseX, int mouseY) {
-        if (enabled && !description.trim().equals("") && mouseX >= xPosition && mouseX <= xPosition + width && mouseY >= yPosition && mouseY <= yPosition + height) {
+        if (description != null && mouseX >= xPosition && mouseX <= xPosition + width && mouseY >= yPosition && mouseY <= yPosition + height) {
             GuiUtils.drawHoveringText(Collections.singletonList(description), mouseX, mouseY, mc.displayWidth, mc.displayHeight, -1, mc.fontRendererObj);
             GlStateManager.disableLighting();
         }

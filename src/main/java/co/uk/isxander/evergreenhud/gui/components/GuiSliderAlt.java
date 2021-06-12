@@ -15,6 +15,7 @@
 
 package co.uk.isxander.evergreenhud.gui.components;
 
+import co.uk.isxander.evergreenhud.EvergreenHUD;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
@@ -38,6 +39,11 @@ public class GuiSliderAlt extends GuiSlider {
 
     @Override
     public void drawButton(Minecraft mc, int mouseX, int mouseY) {
+        if (!EvergreenHUD.getInstance().getElementManager().isUseAlternateLook()) {
+            super.drawButton(mc, mouseX, mouseY);
+            return;
+        }
+
         if (this.visible) {
             this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
             int hoverState = this.getHoverState(this.hovered);
@@ -67,6 +73,11 @@ public class GuiSliderAlt extends GuiSlider {
 
     @Override
     protected void mouseDragged(Minecraft mc, int mouseX, int mouseY) {
+        if (!EvergreenHUD.getInstance().getElementManager().isUseAlternateLook()) {
+            super.mouseDragged(mc, mouseX, mouseY);
+            return;
+        }
+
         if (this.visible) {
             if (this.dragging) {
                 this.sliderValue = (mouseX - (this.xPosition + 4)) / (float)(this.width - 8);

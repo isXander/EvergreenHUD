@@ -25,7 +25,7 @@ import java.util.Collections;
 
 public class BetterGuiTextField extends GuiTextField {
 
-    private String description = "";
+    private String description = null;
 
     public BetterGuiTextField(int componentId, FontRenderer fontrendererObj, int x, int y, int par5Width, int par6Height) {
         super(componentId, fontrendererObj, x, y, par5Width, par6Height);
@@ -41,7 +41,7 @@ public class BetterGuiTextField extends GuiTextField {
 
     public void drawTextBoxDescription(Minecraft mc, int mouseX, int mouseY) {
         super.drawTextBox();
-        if (!description.trim().equals("") && mouseX >= this.xPosition && mouseX <= this.xPosition + this.width && mouseY >= this.yPosition && mouseY <= this.yPosition + this.height) {
+        if (description != null && mouseX >= this.xPosition && mouseX <= this.xPosition + this.width && mouseY >= this.yPosition && mouseY <= this.yPosition + this.height) {
             GuiUtils.drawHoveringText(Collections.singletonList(description), mouseX, mouseY, mc.displayWidth, mc.displayHeight, -1, mc.fontRendererObj);
             GlStateManager.disableLighting();
         }

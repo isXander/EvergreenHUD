@@ -77,7 +77,7 @@ public class XanderLibInstaller {
     }
 
     private static boolean download(String url, String version, File file, JsonHolder versionData) {
-        System.out.println("Downloading XanderLib v" + version + " -> " + url);
+        System.out.println("Downloading XanderLib v" + version + " <- " + url);
 
         url = url.replace(" ", "%20");
 
@@ -100,7 +100,7 @@ public class XanderLibInstaller {
                 outputStream.write(buffer, 0, read);
             }
 
-            JsonArray arr = versionData.optJSONArray("installed_versions");
+            JsonArray arr = versionData.defaultOptJSONArray("installed_versions", new JsonArray());
             JsonPrimitive versionPrim = new JsonPrimitive(version);
             if (!jsonArrayContains(arr, version))
                 arr.add(versionPrim);

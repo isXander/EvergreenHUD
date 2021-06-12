@@ -38,6 +38,9 @@ public class ElementYaw extends SimpleTextElement {
 
     @Override
     protected String getValue() {
+        if (mc.thePlayer == null)
+            return "Unknown";
+
         return new DecimalFormat(trailingZeros.get() ? "0.0" : "#.#").format(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw));
     }
 

@@ -38,7 +38,7 @@ public class ElementLight extends SimpleTextElement {
 
     @Override
     protected String getValue() {
-        if (mc.thePlayer == null)
+        if (mc.thePlayer == null || mc.theWorld == null)
             return "Unknown";
 
         BlockPos playerPos = new BlockPos(mc.thePlayer.posX, mc.thePlayer.posY, mc.thePlayer.posZ);

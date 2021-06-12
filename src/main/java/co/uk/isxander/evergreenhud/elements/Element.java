@@ -26,6 +26,7 @@ import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.evergreenhud.settings.Setting;
 import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
@@ -37,6 +38,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class Element extends Gui implements Listenable, Constants {
+
+    private static final ElementUtilitySharer UTILITY_SHARER = new ElementUtilitySharer();
 
     @Override
     public boolean canReceiveEvents() {
@@ -114,8 +117,8 @@ public abstract class Element extends Gui implements Listenable, Constants {
         return EvergreenHUD.getInstance().getElementManager().getElementIdentifier(this);
     }
 
-    public GuiElementConfig getElementConfigGui() {
-        return new GuiElementConfig(this);
+    public GuiElementConfig getElementConfigGui(GuiScreen parent) {
+        return new GuiElementConfig(this, parent);
     }
 
     /**
@@ -180,7 +183,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
         double iconWidth = 384 * 0.02f * MathUtils.clamp01(getPosition().getScale());
         double iconHeight = 384 * 0.02f * MathUtils.clamp01(getPosition().getScale());
         if (mouseX >= hitbox.x && mouseX <= hitbox.x + iconWidth && mouseY >= hitbox.y + hitbox.height - iconHeight && mouseY <= hitbox.y + hitbox.height) {
-            mc.displayGuiScreen(this.getElementConfigGui());
+            mc.displayGuiScreen(this.getElementConfigGui(new GuiMain(null)));
         }
         if (mouseX >= hitbox.x + hitbox.width - iconWidth && mouseX <= hitbox.x + hitbox.width && mouseY >= hitbox.y + hitbox.height - iconHeight && mouseY <= hitbox.y + hitbox.height) {
             EvergreenHUD.getInstance().getElementManager().removeElement(this);
@@ -198,18 +201,43 @@ public abstract class Element extends Gui implements Listenable, Constants {
         for (Setting s : getCustomSettings()) {
             if (!s.shouldAddToConfig()) continue;
 
-            if (s instanceof BooleanSetting)
-                custom.addProperty(s.getJsonKey(), ((BooleanSetting)s).get());
-            else if (s instanceof IntegerSetting)
-                custom.addProperty(s.getJsonKey(), ((IntegerSetting)s).get());
-            else if (s instanceof FloatSetting)
-                custom.addProperty(s.getJsonKey(), ((FloatSetting)s).get());
-            else if (s instanceof ArraySetting)
-                custom.addProperty(s.getJsonKey(), ((ArraySetting) s).getIndex());
-            else if (s instanceof StringSetting)
-                custom.addProperty(s.getJsonKey(), ((StringSetting)s).get());
-            else if (s instanceof EnumSetting)
-                custom.addProperty(s.getJsonKey(), ((EnumSetting<?>) s).getIndex());
+            if (s instanceof BooleanSetting) {
+                BooleanSetting setting = (BooleanSetting) s;
+                // no need to save the default value
+                if (setting.getDefault() == setting.get()) continue;
+
+                custom.addProperty(setting.getJsonKey(), setting.get());
+            } else if (s instanceof IntegerSetting) {
+                IntegerSetting setting = (IntegerSetting) s;
+                // no need to save the default value
+                if (setting.getDefault() == setting.get()) continue;
+
+                custom.addProperty(setting.getJsonKey(), setting.get());
+            } else if (s instanceof FloatSetting) {
+                FloatSetting setting = (FloatSetting) s;
+                // no need to save the default value
+                if (setting.getDefault() == setting.get()) continue;
+
+                custom.addProperty(setting.getJsonKey(), setting.get());
+            } else if (s instanceof ArraySetting) {
+                ArraySetting setting = (ArraySetting) s;
+                // no need to save the default value
+                if (setting.getIndex() == setting.getDefault()) continue;
+
+                custom.addProperty(setting.getJsonKey(), setting.getIndex());
+            } else if (s instanceof StringSetting) {
+                StringSetting setting = (StringSetting) s;
+                // no need to save the default value
+                if (setting.get().equals(setting.getDefault())) continue;
+
+                custom.addProperty(setting.getJsonKey(), setting.get());
+            } else if (s instanceof EnumSetting) {
+                EnumSetting<?> setting = (EnumSetting<?>) s;
+                // no need to save the default value
+                if (setting.getIndex() == setting.getDefaultIndex()) continue;
+
+                custom.addProperty(setting.getJsonKey(), setting.getIndex());
+            }
         }
         settings.add("dynamic", custom);
 
@@ -227,22 +255,22 @@ public abstract class Element extends Gui implements Listenable, Constants {
                 if (s.getJsonKey().equals(key)) {
                     if (s instanceof BooleanSetting) {
                         BooleanSetting setting = (BooleanSetting) s;
-                        setting.set(custom.optBoolean(key));
+                        setting.set(custom.optBoolean(key, setting.getDefault()));
                     } else if (s instanceof IntegerSetting) {
                         IntegerSetting setting = (IntegerSetting) s;
-                        setting.set((int) MathUtils.clamp(custom.optInt(key), setting.getMin(), setting.getMax()));
+                        setting.set((int) MathUtils.clamp(custom.optInt(key, setting.getDefault()), setting.getMin(), setting.getMax()));
                     } else if (s instanceof FloatSetting) {
                         FloatSetting setting = (FloatSetting) s;
-                        setting.set(MathUtils.clamp(custom.optFloat(key), setting.getMin(), setting.getMax()));
+                        setting.set(MathUtils.clamp(custom.optFloat(key, setting.getDefault()), setting.getMin(), setting.getMax()));
                     } else if (s instanceof ArraySetting) {
                         ArraySetting setting = (ArraySetting) s;
-                        setting.set((int) MathUtils.clamp(custom.optInt(key), 0, setting.options().size() - 1));
+                        setting.set((int) MathUtils.clamp(custom.optInt(key, setting.getDefault()), 0, setting.options().size() - 1));
                     } else if (s instanceof StringSetting) {
                         StringSetting setting = (StringSetting) s;
-                        setting.set(custom.optString(key));
+                        setting.set(custom.optString(key, setting.getDefault()));
                     } else if (s instanceof EnumSetting) {
                         EnumSetting<?> setting = (EnumSetting<?>) s;
-                        setting.set(custom.optInt(key));
+                        setting.set(custom.optInt(key, setting.getDefaultIndex()));
                     }
                     break;
                 }
@@ -285,9 +313,13 @@ public abstract class Element extends Gui implements Listenable, Constants {
         if (mc.currentScreen instanceof GuiElementConfig) {
             GuiElementConfig configScreen = (GuiElementConfig) mc.currentScreen;
             if (configScreen.element.equals(this)) {
-                mc.displayGuiScreen(new GuiMain());
+                mc.displayGuiScreen(new GuiMain(null));
             }
         }
+    }
+
+    public ElementUtilitySharer getUtilitySharer() {
+        return UTILITY_SHARER;
     }
 
     public Position getPosition() {

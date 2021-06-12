@@ -68,6 +68,7 @@ public class ElementSpeed extends SimpleTextElement {
 
     public void onRenderGameOverlay(RenderGameOverlayEvent.Post event) {
         if (event.type != RenderGameOverlayEvent.ElementType.ALL) return;
+        if (mc.thePlayer == null) return;
 
         double distTraveledLastTickX = (useX.get() ? mc.thePlayer.posX - mc.thePlayer.prevPosX : 0);
         double distTraveledLastTickY = (useY.get() ? mc.thePlayer.posY - mc.thePlayer.prevPosY : 0);

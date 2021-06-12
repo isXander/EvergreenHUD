@@ -17,11 +17,16 @@ package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import club.sk1er.mods.core.gui.notification.Notifications;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
+import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 
 public class GuiMoveElements extends GuiScreenElements {
+
+    public GuiMoveElements(GuiScreen parentScreen) {
+        super(parentScreen);
+    }
 
     @Override
     public void initGui() {
@@ -35,7 +40,7 @@ public class GuiMoveElements extends GuiScreenElements {
         super.keyTyped(typedChar, keyCode);
 
         if (keyCode == Keyboard.KEY_ESCAPE) {
-            mc.displayGuiScreen(new GuiMain());
+            mc.displayGuiScreen(getParentScreen());
         }
     }
 }

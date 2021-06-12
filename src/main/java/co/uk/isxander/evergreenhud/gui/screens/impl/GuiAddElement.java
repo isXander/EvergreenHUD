@@ -16,6 +16,7 @@
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import co.uk.isxander.evergreenhud.elements.ElementManager;
+import co.uk.isxander.evergreenhud.gui.components.BetterGuiButton;
 import co.uk.isxander.evergreenhud.gui.components.BetterGuiTextField;
 import co.uk.isxander.evergreenhud.gui.components.CategoryScrollPane;
 import co.uk.isxander.evergreenhud.gui.components.GuiButtonAlt;
@@ -23,6 +24,7 @@ import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenExt;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
 import org.lwjgl.input.Keyboard;
@@ -40,7 +42,8 @@ public class GuiAddElement extends GuiScreenExt {
     private final List<Element> cachedElements;
     private BetterGuiTextField searchField;
 
-    public GuiAddElement() {
+    public GuiAddElement(GuiScreen parent) {
+        super(parent);
         this.currentCategory = null;
 
         ElementManager manager = EvergreenHUD.getInstance().getElementManager();
@@ -73,7 +76,7 @@ public class GuiAddElement extends GuiScreenExt {
             addButtons(this.searchField.getText());
         });
 
-        this.searchField = new BetterGuiTextField(-1, mc.fontRendererObj, width - 122, height - 22, 120, 20);
+        this.searchField = new BetterGuiTextField(-1, mc.fontRendererObj, width - 121, height - 21, 120, 20);
         this.searchField.setText("");
         this.searchField.setEnableBackgroundDrawing(true);
         this.searchField.setMaxStringLength(256);
@@ -120,7 +123,12 @@ public class GuiAddElement extends GuiScreenExt {
             int x = width / 2 + ((buttonWidth / 2) * column) - (buttonWidth / 2);
             int y = startY + (row * buttonHeight + row * buttonGap);
 
-            this.buttonList.add(new ElementButton(startButtonIndex + index, x, y, buttonWidth, buttonHeight, e.getMetadata().getName(), e));
+            ElementButton button = new ElementButton(startButtonIndex + index, x, y, buttonWidth, buttonHeight, e.getMetadata().getName(), null, e);
+            if (cachedElements.stream().filter(element -> element.getClass().equals(e.getClass())).count() >= e.getMetadata().getMaxInstances()) {
+                button.description = "You have reached the max number of instances for this type.";
+                button.enabled = false;
+            }
+            this.buttonList.add(button);
 
             row++;
             index++;
@@ -151,14 +159,14 @@ public class GuiAddElement extends GuiScreenExt {
     @Override
     protected void actionPerformed(GuiButton button) {
         if (button.id == 0) {
-            mc.displayGuiScreen(new GuiMain());
+            mc.displayGuiScreen(getParentScreen());
         } else {
             if (button instanceof ElementButton) {
                 ElementButton eb = (ElementButton) button;
                 EvergreenHUD.getInstance().getElementManager().addElement(eb.getElement());
 
                 if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    mc.displayGuiScreen(eb.getElement().getElementConfigGui());
+                    mc.displayGuiScreen(eb.getElement().getElementConfigGui(this));
                 }
             }
         }
@@ -168,7 +176,7 @@ public class GuiAddElement extends GuiScreenExt {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
         if (keyCode == Keyboard.KEY_ESCAPE)
-            mc.displayGuiScreen(new GuiMain());
+            mc.displayGuiScreen(getParentScreen());
 
         if (this.searchField.textboxKeyTyped(typedChar, keyCode)) {
             this.categoryScrollPane.setIndex(this.categoryScrollPane.getCategories().indexOf("Search"));
@@ -188,12 +196,12 @@ public class GuiAddElement extends GuiScreenExt {
         Keyboard.enableRepeatEvents(false);
     }
 
-    private static class ElementButton extends GuiButtonAlt {
+    private static class ElementButton extends BetterGuiButton {
 
         private final Element element;
 
-        public ElementButton(int id, int xPos, int yPos, int width, int height, String displayString, Element element) {
-            super(id, xPos, yPos, width, height, displayString);
+        public ElementButton(int id, int xPos, int yPos, int width, int height, String displayString, String description, Element element) {
+            super(id, xPos, yPos, width, height, displayString, description);
             this.element = element;
         }
 

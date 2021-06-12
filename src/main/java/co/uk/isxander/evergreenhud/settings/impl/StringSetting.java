@@ -50,6 +50,10 @@ public class StringSetting extends Setting {
         this.val = newVal;
     }
 
+    public String getDefault() {
+        return def;
+    }
+
     @Override
     public void reset() {
         this.val = def;

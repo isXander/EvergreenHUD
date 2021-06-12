@@ -39,7 +39,9 @@ public class ElementManager implements Constants {
     /* Config */
     private final MainConfig mainConfig;
     private final ElementConfig elementConfig;
+
     private boolean enabled;
+    private boolean useAlternateLook;
 
     private final Logger logger;
 
@@ -66,6 +68,7 @@ public class ElementManager implements Constants {
         registerElement("CPS", ElementCps.class);
         registerElement("DAY", ElementDay.class);
         registerElement("DIRECTION", ElementDirection.class);
+        registerElement("EMPTY_BOX", ElementEmptyBox.class);
         registerElement("ENTITY_COUNT", ElementEntityCount.class);
         registerElement("FPS", ElementFps.class);
         registerElement("HYPIXEL_GAME", ElementHypixelGame.class);
@@ -76,6 +79,8 @@ public class ElementManager implements Constants {
         registerElement("MEMORY", ElementMemory.class);
         registerElement("PING", ElementPing.class);
         registerElement("PITCH", ElementPitch.class);
+        registerElement("SERVER_MAX_CAPACITY", ElementPlayerCap.class);
+        registerElement("PLAYER_COUNT", ElementPlayerCount.class);
         registerElement("PLAYER_PREVIEW", ElementPlayerPreview.class);
         registerElement("REACH", ElementReach.class);
         registerElement("SERVER", ElementServer.class);
@@ -99,8 +104,8 @@ public class ElementManager implements Constants {
         return availableElements.get(name);
     }
 
-    public Element getNewElementInstance(String name) {
-        Class<? extends Element> elementClass = getElementClass(name);
+    public Element getNewElementInstance(String id) {
+        Class<? extends Element> elementClass = getElementClass(id);
         if (elementClass == null) return null;
         try {
             return elementClass.newInstance();
@@ -131,6 +136,7 @@ public class ElementManager implements Constants {
 
     public void resetConfig() {
         this.enabled = true;
+        this.useAlternateLook = true;
     }
 
     public List<Element> getCurrentElements() {
@@ -189,4 +195,11 @@ public class ElementManager implements Constants {
         this.enabled = enabled;
     }
 
+    public boolean isUseAlternateLook() {
+        return useAlternateLook;
+    }
+
+    public void setUseAlternateLook(boolean useAlternateLook) {
+        this.useAlternateLook = useAlternateLook;
+    }
 }

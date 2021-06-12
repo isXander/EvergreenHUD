@@ -30,6 +30,9 @@ public class ElementPing extends SimpleTextElement {
 
     @Override
     protected String getValue() {
+        if (mc.thePlayer == null)
+            return "Unknown";
+
         NetworkPlayerInfo info = mc.getNetHandler().getPlayerInfo(mc.thePlayer.getGameProfile().getId());
         if (info != null && info.getResponseTime() != 1)
             ping = info.getResponseTime();

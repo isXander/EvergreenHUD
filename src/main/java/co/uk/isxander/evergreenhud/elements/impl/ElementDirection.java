@@ -36,6 +36,9 @@ public class ElementDirection extends SimpleTextElement {
 
     @Override
     protected String getValue() {
+        if (mc.thePlayer == null)
+            return "Unknown";
+
         Facing facing = Facing.parse(mc.thePlayer.rotationYaw);
 
         if (abbreviated.get())

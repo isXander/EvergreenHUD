@@ -25,8 +25,8 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class EventManager implements Constants {
 
@@ -38,7 +38,7 @@ public class EventManager implements Constants {
         return instance;
     }
 
-    private final List<Listenable> listenables = new ArrayList<>();
+    private final List<Listenable> listenables = new CopyOnWriteArrayList<>();
 
     public EventManager() {
         MinecraftForge.EVENT_BUS.register(this);

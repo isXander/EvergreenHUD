@@ -18,10 +18,7 @@ package co.uk.isxander.evergreenhud.elements.impl;
 import club.sk1er.mods.core.gui.notification.Notifications;
 import co.uk.isxander.evergreenhud.elements.RenderOrigin;
 import co.uk.isxander.evergreenhud.elements.type.BackgroundElement;
-import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
-import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
-import co.uk.isxander.evergreenhud.settings.impl.ButtonSetting;
-import co.uk.isxander.evergreenhud.settings.impl.StringSetting;
+import co.uk.isxander.evergreenhud.settings.impl.*;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.ImageUtils;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
@@ -59,7 +56,7 @@ public class ElementImage extends BackgroundElement {
 
     public StringSetting fileLocation;
     public BooleanSetting mirror;
-    public ArraySetting rotation;
+    public FloatSetting rotation;
     public BooleanSetting autoScale;
 
     @Override
@@ -99,13 +96,7 @@ public class ElementImage extends BackgroundElement {
                 return true;
             }
         });
-        addSettings(rotation = new ArraySetting("Rotation", "Image", "How will the image be rotated. (Image should be square for best result.)", 0, "0 deg", "90 deg", "180 deg", "270 deg") {
-            @Override
-            protected boolean onChange(int currentIndex, int newIndex) {
-                changed = true;
-                return !isDisabled();
-            }
-        });
+        addSettings(rotation = new FloatSetting("Rotation", "Image", "How the image will be rotated.", 0, 0, 360, " deg"));
         addSettings(autoScale = new BooleanSetting("Auto Scale", "Image", "Automatically scales your image to a constant size depending on the scale.", true));
     }
 
@@ -147,7 +138,15 @@ public class ElementImage extends BackgroundElement {
         } else {
             scaleMod = 1;
         }
+        GlStateManager.pushMatrix();
+        HitBox2D hitbox = calculateHitBox(1, getPosition().getScale());
+        float bgPivotX = hitbox.x + (hitbox.width / 2f);
+        float bgPivotY = hitbox.y + (hitbox.height / 2f);
+        GlStateManager.translate(bgPivotX, bgPivotY, 0);
+        GlStateManager.rotate(rotation.get(), 0, 0, 1);
+        GlStateManager.translate(-bgPivotX, -bgPivotY, 0);
         super.render(partialTicks, origin);
+        GlStateManager.popMatrix();
         GlStateManager.scale(scale, scale, 1);
         GlStateManager.enableDepth();
         GlStateManager.color(1f, 1f, 1f, 1f);
@@ -156,8 +155,16 @@ public class ElementImage extends BackgroundElement {
         double height = imageDimension.getHeight();
         double renderWidth = width * scaleMod;
         double renderHeight = height * scaleMod;
+        float renderX = this.getPosition().getRawX(Resolution.get());
+        float renderY = this.getPosition().getRawY(Resolution.get());
 
-        GLRenderer.drawModalRect(this.getPosition().getRawX(Resolution.get()) / scale, this.getPosition().getRawY(Resolution.get()) / scale, 0, 0, imageDimension.getWidth(), imageDimension.getHeight(), renderWidth, renderHeight, imageDimension.getWidth(), imageDimension.getHeight());
+        float imgPivotX = (renderX + ((float) renderWidth / 2f)) / scale;
+        float imgPivotY = (renderY + ((float) renderHeight / 2f)) / scale;
+        GlStateManager.translate(imgPivotX, imgPivotY, 0);
+        GlStateManager.rotate(rotation.get(), 0, 0, 1);
+        GlStateManager.translate(-imgPivotX, -imgPivotY, 0);
+
+        GLRenderer.drawModalRect(renderX / scale, renderY / scale, 0, 0, imageDimension.getWidth(), imageDimension.getHeight(), renderWidth, renderHeight, imageDimension.getWidth(), imageDimension.getHeight());
 
         GlStateManager.popMatrix();
     }
@@ -182,10 +189,9 @@ public class ElementImage extends BackgroundElement {
 
         if (this.mirror.get())
             img = ImageUtils.mirror(img);
-        img = ImageUtils.rotate(img, this.rotation.getIndex() * 90);
 
         currentImage = mc.getTextureManager().getDynamicTextureLocation(textureName, new DynamicTexture(img));
-        imageDimension = new Dimension((rotation.getIndex() % 2 == 1 ? img.getHeight() : img.getWidth()), (rotation.getIndex() % 2 == 1 ? img.getWidth() : img.getHeight()));
+        imageDimension = new Dimension(img.getWidth(), img.getHeight());
     }
 
     private File getImageFile() {

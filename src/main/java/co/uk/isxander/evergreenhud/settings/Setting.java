@@ -34,7 +34,7 @@ public abstract class Setting {
     }
 
     protected Setting(String name, String category) {
-        this(name, "", category);
+        this(name, null, category);
     }
 
     public abstract void reset();

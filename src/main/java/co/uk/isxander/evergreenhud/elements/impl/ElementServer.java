@@ -27,7 +27,7 @@ public class ElementServer extends SimpleTextElement {
 
     @Override
     protected String getValue() {
-        return (mc.getCurrentServerData() == null ? "Singleplayer" : mc.getCurrentServerData().serverIP);
+        return (mc.getCurrentServerData() == null ? "127.0.0.1" : mc.getCurrentServerData().serverIP);
     }
 
     @Override

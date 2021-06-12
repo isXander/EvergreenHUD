@@ -21,7 +21,7 @@ public class FloatSetting extends Setting {
 
     private final float def;
     private float val;
-    private final float min, max;
+    private float min, max;
     private final String suffix;
 
     public FloatSetting(String name, String category, String description, float val, float min, float max, String suffix, boolean internal) {
@@ -60,6 +60,10 @@ public class FloatSetting extends Setting {
         return val;
     }
 
+    public float getDefault() {
+        return this.def;
+    }
+
     public void set(float newVal) {
         this.val = newVal;
     }
@@ -70,6 +74,14 @@ public class FloatSetting extends Setting {
 
     public float getMax() {
         return max;
+    }
+
+    public void setMin(float min) {
+        this.min = min;
+    }
+
+    public void setMax(float max) {
+        this.max = max;
     }
 
     public String getSuffix() {

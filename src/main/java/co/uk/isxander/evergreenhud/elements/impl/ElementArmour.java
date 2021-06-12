@@ -27,6 +27,7 @@ import co.uk.isxander.evergreenhud.settings.Setting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.xanderlib.utils.Resolution;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -69,8 +70,8 @@ public class ElementArmour extends TextElement {
     }
 
     @Override
-    public GuiElementConfig getElementConfigGui() {
-        return new GuiElementConfig(this) {
+    public GuiElementConfig getElementConfigGui(GuiScreen parent) {
+        return new GuiElementConfig(this, parent) {
 
             @Override
             protected void actionPerformed(GuiButton button) {

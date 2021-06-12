@@ -83,6 +83,10 @@ public class ArraySetting extends Setting {
         return options.get(index);
     }
 
+    public int getDefault() {
+        return def;
+    }
+
     public int getIndex() {
         return index;
     }

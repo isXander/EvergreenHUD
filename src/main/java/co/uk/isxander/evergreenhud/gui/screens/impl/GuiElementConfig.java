@@ -15,6 +15,7 @@
 
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
+import club.sk1er.mods.core.gui.notification.Notifications;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.gui.components.*;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
@@ -22,6 +23,7 @@ import co.uk.isxander.evergreenhud.settings.Setting;
 import co.uk.isxander.evergreenhud.settings.impl.*;
 import co.uk.isxander.xanderlib.utils.StringUtils;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.EnumChatFormatting;
@@ -39,7 +41,8 @@ public class GuiElementConfig extends GuiScreenElements {
     protected String currentCategory;
     protected CategoryScrollPane categoryScrollPane;
 
-    public GuiElementConfig(Element element) {
+    public GuiElementConfig(Element element, GuiScreen parent) {
+        super(parent);
         this.element = element;
         this.currentCategory = null;
     }
@@ -63,6 +66,9 @@ public class GuiElementConfig extends GuiScreenElements {
         });
 
         addButtons();
+
+        if (element.getMetadata().getNotice() != null)
+            Notifications.INSTANCE.pushNotification("EvergreenHUD", element.getMetadata().getNotice());
     }
 
     public void addButtons() {
@@ -108,7 +114,7 @@ public class GuiElementConfig extends GuiScreenElements {
                 } else {
                     textInput.setText(setting.getName());
                 }
-                textInput.setDescription(setting.getName() + ": " + setting.getDescription());
+                textInput.setDescription(setting.getName() + (setting.getDescription() != null ? ": " + setting.getDescription() : ""));
                 textInput.setEnableBackgroundDrawing(true);
                 textInput.setMaxStringLength(256);
                 textInput.setVisible(true);
@@ -152,7 +158,7 @@ public class GuiElementConfig extends GuiScreenElements {
     protected void actionPerformed(GuiButton button) {
         switch (button.id) {
             case 0:
-                mc.displayGuiScreen(new GuiMain());
+                mc.displayGuiScreen(getParentScreen());
                 break;
             case 1:
                 element.resetSettings(true);
@@ -190,7 +196,7 @@ public class GuiElementConfig extends GuiScreenElements {
         }
         super.keyTyped(typedChar, keyCode);
         if (keyCode == Keyboard.KEY_ESCAPE)
-            mc.displayGuiScreen(new GuiMain());
+            mc.displayGuiScreen(getParentScreen());
     }
 
     @Override

@@ -23,6 +23,7 @@ import co.uk.isxander.evergreenhud.gui.screens.impl.GuiElementConfig;
 import co.uk.isxander.xanderlib.utils.MathUtils;
 import co.uk.isxander.xanderlib.utils.Resolution;
 import net.apolloclient.utils.GLRenderer;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -38,6 +39,10 @@ public class GuiScreenElements extends GuiScreenExt {
     protected Element dragging = null;
     protected Element lastClicked = null;
     protected float offX = 0, offY = 0;
+
+    public GuiScreenElements(GuiScreen parentScreen) {
+        super(parentScreen);
+    }
 
     @Override
     public void initGui() {
@@ -169,7 +174,7 @@ public class GuiScreenElements extends GuiScreenExt {
                             break;
                         }
                     }
-                    mc.displayGuiScreen(lastClicked.getElementConfigGui());
+                    mc.displayGuiScreen(lastClicked.getElementConfigGui(this));
                     break;
                 case Keyboard.KEY_DELETE:
                 case Keyboard.KEY_BACK:

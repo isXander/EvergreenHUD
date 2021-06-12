@@ -61,6 +61,10 @@ public class EnumSetting<T extends Enum<?>> extends Setting {
         return cached;
     }
 
+    public int getDefaultIndex() {
+        return this.index;
+    }
+
     public int getIndex() {
         return index;
     }
