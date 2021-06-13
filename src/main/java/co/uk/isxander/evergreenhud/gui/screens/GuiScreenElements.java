@@ -18,7 +18,7 @@ package co.uk.isxander.evergreenhud.gui.screens;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.RenderOrigin;
-import co.uk.isxander.evergreenhud.elements.snapping.SnapPoint;
+import co.uk.isxander.evergreenhud.utils.SnapPoint;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiElementConfig;
 import co.uk.isxander.xanderlib.utils.MathUtils;
 import co.uk.isxander.xanderlib.utils.Resolution;
@@ -135,6 +135,10 @@ public class GuiScreenElements extends GuiScreenExt {
                 break;
             }
         }
+        if (EvergreenHUD.getInstance().getElementManager().getCurrentElements().contains(lastClicked)) {
+            EvergreenHUD.getInstance().getElementManager().getCurrentElements().remove(lastClicked);
+            EvergreenHUD.getInstance().getElementManager().getCurrentElements().add(lastClicked);
+        }
 
         if (!clickedElement) {
             lastClicked = null;
@@ -156,16 +160,16 @@ public class GuiScreenElements extends GuiScreenExt {
         if (lastClicked != null) {
             switch (keyCode) {
                 case Keyboard.KEY_UP:
-                    lastClicked.getPosition().setRawY(MathUtils.clamp(lastClicked.getPosition().getRawY(res) - 2, 0, res.getScaledHeight() - 1), res);
+                    lastClicked.getPosition().setRawY(MathUtils.clamp(lastClicked.getPosition().getRawY(res) - 1, 0, res.getScaledHeight() - 1), res);
                     break;
                 case Keyboard.KEY_DOWN:
-                    lastClicked.getPosition().setRawY(MathUtils.clamp(lastClicked.getPosition().getRawY(res) + 2, 0, res.getScaledHeight() - 1), res);
+                    lastClicked.getPosition().setRawY(MathUtils.clamp(lastClicked.getPosition().getRawY(res) + 1, 0, res.getScaledHeight() - 1), res);
                     break;
                 case Keyboard.KEY_LEFT:
-                    lastClicked.getPosition().setRawX(MathUtils.clamp(lastClicked.getPosition().getRawX(res) - 2, 0, res.getScaledWidth() - 1), res);
+                    lastClicked.getPosition().setRawX(MathUtils.clamp(lastClicked.getPosition().getRawX(res) - 1, 0, res.getScaledWidth() - 1), res);
                     break;
                 case Keyboard.KEY_RIGHT:
-                    lastClicked.getPosition().setRawX(MathUtils.clamp(lastClicked.getPosition().getRawX(res) + 2, 0, res.getScaledWidth() - 1), res);
+                    lastClicked.getPosition().setRawX(MathUtils.clamp(lastClicked.getPosition().getRawX(res) + 1, 0, res.getScaledWidth() - 1), res);
                     break;
                 case Keyboard.KEY_RETURN:
                     if (this instanceof GuiElementConfig) {

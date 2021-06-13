@@ -15,7 +15,7 @@
 
 package co.uk.isxander.evergreenhud.elements;
 
-public enum RenderOrigin {
-    HUD,
-    GUI
+public class RenderOrigin {
+    public static final int HUD = 0;
+    public static final int GUI = 1;
 }

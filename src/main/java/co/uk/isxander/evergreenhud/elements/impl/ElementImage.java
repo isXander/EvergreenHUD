@@ -38,16 +38,16 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 
 public class ElementImage extends BackgroundElement {
 
-    private static final String textureName = "EVERGREEN_IMAGE_ELEMENT";
-    private static final File imageFile = new File(EvergreenHUD.DATA_DIR, "image.png");
     private static final ResourceLocation unknownImage = new ResourceLocation("evergreenhud", "textures/unknown.png");
-    private static final float imgSize = 60;
+    private static final float imgSize = 64;
 
     private Dimension imageDimension;
     private ResourceLocation currentImage;
@@ -58,13 +58,6 @@ public class ElementImage extends BackgroundElement {
     public BooleanSetting mirror;
     public FloatSetting rotation;
     public BooleanSetting autoScale;
-
-    @Override
-    public void resetSettings(boolean save) {
-        super.resetSettings(save);
-
-        copyNullImage();
-    }
 
     @Override
     public void initialise() {
@@ -92,22 +85,14 @@ public class ElementImage extends BackgroundElement {
         addSettings(mirror = new BooleanSetting("Mirror", "Image", "If the image is flipped horizontally.", false) {
             @Override
             protected boolean onChange(boolean oldValue, boolean newValue) {
-                changed = true;
-                return true;
+                boolean success = super.onChange(oldValue, newValue);
+                if (success)
+                    changed = true;
+                return success;
             }
         });
         addSettings(rotation = new FloatSetting("Rotation", "Image", "How the image will be rotated.", 0, 0, 360, " deg"));
-        addSettings(autoScale = new BooleanSetting("Auto Scale", "Image", "Automatically scales your image to a constant size depending on the scale.", true));
-    }
-
-    @Override
-    protected void onSettingsLoad() {
-        try {
-            cacheResourceLocation();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ReportedException(CrashReport.makeCrashReport(e, "An error was encountered."));
-        }
+        addSettings(autoScale = new BooleanSetting("Auto Scale", "Image", "Automatically scales your image to a constant size no matter of the resolution.", true));
     }
 
     @Override
@@ -116,7 +101,7 @@ public class ElementImage extends BackgroundElement {
     }
 
     @Override
-    public void render(float partialTicks, RenderOrigin origin) {
+    public void render(float partialTicks, int origin) {
         if (changed || currentImage == null) {
             // Reload the texture
             if (currentImage != null)
@@ -185,35 +170,35 @@ public class ElementImage extends BackgroundElement {
     }
 
     private void cacheResourceLocation() throws IOException {
-        BufferedImage img = ImageIO.read(getImageFile());
+        File imgFile = getImageFile();
+        InputStream in;
+        if (imgFile == null) {
+            in = mc.getResourceManager().getResource(unknownImage).getInputStream();
+        } else {
+            in = new FileInputStream(imgFile);
+        }
+
+        BufferedImage img = ImageIO.read(in);
 
         if (this.mirror.get())
             img = ImageUtils.mirror(img);
 
-        currentImage = mc.getTextureManager().getDynamicTextureLocation(textureName, new DynamicTexture(img));
+        currentImage = mc.getTextureManager().getDynamicTextureLocation(getTextureName(), new DynamicTexture(img));
         imageDimension = new Dimension(img.getWidth(), img.getHeight());
+
+        EvergreenHUD.LOGGER.info("Cached Image: " + getTextureName());
     }
 
     private File getImageFile() {
         if (fileLocation.get().equals("") || !new File(fileLocation.get()).exists()) {
-            if (!imageFile.exists()) {
-                copyNullImage();
-            }
-            fileLocation.set(imageFile.getPath());
+            return null;
         }
 
         return new File(fileLocation.get());
     }
 
-    private void copyNullImage() {
-        try {
-            Files.copy(ElementImage.class.getResourceAsStream("/assets/" + unknownImage.getResourceDomain() + "/" + unknownImage.getResourcePath()), imageFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
-            BufferedImage img = ImageIO.read(imageFile);
-            imageDimension = new Dimension(img.getWidth(), img.getHeight());
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new ReportedException(CrashReport.makeCrashReport(e, "Failed to copy image."));
-        }
+    private String getTextureName() {
+        return "EVERGREEN_IMAGE_ELEMENT-" + this.hashCode();
     }
 
 }

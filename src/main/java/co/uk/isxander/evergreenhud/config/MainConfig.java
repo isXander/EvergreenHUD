@@ -43,7 +43,7 @@ public class MainConfig {
 
         // new config version so we need to reset the config
         if (root.optInt("version") != VERSION) {
-            manager.getLogger().warn("Resetting configuration! Older or newer config version detected.");
+            EvergreenHUD.LOGGER.warn("Resetting configuration! Older or newer config version detected.");
             EvergreenHUD.getInstance().notifyConfigReset();
             save();
             return;
@@ -52,13 +52,17 @@ public class MainConfig {
         manager.setUseAlternateLook(root.optBoolean("alternate_look", true));
     }
 
-    public void save() {
+    public BetterJsonObject generateJson() {
         BetterJsonObject root = new BetterJsonObject();
         root.addProperty("version", VERSION);
         root.addProperty("enabled", manager.isEnabled());
         root.addProperty("alternate_look", manager.isUseAlternateLook());
 
-        root.writeToFile(CONFIG_FILE);
+        return root;
+    }
+
+    public void save() {
+        generateJson().writeToFile(CONFIG_FILE);
     }
 
 }

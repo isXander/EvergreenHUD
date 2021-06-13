@@ -30,7 +30,7 @@ public abstract class SimpleTextElement extends TextElement {
     private BooleanSetting inverted;
 
     @Override
-    public void render(float partialTicks, RenderOrigin origin) {
+    public void render(float partialTicks, int origin) {
         super.render(partialTicks, origin);
 
         String displayString = getDisplayString();
@@ -44,23 +44,19 @@ public abstract class SimpleTextElement extends TextElement {
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 0);
 
+        float posX = x / scale;
         float posY = y / scale;
         switch (getAlignmentSetting().get()) {
             case RIGHT:
-                float posX = (x - mc.fontRendererObj.getStringWidth(displayString)) / scale;
-
+                posX = (x - mc.fontRendererObj.getStringWidth(displayString)) / scale;
                 GuiUtils.drawString(mc.fontRendererObj, displayString, posX, posY, textMode == TextMode.SHADOW, textMode == TextMode.BORDER, chroma, false, color);
 
                 break;
             case CENTER:
-                posX = x / scale;
-
                 GuiUtils.drawString(mc.fontRendererObj, displayString, posX, posY, textMode == TextMode.SHADOW, textMode == TextMode.BORDER, chroma, true, color);
 
                 break;
             case LEFT:
-                posX = x / scale;
-
                 GuiUtils.drawString(mc.fontRendererObj, displayString, posX, posY, textMode == TextMode.SHADOW, textMode == TextMode.BORDER, chroma, false, color);
 
                 break;

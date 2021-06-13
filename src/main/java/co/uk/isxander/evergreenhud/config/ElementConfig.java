@@ -38,7 +38,7 @@ public class ElementConfig implements Constants {
         this.manager = manager;
     }
 
-    private BetterJsonObject generateJson() {
+    public BetterJsonObject generateJson() {
         BetterJsonObject root = new BetterJsonObject();
         root.addProperty("version", VERSION);
 
@@ -77,10 +77,10 @@ public class ElementConfig implements Constants {
 
         boolean v2 = false;
         if (root.optInt("version") == 2) {
-            manager.getLogger().warn("Converting Element Config v2 -> v3. Conversion issues may arise");
+            EvergreenHUD.LOGGER.warn("Converting Element Config v2 -> v3. Conversion issues may arise");
             v2 = true;
         } else if (root.optInt("version") != VERSION) {
-            manager.getLogger().warn("Resetting configuration! Older or newer config version detected.");
+            EvergreenHUD.LOGGER.warn("Resetting configuration! Older or newer config version detected.");
             EvergreenHUD.getInstance().notifyConfigReset();
             save();
             return;
@@ -102,7 +102,7 @@ public class ElementConfig implements Constants {
 
                 manager.addElement(element);
             } else {
-                manager.getLogger().warn("Found unknown element id: " + id + ". Skipped.");
+                EvergreenHUD.LOGGER.warn("Found unknown element id: " + id + ". Skipped.");
             }
         });
 

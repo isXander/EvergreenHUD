@@ -90,7 +90,7 @@ public class ElementArmour extends TextElement {
     }
 
     @Override
-    public void render(float partialTicks, RenderOrigin origin) {
+    public void render(float partialTicks, int origin) {
         ScaledResolution res = Resolution.get();
 
         super.render(partialTicks, origin);

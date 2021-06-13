@@ -47,7 +47,7 @@ public abstract class MultiLineTextElement extends TextElement {
     }
 
     @Override
-    public void render(float partialTicks, RenderOrigin origin) {
+    public void render(float partialTicks, int origin) {
         float scale = getPosition().getScale();
         boolean chroma = getChromaSetting().get();
         TextMode textMode = getTextModeSetting().get();

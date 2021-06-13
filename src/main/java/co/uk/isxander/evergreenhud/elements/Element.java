@@ -15,7 +15,7 @@
 
 package co.uk.isxander.evergreenhud.elements;
 
-import co.uk.isxander.evergreenhud.elements.snapping.SnapPoint;
+import co.uk.isxander.evergreenhud.utils.SnapPoint;
 import co.uk.isxander.evergreenhud.event.Listenable;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiElementConfig;
 import co.uk.isxander.evergreenhud.settings.impl.*;
@@ -31,6 +31,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -124,7 +125,7 @@ public abstract class Element extends Gui implements Listenable, Constants {
     /**
      * Renders to the screen.
      */
-    public abstract void render(float partialTicks, RenderOrigin origin);
+    public abstract void render(float partialTicks, int origin);
 
     /**
      * Gets the box around the text
@@ -166,15 +167,27 @@ public abstract class Element extends Gui implements Listenable, Constants {
         //GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, new Color(255, 255, 255, 50));
         GLRenderer.drawHollowRectangle(hitbox.x - 1, hitbox.y - 1, hitbox.width + 2, hitbox.height + 2, 1, (selected ? new Color(255, 255, 255, 175) : new Color(175, 175, 175, 100)));
         GlStateManager.pushMatrix();
+
         GlStateManager.color(1f, 1f, 1f);
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
+
         double iconWidth = 384 * 0.02f * MathUtils.clamp(getPosition().getScale(), 0.75f, 1f);
         double iconHeight = 384 * 0.02f * MathUtils.clamp(getPosition().getScale(), 0.75f, 1f);
+
+        GlStateManager.enableBlend();
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_ONE_MINUS_DST_COLOR, GL11.GL_ONE_MINUS_SRC_COLOR, 1, 0);
+        GlStateManager.enableAlpha();
+
         mc.getTextureManager().bindTexture(settingsIcon);
         GLRenderer.drawModalRect(hitbox.x, hitbox.y + hitbox.height - iconHeight, 0, 0, 384, 384, iconWidth, iconHeight, 384, 384);
+
         mc.getTextureManager().bindTexture(deleteIcon);
         GLRenderer.drawModalRect(hitbox.x + hitbox.width - iconWidth, hitbox.y + hitbox.height - iconHeight, 0, 0, 384, 384, iconWidth, iconHeight, 384, 384);
+
+        GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
+        GlStateManager.disableBlend();
+
         GlStateManager.popMatrix();
     }
 
@@ -316,6 +329,9 @@ public abstract class Element extends Gui implements Listenable, Constants {
                 mc.displayGuiScreen(new GuiMain(null));
             }
         }
+
+        // clear the utilities
+        getUtilitySharer().unregisterAllForObject(this);
     }
 
     public ElementUtilitySharer getUtilitySharer() {

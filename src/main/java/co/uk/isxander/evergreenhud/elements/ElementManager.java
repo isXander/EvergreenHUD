@@ -25,10 +25,9 @@ import co.uk.isxander.evergreenhud.event.EventManager;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class ElementManager implements Constants {
@@ -43,13 +42,9 @@ public class ElementManager implements Constants {
     private boolean enabled;
     private boolean useAlternateLook;
 
-    private final Logger logger;
-
     public ElementManager() {
-        this.logger = LogManager.getLogger("Evergreen Manager");
-
         this.availableElements = new HashMap<>();
-        this.currentElements = new ArrayList<>();
+        this.currentElements = new CopyOnWriteArrayList<>();
         this.mainConfig = new MainConfig(this);
         this.elementConfig = new ElementConfig(this);
         resetConfig();
@@ -93,7 +88,11 @@ public class ElementManager implements Constants {
     /**
      * Registers an element to Evergreen
      *
-     * @param name the internal name of the element. Example: MY_NEW_ELEMENT
+     * @param name the internal name of the element.
+     *             make sure to add the addon name to the name so
+     *             it doesn't get mixed up with other addons
+     *
+     *             Example: EXAMPLE_ADDON_EXAMPLE_ELEMENT
      * @param type class of your element
      */
     public void registerElement(String name, Class<? extends Element> type) {
@@ -104,6 +103,13 @@ public class ElementManager implements Constants {
         return availableElements.get(name);
     }
 
+    /**
+     * Create a new instance of an element
+     * without the need to catch exceptions
+     *
+     * @param id the internal id of the element
+     * @return element instance
+     */
     public Element getNewElementInstance(String id) {
         Class<? extends Element> elementClass = getElementClass(id);
         if (elementClass == null) return null;
@@ -115,6 +121,9 @@ public class ElementManager implements Constants {
         return null;
     }
 
+    /**
+     * @param element get the identifier of an instance of an element
+     */
     public String getElementIdentifier(Element element) {
         AtomicReference<String> name = new AtomicReference<>();
         try {
@@ -130,6 +139,9 @@ public class ElementManager implements Constants {
         return name.get();
     }
 
+    /**
+     * @return all registered elements
+     */
     public Map<String, Class<? extends Element>> getAvailableElements() {
         return Collections.unmodifiableMap(availableElements);
     }
@@ -139,6 +151,9 @@ public class ElementManager implements Constants {
         this.useAlternateLook = true;
     }
 
+    /**
+     * @return the elements that are currently being rendered
+     */
     public List<Element> getCurrentElements() {
         return currentElements;
     }
@@ -163,12 +178,22 @@ public class ElementManager implements Constants {
         }
     }
 
+    /**
+     * Add an element to the list of elements to be rendered/interacted with
+     *
+     * @param element instance to add
+     */
     public void addElement(Element element) {
         EventManager.getInstance().addListener(element);
         this.currentElements.add(element);
         element.onAdded();
     }
 
+    /**
+     * Remove an element from the list of elements to be rendered/interacted with
+     *
+     * @param element instance to remove
+     */
     public void removeElement(Element element) {
         EventManager.getInstance().removeListener(element);
         this.currentElements.remove(element);
@@ -181,10 +206,6 @@ public class ElementManager implements Constants {
 
     public ElementConfig getElementConfig() {
         return elementConfig;
-    }
-
-    public Logger getLogger() {
-        return logger;
     }
 
     public boolean isEnabled() {

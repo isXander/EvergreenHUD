@@ -46,7 +46,7 @@ public class ElementPlayerPreview extends BackgroundElement {
     }
 
     @Override
-    public void render(float partialTicks, RenderOrigin origin) {
+    public void render(float partialTicks, int origin) {
         GlStateManager.pushMatrix();
         GlStateManager.enableDepth();
         super.render(partialTicks, origin);

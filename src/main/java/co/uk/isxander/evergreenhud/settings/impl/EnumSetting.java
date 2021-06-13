@@ -62,7 +62,7 @@ public class EnumSetting<T extends Enum<?>> extends Setting {
     }
 
     public int getDefaultIndex() {
-        return this.index;
+        return this.def;
     }
 
     public int getIndex() {

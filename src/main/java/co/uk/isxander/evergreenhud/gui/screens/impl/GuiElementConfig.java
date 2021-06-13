@@ -164,6 +164,8 @@ public class GuiElementConfig extends GuiScreenElements {
                 element.resetSettings(true);
                 break;
             default:
+                boolean shiftKeyDown =  Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
+
                 Setting s = customButtons.get(button.id);
                 if (s instanceof BooleanSetting) {
                     BooleanSetting setting = (BooleanSetting) s;
@@ -171,13 +173,14 @@ public class GuiElementConfig extends GuiScreenElements {
                     button.displayString = setting.getName() + ": " + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 } else if (s instanceof ArraySetting) {
                     ArraySetting setting = (ArraySetting) s;
-                    button.displayString = setting.getName() + ": " + setting.next();
+                    button.displayString = setting.getName() + ": " + (shiftKeyDown ? setting.previous() : setting.next());
                 } else if (s instanceof ButtonSetting) {
                     ButtonSetting setting = (ButtonSetting) s;
                     setting.get().run();
                 } else if (s instanceof EnumSetting) {
                     EnumSetting<?> setting = (EnumSetting<?>) s;
-                    setting.next();
+                    if (shiftKeyDown) setting.previous();
+                    else setting.next();
                     button.displayString = setting.getName() + ": " + StringUtils.capitalizeEnum(setting.get().name().replaceAll("_", " "));
                 }
                 break;

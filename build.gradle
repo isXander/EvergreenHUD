@@ -4,7 +4,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
-version = '2.0-RC.2.1'
+version = '2.0-RC.3'
 group = 'co.uk.isxander'
 archivesBaseName = 'evergreenhud'
 
@@ -16,7 +16,7 @@ minecraft {
     runDir = 'run'
     mappings = 'stable_22'
 
-    replace('@BUILD_VER@', project.version)
+    replace '@BUILD_VER@', project.version
 
     makeObfSourceJar = false
 }

@@ -47,9 +47,7 @@ public class AddonManager {
     }
 
     public void onConfigLoad() {
-        for (EvergreenAddon addon : addons) {
-            addon.configLoad();
-        }
+        addons.forEach(EvergreenAddon::configLoad);
     }
 
     public static AddonManager getInstance() {

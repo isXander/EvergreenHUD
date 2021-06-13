@@ -53,10 +53,14 @@ public abstract class BackgroundElement extends Element {
     }
 
     @Override
-    public void render(float partialTicks, RenderOrigin origin) {
+    public void render(float partialTicks, int origin) {
+        Color bgCol = getBgColor();
+        if (bgCol.getAlpha() == 0)
+            return;
+
         float scale = getPosition().getScale();
         HitBox2D hitbox = calculateHitBox(1, scale);
-        Color bgCol = getBgColor();
+
         if (cornerRadius.get() == 0) {
             GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol);
         } else {

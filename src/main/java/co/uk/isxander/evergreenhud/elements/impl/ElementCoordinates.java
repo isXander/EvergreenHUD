@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.type.MultiLineTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
+import co.uk.isxander.evergreenhud.settings.impl.EnumSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 
@@ -26,6 +27,7 @@ import java.util.List;
 
 public class ElementCoordinates extends MultiLineTextElement {
 
+    public EnumSetting<DisplayMode> mode;
     public BooleanSetting showX;
     public BooleanSetting showY;
     public BooleanSetting showZ;
@@ -35,6 +37,7 @@ public class ElementCoordinates extends MultiLineTextElement {
 
     @Override
     public void initialise() {
+        addSettings(mode = new EnumSetting<>("Mode", "Display", "How the coordinates should be displayed.", DisplayMode.VERTICAL));
         addSettings(showCoord = new BooleanSetting("Show Name", "Display", "Show X: Y: and Z: before the values.", true));
         addSettings(showX = new BooleanSetting("Show X", "Display", "Show the X coordinate.", true));
         addSettings(showY = new BooleanSetting("Show Y", "Display", "Show the Y coordinate.", true));
@@ -56,18 +59,57 @@ public class ElementCoordinates extends MultiLineTextElement {
             return lines;
         }
         String formatter = (trailingZeros.get() ? "0" : "#");
-        StringBuilder sb = new StringBuilder(accuracy.get() < 1 ? formatter : formatter + ".");
-        for (int i = 0; i < accuracy.get(); i++) sb.append(formatter);
-        DecimalFormat df = new DecimalFormat(sb.toString());
-        if (showX.get()) lines.add((showCoord.get() ? "X: " : "") + df.format(mc.thePlayer.posX));
-        if (showY.get()) lines.add((showCoord.get() ? "Y: " : "") + df.format(mc.thePlayer.posY));
-        if (showZ.get()) lines.add((showCoord.get() ? "Z: " : "") + df.format(mc.thePlayer.posZ));
+        StringBuilder formatBuilder = new StringBuilder(accuracy.get() < 1 ? formatter : formatter + ".");
+        for (int i = 0; i < accuracy.get(); i++) formatBuilder.append(formatter);
+        DecimalFormat df = new DecimalFormat(formatBuilder.toString());
+
+        StringBuilder sb = new StringBuilder();
+        if (showX.get()) {
+            sb.append(showCoord.get() ? "X: " : "");
+            sb.append(df.format(mc.thePlayer.posX));
+
+            if (mode.get() == DisplayMode.VERTICAL) {
+                lines.add(sb.toString());
+                sb.setLength(0);
+            } else if (showY.get() || showZ.get()) {
+                sb.append(", ");
+            }
+        }
+        if (showY.get()) {
+            sb.append(showCoord.get() ? "Y: " : "");
+            sb.append(df.format(mc.thePlayer.posY));
+
+            if (mode.get() == DisplayMode.VERTICAL) {
+                lines.add(sb.toString());
+                sb.setLength(0);
+            } else if (showZ.get()) {
+                sb.append(", ");
+            }
+        }
+        if (showZ.get()) {
+            sb.append(showCoord.get() ? "Z: " : "");
+            sb.append(df.format(mc.thePlayer.posZ));
+
+            if (mode.get() == DisplayMode.VERTICAL) {
+                lines.add(sb.toString());
+                sb.setLength(0);
+            }
+        }
+
+        if (mode.get() == DisplayMode.HORIZONTAL) {
+            lines.add(sb.toString());
+        }
         return lines;
     }
 
     @Override
     public String getDefaultDisplayTitle() {
         return "Coords";
+    }
+
+    public enum DisplayMode {
+        VERTICAL,
+        HORIZONTAL
     }
 
 }

@@ -42,8 +42,13 @@ public class ElementPlayerCap extends SimpleTextElement {
                 return success;
             }
         });
+    }
 
-        pinger = getUtilitySharer().register(ServerPinger.class);
+    @Override
+    public void onAdded() {
+        super.onAdded();
+
+        pinger = getUtilitySharer().register(ServerPinger.class, this);
     }
 
     @Override

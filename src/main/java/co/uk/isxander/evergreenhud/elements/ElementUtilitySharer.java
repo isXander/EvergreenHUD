@@ -15,21 +15,35 @@
 
 package co.uk.isxander.evergreenhud.elements;
 
+import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.xanderlib.utils.Constants;
+import com.google.common.collect.Sets;
+import net.minecraftforge.common.MinecraftForge;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ElementUtilitySharer implements Constants {
 
     private final Map<Class<?>, Object> dataManagers;
+    private final Map<Class<?>, Set<Object>> managerUsers;
 
     public ElementUtilitySharer() {
         this.dataManagers = new ConcurrentHashMap<>();
+        this.managerUsers = new ConcurrentHashMap<>();
     }
 
-    public <T> T register(Class<T> clazz) {
+    public <T> T register(Class<T> clazz, Object o) {
         try {
+            if (managerUsers.containsKey(clazz)) {
+                managerUsers.get(clazz).add(o);
+            } else {
+                managerUsers.put(clazz, Sets.newHashSet(o));
+            }
+
             if (this.dataManagers.containsKey(clazz)) {
                 return (T) this.dataManagers.get(clazz);
             }
@@ -40,6 +54,26 @@ public class ElementUtilitySharer implements Constants {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public void unregisterAllForObject(Object o) {
+        List<Class<?>> toRemove = new ArrayList<>();
+        managerUsers.forEach((k, v) -> {
+            if (v.contains(o)) {
+                if (v.size() == 1) {
+                    toRemove.add(k);
+                }
+                v.remove(o);
+            }
+        });
+
+        for (Class<?> clazz : toRemove) {
+            EvergreenHUD.LOGGER.info("Unregistered Utility Class: " + clazz.getSimpleName());
+
+            MinecraftForge.EVENT_BUS.unregister(dataManagers.get(clazz));
+            dataManagers.remove(clazz);
+            managerUsers.remove(clazz);
+        }
     }
 
     public <T> T getManager(Class<T> clazz) {

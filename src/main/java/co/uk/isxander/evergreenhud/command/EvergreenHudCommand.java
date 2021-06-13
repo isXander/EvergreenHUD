@@ -171,6 +171,15 @@ public class EvergreenHudCommand extends CommandBase implements Constants {
 
                         sb.append("\n");
                     }
+                    sb.append("\n");
+
+                    sb.append("--- File: /config/evergreenhud/elements.json ---").append("\n");
+                    sb.append(EvergreenHUD.getInstance().getElementManager().getElementConfig().generateJson().toPrettyString());
+                    sb.append("\n\n");
+
+                    sb.append("--- File: /config/evergreenhud/config.json ---").append("\n");
+                    sb.append(EvergreenHUD.getInstance().getElementManager().getMainConfig().generateJson().toPrettyString());
+                    sb.append("\n\n");
 
                     Multithreading.runAsync(() -> {
                         OkHttpClient client = new OkHttpClient();
