@@ -155,18 +155,13 @@ public class ElementImage extends BackgroundElement {
     }
 
     @Override
-    public HitBox2D calculateHitBox(float gl, float sizeScale) {
-        ScaledResolution res = Resolution.get();
+    protected float getHitBoxWidth() {
+        return (float) imageDimension.getWidth() * scaleMod;
+    }
 
-        float width = (float)imageDimension.getWidth() * sizeScale * scaleMod;
-        float height = (float)imageDimension.getHeight() * sizeScale * scaleMod;
-
-        float extraWidth = getPaddingWidthSetting().get() * sizeScale;
-        float extraHeight = getPaddingHeightSetting().get() * sizeScale;
-        float x = getPosition().getRawX(res) / gl;
-        float y = getPosition().getRawY(res) / gl;
-
-        return new HitBox2D(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+    @Override
+    protected float getHitBoxHeight() {
+        return (float) imageDimension.getHeight() * scaleMod;
     }
 
     private void cacheResourceLocation() throws IOException {

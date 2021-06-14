@@ -29,8 +29,10 @@ import java.awt.*;
 
 public abstract class BackgroundElement extends Element {
 
-    protected FloatSetting paddingWidth;
-    protected FloatSetting paddingHeight;
+    protected FloatSetting paddingLeft;
+    protected FloatSetting paddingRight;
+    protected FloatSetting paddingTop;
+    protected FloatSetting paddingBottom;
     protected IntegerSetting cornerRadius;
     protected IntegerSetting backR;
     protected IntegerSetting backG;
@@ -41,13 +43,15 @@ public abstract class BackgroundElement extends Element {
     protected void registerDefaultSettings() {
         super.registerDefaultSettings();
 
-        addSettings(backR = new IntegerSetting("Background Red", "Color", "How much red is in the color of the background.", 0, 0, 255, ""));
-        addSettings(backG = new IntegerSetting("Background Green", "Color", "How much green is in the color of the background.", 0, 0, 255, ""));
-        addSettings(backB = new IntegerSetting("Background Blue", "Color", "How much blue is in the color of the background.", 0, 0, 255, ""));
-        addSettings(backA = new IntegerSetting("Background Alpha", "Color", "How much alpha is in the color of the background.", 100, 0, 255, ""));
+        addSettings(backR = new IntegerSetting("BG Red", "Color", "How much red is in the color of the background.", 0, 0, 255, ""));
+        addSettings(backG = new IntegerSetting("BG Green", "Color", "How much green is in the color of the background.", 0, 0, 255, ""));
+        addSettings(backB = new IntegerSetting("BG Blue", "Color", "How much blue is in the color of the background.", 0, 0, 255, ""));
+        addSettings(backA = new IntegerSetting("BG Alpha", "Color", "How much alpha is in the color of the background.", 100, 0, 255, ""));
 
-        addSettings(paddingWidth = new FloatSetting("Padding Width", "Background", "How much extra width the background box will have.", 4f, 0f, 12f, ""));
-        addSettings(paddingHeight = new FloatSetting("Padding Height", "Background", "How much extra height the background box will have.", 4f, 0f, 12f, ""));
+        addSettings(paddingLeft = new FloatSetting("Padding Left", "Background", "How far the background extends to the left.", 4f, 0f, 12f, " px"));
+        addSettings(paddingRight = new FloatSetting("Padding Right", "Background", "How far the background will extend to the right.", 4f, 0f, 12f, " px"));
+        addSettings(paddingTop = new FloatSetting("Padding Top", "Background", "How far the background will extend upwards.", 4f, 0f, 12f, " px"));
+        addSettings(paddingBottom = new FloatSetting("Padding Bottom", "Background", "How far the background will extend downwards.", 4f, 0f, 12f, " px"));
 
         addSettings(cornerRadius = new IntegerSetting("Corner Radius", "Background", "How round are the corners of the background.", 0, 0, 6, ""));
     }
@@ -72,13 +76,17 @@ public abstract class BackgroundElement extends Element {
     public HitBox2D calculateHitBox(float gl, float sizeScale) {
         ScaledResolution res = Resolution.get();
         float width = getHitBoxWidth() * sizeScale;
-        float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float height = getHitBoxHeight() * sizeScale;
-        float extraHeight = getPaddingHeightSetting().get() * sizeScale;
+
+        float top = getPaddingTopSetting().get() * sizeScale;
+        float bottom = getPaddingBottomSetting().get() * sizeScale;
+        float left = getPaddingLeftSetting().get() * sizeScale;
+        float right = getPaddingRightSetting().get() * sizeScale;
+
         float x = getPosition().getRawX(res) / gl;
         float y = getPosition().getRawY(res) / gl;
 
-        return new HitBox2D(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+        return new HitBox2D(x - left, y - top, width + left + right, height + top + bottom);
     }
 
     @Override
@@ -88,8 +96,13 @@ public abstract class BackgroundElement extends Element {
         backG.set(bgColor.optInt("g"));
         backB.set(bgColor.optInt("b"));
         backA.set(bgColor.optInt("a"));
-        paddingWidth.set(bgColor.optFloat("padding_width"));
-        paddingHeight.set(bgColor.optFloat("padding_height"));
+
+        float paddingWidth = bgColor.optFloat("padding_width");
+        float paddingHeight = bgColor.optFloat("padding_height");
+        paddingLeft.set(paddingWidth);
+        paddingRight.set(paddingWidth);
+        paddingTop.set(paddingHeight);
+        paddingBottom.set(paddingHeight);
 
         super.loadJsonOld(root);
     }
@@ -105,12 +118,20 @@ public abstract class BackgroundElement extends Element {
         backA.set(a);
     }
 
-    public FloatSetting getPaddingWidthSetting() {
-        return paddingWidth;
+    public FloatSetting getPaddingLeftSetting() {
+        return paddingLeft;
     }
 
-    public FloatSetting getPaddingHeightSetting() {
-        return paddingHeight;
+    public FloatSetting getPaddingRightSetting() {
+        return paddingRight;
+    }
+
+    public FloatSetting getPaddingTopSetting() {
+        return paddingTop;
+    }
+
+    public FloatSetting getPaddingBottomSetting() {
+        return paddingBottom;
     }
 
     public IntegerSetting getCornerRadiusSetting() {

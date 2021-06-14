@@ -28,6 +28,9 @@ import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.WorldRenderer;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -332,6 +335,19 @@ public abstract class Element extends Gui implements Listenable, Constants {
 
         // clear the utilities
         getUtilitySharer().unregisterAllForObject(this);
+    }
+
+    public void drawTexturedModalRectF(float x, float y, int textureX, int textureY, float width, float height) {
+        float f = 0.00390625F;
+        float f1 = 0.00390625F;
+        Tessellator tessellator = Tessellator.getInstance();
+        WorldRenderer worldrenderer = tessellator.getWorldRenderer();
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX);
+        worldrenderer.pos(x, y + height, this.zLevel).tex(textureX * f, (textureY + height) * f1).endVertex();
+        worldrenderer.pos(x + width, y + height, this.zLevel).tex((textureX + width) * f, (textureY + height) * f1).endVertex();
+        worldrenderer.pos(x + width, y, this.zLevel).tex((textureX + width) * f, textureY * f1).endVertex();
+        worldrenderer.pos(x + 0, y + 0, this.zLevel).tex(textureX * f, textureY * f1).endVertex();
+        tessellator.draw();
     }
 
     public ElementUtilitySharer getUtilitySharer() {

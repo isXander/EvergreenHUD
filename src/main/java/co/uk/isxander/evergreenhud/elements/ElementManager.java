@@ -77,6 +77,7 @@ public class ElementManager implements Constants {
         registerElement("SERVER_MAX_CAPACITY", ElementPlayerCap.class);
         registerElement("PLAYER_COUNT", ElementPlayerCount.class);
         registerElement("PLAYER_PREVIEW", ElementPlayerPreview.class);
+        registerElement("POTION_HUD", ElementPotionHUD.class);
         registerElement("REACH", ElementReach.class);
         registerElement("SERVER", ElementServer.class);
         registerElement("SPEED", ElementSpeed.class);

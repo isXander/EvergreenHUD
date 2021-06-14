@@ -106,13 +106,17 @@ public class ElementPlayerPreview extends BackgroundElement {
         ScaledResolution res = Resolution.get();
 
         float width = getHitBoxWidth() * sizeScale;
-        float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float height = getHitBoxHeight() * sizeScale;
-        float extraHeight = getPaddingHeightSetting().get() * sizeScale;
+
+        float top = getPaddingTopSetting().get() * sizeScale;
+        float bottom = getPaddingBottomSetting().get() * sizeScale;
+        float left = getPaddingLeftSetting().get() * sizeScale;
+        float right = getPaddingRightSetting().get() * sizeScale;
+
         float x = getPosition().getRawX(res) - (width / 2f) / gl;
         float y = getPosition().getRawY(res) - height + (height / 8f) + (height / 128f) / gl;
 
-        return new HitBox2D(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+        return new HitBox2D(x - left, y - top, width + left + right, height + top + bottom);
     }
 
     @Override

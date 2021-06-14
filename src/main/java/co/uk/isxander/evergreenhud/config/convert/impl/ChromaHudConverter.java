@@ -136,8 +136,10 @@ public class ChromaHudConverter extends ConfigConverter {
 
                     textElement.setTextColor(textCol.getRed(), textCol.getGreen(), textCol.getBlue());
                     if (useBg) {
-                        textElement.getPaddingWidthSetting().set(1);
-                        textElement.getPaddingHeightSetting().set(1);
+                        textElement.getPaddingLeftSetting().set(1f);
+                        textElement.getPaddingRightSetting().set(1f);
+                        textElement.getPaddingTopSetting().set(1f);
+                        textElement.getPaddingBottomSetting().set(1f);
                     } else {
                         textElement.setBgColor(0, 0, 0, 0);
                     }

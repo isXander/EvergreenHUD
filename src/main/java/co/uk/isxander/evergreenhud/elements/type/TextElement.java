@@ -53,21 +53,27 @@ public abstract class TextElement extends BackgroundElement {
     public HitBox2D calculateHitBox(float gl, float sizeScale) {
         HitBox2D hitbox = null;
         ScaledResolution res = Resolution.get();
+
         float width = getHitBoxWidth() * sizeScale;
-        float extraWidth = getPaddingWidthSetting().get() * sizeScale;
         float height = getHitBoxHeight() * sizeScale;
-        float extraHeight = getPaddingHeightSetting().get() * sizeScale;
+
+        float top = getPaddingTopSetting().get() * sizeScale;
+        float bottom = getPaddingBottomSetting().get() * sizeScale;
+        float left = getPaddingLeftSetting().get() * sizeScale;
+        float right = getPaddingRightSetting().get() * sizeScale;
+
         float x = getPosition().getRawX(res) / gl;
         float y = getPosition().getRawY(res) / gl;
+
         switch (getAlignmentSetting().get()) {
             case RIGHT:
-                hitbox = new HitBox2D(x - (width / sizeScale) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+                hitbox = new HitBox2D(x - (width / sizeScale) - left, y - top, width + left + right, height + top + bottom);
                 break;
             case CENTER:
-                hitbox = new HitBox2D(x - (width / 2f) - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+                hitbox = new HitBox2D(x - (width / 2f) - left, y - top, width + left + right, height + top + bottom);
                 break;
             case LEFT:
-                hitbox = new HitBox2D(x - extraWidth, y - extraHeight, width + (extraWidth * 2), height + (extraHeight * 2));
+                hitbox = new HitBox2D(x - left, y - top, width + left + right, height + top + bottom);
                 break;
         }
         return hitbox;

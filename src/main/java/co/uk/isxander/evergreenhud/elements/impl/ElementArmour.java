@@ -200,8 +200,11 @@ public class ElementArmour extends TextElement {
         ScaledResolution res = Resolution.get();
         float x = getPosition().getRawX(res);
         float y = getPosition().getRawY(res);
-        float extraWidth = getPaddingWidthSetting().get() * sizeScale;
-        float extraHeight = getPaddingHeightSetting().get() * sizeScale;
+
+        float top = getPaddingTopSetting().get() * sizeScale;
+        float bottom = getPaddingBottomSetting().get() * sizeScale;
+        float left = getPaddingLeftSetting().get() * sizeScale;
+        float right = getPaddingRightSetting().get() * sizeScale;
 
         float hitX, hitY, hitW, hitH;
         hitX = hitY = hitW = hitH = 0;
@@ -228,7 +231,7 @@ public class ElementArmour extends TextElement {
         if (listType.get().equalsIgnoreCase("up"))
             hitY -= height;
 
-        return new HitBox2D(hitX / gl - extraWidth, hitY / gl - extraHeight, hitW * sizeScale + (extraWidth * 2), hitH * sizeScale + (extraHeight * 2));
+        return new HitBox2D(hitX / gl - left, hitY / gl - top, hitW * sizeScale + left + right, hitH * sizeScale + top + bottom);
     }
 
     @Override
