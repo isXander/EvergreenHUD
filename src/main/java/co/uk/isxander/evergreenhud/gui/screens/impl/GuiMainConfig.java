@@ -50,6 +50,7 @@ public class GuiMainConfig extends GuiScreenElements {
 
         this.buttonList.add(new GuiButtonAlt(2, left(), getRow(0), 242, 20, "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
         this.buttonList.add(new GuiButtonAlt(3, left(), getRow(1), 242, 20, "Alternate Look: " + (manager.isUseAlternateLook() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonAlt(4, left(), getRow(2), 242, 20, "Check For Updates: " + (manager.isCheckForUpdates() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
     }
 
     @Override
@@ -82,6 +83,10 @@ public class GuiMainConfig extends GuiScreenElements {
             case 3:
                 manager.setUseAlternateLook(!manager.isUseAlternateLook());
                 button.displayString = "Alternate Look: " + (manager.isUseAlternateLook() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                break;
+            case 4:
+                manager.setCheckForUpdates(!manager.isCheckForUpdates());
+                button.displayString = "Check For Updates: " + (manager.isCheckForUpdates() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
                 break;
         }
     }

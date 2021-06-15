@@ -41,6 +41,7 @@ public class ElementManager implements Constants {
 
     private boolean enabled;
     private boolean useAlternateLook;
+    private boolean checkForUpdates;
 
     public ElementManager() {
         this.availableElements = new HashMap<>();
@@ -150,6 +151,7 @@ public class ElementManager implements Constants {
     public void resetConfig() {
         this.enabled = true;
         this.useAlternateLook = true;
+        this.checkForUpdates = true;
     }
 
     /**
@@ -223,5 +225,13 @@ public class ElementManager implements Constants {
 
     public void setUseAlternateLook(boolean useAlternateLook) {
         this.useAlternateLook = useAlternateLook;
+    }
+
+    public boolean isCheckForUpdates() {
+        return checkForUpdates;
+    }
+
+    public void setCheckForUpdates(boolean checkForUpdates) {
+        this.checkForUpdates = checkForUpdates;
     }
 }

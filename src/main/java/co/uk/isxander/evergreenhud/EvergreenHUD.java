@@ -189,18 +189,23 @@ public class EvergreenHUD implements Constants {
         }
         if (disabled) return;
 
-        Multithreading.runAsync(() -> {
-            if (MinecraftUtils.isDevelopment()) {
-                LOGGER.warn("Running in development environment. Skipped update check.");
-                development = true;
-            } else {
-                String version = UpdateChecker.getNeededVersion();
-                if (!version.equalsIgnoreCase(EvergreenHUD.MOD_VERSION)) {
-                    LOGGER.warn("Mod is out of date. " + EvergreenHUD.MOD_VERSION + " > " + version);
-                    notifyUpdate(version);
+        if (getElementManager().isCheckForUpdates()) {
+            Multithreading.runAsync(() -> {
+                if (MinecraftUtils.isDevelopment()) {
+                    LOGGER.warn("Running in development environment. Skipped update check.");
+                    development = true;
+                } else {
+                    String version = UpdateChecker.getNeededVersion();
+                    if (!version.equalsIgnoreCase(EvergreenHUD.MOD_VERSION)) {
+                        LOGGER.warn("Mod is out of date. " + EvergreenHUD.MOD_VERSION + " > " + version);
+                        notifyUpdate(version);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            LOGGER.info("User disabled update check - skipping.");
+        }
+
 
         if (reset) {
             reset = false;

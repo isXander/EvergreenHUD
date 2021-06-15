@@ -48,8 +48,9 @@ public class MainConfig {
             save();
             return;
         }
-        manager.setEnabled(root.optBoolean("enabled", true));
-        manager.setUseAlternateLook(root.optBoolean("alternate_look", true));
+        manager.setEnabled(root.optBoolean("enabled", manager.isEnabled()));
+        manager.setUseAlternateLook(root.optBoolean("alternate_look", manager.isUseAlternateLook()));
+        manager.setCheckForUpdates(root.optBoolean("check_updates", manager.isCheckForUpdates()));
     }
 
     public BetterJsonObject generateJson() {
@@ -57,6 +58,7 @@ public class MainConfig {
         root.addProperty("version", VERSION);
         root.addProperty("enabled", manager.isEnabled());
         root.addProperty("alternate_look", manager.isUseAlternateLook());
+        root.addProperty("check_updates", manager.isCheckForUpdates());
 
         return root;
     }
