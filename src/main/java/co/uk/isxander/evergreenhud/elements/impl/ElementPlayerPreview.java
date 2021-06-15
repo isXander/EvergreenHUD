@@ -56,6 +56,8 @@ public class ElementPlayerPreview extends BackgroundElement {
             return;
         }
 
+        GlStateManager.color(1f, 1f, 1f, 1f);
+
         EntityPlayerSP ent = mc.thePlayer;
         float posX = getPosition().getRawX(Resolution.get());
         float posY = getPosition().getRawY(Resolution.get());

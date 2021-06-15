@@ -228,7 +228,7 @@ public class EvergreenHUD implements Constants {
     public static void notifyUpdate(String latestVersion) {
         Notifications.INSTANCE.pushNotification("EvergreenHUD", "You are running an outdated version.\nCurrent: " + EvergreenHUD.MOD_VERSION + "\nLatest: " + latestVersion + "\n\nClick here to download.", () -> {
             try {
-                ModCoreDesktop.INSTANCE.browse(new URI("https://short.evergreenclient.com/GlYH5z"));
+                ModCoreDesktop.INSTANCE.browse(new URI("https://github.com/isXander/EvergreenHUD/releases"));
             } catch (Exception e) {
                 e.printStackTrace();
                 Notifications.INSTANCE.pushNotification("EvergreenHUD", "Unfortunately, your computer does not seem to support web-browsing so the mod could not open the download page.\n\nPlease navigate to \"https://short.evergreenclient.com/GlYH5z\"" );

@@ -31,7 +31,7 @@ dependencies {
     provided files('libs/xanderlib.jar')
 }
 
-def evergreenArchiveName = "EvergreenHUD (${minecraft.version}-${project.version})"
+String evergreenArchiveName = "EvergreenHUD (${minecraft.version}-${project.version})"
 
 jar {
     archiveName = "${evergreenArchiveName}.jar"

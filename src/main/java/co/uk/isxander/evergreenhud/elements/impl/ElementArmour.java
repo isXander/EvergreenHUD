@@ -15,7 +15,6 @@
 
 package co.uk.isxander.evergreenhud.elements.impl;
 
-import co.uk.isxander.evergreenhud.elements.RenderOrigin;
 import co.uk.isxander.evergreenhud.elements.type.TextElement;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiElementConfig;
 import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
