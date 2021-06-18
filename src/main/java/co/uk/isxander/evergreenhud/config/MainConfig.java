@@ -51,6 +51,7 @@ public class MainConfig {
         manager.setEnabled(root.optBoolean("enabled", manager.isEnabled()));
         manager.setUseAlternateLook(root.optBoolean("alternate_look", manager.isUseAlternateLook()));
         manager.setCheckForUpdates(root.optBoolean("check_updates", manager.isCheckForUpdates()));
+        manager.setHideComponentsOnElementDrag(root.optBoolean("hide_components_element_drag", manager.isHideComponentsOnElementDrag()));
     }
 
     public BetterJsonObject generateJson() {
@@ -59,6 +60,7 @@ public class MainConfig {
         root.addProperty("enabled", manager.isEnabled());
         root.addProperty("alternate_look", manager.isUseAlternateLook());
         root.addProperty("check_updates", manager.isCheckForUpdates());
+        root.addProperty("hide_components_element_drag", manager.isHideComponentsOnElementDrag());
 
         return root;
     }

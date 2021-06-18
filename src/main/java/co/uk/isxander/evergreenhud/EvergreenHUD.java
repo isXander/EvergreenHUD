@@ -24,6 +24,7 @@ import co.uk.isxander.evergreenhud.addon.AddonManager;
 import co.uk.isxander.evergreenhud.config.convert.impl.ChromaHudConverter;
 import co.uk.isxander.evergreenhud.config.convert.impl.SimpleHudConverter;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
+import co.uk.isxander.evergreenhud.gui.screens.impl.GuiConfigConverter;
 import co.uk.isxander.evergreenhud.repo.BlacklistManager;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiOldForge;
 import co.uk.isxander.evergreenhud.repo.ReleaseChannel;
@@ -35,13 +36,11 @@ import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.evergreenhud.repo.UpdateChecker;
 import kotlin.Unit;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.client.IModGuiFactory;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ProgressManager;
@@ -56,7 +55,6 @@ import org.lwjgl.input.Keyboard;
 import java.io.File;
 import java.net.URI;
 import java.util.List;
-import java.util.Set;
 
 @Mod(modid = EvergreenHUD.MOD_ID, name = EvergreenHUD.MOD_NAME, version = EvergreenHUD.MOD_VERSION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", guiFactory = "co.uk.isxander.evergreenhud.forge.EvergreenGuiFactory")
 public class EvergreenHUD implements Constants {
@@ -83,7 +81,7 @@ public class EvergreenHUD implements Constants {
 
     private boolean reset = false;
 
-    private final KeyBinding keybind = new KeyBinding("Open GUI", Keyboard.KEY_HOME, "EvergreenHUD");
+    private final KeyBinding guiKeybind = new KeyBinding("Open GUI", Keyboard.KEY_HOME, "EvergreenHUD");
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
@@ -118,12 +116,11 @@ public class EvergreenHUD implements Constants {
 
         progress.step("Registering Hooks");
         ClientCommandHandler.instance.registerCommand(new EvergreenHudCommand());
-        ClientRegistry.registerKeyBinding(keybind);
+        ClientRegistry.registerKeyBinding(guiKeybind);
         XanderLib.getInstance().getGuiEditor().addModifier(GuiOptions.class, new AbstractGuiModifier() {
             @Override
             public void onInitGuiPost(GuiScreen screen, List<GuiButton> buttonList) {
-                if (mc.theWorld != null)
-                    buttonList.add(new GuiButton(991, screen.width / 2 + 5, screen.height / 6 + 24 - 6, 150, 20, "EvergreenHUD..."));
+                buttonList.add(new GuiButton(991, screen.width / 2 + 5, screen.height / 6 + 24 - 6, 150, 20, "EvergreenHUD..."));
             }
 
             @Override
@@ -148,14 +145,22 @@ public class EvergreenHUD implements Constants {
         MinecraftForge.EVENT_BUS.register(this);
 
         if (isFirstLaunch() || isVersionTwoFirstLaunch()) {
-            if (new File(ChromaHudConverter.DEFAULT_DIR, ChromaHudConverter.CONFIG_FILE).exists()) {
+            boolean chromaHud = new File(ChromaHudConverter.DEFAULT_DIR, ChromaHudConverter.CONFIG_FILE).exists();
+            boolean simpleHud = SimpleHudConverter.DEFAULT_DIR.exists();
+
+            if (chromaHud && simpleHud) {
+                Notifications.INSTANCE.pushNotification("EvergreenHUD", "Multiple HUD mod configurations have been identified. Click this notification to pick which HUD mod to convert.", () -> {
+                    mc.displayGuiScreen(new GuiConfigConverter(mc.currentScreen));
+
+                    return Unit.INSTANCE;
+                });
+            } else if (chromaHud) {
                 Notifications.INSTANCE.pushNotification("ChromaHUD Detected", "An existing ChromaHUD configuration has been detected. Would you like to convert it to EvergreenHUD?", () -> {
                     new ChromaHudConverter(ChromaHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
 
                     return Unit.INSTANCE;
                 });
-            }
-            if (SimpleHudConverter.DEFAULT_DIR.exists()) {
+            } else if (simpleHud) {
                 Notifications.INSTANCE.pushNotification("SimpleHUD Detected", "An existing SimpleHUD configuration has been detected. Would you like to convert it to EvergreenHUD?", () -> {
                     new SimpleHudConverter(SimpleHudConverter.DEFAULT_DIR).process(EvergreenHUD.getInstance().getElementManager());
 
@@ -221,7 +226,7 @@ public class EvergreenHUD implements Constants {
 
     @SubscribeEvent
     public void onTick(TickEvent.ClientTickEvent event) {
-        if (keybind.isPressed())
+        if (guiKeybind.isPressed())
             mc.displayGuiScreen(new GuiMain(null));
     }
 
@@ -259,29 +264,6 @@ public class EvergreenHUD implements Constants {
 
     public boolean isVersionTwoFirstLaunch() {
         return this.versionTwoFirstLaunch;
-    }
-
-    public static class ConfigFactory implements IModGuiFactory {
-
-        @Override
-        public void initialize(Minecraft minecraftInstance) {
-
-        }
-
-        @Override
-        public Class<? extends GuiScreen> mainConfigGuiClass() {
-            return GuiMain.class;
-        }
-
-        @Override
-        public Set<RuntimeOptionCategoryElement> runtimeGuiCategories() {
-            return null;
-        }
-
-        @Override
-        public RuntimeOptionGuiHandler getHandlerFor(RuntimeOptionCategoryElement element) {
-            return null;
-        }
     }
 
 }

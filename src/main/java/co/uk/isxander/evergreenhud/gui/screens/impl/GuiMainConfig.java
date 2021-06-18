@@ -15,6 +15,7 @@
 
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
+import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.gui.components.GuiButtonAlt;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.elements.ElementManager;
@@ -48,9 +49,10 @@ public class GuiMainConfig extends GuiScreenElements {
         this.buttonList.add(new GuiButtonAlt(0, width / 2,      height - 20, 90, 20, "Finished"));
         this.buttonList.add(new GuiButtonAlt(1, width / 2 - 90, height - 20, 90, 20, "Reset"));
 
-        this.buttonList.add(new GuiButtonAlt(2, left(), getRow(0), 242, 20, "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonAlt(3, left(), getRow(1), 242, 20, "Alternate Look: " + (manager.isUseAlternateLook() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
-        this.buttonList.add(new GuiButtonAlt(4, left(), getRow(2), 242, 20, "Check For Updates: " + (manager.isCheckForUpdates() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF")));
+        this.buttonList.add(new GuiButtonAlt(2, left(), getRow(0), 242, 20, (manager.isEnabled() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + "Enabled"));
+        this.buttonList.add(new GuiButtonAlt(3, left(), getRow(1), 242, 20, (manager.isUseAlternateLook() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + "Alternate Look"));
+        this.buttonList.add(new GuiButtonAlt(4, left(), getRow(2), 242, 20, (manager.isCheckForUpdates() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + "Check For Updates"));
+        this.buttonList.add(new GuiButtonAlt(5, left(), getRow(3), 242, 20, (manager.isHideComponentsOnElementDrag() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + "Hide Components on Element Drag"));
     }
 
     @Override
@@ -62,7 +64,11 @@ public class GuiMainConfig extends GuiScreenElements {
         drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "Configuration", (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, "Configures the main settings for the mod.", width / 2, 25, -1);
-        super.drawScreen(mouseX, mouseY, partialTicks);
+
+        if (dragging == null || !EvergreenHUD.getInstance().getElementManager().isHideComponentsOnElementDrag()) {
+            noElementsDrawScreen(mouseX, mouseY, partialTicks);
+        }
+        drawElements(mouseX, mouseY, partialTicks);
     }
 
     @Override
@@ -78,15 +84,19 @@ public class GuiMainConfig extends GuiScreenElements {
                 break;
             case 2:
                 manager.setEnabled(!manager.isEnabled());
-                button.displayString = "Enabled: " + (manager.isEnabled() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                button.displayString = (manager.isEnabled() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + "Enabled";
                 break;
             case 3:
                 manager.setUseAlternateLook(!manager.isUseAlternateLook());
-                button.displayString = "Alternate Look: " + (manager.isUseAlternateLook() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                button.displayString = (manager.isUseAlternateLook() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + "Alternate Look";
                 break;
             case 4:
                 manager.setCheckForUpdates(!manager.isCheckForUpdates());
-                button.displayString = "Check For Updates: " + (manager.isCheckForUpdates() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                button.displayString = (manager.isCheckForUpdates() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + "Check For Updates";
+                break;
+            case 5:
+                manager.setHideComponentsOnElementDrag(!manager.isHideComponentsOnElementDrag());
+                button.displayString = (manager.isHideComponentsOnElementDrag() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + "Hide Components on Element Drag";
                 break;
         }
     }

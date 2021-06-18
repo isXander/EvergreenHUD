@@ -16,11 +16,13 @@
 package co.uk.isxander.evergreenhud.gui.screens.impl;
 
 import club.sk1er.mods.core.gui.notification.Notifications;
+import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.gui.components.*;
 import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.settings.Setting;
 import co.uk.isxander.evergreenhud.settings.impl.*;
+import co.uk.isxander.xanderlib.utils.MathUtils;
 import co.uk.isxander.xanderlib.utils.StringUtils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -93,13 +95,13 @@ public class GuiElementConfig extends GuiScreenElements {
             int y = getRow(row);
             if (s instanceof BooleanSetting) {
                 BooleanSetting setting = (BooleanSetting) s;
-                this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, setting.getName() + ": " + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF"), setting.getDescription()));
+                this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, (setting.get() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + setting.getName(), setting.getDescription()));
             } else if (s instanceof IntegerSetting) {
                 IntegerSetting setting = (IntegerSetting) s;
                 this.buttonList.add(new BetterGuiSlider(id, x, y, 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), false, true, (b) -> setting.set(b.getValueInt()), setting.getDescription()));
             } else if (s instanceof FloatSetting) {
                 FloatSetting setting = (FloatSetting) s;
-                this.buttonList.add(new BetterGuiSlider(id, x, y, 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), true, true, (b) -> setting.set((float) b.getValue()), setting.getDescription()));
+                this.buttonList.add(new BetterGuiSlider(id, x, y, 120, 20, setting.getName() + ": ", setting.getSuffix(), setting.getMin(), setting.getMax(), setting.get(), true, true, (b) -> setting.set(MathUtils.round((float) b.getValue(), 1)), setting.getDescription()));
             } else if (s instanceof ArraySetting) {
                 ArraySetting setting = (ArraySetting) s;
                 this.buttonList.add(new BetterGuiButton(id, x, y, 120, 20, setting.getName() + ": " + setting.get(), setting.getDescription()));
@@ -143,15 +145,19 @@ public class GuiElementConfig extends GuiScreenElements {
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, element.getMetadata().getDescription(), width / 2, 25, -1);
 
-        this.categoryScrollPane.drawScreen(mouseX, mouseY, partialTicks);
+        if (dragging == null || !EvergreenHUD.getInstance().getElementManager().isHideComponentsOnElementDrag()) {
+            this.categoryScrollPane.drawScreen(mouseX, mouseY, partialTicks);
+            super.drawScreen(mouseX, mouseY, partialTicks);
+            for (BetterGuiTextField textField : textFieldList) {
+                textField.drawTextBox();
+            }
+            for (BetterGuiTextField textField : textFieldList) {
+                textField.drawTextBoxDescription(mc, mouseX, mouseY);
+            }
+        } else {
+            drawElements(mouseX, mouseY, partialTicks);
+        }
 
-        super.drawScreen(mouseX, mouseY, partialTicks);
-        for (BetterGuiTextField textField : textFieldList) {
-            textField.drawTextBox();
-        }
-        for (BetterGuiTextField textField : textFieldList) {
-            textField.drawTextBoxDescription(mc, mouseX, mouseY);
-        }
     }
 
     @Override
@@ -170,7 +176,7 @@ public class GuiElementConfig extends GuiScreenElements {
                 if (s instanceof BooleanSetting) {
                     BooleanSetting setting = (BooleanSetting) s;
                     setting.set(!setting.get());
-                    button.displayString = setting.getName() + ": " + (setting.get() ? EnumChatFormatting.GREEN + "ON" : EnumChatFormatting.RED + "OFF");
+                    button.displayString = (setting.get() ? EnumChatFormatting.GREEN : EnumChatFormatting.RED) + setting.getName();
                 } else if (s instanceof ArraySetting) {
                     ArraySetting setting = (ArraySetting) s;
                     button.displayString = setting.getName() + ": " + (shiftKeyDown ? setting.previous() : setting.next());

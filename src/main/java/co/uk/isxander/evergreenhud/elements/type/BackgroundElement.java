@@ -34,19 +34,26 @@ public abstract class BackgroundElement extends Element {
     protected FloatSetting paddingTop;
     protected FloatSetting paddingBottom;
     protected IntegerSetting cornerRadius;
+
     protected IntegerSetting backR;
     protected IntegerSetting backG;
     protected IntegerSetting backB;
     protected IntegerSetting backA;
 
+    protected IntegerSetting outlineR;
+    protected IntegerSetting outlineG;
+    protected IntegerSetting outlineB;
+    protected IntegerSetting outlineA;
+    protected FloatSetting outlineThickness;
+
     @Override
     protected void registerDefaultSettings() {
         super.registerDefaultSettings();
 
-        addSettings(backR = new IntegerSetting("BG Red", "Color", "How much red is in the color of the background.", 0, 0, 255, ""));
-        addSettings(backG = new IntegerSetting("BG Green", "Color", "How much green is in the color of the background.", 0, 0, 255, ""));
-        addSettings(backB = new IntegerSetting("BG Blue", "Color", "How much blue is in the color of the background.", 0, 0, 255, ""));
-        addSettings(backA = new IntegerSetting("BG Alpha", "Color", "How much alpha is in the color of the background.", 100, 0, 255, ""));
+        addSettings(backR = new IntegerSetting("BG Red", "Background", "How much red is in the color of the background.", 0, 0, 255, ""));
+        addSettings(backG = new IntegerSetting("BG Green", "Background", "How much green is in the color of the background.", 0, 0, 255, ""));
+        addSettings(backB = new IntegerSetting("BG Blue", "Background", "How much blue is in the color of the background.", 0, 0, 255, ""));
+        addSettings(backA = new IntegerSetting("BG Alpha", "Background", "How much alpha is in the color of the background.", 100, 0, 255, ""));
 
         addSettings(paddingLeft = new FloatSetting("Padding Left", "Background", "How far the background extends to the left.", 4f, 0f, 12f, " px"));
         addSettings(paddingRight = new FloatSetting("Padding Right", "Background", "How far the background will extend to the right.", 4f, 0f, 12f, " px"));
@@ -54,21 +61,32 @@ public abstract class BackgroundElement extends Element {
         addSettings(paddingBottom = new FloatSetting("Padding Bottom", "Background", "How far the background will extend downwards.", 4f, 0f, 12f, " px"));
 
         addSettings(cornerRadius = new IntegerSetting("Corner Radius", "Background", "How round are the corners of the background.", 0, 0, 6, ""));
+
+        addSettings(outlineR = new IntegerSetting("Outline Red", "Background", "How much red is in the color of the outline.", 0, 0, 255, ""));
+        addSettings(outlineG = new IntegerSetting("Outline Green", "Background", "How much green is in the color of the outline.", 0, 0, 255, ""));
+        addSettings(outlineB = new IntegerSetting("Outline Blue", "Background", "How much blue is in the color of the outline.", 0, 0, 255, ""));
+        addSettings(outlineA = new IntegerSetting("Outline Alpha", "Background", "How transparent is the outline.", 0, 0, 255, ""));
+        addSettings(outlineThickness = new FloatSetting("Outline Weight", "Background", "How thick is the outline.", 1f, 0.5f, 8, ""));
     }
 
     @Override
     public void render(float partialTicks, int origin) {
         Color bgCol = getBgColor();
-        if (bgCol.getAlpha() == 0)
-            return;
+        Color outlineCol = new Color(outlineR.get(), outlineG.get(), outlineB.get(), outlineA.get());
 
         float scale = getPosition().getScale();
         HitBox2D hitbox = calculateHitBox(1, scale);
 
         if (cornerRadius.get() == 0) {
-            GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol);
+            if (bgCol.getAlpha() != 0)
+                GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol);
+            if (outlineCol.getAlpha() != 0)
+                GLRenderer.drawHollowRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, outlineThickness.get(), outlineCol);
         } else {
-            GLRenderer.drawRoundedRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, cornerRadius.get(), bgCol);
+            if (bgCol.getAlpha() != 0)
+                GLRenderer.drawRoundedRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, cornerRadius.get(), bgCol);
+            if (outlineCol.getAlpha() != 0)
+                GLRenderer.drawHollowRoundedRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, cornerRadius.get(), outlineThickness.get(), outlineCol);
         }
     }
 

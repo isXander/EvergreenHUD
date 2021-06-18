@@ -11,13 +11,23 @@ pluginManagement {
             name = 'JitPack'
             url = 'https://jitpack.io'
         }
-        flatDir dirs: 'libs' //modcore doesn't work without this
+        maven {
+            name = 'SpongePowered'
+            url = 'https://repo.spongepowered.org/maven/'
+        }
+
+        flatDir dirs: 'libs'
     }
 
     resolutionStrategy {
         eachPlugin {
-            if (requested.id.id == 'net.minecraftforge.gradle.forge') {
-                useModule("com.github.asbyth:ForgeGradle:${requested.version}")
+            switch (requested.id.id) {
+                case 'net.minecraftforge.gradle.forge':
+                    useModule("com.github.asbyth:ForgeGradle:${requested.version}")
+                    break
+                case 'org.spongepowered.mixin':
+                    useModule("com.github.xcfrg:MixinGradle:${requested.version}")
+                    break
             }
         }
     }

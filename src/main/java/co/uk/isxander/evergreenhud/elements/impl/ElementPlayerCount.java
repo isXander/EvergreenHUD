@@ -17,7 +17,7 @@ package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
-import co.uk.isxander.evergreenhud.utils.ServerPinger;
+import co.uk.isxander.evergreenhud.utils.ServerPingerUtil;
 import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.EnumSetting;
 
@@ -26,7 +26,7 @@ public class ElementPlayerCount extends SimpleTextElement {
     public EnumSetting<DisplayLevel> level;
     public IntegerSetting updateTime;
 
-    private ServerPinger pinger;
+    private ServerPingerUtil pinger;
 
     @Override
     public void initialise() {
@@ -37,7 +37,7 @@ public class ElementPlayerCount extends SimpleTextElement {
                 boolean success = super.onChange(currentVal, newVal);
 
                 if (success)
-                    ServerPinger.SERVER_UPDATE_TIME = Math.min(newVal * 60000L, ServerPinger.SERVER_UPDATE_TIME);
+                    ServerPingerUtil.SERVER_UPDATE_TIME = Math.min(newVal * 60000L, ServerPingerUtil.SERVER_UPDATE_TIME);
 
                 return success;
             }
@@ -48,7 +48,7 @@ public class ElementPlayerCount extends SimpleTextElement {
     public void onAdded() {
         super.onAdded();
 
-        pinger = getUtilitySharer().register(ServerPinger.class, this);
+        pinger = getUtilitySharer().register(ServerPingerUtil.class, this);
     }
 
     @Override

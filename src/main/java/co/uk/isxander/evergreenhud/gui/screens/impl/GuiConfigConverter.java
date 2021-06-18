@@ -70,7 +70,11 @@ public class GuiConfigConverter extends GuiScreenElements {
         drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "Config Converter", (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, "Convert other HUD mod configs to EvergreenHUD!", width / 2, 25, -1);
-        super.drawScreen(mouseX, mouseY, partialTicks);
+
+        if (dragging == null || !EvergreenHUD.getInstance().getElementManager().isHideComponentsOnElementDrag()) {
+            noElementsDrawScreen(mouseX, mouseY, partialTicks);
+        }
+        drawElements(mouseX, mouseY, partialTicks);
     }
 
 }

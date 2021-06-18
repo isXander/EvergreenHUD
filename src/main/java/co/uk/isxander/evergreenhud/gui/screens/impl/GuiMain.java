@@ -57,8 +57,12 @@ public class GuiMain extends GuiScreenElements {
         drawCenteredString(mc.fontRendererObj, EnumChatFormatting.GREEN + "EvergreenHUD", (int)(width / 2 / scale), (int)(5 / scale), -1);
         GlStateManager.popMatrix();
         drawCenteredString(mc.fontRendererObj, EvergreenHUD.MOD_VERSION + "-" + EvergreenHUD.CHANNEL.jsonName.toUpperCase(), width / 2, 25, -1);
-        mc.fontRendererObj.drawString("Addon Count: " + AddonManager.getInstance().addons.size(), 2, height - mc.fontRendererObj.FONT_HEIGHT - 2, -1, true);
-        super.drawScreen(mouseX, mouseY, partialTicks);
+
+        if (dragging == null || !EvergreenHUD.getInstance().getElementManager().isHideComponentsOnElementDrag()) {
+            mc.fontRendererObj.drawString("Addon Count: " + AddonManager.getInstance().addons.size(), 2, height - mc.fontRendererObj.FONT_HEIGHT - 2, -1, true);
+            noElementsDrawScreen(mouseX, mouseY, partialTicks);
+        }
+        drawElements(mouseX, mouseY, partialTicks);
     }
 
     @Override

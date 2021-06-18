@@ -53,6 +53,14 @@ public class GuiScreenElements extends GuiScreenExt {
     public void drawScreen(int mouseXInt, int mouseYInt, float partialTicks) {
         super.drawScreen(mouseXInt, mouseYInt, partialTicks);
 
+        drawElements(mouseXInt, mouseYInt, partialTicks);
+    }
+
+    public void noElementsDrawScreen(int mouseXInt, int mouseYInt, float partialTicks) {
+        super.drawScreen(mouseXInt, mouseYInt, partialTicks);
+    }
+
+    protected void drawElements(int mouseXInt, int mouseYInt, float partialTicks) {
         ScaledResolution res = Resolution.get();
 
         for (Element e : EvergreenHUD.getInstance().getElementManager().getCurrentElements()) {
@@ -116,7 +124,6 @@ public class GuiScreenElements extends GuiScreenExt {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        super.mouseClicked(mouseX, mouseY, mouseButton);
         ScaledResolution res = Resolution.get();
         boolean clickedElement = false;
 
@@ -141,6 +148,7 @@ public class GuiScreenElements extends GuiScreenExt {
         }
 
         if (!clickedElement) {
+            super.mouseClicked(mouseX, mouseY, mouseButton);
             lastClicked = null;
         }
     }

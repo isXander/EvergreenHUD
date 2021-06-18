@@ -42,6 +42,7 @@ public class ElementManager implements Constants {
     private boolean enabled;
     private boolean useAlternateLook;
     private boolean checkForUpdates;
+    private boolean hideComponentsOnElementDrag;
 
     public ElementManager() {
         this.availableElements = new HashMap<>();
@@ -152,6 +153,7 @@ public class ElementManager implements Constants {
         this.enabled = true;
         this.useAlternateLook = true;
         this.checkForUpdates = true;
+        this.hideComponentsOnElementDrag = false;
     }
 
     /**
@@ -233,5 +235,13 @@ public class ElementManager implements Constants {
 
     public void setCheckForUpdates(boolean checkForUpdates) {
         this.checkForUpdates = checkForUpdates;
+    }
+
+    public boolean isHideComponentsOnElementDrag() {
+        return hideComponentsOnElementDrag;
+    }
+
+    public void setHideComponentsOnElementDrag(boolean hideComponentsOnElementDrag) {
+        this.hideComponentsOnElementDrag = hideComponentsOnElementDrag;
     }
 }

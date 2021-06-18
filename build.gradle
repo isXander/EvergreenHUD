@@ -1,6 +1,9 @@
 plugins {
     id 'java'
+
     id 'net.minecraftforge.gradle.forge' version '8708bf3e0'
+    id 'org.spongepowered.mixin' version '0.6-SNAPSHOT'
+
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
@@ -15,10 +18,11 @@ minecraft {
     version = '1.8.9-11.15.1.2318-1.8.9'
     runDir = 'run'
     mappings = 'stable_22'
+    makeObfSourceJar = false
 
     replace '@BUILD_VER@', project.version
-
-    makeObfSourceJar = false
+    clientRunArgs += '--tweakClass org.spongepowered.asm.launch.MixinTweaker'
+    clientRunArgs += '--mixin mixins.evergreenhud.json'
 }
 
 configurations {
@@ -26,9 +30,22 @@ configurations {
     implementation.extendsFrom(include)
 }
 
+repositories {
+    maven {
+        name = 'SpongePowered'
+        url = 'https://repo.spongepowered.org/maven/'
+    }
+}
+
 dependencies {
     provided files('libs/modcore.jar')
     provided files('libs/xanderlib.jar')
+
+    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+}
+
+mixin {
+    add sourceSets.main, 'mixins.evergreenhud.refmap.json'
 }
 
 String evergreenArchiveName = "EvergreenHUD (${minecraft.version}-${project.version})"
@@ -39,10 +56,13 @@ jar {
 
     manifest {
         attributes (
+                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+                'MixinConfigs': 'mixins.evergreenhud.json',
                 'FMLAT': 'evergreenhud_at.cfg',
                 'FMLCorePlugin': 'co.uk.isxander.evergreenhud.forge.FMLLoadingPlugin',
                 'ModSide': 'CLIENT',
-                'FMLCorePluginContainsFMLMod': 'Yes, yes it does'
+                'FMLCorePluginContainsFMLMod': true,
+                'ForceLoadAsMod': true
         )
     }
 }

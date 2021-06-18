@@ -27,6 +27,7 @@ import co.uk.isxander.xanderlib.utils.GuiUtils;
 import co.uk.isxander.xanderlib.utils.Resolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
@@ -62,6 +63,8 @@ public class ElementPotionHUD extends BackgroundElement {
     public BooleanSetting timeTextUnderline;
     public BooleanSetting timeTextItalic;
     public BooleanSetting showTime;
+    public IntegerSetting blinkingTime;
+    public IntegerSetting blinkingSpeed;
 
     public BooleanSetting showSpeed;
     public BooleanSetting showSlowness;
@@ -92,6 +95,7 @@ public class ElementPotionHUD extends BackgroundElement {
     public EnumSetting<VerticalAlignmentMode> verticalAlign;
     public EnumSetting<SortingMode> sortingMode;
     public IntegerSetting verticalSpacing;
+    public BooleanSetting overwriteIER;
 
 
     private float width = 10f;
@@ -101,7 +105,7 @@ public class ElementPotionHUD extends BackgroundElement {
     public void initialise() {
         addSettings(titleTextR            = new IntegerSetting("Title Red",        "Title", "The red channel of the title text.",   255, 0, 255, ""));
         addSettings(titleTextG            = new IntegerSetting("Title Green",      "Title", "The green channel of the title text.", 255, 0, 255, ""));
-        addSettings(titleTextB            = new IntegerSetting("Title Blue",       "Title", "The blue channel of the title text.",  50,  0, 255, ""));
+        addSettings(titleTextB            = new IntegerSetting("Title Blue",       "Title", "The blue channel of the title text.",  255,  0, 255, ""));
         addSettings(titleTextMode         = new EnumSetting<>( "Title Mode",       "Title", "How should the text be rendered.", TextElement.TextMode.SHADOW));
         addSettings(titleTextChroma       = new BooleanSetting("Title Chroma",     "Title", "If the color of the title is a multicolored mess.",        false));
         addSettings(titleTextBold         = new BooleanSetting("Title Bold",       "Title", "If the title is bold.",                                    true));
@@ -114,7 +118,7 @@ public class ElementPotionHUD extends BackgroundElement {
 
         addSettings(timeTextR             = new IntegerSetting("Time Red",               "Time", "The red channel of the time text.",   255, 0, 255, ""));
         addSettings(timeTextG             = new IntegerSetting("Time Green",             "Time", "The green channel of the time text.", 255, 0, 255, ""));
-        addSettings(timeTextB             = new IntegerSetting("Time Blue",              "Time", "The blue channel of the time text.",  50,  0, 255, ""));
+        addSettings(timeTextB             = new IntegerSetting("Time Blue",              "Time", "The blue channel of the time text.",  180, 0, 255, ""));
         addSettings(timeTextMode          = new EnumSetting<>( "Time Mode",              "Time", "How should the text be rendered.", TextElement.TextMode.SHADOW));
         addSettings(timeTextChroma        = new BooleanSetting("Time Chroma",            "Time", "If the color of the time is a multicolored mess.", false));
         addSettings(timeTextUnderline     = new BooleanSetting("Time Underlined",        "Time", "If the time is underlined.",                       false));
@@ -122,6 +126,8 @@ public class ElementPotionHUD extends BackgroundElement {
         addSettings(showTime              = new BooleanSetting("Show Time",              "Time", "Show the time.",                                   true));
         addSettings(showPermanent         = new BooleanSetting("Show Permanent Effects", "Time", "Show permanent effects on the HUD.",               true));
         addSettings(permanentText         = new StringSetting( "Permanent Text",         "Time", "What text is displayed in place of the time if the potion is permanent.", "**:**"));
+        addSettings(blinkingTime          = new IntegerSetting("Blinking Time",          "Time", "When the duration should start to blink.", 5,  0,  30, " secs"));
+        addSettings(blinkingSpeed         = new IntegerSetting("Blinking Speed",         "Time", "How fast the time blinks.",                30, 10, 45, ""));
 
         addSettings(showSpeed             = new BooleanSetting("Speed",          "Whitelist", "Display the speed effect on the HUD.",           true));
         addSettings(showSlowness          = new BooleanSetting("Slowness",       "Whitelist", "Display the slowness effect on the HUD.",        true));
@@ -145,10 +151,25 @@ public class ElementPotionHUD extends BackgroundElement {
         addSettings(showAbsorption        = new BooleanSetting("Absorption",     "Whitelist", "Display the absorption effect on the HUD.",      true));
         addSettings(showSaturation        = new BooleanSetting("Saturation",     "Whitelist", "Display the saturation effect on the HUD.",      true));
 
-        addSettings(showIcon              = new BooleanSetting("Show Icon",        "Other", "Show the status effect icon.", true));
-        addSettings(verticalAlign         = new EnumSetting<>( "Vertical Align",   "Other", "How the effects should be aligned vertically.",   VerticalAlignmentMode.DOWN));
-        addSettings(sortingMode           = new EnumSetting<>( "Sort",             "Other", "In what way the effects shall be sorted.",        SortingMode.DURATION));
-        addSettings(verticalSpacing       = new IntegerSetting("Vertical Spacing", "Other", "How far apart each potion will be.", 2, 1, 9, " px"));
+        addSettings(showIcon              = new BooleanSetting("Show Icon",           "Other", "Show the status effect icon.", true));
+        addSettings(verticalAlign         = new EnumSetting<>( "Vertical Align",      "Other", "How the effects should be aligned vertically.",   VerticalAlignmentMode.DOWN));
+        addSettings(sortingMode           = new EnumSetting<>( "Sort",                "Other", "In what way the effects shall be sorted.",        SortingMode.DURATION));
+        addSettings(verticalSpacing       = new IntegerSetting("Vertical Spacing",    "Other", "How far apart each potion will be.", 2, 1, 9, " px"));
+        addSettings(overwriteIER          = new BooleanSetting("Overwrite Inventory", "Other", "Overwrites the vanilla PotionHUD in the inventory to instead display this element.", false));
+    }
+
+    @Override
+    public void onAdded() {
+        super.onAdded();
+
+        PotionHUDTracker.INSTANCE.instances.add(this);
+    }
+
+    @Override
+    public void onRemoved() {
+        super.onRemoved();
+
+        PotionHUDTracker.INSTANCE.instances.remove(this);
     }
 
     @Override
@@ -158,13 +179,21 @@ public class ElementPotionHUD extends BackgroundElement {
 
     @Override
     public void render(float partialTicks, int origin) {
+        // we would be rendering it twice
+        if (origin == RenderOrigin.HUD) {
+            if (overwriteIER.get() && mc.currentScreen instanceof InventoryEffectRenderer) {
+                return;
+            }
+        }
+
         GlStateManager.color(1f, 1f, 1f, 1f);
         GlStateManager.disableLighting();
 
         float x = getPosition().getRawX(Resolution.get());
         float y = getPosition().getRawY(Resolution.get());
 
-        List<PotionEffect> potionEffects = new ArrayList<>(mc.thePlayer.getActivePotionEffects());
+        List<PotionEffect> potionEffects = new ArrayList<>();
+        if (mc.thePlayer != null) potionEffects.addAll(mc.thePlayer.getActivePotionEffects());
         potionEffects = filterEffects(potionEffects);
 
         if (potionEffects.isEmpty()) {
@@ -211,11 +240,14 @@ public class ElementPotionHUD extends BackgroundElement {
             if (showIcon.get()) {
                 mc.getTextureManager().bindTexture(GuiContainer.inventoryBackground);
                 drawTexturedModalRectF(iconX, (y + yOff) / getPosition().getScale(), potion.getStatusIconIndex() % 8 * 18, 198 + potion.getStatusIconIndex() / 8 * 18, 18, 18);
-                xOff = (ICON_SIZE + 4) * getPosition().getScale();
+                xOff = ICON_SIZE * getPosition().getScale();
                 this.width = Math.max(this.width, xOff / getPosition().getScale());
             }
 
             if (showTitle.get()) {
+                if (showIcon.get())
+                    xOff = (ICON_SIZE + 4) * getPosition().getScale();
+
                 StringBuilder titleSb = new StringBuilder();
                 if (titleTextBold.get()) titleSb.append(EnumChatFormatting.BOLD);
                 if (titleTextItalic.get()) titleSb.append(EnumChatFormatting.ITALIC);
@@ -240,12 +272,16 @@ public class ElementPotionHUD extends BackgroundElement {
                     titleY += mc.fontRendererObj.FONT_HEIGHT / 2f;
                 titleY /= getPosition().getScale();
 
+
                 GuiUtils.drawString(mc.fontRendererObj, builtTitle,
                         titleX, titleY, titleTextMode.get() == TextElement.TextMode.SHADOW, titleTextMode.get() == TextElement.TextMode.BORDER, titleTextChroma.get(), false, new Color(titleTextR.get(), titleTextG.get(), titleTextB.get()).getRGB());
 
             }
 
             if (showTime.get()) {
+                if (showIcon.get())
+                    xOff = (ICON_SIZE + 4) * getPosition().getScale();
+
                 StringBuilder timeSb = new StringBuilder();
                 if (timeTextItalic.get()) timeSb.append(EnumChatFormatting.ITALIC);
                 if (timeTextUnderline.get()) timeSb.append(EnumChatFormatting.UNDERLINE);
@@ -264,9 +300,11 @@ public class ElementPotionHUD extends BackgroundElement {
                     timeY -= mc.fontRendererObj.FONT_HEIGHT / 2f;
                 timeY /= getPosition().getScale();
 
-                GuiUtils.drawString(mc.fontRendererObj, builtTime,
-                        timeX, timeY, timeTextMode.get() == TextElement.TextMode.SHADOW, timeTextMode.get() == TextElement.TextMode.BORDER, timeTextChroma.get(), false, new Color(timeTextR.get(), timeTextG.get(), timeTextB.get()).getRGB());
+                if (effect.getDuration() / 20f > blinkingTime.get() || effect.getDuration() % (50 - blinkingSpeed.get()) <= (50 - blinkingSpeed.get()) / 2f) {
+                    GuiUtils.drawString(mc.fontRendererObj, builtTime,
+                            timeX, timeY, timeTextMode.get() == TextElement.TextMode.SHADOW, timeTextMode.get() == TextElement.TextMode.BORDER, timeTextChroma.get(), false, new Color(timeTextR.get(), timeTextG.get(), timeTextB.get()).getRGB());
 
+                }
             }
 
             yOff += yAmt * getPosition().getScale();
@@ -323,6 +361,18 @@ public class ElementPotionHUD extends BackgroundElement {
     public enum SortingMode {
         ALPHABETICAL,
         DURATION
+    }
+
+    public static class PotionHUDTracker {
+
+        public static final PotionHUDTracker INSTANCE = new PotionHUDTracker();
+
+        public final Set<ElementPotionHUD> instances;
+
+        private PotionHUDTracker() {
+            this.instances = new HashSet<>();
+        }
+
     }
 
 }
