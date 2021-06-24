@@ -21,6 +21,7 @@ import net.minecraftforge.fml.client.config.GuiUtils;
 
 import java.util.Collections;
 
+@SuppressWarnings("unused")
 public class BetterGuiButton extends GuiButtonAlt {
 
     public String description;

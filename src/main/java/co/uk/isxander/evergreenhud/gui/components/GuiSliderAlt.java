@@ -23,6 +23,7 @@ import net.minecraftforge.fml.client.config.GuiSlider;
 
 import java.awt.*;
 
+@SuppressWarnings("unused")
 public class GuiSliderAlt extends GuiSlider {
 
     public GuiSliderAlt(int id, int xPos, int yPos, int width, int height, String prefix, String suf, double minVal, double maxVal, double currentVal, boolean showDec, boolean drawStr) {

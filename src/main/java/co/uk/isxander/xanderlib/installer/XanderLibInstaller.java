@@ -67,6 +67,7 @@ public class XanderLibInstaller {
         return 0;
     }
 
+    @SuppressWarnings("unused")
     public static boolean inClasspath() {
         try {
             Class.forName("co.uk.isxander.xanderlib.XanderLib", false, XanderLibInstaller.class.getClassLoader());

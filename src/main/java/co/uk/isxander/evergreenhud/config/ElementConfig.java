@@ -25,6 +25,7 @@ import com.google.gson.JsonArray;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ElementConfig implements Constants {
 
@@ -117,7 +118,7 @@ public class ElementConfig implements Constants {
             availableElements.add(manager.getNewElementInstance(name))
         );
 
-        for (File config : OLD_CONFIG_FOLDER.listFiles()) {
+        for (File config : Objects.requireNonNull(OLD_CONFIG_FOLDER.listFiles())) {
             for (Element element : availableElements) {
                 if (config.getName().equalsIgnoreCase(element.getMetadata().getName() + ".json")) {
                     BetterJsonObject root;

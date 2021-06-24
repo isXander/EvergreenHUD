@@ -30,6 +30,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class SimpleHudConverter extends ConfigConverter {
 
@@ -64,7 +65,7 @@ public class SimpleHudConverter extends ConfigConverter {
 
         int failures = 0;
 
-        for (File elementFile : elementFolder.listFiles()) {
+        for (File elementFile : Objects.requireNonNull(elementFolder.listFiles())) {
             String evergreenId = IDENTIFIER_MAP.get(elementFile.getName());
 
             if (evergreenId == null) {

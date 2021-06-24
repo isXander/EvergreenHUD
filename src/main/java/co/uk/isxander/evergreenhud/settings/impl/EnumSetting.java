@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.settings.impl;
 
 import co.uk.isxander.evergreenhud.settings.Setting;
 
+@SuppressWarnings("unused")
 public class EnumSetting<T extends Enum<?>> extends Setting {
 
     private final Class<T> options;

@@ -20,6 +20,7 @@ import co.uk.isxander.evergreenhud.settings.Setting;
 import java.util.Arrays;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class ArraySetting extends Setting {
 
     private final List<String> options;

@@ -22,6 +22,7 @@ import net.minecraftforge.fml.client.config.GuiButtonExt;
 
 import java.awt.*;
 
+@SuppressWarnings("unused")
 public class GuiButtonAlt extends GuiButtonExt {
     public GuiButtonAlt(int id, int xPos, int yPos, String displayString) {
         super(id, xPos, yPos, displayString);

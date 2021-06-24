@@ -45,6 +45,7 @@ import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.ProgressManager;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -81,7 +82,9 @@ public class EvergreenHUD implements Constants {
 
     private boolean reset = false;
 
-    private final KeyBinding guiKeybind = new KeyBinding("Open GUI", Keyboard.KEY_HOME, "EvergreenHUD");
+    private final KeyBinding guiKeybind = new KeyBinding("Open EvergreenHUD GUI", Keyboard.KEY_HOME, "EvergreenHUD");
+    private boolean notifyUpdate;
+    private String version;
 
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
@@ -176,22 +179,6 @@ public class EvergreenHUD implements Constants {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
-        if (blacklisted) {
-            Notifications.INSTANCE.pushNotification("EvergreenHUD",
-                    "The current version of this mod has been blacklisted.\n"
-                    + "Please check the discord server for updates.\n"
-                    + "Click to join the discord.",
-
-            () -> {
-                try {
-                    ModCoreDesktop.INSTANCE.browse(new URI("https://discord.gg/AJv5ZnNT8q"));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Notifications.INSTANCE.pushNotification("EvergreenHUD", "An error was encountered while trying to open the link.");
-                }
-                return Unit.INSTANCE;
-            });
-        }
         if (disabled) return;
 
         if (getElementManager().isCheckForUpdates()) {
@@ -200,10 +187,10 @@ public class EvergreenHUD implements Constants {
                     LOGGER.warn("Running in development environment. Skipped update check.");
                     development = true;
                 } else {
-                    String version = UpdateChecker.getNeededVersion();
+                    version = UpdateChecker.getNeededVersion();
                     if (!version.equalsIgnoreCase(EvergreenHUD.MOD_VERSION)) {
+                        notifyUpdate = true;
                         LOGGER.warn("Mod is out of date. " + EvergreenHUD.MOD_VERSION + " > " + version);
-                        notifyUpdate(version);
                     }
                 }
             });
@@ -211,13 +198,36 @@ public class EvergreenHUD implements Constants {
             LOGGER.info("User disabled update check - skipping.");
         }
 
+        AddonManager.getInstance().onPostInit();
+    }
+
+    @Mod.EventHandler
+    public void onFMLLoadComplete(FMLLoadCompleteEvent event) {
+        if (blacklisted) {
+            Notifications.INSTANCE.pushNotification("EvergreenHUD",
+                    "The current version of this mod has been blacklisted.\n"
+                            + "Please check the discord server for updates.\n"
+                            + "Click to join the discord.",
+
+                    () -> {
+                        try {
+                            ModCoreDesktop.INSTANCE.browse(new URI("https://discord.gg/AJv5ZnNT8q"));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Notifications.INSTANCE.pushNotification("EvergreenHUD", "An error was encountered while trying to open the link.");
+                        }
+                        return Unit.INSTANCE;
+                    });
+        }
+
+        if (notifyUpdate) {
+            notifyUpdate(version);
+        }
 
         if (reset) {
             reset = false;
             Notifications.INSTANCE.pushNotification("EvergreenHUD", "The configuration has been reset due to a version change that makes your configuration incompatible with the current version.");
         }
-
-        AddonManager.getInstance().onPostInit();
     }
 
     public void disable() {

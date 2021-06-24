@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.settings.impl;
 
 import co.uk.isxander.evergreenhud.settings.Setting;
 
+@SuppressWarnings("unused")
 public class ButtonSetting extends Setting {
 
     private final Runnable value;

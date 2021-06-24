@@ -48,9 +48,7 @@ public class GuiAddElement extends GuiScreenExt {
 
         ElementManager manager = EvergreenHUD.getInstance().getElementManager();
         this.cachedElements = new ArrayList<>();
-        manager.getAvailableElements().forEach((name, elementClass) -> {
-            cachedElements.add(manager.getNewElementInstance(name));
-        });
+        manager.getAvailableElements().forEach((name, elementClass) -> cachedElements.add(manager.getNewElementInstance(name)));
         cachedElements.sort(Comparator.comparing(e -> e.getMetadata().getName()));
     }
 

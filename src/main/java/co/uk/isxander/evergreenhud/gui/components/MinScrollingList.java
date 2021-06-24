@@ -29,6 +29,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+@SuppressWarnings("unused")
 // needed changes in the draw function + now the smooth scrolling everywhere mod won't break it
 public abstract class MinScrollingList {
     private final Minecraft client;
@@ -50,7 +51,6 @@ public abstract class MinScrollingList {
     private float scrollDistance;
     protected int selectedIndex = -1;
     private long lastClickTime = 0L;
-    private boolean highlightSelected = true;
     private boolean hasHeader;
     private int headerHeight;
 
@@ -68,7 +68,6 @@ public abstract class MinScrollingList {
     }
 
     public void func_27258_a(boolean p_27258_1_) {
-        this.highlightSelected = p_27258_1_;
     }
 
     @Deprecated

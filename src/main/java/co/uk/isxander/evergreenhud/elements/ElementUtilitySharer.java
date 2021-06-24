@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("unused")
 public class ElementUtilitySharer implements Constants {
 
     private final Map<Class<?>, Object> dataManagers;

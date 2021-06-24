@@ -23,6 +23,7 @@ import org.reflections.Reflections;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("unused")
 public class AddonManager {
 
     private static AddonManager instance;

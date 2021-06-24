@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.settings.impl;
 
 import co.uk.isxander.evergreenhud.settings.Setting;
 
+@SuppressWarnings("unused")
 public class FloatSetting extends Setting {
 
     private final float def;

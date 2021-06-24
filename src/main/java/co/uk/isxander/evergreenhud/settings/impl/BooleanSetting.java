@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.settings.impl;
 
 import co.uk.isxander.evergreenhud.settings.Setting;
 
+@SuppressWarnings("unused")
 public class BooleanSetting extends Setting {
 
     private final boolean def;

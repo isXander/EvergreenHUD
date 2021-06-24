@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.settings.impl;
 
 import co.uk.isxander.evergreenhud.settings.Setting;
 
+@SuppressWarnings("unused")
 public class StringSetting extends Setting {
 
     private final String def;
