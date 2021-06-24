@@ -9,7 +9,7 @@ plugins {
 
 version = '2.0-RC.4'
 group = 'co.uk.isxander'
-archivesBaseName = 'evergreenhud'
+archivesBaseName = 'EvergreenHUD'
 
 targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
 compileJava.options.encoding = 'UTF-8'
@@ -51,7 +51,7 @@ mixin {
 String evergreenArchiveName = "EvergreenHUD (${minecraft.version}-${project.version})"
 
 jar {
-    archiveName = "${evergreenArchiveName}.jar"
+    archiveFileName = "${evergreenArchiveName}.jar"
     enabled = false
 
     manifest {

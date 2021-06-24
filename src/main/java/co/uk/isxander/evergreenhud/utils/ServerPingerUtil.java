@@ -22,6 +22,7 @@ import co.uk.isxander.xanderlib.utils.GuiUtils;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.OldServerPinger;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -33,6 +34,7 @@ public class ServerPingerUtil implements Constants {
 
     public static long SERVER_UPDATE_TIME = 300000;
 
+    private Integer serverPing;
     private final OldServerPinger serverPinger;
     private final Map<String, Long> serverUpdateTime;
     private final Map<String, Boolean> serverUpdateStatus;
@@ -45,7 +47,7 @@ public class ServerPingerUtil implements Constants {
         this.serverUpdateStatus = new HashMap<>();
         this.serverPlayerCount = null;
         this.serverPlayerCap = null;
-
+        this.serverPing = null;
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -55,7 +57,7 @@ public class ServerPingerUtil implements Constants {
         if (server != null) {
             Long updateTime = serverUpdateTime.get(server.serverIP);
             if ((updateTime == null || updateTime + SERVER_UPDATE_TIME <= System.currentTimeMillis()) && !serverUpdateStatus.getOrDefault(server.serverIP, false)) {
-                EvergreenHUD.LOGGER.info("Pinging " + server.serverIP + " for player count...");
+                EvergreenHUD.LOGGER.info("Pinging " + server.serverIP + " for player count / ping...");
                 serverUpdateStatus.put(server.serverIP, true);
 
                 Multithreading.runAsync(() -> {
@@ -65,12 +67,11 @@ public class ServerPingerUtil implements Constants {
                     } catch (UnknownHostException e) {
                         e.printStackTrace();
                     }
-
                     serverUpdateStatus.put(server.serverIP, false);
                     serverUpdateTime.put(server.serverIP, System.currentTimeMillis());
                 });
             }
-
+            serverPing = (int) server.pingToServer;
             if (serverUpdateStatus.getOrDefault(server.serverIP, false)) serverPlayerCount = null;
             else if (!server.populationInfo.equals("")) {
                 String[] splitPopulationInfo = GuiUtils.stripFormattingCodes(server.populationInfo).split("/");
@@ -83,12 +84,31 @@ public class ServerPingerUtil implements Constants {
         }
     }
 
+    @SubscribeEvent
+    public void onWorldLoad(WorldEvent.Load event) {
+        ServerData server = mc.getCurrentServerData();
+        Multithreading.runAsync(() -> {
+            try {
+                serverPinger.ping(server);
+                EvergreenHUD.LOGGER.info("Successfully pinged " + server.serverIP);
+            } catch (UnknownHostException e) {
+                e.printStackTrace();
+            }
+            serverUpdateStatus.put(server.serverIP, false);
+            serverUpdateTime.put(server.serverIP, System.currentTimeMillis());
+        });
+    }
+
     public Integer getServerPlayerCount() {
         return this.serverPlayerCount;
     }
 
     public Integer getServerPlayerCap() {
         return this.serverPlayerCap;
+    }
+
+    public Integer getServerPing() {
+        return this.serverPing;
     }
 
 }
