@@ -16,12 +16,10 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.ElementData;
-import co.uk.isxander.evergreenhud.elements.RenderOrigin;
 import co.uk.isxander.evergreenhud.elements.type.BackgroundElement;
 import co.uk.isxander.evergreenhud.settings.impl.FloatSetting;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.Resolution;
-import net.apolloclient.utils.GLRenderer;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -29,15 +27,13 @@ import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.RenderManager;
 
-import java.awt.*;
-
 public class ElementPlayerPreview extends BackgroundElement {
 
     public FloatSetting rotation;
 
     @Override
     public void initialise() {
-        addSettings(rotation = new FloatSetting("Rotation", "Render", "The rotation of the player.", 0, 0, 360, " deg"));
+        addSettings(rotation = new FloatSetting("Rotation", "Display", "The rotation of the player.", 0, 0, 360, " deg"));
     }
 
     @Override

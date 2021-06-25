@@ -23,6 +23,7 @@ import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.settings.impl.EnumSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.evergreenhud.settings.impl.StringSetting;
+import co.uk.isxander.evergreenhud.utils.RomanNumeral;
 import co.uk.isxander.xanderlib.utils.GuiUtils;
 import co.uk.isxander.xanderlib.utils.Resolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -253,10 +254,10 @@ public class ElementPotionHUD extends BackgroundElement {
                 if (titleTextItalic.get()) titleSb.append(EnumChatFormatting.ITALIC);
                 if (titleTextUnderline.get()) titleSb.append(EnumChatFormatting.UNDERLINE);
                 titleSb.append(I18n.format(potion.getName()));
-                int amplifier = effect.getAmplifier() + 1;
+                int amplifier = Math.max(1, effect.getAmplifier() + 1);
                 if (showAmplifier.get() && (amplifier != 1 || showAmplifierLevelOne.get())) {
                     titleSb.append(" ");
-                    if (amplifierText.get() == AmplifierMode.ROMAN) titleSb.append(I18n.format("evergreenhud.enchantment.level." + amplifier));
+                    if (amplifierText.get() == AmplifierMode.ROMAN) titleSb.append(RomanNumeral.INSTANCE.getCache(amplifier));
                     else titleSb.append(amplifier);
                 }
                 String builtTitle = titleSb.toString();

@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.elements.type;
 
 import co.uk.isxander.evergreenhud.elements.Element;
 import co.uk.isxander.evergreenhud.elements.RenderOrigin;
+import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.settings.impl.FloatSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
@@ -35,11 +36,13 @@ public abstract class BackgroundElement extends Element {
     protected FloatSetting paddingBottom;
     protected IntegerSetting cornerRadius;
 
+    protected BooleanSetting backEnabled;
     protected IntegerSetting backR;
     protected IntegerSetting backG;
     protected IntegerSetting backB;
     protected IntegerSetting backA;
 
+    protected BooleanSetting outlineEnabled;
     protected IntegerSetting outlineR;
     protected IntegerSetting outlineG;
     protected IntegerSetting outlineB;
@@ -50,6 +53,7 @@ public abstract class BackgroundElement extends Element {
     protected void registerDefaultSettings() {
         super.registerDefaultSettings();
 
+        addSettings(backEnabled = new BooleanSetting("BG Enabled", "Background", "If the background is rendered.", true));
         addSettings(backR = new IntegerSetting("BG Red", "Background", "How much red is in the color of the background.", 0, 0, 255, ""));
         addSettings(backG = new IntegerSetting("BG Green", "Background", "How much green is in the color of the background.", 0, 0, 255, ""));
         addSettings(backB = new IntegerSetting("BG Blue", "Background", "How much blue is in the color of the background.", 0, 0, 255, ""));
@@ -62,6 +66,7 @@ public abstract class BackgroundElement extends Element {
 
         addSettings(cornerRadius = new IntegerSetting("Corner Radius", "Background", "How round are the corners of the background.", 0, 0, 6, ""));
 
+        addSettings(outlineEnabled = new BooleanSetting("Outline Enabled", "Background", "If the outline is rendered.", false));
         addSettings(outlineR = new IntegerSetting("Outline Red", "Background", "How much red is in the color of the outline.", 0, 0, 255, ""));
         addSettings(outlineG = new IntegerSetting("Outline Green", "Background", "How much green is in the color of the outline.", 0, 0, 255, ""));
         addSettings(outlineB = new IntegerSetting("Outline Blue", "Background", "How much blue is in the color of the outline.", 0, 0, 255, ""));
@@ -78,14 +83,14 @@ public abstract class BackgroundElement extends Element {
         HitBox2D hitbox = calculateHitBox(1, scale);
 
         if (cornerRadius.get() == 0) {
-            if (bgCol.getAlpha() != 0)
+            if (backEnabled.get() && bgCol.getAlpha() != 0)
                 GLRenderer.drawRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol);
-            if (outlineCol.getAlpha() != 0)
+            if (outlineEnabled.get() && outlineCol.getAlpha() != 0)
                 GLRenderer.drawHollowRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, outlineThickness.get(), outlineCol);
         } else {
-            if (bgCol.getAlpha() != 0)
+            if (backEnabled.get() && bgCol.getAlpha() != 0)
                 GLRenderer.drawRoundedRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, cornerRadius.get(), bgCol);
-            if (outlineCol.getAlpha() != 0)
+            if (outlineEnabled.get() && outlineCol.getAlpha() != 0)
                 GLRenderer.drawHollowRoundedRectangle(hitbox.x, hitbox.y, hitbox.width, hitbox.height, cornerRadius.get(), outlineThickness.get(), outlineCol);
         }
     }
