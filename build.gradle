@@ -45,6 +45,7 @@ dependencies {
 }
 
 mixin {
+    disableRefMapWarning = true
     add sourceSets.main, 'mixins.evergreenhud.refmap.json'
 }
 
