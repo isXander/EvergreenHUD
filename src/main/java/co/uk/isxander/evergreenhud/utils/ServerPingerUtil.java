@@ -53,6 +53,7 @@ public class ServerPingerUtil implements Constants {
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
+        if (!(event.phase == TickEvent.Phase.START)) return;
         ServerData server = mc.getCurrentServerData();
         if (server != null) {
             Long updateTime = serverUpdateTime.get(server.serverIP);
@@ -87,16 +88,18 @@ public class ServerPingerUtil implements Constants {
     @SubscribeEvent
     public void onWorldLoad(WorldEvent.Load event) {
         ServerData server = mc.getCurrentServerData();
-        Multithreading.runAsync(() -> {
-            try {
-                serverPinger.ping(server);
-                EvergreenHUD.LOGGER.info("Successfully pinged " + server.serverIP);
-            } catch (UnknownHostException e) {
-                e.printStackTrace();
-            }
-            serverUpdateStatus.put(server.serverIP, false);
-            serverUpdateTime.put(server.serverIP, System.currentTimeMillis());
-        });
+        if (server != null) {
+            Multithreading.runAsync(() -> {
+                try {
+                    serverPinger.ping(server);
+                    EvergreenHUD.LOGGER.info("Successfully pinged " + server.serverIP);
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+                serverUpdateStatus.put(server.serverIP, false);
+                serverUpdateTime.put(server.serverIP, System.currentTimeMillis());
+            });
+        }
     }
 
     public Integer getServerPlayerCount() {
