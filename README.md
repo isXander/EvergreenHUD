@@ -4,6 +4,10 @@
 # EvergreenHUD
 
 [![](https://jitpack.io/v/uk.co.isXander/EvergreenHUD.svg)](https://jitpack.io/#uk.co.isXander/EvergreenHUD)
+[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-ff3333.svg)](https://opensource.org/licenses/)
+[![Github All Releases](https://img.shields.io/github/downloads/isXander/EvergreenHUD/total.svg?style=flat)](https://github.com/isXander/EvergreenHUD)
+[![Donate](https://img.shields.io/badge/donate-patreon-ff6666.svg?style=flat)](https://paypal.me/isxander)
+[![Discord Chat](https://img.shields.io/discord/780023008668287017.svg)](https://short.isxander.co.uk/discord)
 
 EvergreenHUD is a forge mod to improve and add upon your heads up display.
 I, Xander, have been working on this mod for over 3 months and believe it really
