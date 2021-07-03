@@ -1,4 +1,9 @@
+<!--suppress HtmlDeprecatedAttribute -->
+<div align="center">
+
 # EvergreenHUD
+
+[![](https://jitpack.io/v/uk.co.isXander/EvergreenHUD.svg)](https://jitpack.io/#uk.co.isXander/EvergreenHUD)
 
 EvergreenHUD is a forge mod to improve and add upon your heads up display.
 I, Xander, have been working on this mod for over 3 months and believe it really
@@ -11,17 +16,17 @@ think it could become very popular for fabric players and maybe even modpacks.
 *Contact me on discord @ isXander#0162*
 
 #### Links
-- [Latest Stable Release](https://github.com/Evergreen-Client/EvergreenHUD/releases/latest)
-- [Hypixel Thread](https://hypixel.net/threads/v2-beta-out-now-evergreenhud-1-3-1.3787277/)
+[Latest Stable Release](https://github.com/Evergreen-Client/EvergreenHUD/releases/latest)  
+[Hypixel Thread](https://hypixel.net/threads/v2-beta-out-now-evergreenhud-1-3-1.3787277/)  
 
 ## Summary
 
-- [Getting Started](#getting-started)
-- [Deployment](#deployment)
-- [Contributing](#contributing)
-- [Authors](#authors)
-- [License](#license)
-- [Credits](#credits)
+[Getting Started](#getting-started)  
+[Deployment](#deployment)  
+[Contributing](#contributing)  
+[Authors](#authors)  
+[License](#license)  
+[Credits](#credits)  
 
 ## Getting Started
 
@@ -54,6 +59,7 @@ Add an application run configuration with the following details
 
     Classpath: EvergreenHUD.main
     Main Class: GradleStart
+    Program Arguments: --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.evergreenhud.json
 
 ## Deployment
 
@@ -71,18 +77,18 @@ Please make sure to make a useful contribution that will benefit either the user
 
 ## Authors
 
-- **isXander** - *Founder of the project* -
-  [isXander](https://github.com/isXander)
+**isXander** - *Founder of the project* -
+  [isXander](https://github.com/isXander)  
 
 ## License
 
 This project is licensed under the [GPL 3.0](LICENSE)
 GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for
-details
+details.
 
 ## Credits
 
-#### EvergreenHUD would not be possible without the help from these softwares:
+**EvergreenHUD would not be possible without the help from these softwares:**
 
 ![YourKit Logo](https://www.yourkit.com/images/yklogo.png) 
 
@@ -92,3 +98,10 @@ YourKit is the creator of
 [YourKit Java Profiler](https://www.yourkit.com/java/profiler/),
 [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/),
 [YourKit YouMonitor](https://www.yourkit.com/youmonitor).
+---
+Copyright (C) 2021 isXander
+
+<a href="https://www.isxander.co.uk">
+  <img src="https://static.isxander.co.uk/logos/evergreenhud/v1/icon-transparent.png" alt="Logo" width="200">
+</a>
+</div>
