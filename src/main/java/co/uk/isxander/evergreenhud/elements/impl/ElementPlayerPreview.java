@@ -106,10 +106,10 @@ public class ElementPlayerPreview extends BackgroundElement {
         float width = getHitBoxWidth() * sizeScale;
         float height = getHitBoxHeight() * sizeScale;
 
-        float top = getPaddingTopSetting().get() * sizeScale;
-        float bottom = getPaddingBottomSetting().get() * sizeScale;
-        float left = getPaddingLeftSetting().get() * sizeScale;
-        float right = getPaddingRightSetting().get() * sizeScale;
+        float top = getPaddingTop().get() * sizeScale;
+        float bottom = getPaddingBottom().get() * sizeScale;
+        float left = getPaddingLeft().get() * sizeScale;
+        float right = getPaddingRight().get() * sizeScale;
 
         float x = getPosition().getRawX(res) - (width / 2f) / gl;
         float y = getPosition().getRawY(res) - height + (height / 8f) + (height / 128f) / gl;

@@ -38,10 +38,10 @@ public abstract class MultiLineTextElement extends TextElement {
      */
     public List<String> getFormattedLines() {
         List<String> value = getValue();
-        if (getBracketsSetting().get()) value.replaceAll(line -> "[" + line + "]");
+        if (getBrackets().get()) value.replaceAll(line -> "[" + line + "]");
 
-        if (!getTitleTextSetting().get().equalsIgnoreCase("")) {
-            value.add(0, EnumChatFormatting.BOLD + getTitleTextSetting().get());
+        if (!getTitleText().get().equalsIgnoreCase("")) {
+            value.add(0, EnumChatFormatting.BOLD + getTitleText().get());
         }
         return value;
     }
@@ -49,8 +49,8 @@ public abstract class MultiLineTextElement extends TextElement {
     @Override
     public void render(float partialTicks, int origin) {
         float scale = getPosition().getScale();
-        boolean chroma = getChromaSetting().get();
-        TextMode textMode = getTextModeSetting().get();
+        boolean chroma = getChroma().get();
+        TextMode textMode = getTextMode().get();
         int color = getTextColor().getRGB();
 
         super.render(partialTicks, origin);
@@ -62,7 +62,7 @@ public abstract class MultiLineTextElement extends TextElement {
         int i = 0;
         for (String line : getFormattedLines()) {
             float posY = ((y / getPosition().getScale()) + (mc.fontRendererObj.FONT_HEIGHT * i) + (verticalSpacing.get() * i));
-            switch (getAlignmentSetting().get()) {
+            switch (getAlignment().get()) {
                 case RIGHT:
                     float posX = (x - mc.fontRendererObj.getStringWidth(line)) / scale;
 

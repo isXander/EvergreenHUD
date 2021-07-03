@@ -101,11 +101,11 @@ public class SimpleHudConverter extends ConfigConverter {
                         BetterJsonObject colJson = elementJson.getObj("colour");
                         textElement.setTextColor(colJson.optInt("r"), colJson.optInt("g"), colJson.optInt("b"));
 
-                        textElement.getBracketsSetting().set(elementJson.optBoolean("show_brackets"));
-                        textElement.getChromaSetting().set(elementJson.optBoolean("chroma"));
-                        textElement.getTextModeSetting().set(elementJson.optBoolean("text_shadow") ? TextElement.TextMode.SHADOW : TextElement.TextMode.NORMAL);
+                        textElement.getBrackets().set(elementJson.optBoolean("show_brackets"));
+                        textElement.getChroma().set(elementJson.optBoolean("chroma"));
+                        textElement.getTextMode().set(elementJson.optBoolean("text_shadow") ? TextElement.TextMode.SHADOW : TextElement.TextMode.NORMAL);
                         if (!elementJson.optBoolean("show_prefix"))
-                            textElement.getTitleTextSetting().set("");
+                            textElement.getTitleText().set("");
                     }
 
                     if (element instanceof ElementArmour) {

@@ -22,14 +22,14 @@ public class ElementEmptyBox extends BackgroundElement {
 
     @Override
     public void initialise() {
-        getPaddingLeftSetting().setMin(0f);
-        getPaddingLeftSetting().setMax(250f);
-        getPaddingRightSetting().setMin(0f);
-        getPaddingRightSetting().setMax(250f);
-        getPaddingTopSetting().setMin(0f);
-        getPaddingTopSetting().setMax(250f);
-        getPaddingBottomSetting().setMin(0f);
-        getPaddingBottomSetting().setMax(250f);
+        getPaddingLeft().setMin(0f);
+        getPaddingLeft().setMax(250f);
+        getPaddingRight().setMin(0f);
+        getPaddingRight().setMax(250f);
+        getPaddingTop().setMin(0f);
+        getPaddingTop().setMax(250f);
+        getPaddingBottom().setMin(0f);
+        getPaddingBottom().setMax(250f);
         setBgColor(0, 0, 0, 255);
     }
 

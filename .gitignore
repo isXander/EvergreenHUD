@@ -23,3 +23,6 @@ build
 eclipse
 run/**
 !**/*.gitkeep
+
+# i cloned the repo here cuz why
+addons

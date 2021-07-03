@@ -16,13 +16,15 @@
 package co.uk.isxander.evergreenhud.settings.impl;
 
 import co.uk.isxander.evergreenhud.settings.Setting;
+import lombok.Getter;
+import lombok.Setter;
 
 public class IntegerSetting extends Setting {
 
     private final int def;
     private int val;
-    private int min, max;
-    private final String suffix;
+    @Getter @Setter private int min, max;
+    @Getter private final String suffix;
 
     public IntegerSetting(String name, String category, String description, int val, int min, int max, String suffix, boolean internal) {
         super(name, description, category, internal);
@@ -76,26 +78,6 @@ public class IntegerSetting extends Setting {
 
     protected boolean onChange(int currentVal, int newVal) {
         return !isDisabled();
-    }
-
-    public int getMin() {
-        return min;
-    }
-
-    public int getMax() {
-        return max;
-    }
-
-    public void setMin(int min) {
-        this.min = min;
-    }
-
-    public void setMax(int max) {
-        this.max = max;
-    }
-
-    public String getSuffix() {
-        return suffix;
     }
 
 }

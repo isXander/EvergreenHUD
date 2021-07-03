@@ -16,7 +16,7 @@
 package co.uk.isxander.evergreenhud.gui.components;
 
 import co.uk.isxander.evergreenhud.EvergreenHUD;
-import net.apolloclient.utils.GLRenderer;
+import co.uk.isxander.xanderlib.utils.GLRenderer;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.client.config.GuiButtonExt;
 

@@ -18,6 +18,7 @@ package co.uk.isxander.evergreenhud.elements.impl;
 import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
 import co.uk.isxander.evergreenhud.settings.impl.ArraySetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.evergreenhud.settings.impl.EnumSetting;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Mouse;
 
@@ -34,10 +35,12 @@ public class ElementCps extends SimpleTextElement {
     private boolean rightPressed;
 
     public ArraySetting button;
+    public EnumSetting<InputMode> inputMode;
 
     @Override
     public void initialise() {
         addSettings(button = new ArraySetting("Button", "Display", "Which button to display.", "Both", new String[]{"Left", "Right", "Both"}));
+        addSettings(inputMode = new EnumSetting<>("Input Mode", "Display", "How the element should receive input.", InputMode.CONTROLS));
     }
 
     @Override
@@ -71,15 +74,22 @@ public class ElementCps extends SimpleTextElement {
     public void onRenderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START) return;
 
-        boolean pressed = Mouse.isButtonDown(0);
-        //boolean pressed = mc.gameSettings.keyBindAttack.isKeyDown();
+        boolean pressed;
+        if (inputMode.get() == InputMode.RAW)
+            pressed = Mouse.isButtonDown(0);
+        else
+            pressed = mc.gameSettings.keyBindAttack.isKeyDown();
+
         if (pressed != leftPressed) {
             leftPressed = pressed;
             if (pressed) left.add(System.currentTimeMillis());
         }
 
-        pressed = Mouse.isButtonDown(1);
-        //pressed = mc.gameSettings.keyBindUseItem.isKeyDown();
+        if (inputMode.get() == InputMode.RAW)
+            pressed = Mouse.isButtonDown(1);
+        else
+            pressed = mc.gameSettings.keyBindUseItem.isKeyDown();
+
         if (pressed != rightPressed) {
             rightPressed = pressed;
             if (pressed) right.add(System.currentTimeMillis());
@@ -98,6 +108,11 @@ public class ElementCps extends SimpleTextElement {
                 if (right.isEmpty()) break;
             }
         }
+    }
+
+    public enum InputMode {
+        CONTROLS,
+        RAW
     }
 
 }

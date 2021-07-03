@@ -19,6 +19,7 @@ import club.sk1er.mods.core.util.Multithreading;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.xanderlib.utils.Constants;
 import co.uk.isxander.xanderlib.utils.GuiUtils;
+import lombok.Getter;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.network.OldServerPinger;
 import net.minecraftforge.common.MinecraftForge;
@@ -36,8 +37,10 @@ public class ServerPingerUtil implements Constants {
     private final OldServerPinger serverPinger;
     private final Map<String, Long> serverUpdateTime;
     private final Map<String, Boolean> serverUpdateStatus;
-    private Integer serverPlayerCount;
-    private Integer serverPlayerCap;
+
+    @Getter private Integer serverPlayerCount;
+    @Getter private Integer serverPlayerCap;
+    @Getter private Long serverPing;
 
     public ServerPingerUtil() {
         this.serverPinger = new OldServerPinger();
@@ -45,17 +48,21 @@ public class ServerPingerUtil implements Constants {
         this.serverUpdateStatus = new HashMap<>();
         this.serverPlayerCount = null;
         this.serverPlayerCap = null;
+        this.serverPing = null;
 
         MinecraftForge.EVENT_BUS.register(this);
     }
 
     @SubscribeEvent
     public void onClientTick(TickEvent.ClientTickEvent event) {
-        ServerData server = mc.getCurrentServerData();
+        updateManually(mc.getCurrentServerData());
+    }
+
+    public void updateManually(ServerData server) {
         if (server != null) {
             Long updateTime = serverUpdateTime.get(server.serverIP);
             if ((updateTime == null || updateTime + SERVER_UPDATE_TIME <= System.currentTimeMillis()) && !serverUpdateStatus.getOrDefault(server.serverIP, false)) {
-                EvergreenHUD.LOGGER.info("Pinging " + server.serverIP + " for player count...");
+                EvergreenHUD.LOGGER.info("Pinging " + server.serverIP + " for information...");
                 serverUpdateStatus.put(server.serverIP, true);
 
                 Multithreading.runAsync(() -> {
@@ -78,17 +85,9 @@ public class ServerPingerUtil implements Constants {
                 serverPlayerCount = Integer.parseInt(splitPopulationInfo[0]);
                 serverPlayerCap = Integer.parseInt(splitPopulationInfo[1]);
             }
+            serverPing = server.pingToServer;
         } else {
             serverPlayerCount = serverPlayerCap = null;
         }
     }
-
-    public Integer getServerPlayerCount() {
-        return this.serverPlayerCount;
-    }
-
-    public Integer getServerPlayerCap() {
-        return this.serverPlayerCap;
-    }
-
 }

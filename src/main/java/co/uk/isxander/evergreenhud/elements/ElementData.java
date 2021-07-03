@@ -15,10 +15,12 @@
 
 package co.uk.isxander.evergreenhud.elements;
 
+import lombok.Getter;
+
 public class ElementData {
 
-    private final String name, description, category, notice;
-    private final int maxInstances;
+    @Getter private final String name, description, category, notice;
+    @Getter private final int maxInstances;
 
     public ElementData(String name, String description, String category) {
         this(name, description, category, null, Integer.MAX_VALUE);
@@ -41,25 +43,5 @@ public class ElementData {
         this.category = category;
         this.notice = notice;
         this.maxInstances = maxInstances;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public String getNotice() {
-        return notice;
-    }
-
-    public int getMaxInstances() {
-        return maxInstances;
     }
 }

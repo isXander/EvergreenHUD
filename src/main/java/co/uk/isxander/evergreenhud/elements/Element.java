@@ -15,6 +15,7 @@
 
 package co.uk.isxander.evergreenhud.elements;
 
+import co.uk.isxander.evergreenhud.gui.screens.GuiScreenElements;
 import co.uk.isxander.evergreenhud.utils.SnapPoint;
 import co.uk.isxander.evergreenhud.event.Listenable;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiElementConfig;
@@ -24,7 +25,7 @@ import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.evergreenhud.settings.Setting;
-import net.apolloclient.utils.GLRenderer;
+import lombok.Getter;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -43,22 +44,23 @@ import java.util.List;
 
 public abstract class Element extends Gui implements Listenable, Constants {
 
-    private static final ElementUtilitySharer UTILITY_SHARER = new ElementUtilitySharer();
+    @Getter
+    private static final ElementUtilitySharer utilitySharer = new ElementUtilitySharer();
 
     @Override
     public boolean canReceiveEvents() {
         ElementManager manager = EvergreenHUD.getInstance().getElementManager();
-        return manager.isEnabled();
+        return manager.isEnabled() || mc.currentScreen instanceof GuiScreenElements;
     }
 
-    private final List<Setting> customSettings;
-    private final List<SnapPoint> snapPoints;
+    @Getter private final List<Setting> customSettings;
+    @Getter private final List<SnapPoint> snapPoints;
 
     /* Config */
-    private Position position;
-    private BooleanSetting showInChat;
-    private BooleanSetting showUnderGui;
-    private BooleanSetting showInDebug;
+    @Getter private Position position;
+    @Getter private BooleanSetting showInChat;
+    @Getter private BooleanSetting showUnderGui;
+    @Getter private BooleanSetting showInDebug;
 
     protected final Logger logger;
     private final ElementData meta;
@@ -313,14 +315,6 @@ public abstract class Element extends Gui implements Listenable, Constants {
         customSettings.addAll(Arrays.asList(settings));
     }
 
-    public List<Setting> getCustomSettings() {
-        return customSettings;
-    }
-
-    public List<SnapPoint> getSnapPoints() {
-        return snapPoints;
-    }
-
     public void onAdded() {
 
     }
@@ -348,25 +342,5 @@ public abstract class Element extends Gui implements Listenable, Constants {
         worldrenderer.pos(x + width, y, this.zLevel).tex((textureX + width) * f, textureY * f1).endVertex();
         worldrenderer.pos(x + 0, y + 0, this.zLevel).tex(textureX * f, textureY * f1).endVertex();
         tessellator.draw();
-    }
-
-    public ElementUtilitySharer getUtilitySharer() {
-        return UTILITY_SHARER;
-    }
-
-    public Position getPosition() {
-        return position;
-    }
-
-    public BooleanSetting getShowInChat() {
-        return showInChat;
-    }
-
-    public BooleanSetting getShowUnderGui() {
-        return showUnderGui;
-    }
-
-    public BooleanSetting getShowInDebug() {
-        return showInDebug;
     }
 }

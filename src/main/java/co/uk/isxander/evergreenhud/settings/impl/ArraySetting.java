@@ -16,6 +16,7 @@
 package co.uk.isxander.evergreenhud.settings.impl;
 
 import co.uk.isxander.evergreenhud.settings.Setting;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -24,7 +25,7 @@ public class ArraySetting extends Setting {
 
     private final List<String> options;
     private final int def;
-    private int index;
+    @Getter private int index;
 
     public ArraySetting(String name, String category, String description, String current, boolean internal, String... options) {
         super(name, description, category, internal);
@@ -85,10 +86,6 @@ public class ArraySetting extends Setting {
 
     public int getDefault() {
         return def;
-    }
-
-    public int getIndex() {
-        return index;
     }
 
     public void set(String current) {

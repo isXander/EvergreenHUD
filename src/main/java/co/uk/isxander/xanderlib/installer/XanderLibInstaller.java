@@ -31,7 +31,7 @@ import club.sk1er.mods.core.ModCoreInstaller.JsonHolder;
 public class XanderLibInstaller {
 
     // What version of XanderLib does this mod use
-    public static final String DESIRED_VERSION = "0.9";
+    public static final String DESIRED_VERSION = "1.0";
     private static final String VERSION_URL = "https://raw.githubusercontent.com/isXander/XanderLib/main/version.json";
     private static File dataDir = null;
     private static boolean isInstalled = false;
