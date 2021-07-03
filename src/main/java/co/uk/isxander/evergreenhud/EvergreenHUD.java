@@ -29,6 +29,7 @@ import co.uk.isxander.evergreenhud.repo.BlacklistManager;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiOldForge;
 import co.uk.isxander.evergreenhud.repo.ReleaseChannel;
 import co.uk.isxander.xanderlib.XanderLib;
+import co.uk.isxander.xanderlib.hypixel.locraw.LocrawManager;
 import co.uk.isxander.xanderlib.ui.editor.AbstractGuiModifier;
 import co.uk.isxander.xanderlib.utils.Constants;
 import co.uk.isxander.evergreenhud.command.EvergreenHudCommand;
@@ -36,6 +37,7 @@ import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
 import co.uk.isxander.evergreenhud.repo.UpdateChecker;
 import kotlin.Unit;
+import lombok.Getter;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.ClientCommandHandler;
@@ -67,14 +69,14 @@ public class EvergreenHUD implements Constants {
     public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
     public static final File DATA_DIR = new File(mc.mcDataDir, "config/evergreenhud");
 
-    @Mod.Instance(EvergreenHUD.MOD_ID)
+    @Mod.Instance(EvergreenHUD.MOD_ID) @Getter
     private static EvergreenHUD instance;
 
-    private ElementManager elementManager;
-    private boolean development;
+    @Getter private ElementManager elementManager;
+    @Getter private boolean development;
 
-    private boolean firstLaunch = false;
-    private boolean versionTwoFirstLaunch = false;
+    @Getter private boolean firstLaunch = false;
+    @Getter private boolean versionTwoFirstLaunch = false;
 
     private boolean disabled = false;
     private boolean blacklisted = false;
@@ -91,7 +93,14 @@ public class EvergreenHUD implements Constants {
         ProgressManager.ProgressBar progress = ProgressManager.push("EvergreenHUD", 9);
 
         progress.step("Blacklist Check");
-        blacklisted = BlacklistManager.isVersionBlacklisted(MOD_VERSION);
+        try {
+            blacklisted = BlacklistManager.isVersionBlacklisted(MOD_VERSION);
+        } catch (NullPointerException e) {
+            LOGGER.error("Failed to check if version is blacklisted. This is likely an internet issue. Stacktrace: ");
+            e.printStackTrace();
+            Notifications.INSTANCE.pushNotification("EvergreenHUD", "Failed to check if version is blacklisted. This is likely a connection issue.");
+        }
+
         if (blacklisted) disable();
 
         progress.step("Forge Check");
@@ -126,7 +135,7 @@ public class EvergreenHUD implements Constants {
             @Override
             public void onActionPerformedPost(GuiScreen screen, List<GuiButton> buttonList, GuiButton button) {
                 if (button.id == 991) {
-                    mc.displayGuiScreen(new GuiMain(null));
+                    mc.displayGuiScreen(new GuiMain(mc.currentScreen));
                 }
             }
         });
@@ -200,17 +209,23 @@ public class EvergreenHUD implements Constants {
                     LOGGER.warn("Running in development environment. Skipped update check.");
                     development = true;
                 } else {
-                    String version = UpdateChecker.getNeededVersion();
-                    if (!version.equalsIgnoreCase(EvergreenHUD.MOD_VERSION)) {
-                        LOGGER.warn("Mod is out of date. " + EvergreenHUD.MOD_VERSION + " > " + version);
-                        notifyUpdate(version);
+                    try {
+                        String version = UpdateChecker.getNeededVersion();
+                        if (!version.equalsIgnoreCase(EvergreenHUD.MOD_VERSION)) {
+                            LOGGER.warn("Mod is out of date. " + EvergreenHUD.MOD_VERSION + " > " + version);
+                            notifyUpdate(version);
+                        }
+                    } catch (NullPointerException e) {
+                        LOGGER.error("Failed to check if version is up to date. This is likely an internet issue. Stacktrace: ");
+                        e.printStackTrace();
+                        Notifications.INSTANCE.pushNotification("EvergreenHUD", "Failed to check if version is up to date. This is likely a connection issue.");
                     }
+
                 }
             });
         } else {
             LOGGER.info("User disabled update check - skipping.");
         }
-
 
         if (reset) {
             reset = false;
@@ -242,28 +257,8 @@ public class EvergreenHUD implements Constants {
         });
     }
 
-    public static EvergreenHUD getInstance() {
-        return instance;
-    }
-
-    public ElementManager getElementManager() {
-        return elementManager;
-    }
-
     public void notifyConfigReset() {
         reset = true;
-    }
-
-    public boolean isDevelopment() {
-        return development;
-    }
-
-    public boolean isFirstLaunch() {
-        return this.firstLaunch;
-    }
-
-    public boolean isVersionTwoFirstLaunch() {
-        return this.versionTwoFirstLaunch;
     }
 
 }

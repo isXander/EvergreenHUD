@@ -31,7 +31,7 @@ public class ElementPlayerCount extends SimpleTextElement {
     @Override
     public void initialise() {
         addSettings(level = new EnumSetting<>("Display Level", "Display", "How the element counts the player count.", DisplayLevel.NETWORK));
-        addSettings(updateTime = new IntegerSetting("Update Time", "Display", "How frequently will the element update the player count.", 60, 3, 60 ," mins") {
+        addSettings(updateTime = new IntegerSetting("Update Time", "Display", "How frequently will the element update the player count.", 60, 1, 60 ," mins") {
             @Override
             protected boolean onChange(int currentVal, int newVal) {
                 boolean success = super.onChange(currentVal, newVal);

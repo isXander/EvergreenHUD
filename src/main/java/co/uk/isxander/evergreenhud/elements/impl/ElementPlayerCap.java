@@ -31,7 +31,7 @@ public class ElementPlayerCap extends SimpleTextElement {
     @Override
     public void initialise() {
         addSettings(singlePlayerMsg = new StringSetting("Singleplayer Message", "Display", "What message is displayed when you are connected to a singleplayer world.", "1"));
-        addSettings(updateTime = new IntegerSetting("Update Time", "Display", "How frequently will the element update the capacity.", 60, 3, 60 ," mins") {
+        addSettings(updateTime = new IntegerSetting("Update Time", "Display", "How frequently will the element update the capacity.", 60, 1, 60 ," mins") {
             @Override
             protected boolean onChange(int currentVal, int newVal) {
                 boolean success = super.onChange(currentVal, newVal);

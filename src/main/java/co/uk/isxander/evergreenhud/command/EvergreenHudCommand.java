@@ -126,7 +126,7 @@ public class EvergreenHudCommand extends CommandBase implements Constants {
                     sb.append("--- EvergreenHUD Addons ---").append("\n");
                     sb.append("[");
                     for (EvergreenAddon addon : AddonManager.getInstance().addons) {
-                        sb.append("    ").append(addon.metadata().name).append(" v").append(addon.metadata().version).append("\n");
+                        sb.append("    ").append(addon.metadata().getName()).append(" v").append(addon.metadata().getVersion()).append("\n");
                     }
                     sb.append("]\n\n");
 

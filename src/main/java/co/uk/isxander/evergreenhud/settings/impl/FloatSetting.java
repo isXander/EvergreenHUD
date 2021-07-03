@@ -16,13 +16,15 @@
 package co.uk.isxander.evergreenhud.settings.impl;
 
 import co.uk.isxander.evergreenhud.settings.Setting;
+import lombok.Getter;
+import lombok.Setter;
 
 public class FloatSetting extends Setting {
 
     private final float def;
     private float val;
-    private float min, max;
-    private final String suffix;
+    @Getter @Setter private float min, max;
+    @Getter private final String suffix;
 
     public FloatSetting(String name, String category, String description, float val, float min, float max, String suffix, boolean internal) {
         super(name, description, category, internal);
@@ -66,26 +68,6 @@ public class FloatSetting extends Setting {
 
     public void set(float newVal) {
         this.val = newVal;
-    }
-
-    public float getMin() {
-        return min;
-    }
-
-    public float getMax() {
-        return max;
-    }
-
-    public void setMin(float min) {
-        this.min = min;
-    }
-
-    public void setMax(float max) {
-        this.max = max;
-    }
-
-    public String getSuffix() {
-        return suffix;
     }
 
     @Override

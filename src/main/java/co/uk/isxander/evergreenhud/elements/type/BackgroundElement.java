@@ -16,25 +16,25 @@
 package co.uk.isxander.evergreenhud.elements.type;
 
 import co.uk.isxander.evergreenhud.elements.Element;
-import co.uk.isxander.evergreenhud.elements.RenderOrigin;
 import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.settings.impl.FloatSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
+import co.uk.isxander.xanderlib.utils.GLRenderer;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.Resolution;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
-import net.apolloclient.utils.GLRenderer;
+import lombok.Getter;
 import net.minecraft.client.gui.ScaledResolution;
 
 import java.awt.*;
 
 public abstract class BackgroundElement extends Element {
 
-    protected FloatSetting paddingLeft;
-    protected FloatSetting paddingRight;
-    protected FloatSetting paddingTop;
-    protected FloatSetting paddingBottom;
-    protected IntegerSetting cornerRadius;
+    @Getter protected FloatSetting paddingLeft;
+    @Getter protected FloatSetting paddingRight;
+    @Getter protected FloatSetting paddingTop;
+    @Getter protected FloatSetting paddingBottom;
+    @Getter protected IntegerSetting cornerRadius;
 
     protected BooleanSetting backEnabled;
     protected IntegerSetting backR;
@@ -101,10 +101,10 @@ public abstract class BackgroundElement extends Element {
         float width = getHitBoxWidth() * sizeScale;
         float height = getHitBoxHeight() * sizeScale;
 
-        float top = getPaddingTopSetting().get() * sizeScale;
-        float bottom = getPaddingBottomSetting().get() * sizeScale;
-        float left = getPaddingLeftSetting().get() * sizeScale;
-        float right = getPaddingRightSetting().get() * sizeScale;
+        float top = getPaddingTop().get() * sizeScale;
+        float bottom = getPaddingBottom().get() * sizeScale;
+        float left = getPaddingLeft().get() * sizeScale;
+        float right = getPaddingRight().get() * sizeScale;
 
         float x = getPosition().getRawX(res) / gl;
         float y = getPosition().getRawY(res) / gl;
@@ -141,27 +141,4 @@ public abstract class BackgroundElement extends Element {
         backA.set(a);
     }
 
-    public FloatSetting getPaddingLeftSetting() {
-        return paddingLeft;
-    }
-
-    public FloatSetting getPaddingRightSetting() {
-        return paddingRight;
-    }
-
-    public FloatSetting getPaddingTopSetting() {
-        return paddingTop;
-    }
-
-    public FloatSetting getPaddingBottomSetting() {
-        return paddingBottom;
-    }
-
-    public IntegerSetting getCornerRadiusSetting() {
-        return cornerRadius;
-    }
-
-    protected boolean useCornerRadiusSetting() {
-        return true;
-    }
 }

@@ -20,6 +20,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public interface Listenable {
@@ -55,6 +56,10 @@ public interface Listenable {
     }
 
     default void onPacketSend(PacketEvent.Outgoing event) {
+
+    }
+
+    default void onBlockPlaced(BlockEvent.PlaceEvent event) {
 
     }
 

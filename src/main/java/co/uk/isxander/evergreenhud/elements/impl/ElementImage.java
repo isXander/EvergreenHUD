@@ -16,20 +16,16 @@
 package co.uk.isxander.evergreenhud.elements.impl;
 
 import club.sk1er.mods.core.gui.notification.Notifications;
-import co.uk.isxander.evergreenhud.elements.RenderOrigin;
 import co.uk.isxander.evergreenhud.elements.type.BackgroundElement;
 import co.uk.isxander.evergreenhud.settings.impl.*;
+import co.uk.isxander.xanderlib.utils.GLRenderer;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.ImageUtils;
 import co.uk.isxander.evergreenhud.EvergreenHUD;
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.xanderlib.utils.Resolution;
-import net.apolloclient.utils.GLRenderer;
-import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.crash.CrashReport;
-import net.minecraft.util.ReportedException;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;

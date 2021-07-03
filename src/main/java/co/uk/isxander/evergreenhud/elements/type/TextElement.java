@@ -22,17 +22,18 @@ import co.uk.isxander.evergreenhud.settings.impl.StringSetting;
 import co.uk.isxander.xanderlib.utils.HitBox2D;
 import co.uk.isxander.xanderlib.utils.Resolution;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
+import lombok.Getter;
 import net.minecraft.client.gui.ScaledResolution;
 
 import java.awt.*;
 
 public abstract class TextElement extends BackgroundElement {
 
-    private StringSetting titleText;
-    private BooleanSetting brackets;
-    private EnumSetting<TextMode> textMode;
-    private BooleanSetting chroma;
-    private EnumSetting<Alignment> alignment;
+    @Getter private StringSetting titleText;
+    @Getter private BooleanSetting brackets;
+    @Getter private EnumSetting<TextMode> textMode;
+    @Getter private BooleanSetting chroma;
+    @Getter private EnumSetting<Alignment> alignment;
     private IntegerSetting textR;
     private IntegerSetting textG;
     private IntegerSetting textB;
@@ -57,15 +58,15 @@ public abstract class TextElement extends BackgroundElement {
         float width = getHitBoxWidth() * sizeScale;
         float height = getHitBoxHeight() * sizeScale;
 
-        float top = getPaddingTopSetting().get() * sizeScale;
-        float bottom = getPaddingBottomSetting().get() * sizeScale;
-        float left = getPaddingLeftSetting().get() * sizeScale;
-        float right = getPaddingRightSetting().get() * sizeScale;
+        float top = getPaddingTop().get() * sizeScale;
+        float bottom = getPaddingBottom().get() * sizeScale;
+        float left = getPaddingLeft().get() * sizeScale;
+        float right = getPaddingRight().get() * sizeScale;
 
         float x = getPosition().getRawX(res) / gl;
         float y = getPosition().getRawY(res) / gl;
 
-        switch (getAlignmentSetting().get()) {
+        switch (getAlignment().get()) {
             case RIGHT:
                 hitbox = new HitBox2D(x - (width / sizeScale) - left, y - top, width + left + right, height + top + bottom);
                 break;
@@ -124,18 +125,6 @@ public abstract class TextElement extends BackgroundElement {
 
         super.loadJsonOld(root);
     }
-
-    public StringSetting getTitleTextSetting() {
-        return titleText;
-    }
-
-    public BooleanSetting getBracketsSetting() {
-        return brackets;
-    }
-    public BooleanSetting getChromaSetting() {
-        return chroma;
-    }
-
     public Color getTextColor() {
         return new Color(textR.get(), textG.get(), textB.get(), 255);
     }
@@ -144,14 +133,6 @@ public abstract class TextElement extends BackgroundElement {
         textR.set(r);
         textG.set(g);
         textB.set(b);
-    }
-
-    public EnumSetting<Alignment> getAlignmentSetting() {
-        return alignment;
-    }
-
-    public EnumSetting<TextMode> getTextModeSetting() {
-        return textMode;
     }
 
     public enum TextMode {

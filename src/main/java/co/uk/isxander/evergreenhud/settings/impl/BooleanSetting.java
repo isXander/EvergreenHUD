@@ -33,7 +33,7 @@ public class BooleanSetting extends Setting {
     }
 
     public BooleanSetting(String name, String category, String description, boolean def) {
-        super(name, description ,category);
+        super(name, description, category);
         this.value = this.def = def;
     }
 

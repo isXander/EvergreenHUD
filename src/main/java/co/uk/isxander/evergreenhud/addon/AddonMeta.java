@@ -15,13 +15,20 @@
 
 package co.uk.isxander.evergreenhud.addon;
 
+import lombok.Getter;
+import net.minecraft.crash.CrashReport;
+import net.minecraft.util.ReportedException;
+
 public class AddonMeta {
 
-    public final String name;
-    public final String description;
-    public final String version;
+    @Getter private final String name, description, version;
 
-    public AddonMeta(String name, String description, String version) {
+    public AddonMeta(String name, String description, String version, int apiVersion) {
+        if (AddonManager.API_VERSION != apiVersion) {
+            CrashReport crash = CrashReport.makeCrashReport(new UnsupportedEvergreenAddonException("Tried to load " + name + " v" + version + " however it uses API v" + apiVersion + " whilst the running one is " + AddonManager.API_VERSION), (AddonManager.API_VERSION > apiVersion ? "Outdated addon." : "Outdated EvergreenHUD."));
+            throw new ReportedException(crash);
+        }
+        
         this.name = name;
         this.description = description;
         this.version = version;

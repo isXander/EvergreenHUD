@@ -22,6 +22,8 @@ import co.uk.isxander.xanderlib.utils.Constants;
 import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.config.MainConfig;
 import co.uk.isxander.evergreenhud.event.EventManager;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -33,16 +35,21 @@ import java.util.concurrent.atomic.AtomicReference;
 public class ElementManager implements Constants {
 
     private final Map<String, Class<? extends Element>> availableElements;
+
+    /**
+     * @return the elements that are currently being rendered
+     */
+    @Getter
     private final List<Element> currentElements;
 
     /* Config */
-    private final MainConfig mainConfig;
-    private final ElementConfig elementConfig;
+    @Getter private final MainConfig mainConfig;
+    @Getter private final ElementConfig elementConfig;
 
-    private boolean enabled;
-    private boolean useAlternateLook;
-    private boolean checkForUpdates;
-    private boolean hideComponentsOnElementDrag;
+    @Getter @Setter private boolean enabled;
+    @Getter @Setter private boolean useAlternateLook;
+    @Getter @Setter private boolean checkForUpdates;
+    @Getter @Setter private boolean hideComponentsOnElementDrag;
 
     public ElementManager() {
         this.availableElements = new HashMap<>();
@@ -58,6 +65,7 @@ public class ElementManager implements Constants {
         registerElement("ARMOUR", ElementArmour.class);
         registerElement("BIOME", ElementBiome.class);
         registerElement("BLOCK_ABOVE", ElementBlockAbove.class);
+        registerElement("BLOCK_COUNT", ElementBlockCount.class);
         registerElement("CHUNK_COUNT", ElementChunkRenderCount.class);
         registerElement("CHUNK_UPDATES", ElementChunkUpdates.class);
         registerElement("COMBO", ElementCombo.class);
@@ -157,12 +165,6 @@ public class ElementManager implements Constants {
         this.hideComponentsOnElementDrag = false;
     }
 
-    /**
-     * @return the elements that are currently being rendered
-     */
-    public List<Element> getCurrentElements() {
-        return currentElements;
-    }
 
     @SubscribeEvent
     public void onRenderOverlay(RenderGameOverlayEvent.Post event) {
@@ -204,45 +206,5 @@ public class ElementManager implements Constants {
         EventManager.getInstance().removeListener(element);
         this.currentElements.remove(element);
         element.onRemoved();
-    }
-
-    public MainConfig getMainConfig() {
-        return mainConfig;
-    }
-
-    public ElementConfig getElementConfig() {
-        return elementConfig;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public boolean isUseAlternateLook() {
-        return useAlternateLook;
-    }
-
-    public void setUseAlternateLook(boolean useAlternateLook) {
-        this.useAlternateLook = useAlternateLook;
-    }
-
-    public boolean isCheckForUpdates() {
-        return checkForUpdates;
-    }
-
-    public void setCheckForUpdates(boolean checkForUpdates) {
-        this.checkForUpdates = checkForUpdates;
-    }
-
-    public boolean isHideComponentsOnElementDrag() {
-        return hideComponentsOnElementDrag;
-    }
-
-    public void setHideComponentsOnElementDrag(boolean hideComponentsOnElementDrag) {
-        this.hideComponentsOnElementDrag = hideComponentsOnElementDrag;
     }
 }

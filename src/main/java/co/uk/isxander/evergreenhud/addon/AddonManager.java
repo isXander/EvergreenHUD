@@ -25,6 +25,9 @@ import java.util.List;
 
 public class AddonManager {
 
+    public static final int API_VERSION = 1;
+    public static final String REPO_URL = "https://raw.githubusercontent.com/isXander/EvergreenHUD-REPO/main/assets/";
+
     private static AddonManager instance;
 
     public final List<EvergreenAddon> addons;
@@ -35,7 +38,7 @@ public class AddonManager {
 
     public void registerAddon(EvergreenAddon addon) {
         addons.add(addon);
-        EvergreenHUD.LOGGER.info("Registered Addon: " + addon.metadata().name);
+        EvergreenHUD.LOGGER.info("Registered Addon: " + addon.metadata().getName());
     }
 
     public void onInit() {

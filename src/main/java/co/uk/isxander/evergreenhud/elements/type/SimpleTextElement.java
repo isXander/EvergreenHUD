@@ -15,11 +15,11 @@
 
 package co.uk.isxander.evergreenhud.elements.type;
 
-import co.uk.isxander.evergreenhud.elements.RenderOrigin;
 import co.uk.isxander.evergreenhud.settings.impl.*;
 import co.uk.isxander.xanderlib.utils.GuiUtils;
 import co.uk.isxander.xanderlib.utils.Resolution;
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject;
+import lombok.Getter;
 import net.minecraft.client.renderer.GlStateManager;
 
 /**
@@ -27,7 +27,7 @@ import net.minecraft.client.renderer.GlStateManager;
  */
 public abstract class SimpleTextElement extends TextElement {
 
-    private BooleanSetting inverted;
+    @Getter private BooleanSetting invertedTitle;
 
     @Override
     public void render(float partialTicks, int origin) {
@@ -35,8 +35,8 @@ public abstract class SimpleTextElement extends TextElement {
 
         String displayString = getDisplayString();
         float scale = getPosition().getScale();
-        boolean chroma = getChromaSetting().get();
-        TextMode textMode = getTextModeSetting().get();
+        boolean chroma = getChroma().get();
+        TextMode textMode = getTextMode().get();
         int color = getTextColor().getRGB();
 
         float x = getPosition().getRawX(Resolution.get());
@@ -46,7 +46,7 @@ public abstract class SimpleTextElement extends TextElement {
 
         float posX = x / scale;
         float posY = y / scale;
-        switch (getAlignmentSetting().get()) {
+        switch (getAlignment().get()) {
             case RIGHT:
                 posX = (x - mc.fontRendererObj.getStringWidth(displayString)) / scale;
                 GuiUtils.drawString(mc.fontRendererObj, displayString, posX, posY, textMode == TextMode.SHADOW, textMode == TextMode.BORDER, chroma, false, color);
@@ -70,16 +70,16 @@ public abstract class SimpleTextElement extends TextElement {
      * @return the text that will be rendered
      */
     public String getDisplayString() {
-        boolean showTitle = !getTitleTextSetting().get().trim().isEmpty();
+        boolean showTitle = !getTitleText().get().trim().isEmpty();
         StringBuilder builder = new StringBuilder();
-        if (getBracketsSetting().get())
+        if (getBrackets().get())
             builder.append("[");
-        if (showTitle && !getInvertTitleSetting().get())
-            builder.append(getTitleTextSetting().get()).append(": ");
+        if (showTitle && !getInvertedTitle().get())
+            builder.append(getTitleText().get()).append(": ");
         builder.append(getValue());
-        if (showTitle && getInvertTitleSetting().get())
-            builder.append(" ").append(getTitleTextSetting().get());
-        if (getBracketsSetting().get())
+        if (showTitle && getInvertedTitle().get())
+            builder.append(" ").append(getTitleText().get());
+        if (getBrackets().get())
             builder.append("]");
         return builder.toString();
     }
@@ -103,18 +103,14 @@ public abstract class SimpleTextElement extends TextElement {
     protected void registerDefaultSettings() {
         super.registerDefaultSettings();
 
-        addSettings(inverted = new BooleanSetting("Invert Title", "Display", "If the title is rendered after the value.", false));
+        addSettings(invertedTitle = new BooleanSetting("Invert Title", "Display", "If the title is rendered after the value.", false));
     }
 
     @Override
     public void loadJsonOld(BetterJsonObject root) {
-        inverted.set(root.optBoolean("inverted", false));
+        invertedTitle.set(root.optBoolean("inverted", false));
 
         super.loadJsonOld(root);
-    }
-
-    public BooleanSetting getInvertTitleSetting() {
-        return inverted;
     }
 
 }

@@ -17,12 +17,13 @@ package co.uk.isxander.evergreenhud.gui.screens;
 
 import co.uk.isxander.evergreenhud.gui.components.BetterGuiButton;
 import co.uk.isxander.evergreenhud.gui.components.BetterGuiSlider;
+import lombok.Getter;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 
 public class GuiScreenExt extends GuiScreen {
 
-    private final GuiScreen parentScreen;
+    @Getter private final GuiScreen parentScreen;
 
     public GuiScreenExt(GuiScreen parentScreen) {
         this.parentScreen = parentScreen;
@@ -52,7 +53,4 @@ public class GuiScreenExt extends GuiScreen {
         }
     }
 
-    public GuiScreen getParentScreen() {
-        return parentScreen;
-    }
 }

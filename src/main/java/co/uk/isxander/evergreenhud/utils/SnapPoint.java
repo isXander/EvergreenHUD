@@ -16,6 +16,8 @@
 package co.uk.isxander.evergreenhud.utils;
 
 import co.uk.isxander.evergreenhud.elements.Element;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.client.gui.ScaledResolution;
 
 public class SnapPoint {
@@ -24,7 +26,9 @@ public class SnapPoint {
 
     private final Element element;
 
+    @Getter @Setter
     private float snapX;
+    @Getter @Setter
     private float snapY;
 
     public SnapPoint(Element element, float snapX, float snapY) {
@@ -60,22 +64,6 @@ public class SnapPoint {
 
     public float calculateY(ScaledResolution res) {
         return calculateY(element.getPosition().getRawY(res));
-    }
-
-    public float getSnapX() {
-        return snapX;
-    }
-
-    public void setSnapX(float snapX) {
-        this.snapX = snapX;
-    }
-
-    public float getSnapY() {
-        return snapY;
-    }
-
-    public void setSnapY(float snapY) {
-        this.snapY = snapY;
     }
 
     public enum SnapAxis {

@@ -22,6 +22,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.world.BlockEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -120,6 +121,15 @@ public class EventManager implements Constants {
         for (Listenable listenable : listenables) {
             if (listenable.canReceiveEvents()) {
                 listenable.onPacketSend(event);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public void onBlockPlaced(BlockEvent.PlaceEvent event) {
+        for (Listenable listenable : listenables) {
+            if (listenable.canReceiveEvents()) {
+                listenable.onBlockPlaced(event);
             }
         }
     }
