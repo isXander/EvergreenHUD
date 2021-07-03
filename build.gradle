@@ -64,7 +64,6 @@ jar {
         attributes (
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
                 'MixinConfigs': 'mixins.evergreenhud.json',
-                'FMLAT': 'evergreenhud_at.cfg',
                 'FMLCorePlugin': 'co.uk.isxander.evergreenhud.forge.FMLLoadingPlugin',
                 'ModSide': 'CLIENT',
                 'FMLCorePluginContainsFMLMod': true,

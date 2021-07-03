@@ -26,13 +26,13 @@ import co.uk.isxander.evergreenhud.settings.impl.StringSetting;
 import co.uk.isxander.evergreenhud.utils.RomanNumeral;
 import co.uk.isxander.xanderlib.utils.GuiUtils;
 import co.uk.isxander.xanderlib.utils.Resolution;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.InventoryEffectRenderer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 import java.util.*;
@@ -42,6 +42,7 @@ import java.util.stream.Collectors;
 public class ElementPotionHUD extends BackgroundElement {
 
     public static final int ICON_SIZE = 18;
+    public static final ResourceLocation EFFECTS_RESOURCE = new ResourceLocation("textures/gui/container/inventory.png");
 
     public IntegerSetting titleTextR;
     public IntegerSetting titleTextG;
@@ -239,7 +240,7 @@ public class ElementPotionHUD extends BackgroundElement {
             GlStateManager.color(1f, 1f, 1f, 1f);
 
             if (showIcon.get()) {
-                mc.getTextureManager().bindTexture(GuiContainer.inventoryBackground);
+                mc.getTextureManager().bindTexture(EFFECTS_RESOURCE);
                 drawTexturedModalRectF(iconX, (y + yOff) / getPosition().getScale(), potion.getStatusIconIndex() % 8 * 18, 198 + potion.getStatusIconIndex() / 8 * 18, 18, 18);
                 xOff = ICON_SIZE * getPosition().getScale();
                 this.width = Math.max(this.width, xOff / getPosition().getScale());

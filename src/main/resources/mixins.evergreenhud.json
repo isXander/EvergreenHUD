@@ -3,6 +3,7 @@
   "refmap": "mixins.evergreenhud.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinInventoryEffectRenderer"
+    "MixinInventoryEffectRenderer",
+    "AccessorRenderGlobal"
   ]
 }

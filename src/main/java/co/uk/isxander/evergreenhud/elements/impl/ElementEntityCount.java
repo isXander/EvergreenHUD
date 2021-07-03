@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
+import co.uk.isxander.evergreenhud.mixins.AccessorRenderGlobal;
 
 public class ElementEntityCount extends SimpleTextElement {
 
@@ -30,7 +31,7 @@ public class ElementEntityCount extends SimpleTextElement {
         if (mc.renderGlobal == null)
             return "Unknown";
 
-        return Integer.toString(mc.renderGlobal.countEntitiesRendered);
+        return Integer.toString(((AccessorRenderGlobal) mc.renderGlobal).getCountEntitiesRendered());
     }
 
     @Override

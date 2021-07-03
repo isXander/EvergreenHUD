@@ -17,6 +17,7 @@ package co.uk.isxander.evergreenhud.elements.impl;
 
 import co.uk.isxander.evergreenhud.elements.ElementData;
 import co.uk.isxander.evergreenhud.elements.type.SimpleTextElement;
+import co.uk.isxander.evergreenhud.mixins.AccessorRenderGlobal;
 
 public class ElementChunkRenderCount extends SimpleTextElement {
 
@@ -27,7 +28,7 @@ public class ElementChunkRenderCount extends SimpleTextElement {
 
     @Override
     protected String getValue() {
-        if (mc.renderGlobal == null || mc.renderGlobal.viewFrustum == null)
+        if (mc.renderGlobal == null || ((AccessorRenderGlobal) mc.renderGlobal).getViewFrustum() == null)
             return "Unknown";
 
         return mc.renderGlobal.getDebugInfoRenders().split("/")[0].substring(3);
