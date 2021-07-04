@@ -1,14 +1,41 @@
 plugins {
     id 'java'
 
+    // APIs
     id 'net.minecraftforge.gradle.forge' version '8708bf3e0'
     id 'org.spongepowered.mixin' version '0.6-SNAPSHOT'
 
+    // Build
     id 'com.github.johnrengelman.shadow' version '6.1.0'
     id 'io.freefair.lombok' version '6.0.0-m2'
+    id 'org.ajoberstar.grgit' version '4.1.0'
 }
 
-version = '2.0-RC.4'
+def gitHash = (grgit != null ? grgit.head().abbreviatedId : null)
+version = {
+    def build_num = "0"
+    def run_num = System.getenv('GITHUB_RUN_NUMBER')
+    // CI builds only
+    if (run_num != null)
+        build_num = run_num
+
+    String ver = "${mod_version}.${build_num}"
+
+    if (!mod_prerelease.trim().isEmpty())
+        ver += "-pre.${mod_prerelease}"
+
+    return ver
+}()
+def versionWithGit = {
+    String ver = project.version
+
+    if (gitHash) {
+        ver += "-rev.${gitHash}"
+    }
+
+    return ver
+}()
+
 group = 'co.uk.isxander'
 archivesBaseName = 'evergreenhud'
 
@@ -21,7 +48,12 @@ minecraft {
     mappings = 'stable_22'
     makeObfSourceJar = false
 
-    replace '@BUILD_VER@', project.version
+    replace '@BUILD_GIT_COMMIT_HASH@', (grgit != null ? grgit.head().abbreviatedId : '???????')
+    replace '@BUILD_VER_NORMAL@', project.version
+    replace '@BUILD_VER_WITH_GIT@', versionWithGit
+    replace '@BUILD_MOD_VERSION@', mod_version
+    replace '@BUILD_MOD_PRERELEASE@', (mod_prerelease.trim().isEmpty() ? null : mod_prerelease)
+
     clientRunArgs += '--tweakClass org.spongepowered.asm.launch.MixinTweaker'
     clientRunArgs += '--mixin mixins.evergreenhud.json'
 }
@@ -43,7 +75,7 @@ repositories {
 }
 
 dependencies {
-    provided files('libs/modcore.jar')
+    implementation files('libs/modcore.jar')
     implementation 'uk.co.isXander:XanderLib:1.0.2'
 
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
@@ -54,7 +86,7 @@ mixin {
     add sourceSets.main, 'mixins.evergreenhud.refmap.json'
 }
 
-String evergreenArchiveName = "EvergreenHUD (${minecraft.version}-${project.version})"
+String evergreenArchiveName = "EvergreenHUD (${versionWithGit})"
 
 jar {
     archiveName = "${evergreenArchiveName}.jar"
@@ -76,14 +108,11 @@ processResources {
     inputs.property 'version', project.version
     inputs.property 'mcversion', project.minecraft.version
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        expand 'version':project.version, 'mcversion':project.minecraft.version
-    }
-
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+    filesMatching('mcmod.info') {
+        expand (
+                'version': project.version,
+                'mcversion': project.minecraft.version
+        )
     }
 
     rename '(.+_at.cfg)', 'META-INF/$1'

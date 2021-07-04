@@ -58,18 +58,20 @@ import java.io.File;
 import java.net.URI;
 import java.util.List;
 
-@Mod(modid = EvergreenHUD.MOD_ID, name = EvergreenHUD.MOD_NAME, version = EvergreenHUD.MOD_VERSION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", guiFactory = "co.uk.isxander.evergreenhud.forge.EvergreenGuiFactory")
+@Mod(modid = EvergreenHUD.MOD_ID, name = EvergreenHUD.MOD_NAME, version = EvergreenHUD.MOD_REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", guiFactory = "co.uk.isxander.evergreenhud.forge.EvergreenGuiFactory")
 public class EvergreenHUD implements Constants {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String MOD_NAME = "EvergreenHUD";
-    public static final String MOD_VERSION = "@BUILD_VER@";
+    public static final String MOD_VERSION = "@BUILD_VER_NORMAL@";
+    public static final String MOD_REVISION = "@BUILD_GIT_COMMIT_HASH@";
     public static final ReleaseChannel CHANNEL = ReleaseChannel.BETA;
 
     public static final Logger LOGGER = LogManager.getLogger("EvergreenHUD");
     public static final File DATA_DIR = new File(mc.mcDataDir, "config/evergreenhud");
 
-    @Mod.Instance(EvergreenHUD.MOD_ID) @Getter
+    @Getter
+    @Mod.Instance(EvergreenHUD.MOD_ID)
     private static EvergreenHUD instance;
 
     @Getter private ElementManager elementManager;
