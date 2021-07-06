@@ -45,6 +45,12 @@ public class ArraySetting extends Setting {
         this.index = this.def = this.options.indexOf(current);
     }
 
+    public ArraySetting(String name, String category, String description, String current, List<String> options) {
+        super(name, description, category);
+        this.options = options;
+        this.index = this.def = this.options.indexOf(current);
+    }
+
     public ArraySetting(String name, String category, String description, int current, String... options) {
         super(name, description, category);
         this.options = Arrays.asList(options);

@@ -182,11 +182,8 @@ public class ElementPotionHUD extends BackgroundElement {
     @Override
     public void render(float partialTicks, int origin) {
         // we would be rendering it twice
-        if (origin == RenderOrigin.HUD) {
-            if (overwriteIER.get() && mc.currentScreen instanceof InventoryEffectRenderer) {
-                return;
-            }
-        }
+        if (origin == RenderOrigin.HUD && overwriteIER.get() && mc.currentScreen instanceof InventoryEffectRenderer)
+            return;
 
         GlStateManager.color(1f, 1f, 1f, 1f);
         GlStateManager.disableLighting();
@@ -214,7 +211,7 @@ public class ElementPotionHUD extends BackgroundElement {
 
         if (sortingMode.get() == SortingMode.ALPHABETICAL) {
             potionEffects.sort(Comparator.comparing(o -> I18n.format(o.getEffectName())));
-        } else {
+        } else if (sortingMode.get() == SortingMode.DURATION) {
             potionEffects.sort(Comparator.comparingInt(PotionEffect::getDuration));
             Collections.reverse(potionEffects);
         }
@@ -362,7 +359,8 @@ public class ElementPotionHUD extends BackgroundElement {
 
     public enum SortingMode {
         ALPHABETICAL,
-        DURATION
+        DURATION,
+        VANILLA
     }
 
     public static class PotionHUDTracker {

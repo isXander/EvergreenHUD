@@ -31,7 +31,7 @@ import co.uk.isxander.evergreenhud.repo.ReleaseChannel;
 import co.uk.isxander.xanderlib.XanderLib;
 import co.uk.isxander.xanderlib.hypixel.locraw.LocrawManager;
 import co.uk.isxander.xanderlib.ui.editor.AbstractGuiModifier;
-import co.uk.isxander.xanderlib.utils.Constants;
+import static co.uk.isxander.xanderlib.utils.Constants.*;
 import co.uk.isxander.evergreenhud.command.EvergreenHudCommand;
 import co.uk.isxander.evergreenhud.config.ElementConfig;
 import co.uk.isxander.evergreenhud.gui.screens.impl.GuiMain;
@@ -59,7 +59,7 @@ import java.net.URI;
 import java.util.List;
 
 @Mod(modid = EvergreenHUD.MOD_ID, name = EvergreenHUD.MOD_NAME, version = EvergreenHUD.MOD_REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", guiFactory = "co.uk.isxander.evergreenhud.forge.EvergreenGuiFactory")
-public class EvergreenHUD implements Constants {
+public class EvergreenHUD {
 
     public static final String MOD_ID = "evergreenhud";
     public static final String MOD_NAME = "EvergreenHUD";
