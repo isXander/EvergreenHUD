@@ -20,6 +20,7 @@ import co.uk.isxander.evergreenhud.settings.impl.BooleanSetting;
 import co.uk.isxander.evergreenhud.settings.impl.EnumSetting;
 import co.uk.isxander.evergreenhud.settings.impl.IntegerSetting;
 import co.uk.isxander.evergreenhud.elements.ElementData;
+import co.uk.isxander.xanderlib.utils.Facing;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -32,6 +33,7 @@ public class ElementCoordinates extends MultiLineTextElement {
     public BooleanSetting showY;
     public BooleanSetting showZ;
     public BooleanSetting showCoord;
+    public BooleanSetting showDirection;
     public IntegerSetting accuracy;
     public BooleanSetting trailingZeros;
 
@@ -39,6 +41,7 @@ public class ElementCoordinates extends MultiLineTextElement {
     public void initialise() {
         addSettings(mode = new EnumSetting<>("Mode", "Display", "How the coordinates should be displayed.", DisplayMode.VERTICAL));
         addSettings(showCoord = new BooleanSetting("Show Name", "Display", "Show X: Y: and Z: before the values.", true));
+        addSettings(showDirection = new BooleanSetting("Show Direction", "Display", "Show if the axis is going to increase or decrease based on your direction.", false));
         addSettings(showX = new BooleanSetting("Show X", "Display", "Show the X coordinate.", true));
         addSettings(showY = new BooleanSetting("Show Y", "Display", "Show the Y coordinate.", true));
         addSettings(showZ = new BooleanSetting("Show Z", "Display", "Show the Z coordinate.", true));
@@ -64,9 +67,20 @@ public class ElementCoordinates extends MultiLineTextElement {
         DecimalFormat df = new DecimalFormat(formatBuilder.toString());
 
         StringBuilder sb = new StringBuilder();
+        Facing facing = Facing.parse(mc.thePlayer.rotationYaw);
         if (showX.get()) {
             sb.append(showCoord.get() ? "X: " : "");
             sb.append(df.format(mc.thePlayer.posX));
+            if (showDirection.get()) {
+                sb.append(" (");
+                if (facing == Facing.EAST || facing == Facing.NORTH_EAST || facing == Facing.SOUTH_EAST)
+                    sb.append("+");
+                else if (facing == Facing.WEST || facing == Facing.NORTH_WEST || facing == Facing.SOUTH_WEST)
+                    sb.append("-");
+                else
+                    sb.append(" ");
+                sb.append(")");
+            }
 
             if (mode.get() == DisplayMode.VERTICAL) {
                 lines.add(sb.toString());
@@ -89,6 +103,16 @@ public class ElementCoordinates extends MultiLineTextElement {
         if (showZ.get()) {
             sb.append(showCoord.get() ? "Z: " : "");
             sb.append(df.format(mc.thePlayer.posZ));
+            if (showDirection.get()) {
+                sb.append(" (");
+                if (facing == Facing.NORTH || facing == Facing.NORTH_EAST || facing == Facing.NORTH_WEST)
+                    sb.append("-");
+                else if (facing == Facing.SOUTH || facing == Facing.SOUTH_WEST || facing == Facing.SOUTH_EAST)
+                    sb.append("+");
+                else
+                    sb.append(" ");
+                sb.append(")");
+            }
 
             if (mode.get() == DisplayMode.VERTICAL) {
                 lines.add(sb.toString());
