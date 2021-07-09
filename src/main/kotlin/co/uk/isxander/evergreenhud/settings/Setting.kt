@@ -50,8 +50,10 @@ abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val an
 
     abstract fun get(): T
     abstract fun set(new: T)
+    abstract fun setJsonValue(new: Any)
     abstract fun getJsonValue(): Any
     abstract fun getDefault(): T
+    abstract fun getDefaultJsonValue(): Any
 
     fun reset() {
         set(getDefault())
@@ -78,12 +80,14 @@ class BooleanSettingWrapped(annotation: BooleanSetting, annotatedObject: Any, an
         try { annotatedField.setBoolean(annotatedObject, new) }
         catch (e: IllegalArgumentException) { (annotatedField.get(annotatedObject) as BooleanSettingWrapped).set(new) }
     }
+    override fun setJsonValue(new: Any) = set(new as Boolean)
 
     override fun getJsonValue(): Boolean {
         return get()
     }
 
     override fun getDefault(): Boolean = default
+    override fun getDefaultJsonValue(): Boolean = default
 }
 class IntSettingWrapped(annotation: IntSetting, annotationObject: Any, annotatedField: Field) : Setting<Int, IntSetting>(annotation, annotationObject, annotatedField, JsonValues.INT) {
     private val default: Int = get()
@@ -102,8 +106,10 @@ class IntSettingWrapped(annotation: IntSetting, annotationObject: Any, annotated
         try { annotatedField.setInt(annotatedObject, new) }
         catch (e: IllegalArgumentException) { (annotatedField.get(annotatedObject) as IntSettingWrapped).set(new) }
     }
+    override fun setJsonValue(new: Any) = set(new as Int)
 
     override fun getDefault(): Int = default
+    override fun getDefaultJsonValue(): Int = default
 
     override fun getJsonValue(): Int {
         return get()
@@ -126,8 +132,10 @@ class FloatSettingWrapped(annotation: FloatSetting, annotationObject: Any, annot
         try { annotatedField.setFloat(annotatedObject, new) }
         catch (e: IllegalArgumentException) { (annotatedField.get(annotatedObject) as FloatSettingWrapped).set(new) }
     }
+    override fun setJsonValue(new: Any) = set(new as Float)
 
     override fun getDefault(): Float = default
+    override fun getDefaultJsonValue(): Float = default
 
     override fun getJsonValue(): Float {
         return get()
@@ -153,11 +161,13 @@ class StringListSettingWrapped(annotation: StringListSetting, annotationObject: 
     override fun set(new: Int) {
         index = new
     }
+    override fun setJsonValue(new: Any) = set(new as Int)
     fun setString(new: String) {
         index = options.indexOf(new)
     }
 
     override fun getDefault(): Int = defaultIndex
+    override fun getDefaultJsonValue(): Int = defaultIndex
 
     override fun getJsonValue(): Int {
         return get()
@@ -181,12 +191,14 @@ class StringSettingWrapped(annotation: StringSetting, annotationObject: Any, ann
         if (String::class.java.isAssignableFrom(annotatedField.type)) annotatedField.set(annotatedObject, new)
         (annotatedField.get(annotatedObject) as StringSettingWrapped).set(new)
     }
+    override fun setJsonValue(new: Any) = set(new as String)
 
     override fun getJsonValue(): String {
         return get()
     }
 
     override fun getDefault(): String = get()
+    override fun getDefaultJsonValue(): String = get()
 
 }
 

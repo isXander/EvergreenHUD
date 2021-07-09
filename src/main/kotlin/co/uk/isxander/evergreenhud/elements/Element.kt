@@ -23,11 +23,11 @@ import lombok.Getter
 import net.minecraft.client.gui.Gui
 
 
-class Element : Gui(), ConfigProcessor {
+abstract class Element : Gui(), ConfigProcessor {
 
-    @Getter private val settings: MutableList<Setting<*, *>> = ArrayList()
-    @Getter private var metadata: ElementMeta = this::class.java.getAnnotation(ElementMeta::class.java)
-    @Getter private val position: Position = Position.getPositionWithScaledPositioning(0.5f, 0.5f, 1f)
+    val settings: MutableList<Setting<*, *>> = ArrayList()
+    val metadata: ElementMeta = this::class.java.getAnnotation(ElementMeta::class.java)
+    val position: Position = Position.getPositionWithScaledPositioning(0.5f, 0.5f, 1f)
 
     @FloatSetting(name = "Scale", category = "Display", description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
     var scale = 100f
@@ -120,4 +120,4 @@ class Element : Gui(), ConfigProcessor {
 
 }
 
-annotation class ElementMeta(val name: String, val category: String, val description: String, val maxInstances: Int)
+annotation class ElementMeta(val name: String, val category: String, val description: String, val maxInstances: Int = Int.MAX_VALUE)

@@ -15,21 +15,24 @@
 
 package co.uk.isxander.evergreenhud.elements
 
-import co.uk.isxander.evergreenhud.EvergreenHUD
 import co.uk.isxander.evergreenhud.config.ElementConfig
 import co.uk.isxander.evergreenhud.config.MainConfig
+import co.uk.isxander.evergreenhud.elements.impl.*
 import co.uk.isxander.evergreenhud.settings.*
 import co.uk.isxander.xanderlib.utils.Constants.*
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject
 import lombok.Getter
 import lombok.Setter
+import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class ElementManager : ConfigProcessor {
 
     /**
      * all registered elements
      */
-    private val availableElements: Map<String, Class<in Element>> = HashMap()
+    private val availableElements: MutableMap<String, Class<out Element>> = HashMap()
     /**
      * @return the elements that are currently being rendered
      */
@@ -42,44 +45,56 @@ class ElementManager : ConfigProcessor {
     /* Settings */
     @Getter private val settings: MutableList<Setting<*, *>> = ArrayList()
 
+    init {
+        registerDefaultElements()
+    }
+
+    private fun registerDefaultElements() {
+        registerElement("TEST_ELEMENT", TestElement::class.java)
+    }
+
+    fun registerElement(id: String, element: Class<out Element>) {
+        availableElements[id] = element
+    }
+
+    fun getAvailableElements(): Map<String, Class<out Element>> {
+        return Collections.unmodifiableMap(availableElements)
+    }
+
     override fun generateJson(): BetterJsonObject {
         val json = BetterJsonObject()
 
-        for (s in settings) {
-            if (!s.shouldSave()) continue
-            if (s is BooleanSettingWrapped) {
-                // no need to save the default value
-                if (s.getDefault() == s.get()) continue
-                json.addProperty(s.getJsonKey(), s.get())
-            } else if (s is IntSettingWrapped) {
-                // no need to save the default value
-                if (s.getDefault() == s.get()) continue
-                json.addProperty(s.getJsonKey(), s.get())
-            } else if (s is FloatSettingWrapped) {
-                // no need to save the default value
-                if (s.getDefault() == s.get()) continue
-                json.addProperty(s.getJsonKey(), s.get())
-            } else if (s is StringListSettingWrapped) {
-                // no need to save the default value
-                if (s.get() == s.getDefault()) continue
-                json.addProperty(s.getJsonKey(), s.get())
-            } else if (s is StringSettingWrapped) {
-                // no need to save the default value
-                if (s.get().equals(s.getDefault(), false)) continue
-                json.addProperty(s.getJsonKey(), s.get())
-            } // else if (s is EnumSetting) {
-//                val setting: EnumSetting<*> = s as EnumSetting<*>
-//                // no need to save the default value
-//                if (setting.getIndex() === setting.getDefaultIndex()) continue
-//                custom.addProperty(setting.getJsonKey(), setting.getIndex())
-//            }
+        for (setting in settings) {
+            if (!setting.shouldSave()) continue
+
+            if (setting.getDefaultJsonValue() == setting.getJsonValue()) continue
+
+            when (setting.jsonValue) {
+                JsonValues.STRING -> json.addProperty(setting.getJsonKey(), setting.getJsonValue() as String)
+                JsonValues.BOOLEAN -> json.addProperty(setting.getJsonKey(), setting.getJsonValue() as Boolean)
+                JsonValues.FLOAT -> json.addProperty(setting.getJsonKey(), setting.getJsonValue() as Float)
+                JsonValues.INT -> json.addProperty(setting.getJsonKey(), setting.getJsonValue() as Int)
+            }
         }
 
         return json
     }
 
     override fun processJson(json: BetterJsonObject) {
+        for (key in json.allKeys) {
+            for (setting in settings) {
+                if (setting.getJsonKey() == key) {
+                    when (setting.jsonValue) {
+                        JsonValues.STRING -> setting.setJsonValue(json.optString(key, setting.getDefaultJsonValue() as String))
+                        JsonValues.BOOLEAN -> setting.setJsonValue(json.optBoolean(key, setting.getDefaultJsonValue() as Boolean))
+                        JsonValues.FLOAT -> setting.setJsonValue(json.optFloat(key, setting.getDefaultJsonValue() as Float))
+                        JsonValues.INT -> setting.setJsonValue(json.optInt(key, setting.getDefaultJsonValue() as Int))
+                    }
 
+                    break
+                }
+            }
+        }
     }
 
 }

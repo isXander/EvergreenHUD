@@ -45,9 +45,16 @@ object EvergreenHUD {
         ModCore.getInstance().initialize(mc.mcDataDir)
         XanderLib.getInstance().initPhase()
 
-        Element()
-
         val progress = ProgressManager.push("EvergreenHUD", 9)
+
+        elementManager = ElementManager()
+        for (entry in elementManager.getAvailableElements()) {
+            val element = entry.value.newInstance()
+            println(element.metadata.name)
+            for (setting in element.settings) {
+                println("  ${setting.getName()}")
+            }
+        }
 
         progress.step("Blacklist Check")
         try {
