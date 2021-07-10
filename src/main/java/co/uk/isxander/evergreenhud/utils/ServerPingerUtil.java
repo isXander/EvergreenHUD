@@ -79,7 +79,7 @@ public class ServerPingerUtil implements Constants {
             }
 
             if (serverUpdateStatus.getOrDefault(server.serverIP, false)) serverPlayerCount = null;
-            else if (!server.populationInfo.equals("")) {
+            else if (!"".equals(server.populationInfo)) {
                 String[] splitPopulationInfo = GuiUtils.stripFormattingCodes(server.populationInfo).split("/");
 
                 serverPlayerCount = Integer.parseInt(splitPopulationInfo[0]);
