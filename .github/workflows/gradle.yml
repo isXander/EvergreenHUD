@@ -5,9 +5,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, kotlin-rewrite ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, kotlin-rewrite ]
 
 jobs:
   build:
