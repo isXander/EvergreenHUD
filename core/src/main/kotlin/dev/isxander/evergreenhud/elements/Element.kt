@@ -118,4 +118,5 @@ abstract class Element : Gui(), ConfigProcessor {
 
 }
 
+@Target(AnnotationTarget.CLASS)
 annotation class ElementMeta(val name: String, val category: String, val description: String, val maxInstances: Int = Int.MAX_VALUE)
