@@ -1,0 +1,141 @@
+plugins {
+    id 'net.minecraftforge.gradle.forge' version '8708bf3e0'
+    id 'org.spongepowered.mixin' version '0.6-SNAPSHOT'
+
+    id 'org.ajoberstar.grgit' version '4.1.0'
+    id 'com.github.gmazzo.buildconfig' version '3.0.1'
+}
+
+def gitHash = (grgit != null && grgit.head() != null ? grgit.head().abbreviatedId : null)
+version = {
+    def build_num = "0"
+    def run_num = System.getenv('GITHUB_RUN_NUMBER')
+    // CI builds only
+    if (run_num != null)
+        build_num = run_num
+
+    String ver = "${core_version}.${build_num}"
+
+    if (!core_prerelease.trim().isEmpty())
+        ver += "-pre.${core_prerelease}"
+
+    return ver
+}()
+def versionWithGit = {
+    String ver = project.version
+
+    if (gitHash) {
+        ver += "-rev.${gitHash}"
+    }
+
+    return ver
+}()
+
+archivesBaseName = 'evergreenhud'
+
+targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+minecraft {
+    version = '1.8.9-11.15.1.2318-1.8.9'
+    runDir = 'run'
+    mappings = 'stable_22'
+    makeObfSourceJar = false
+
+    clientRunArgs += '--tweakClass org.spongepowered.asm.launch.MixinTweaker'
+    clientRunArgs += '--mixin mixins.evergreenhud.json'
+}
+
+buildConfig {
+    className('EvergreenInfo')
+    packageName('dev.isxander.evergreenhud')
+    useKotlinOutput()
+    useKotlinOutput { topLevelConstants = true }
+
+    buildConfigField('String', 'MOD_NAME', "\"${mod_name}\"")
+    buildConfigField('String', 'MOD_ID', "\"${mod_id}\"")
+    buildConfigField('String', 'MOD_VERSION', "\"${project.version}\"")
+    buildConfigField('String', 'MOD_REVISION', "\"${gitHash == null ? '???????' : gitHash}\"")
+    buildConfigField('dev.isxander.evergreenhud.repo.ReleaseChannel', 'CHANNEL', "ReleaseChannel.${!core_prerelease.trim().isEmpty() ? 'BETA' : 'RELEASE'}")
+}
+
+repositories {
+    maven {
+        name = 'SpongePowered'
+        url = 'https://repo.spongepowered.org/maven/'
+    }
+}
+
+dependencies {
+    provided files('libs/modcore.jar')
+    provided 'uk.co.isXander:XanderLib:1.0.3'
+
+    include ('club.chachy.kotlin-forge-api:forge-event-dsl:0.1.0') {
+        exclude module: 'kotlin-stdlib-jdk8'
+    }
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.20'
+
+    implementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+}
+
+mixin {
+    disableRefMapWarning = true
+    add sourceSets.main, 'mixins.evergreenhud.refmap.json'
+}
+
+String evergreenArchiveName = "EvergreenHUD (${versionWithGit})"
+
+jar {
+    archiveName = "core.jar"
+    enabled = false
+
+    manifest {
+        attributes (
+                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+                'MixinConfigs': 'mixins.evergreenhud.json'
+        )
+    }
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'mcversion', project.minecraft.version
+
+    filesMatching('mcmod.info') {
+        expand (
+                'version': project.version,
+                'mcversion': project.minecraft.version
+        )
+    }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+// Forge does not import resources properly.
+task moveResources {
+    doLast {
+        ant.move file: "${buildDir}/resources/main",
+                todir: "${buildDir}/classes/kotlin"
+    }
+}
+
+tasks.moveResources.dependsOn processResources
+tasks.classes.dependsOn moveResources
+
+shadowJar {
+    archiveBaseName.set('core')
+    archiveVersion.set('')
+    archiveClassifier.set('')
+}
+
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+    }
+}
+
+reobfJar.dependsOn tasks.shadowJar

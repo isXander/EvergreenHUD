@@ -1,148 +1,50 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
 plugins {
     // Languages
     id 'java'
-
-    // APIs
-    id 'net.minecraftforge.gradle.forge' version '8708bf3e0'
-    id 'org.spongepowered.mixin' version '0.6-SNAPSHOT'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.20'
 
     // Build
     id 'com.github.johnrengelman.shadow' version '6.1.0'
-    id 'io.freefair.lombok' version '6.0.0-m2'
-    id 'org.ajoberstar.grgit' version '4.1.0'
 }
 
-def gitHash = (grgit != null ? grgit.head().abbreviatedId : null)
-version = {
-    def build_num = "0"
-    def run_num = System.getenv('GITHUB_RUN_NUMBER')
-    // CI builds only
-    if (run_num != null)
-        build_num = run_num
+allprojects {
+    apply plugin: 'java'
+    apply plugin: 'org.jetbrains.kotlin.jvm'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
-    String ver = "${mod_version}.${build_num}"
+    group 'co.uk.isxander'
 
-    if (!mod_prerelease.trim().isEmpty())
-        ver += "-pre.${mod_prerelease}"
-
-    return ver
-}()
-def versionWithGit = {
-    String ver = project.version
-
-    if (gitHash) {
-        ver += "-rev.${gitHash}"
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'JitPack'
+            url = 'https://jitpack.io/'
+        }
     }
 
-    return ver
-}()
-
-group = 'co.uk.isxander'
-archivesBaseName = 'evergreenhud'
-
-targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
-compileJava.options.encoding = 'UTF-8'
-
-minecraft {
-    version = '1.8.9-11.15.1.2318-1.8.9'
-    runDir = 'run'
-    mappings = 'stable_22'
-    makeObfSourceJar = false
-
-    replace '@BUILD_GIT_COMMIT_HASH@', (grgit != null ? grgit.head().abbreviatedId : '???????')
-    replace '@BUILD_VER_NORMAL@', project.version
-    replace '@BUILD_VER_WITH_GIT@', versionWithGit
-    replace '@BUILD_MOD_VERSION@', mod_version
-    replace '@BUILD_MOD_PRERELEASE@', (mod_prerelease.trim().isEmpty() ? null : mod_prerelease)
-
-    clientRunArgs += '--tweakClass org.spongepowered.asm.launch.MixinTweaker'
-    clientRunArgs += '--mixin mixins.evergreenhud.json'
-}
-
-configurations {
-    include
-    implementation.extendsFrom(include)
-}
-
-repositories {
-    maven {
-        name = 'SpongePowered'
-        url = 'https://repo.spongepowered.org/maven/'
-    }
-    maven {
-        name = 'JitPack'
-        url = 'https://jitpack.io/'
-    }
-}
-
-dependencies {
-    implementation files('libs/modcore.jar')
-    implementation 'uk.co.isXander:XanderLib:1.0.2'
-
-    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
-}
-
-mixin {
-    disableRefMapWarning = true
-    add sourceSets.main, 'mixins.evergreenhud.refmap.json'
-}
-
-String evergreenArchiveName = "EvergreenHUD (${versionWithGit})"
-
-jar {
-    archiveName = "${evergreenArchiveName}.jar"
-    enabled = false
-
-    manifest {
-        attributes (
-                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-                'MixinConfigs': 'mixins.evergreenhud.json',
-                'FMLCorePlugin': 'co.uk.isxander.evergreenhud.forge.FMLLoadingPlugin',
-                'ModSide': 'CLIENT',
-                'FMLCorePluginContainsFMLMod': true,
-                'ForceLoadAsMod': true
-        )
-    }
-}
-
-processResources {
-    inputs.property 'version', project.version
-    inputs.property 'mcversion', project.minecraft.version
-
-    filesMatching('mcmod.info') {
-        expand (
-                'version': project.version,
-                'mcversion': project.minecraft.version
-        )
+    configurations {
+        include
+        implementation.extendsFrom(include)
     }
 
-    rename '(.+_at.cfg)', 'META-INF/$1'
-}
-
-// Forge does not import resources properly.
-task moveResources {
-    doLast {
-        ant.move file: "${buildDir}/resources/main",
-                todir: "${buildDir}/classes/java"
-    }
-}
-
-tasks.moveResources.dependsOn processResources
-tasks.classes.dependsOn moveResources
-
-shadowJar {
-    archiveBaseName.set(evergreenArchiveName)
-    archiveVersion.set('')
-    archiveClassifier.set('')
-
-    configurations = [project.configurations.include]
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE
-}
-
-reobf {
     shadowJar {
-        mappingType = 'SEARGE'
+        configurations = [project.configurations.include]
+        duplicatesStrategy DuplicatesStrategy.EXCLUDE
+    }
+
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+            freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        }
+    }
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "1.8"
+            freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
+        }
     }
 }
 
-reobfJar.dependsOn tasks.shadowJar

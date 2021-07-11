@@ -1,0 +1,75 @@
+plugins {
+    id 'net.minecraftforge.gradle.forge' version '8708bf3e0'
+}
+
+version '1.0'
+archivesBaseName = 'evergreenhud-installer'
+
+minecraft {
+    version = '1.8.9-11.15.1.2318-1.8.9'
+    runDir = 'run'
+    mappings = 'stable_22'
+    makeObfSourceJar = false
+}
+
+dependencies {
+    include ('uk.co.isXander:lib-installer:f226115') {
+        exclude module: 'kotlin-stdlib-jdk8'
+    }
+
+    include 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.20'
+}
+
+def evergreenArchiveName = "EvergreenHUD (${version})"
+
+jar {
+    archiveName "${evergreenArchiveName}.jar"
+
+    manifest {
+        attributes (
+                'FMLCorePlugin': 'dev.isxander.evergreenhud.installer.CorePlugin',
+                'ModSide': 'CLIENT',
+                'FMLCorePluginContainsFMLMod': true,
+                'ForceLoadAsMod': true
+        )
+    }
+}
+
+processResources {
+    inputs.property 'version', project.version
+    inputs.property 'mcversion', project.minecraft.version
+
+    filesMatching('mcmod.info') {
+        expand (
+                'version': project.version,
+                'mcversion': project.minecraft.version
+        )
+    }
+
+    rename '(.+_at.cfg)', 'META-INF/$1'
+}
+
+// Forge does not import resources properly.
+task moveResources {
+    doLast {
+        ant.move file: "${buildDir}/resources/main",
+                todir: "${buildDir}/classes/kotlin"
+    }
+}
+
+tasks.moveResources.dependsOn processResources
+tasks.classes.dependsOn moveResources
+
+shadowJar {
+    archiveBaseName.set(evergreenArchiveName)
+    archiveVersion.set('')
+    archiveClassifier.set('')
+}
+
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+    }
+}
+
+reobfJar.dependsOn tasks.shadowJar
