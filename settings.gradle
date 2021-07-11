@@ -34,6 +34,8 @@ pluginManagement {
 }
 
 rootProject.name = 'EvergreenHUD'
-
 include 'core'
 include 'installer'
+include 'base-modules'
+include 'base-elements'
+

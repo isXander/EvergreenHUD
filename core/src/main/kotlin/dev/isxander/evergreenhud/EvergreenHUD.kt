@@ -32,7 +32,7 @@ import java.lang.NullPointerException
 val LOGGER: Logger = LogManager.getLogger("EvergreenHUD")
 val DATA_DIR: File = File(mc.mcDataDir, "evergreenhud")
 
-@Mod(modid = MOD_ID, name = MOD_NAME, version = MOD_REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", guiFactory = "co.uk.isxander.dev.isxander.evergreenhud.gui.EvergreenGuiFactory", modLanguageAdapter = "co.uk.isxander.dev.isxander.evergreenhud.adapter.KotlinLanguageAdapter")
+@Mod(modid = MOD_ID, name = "EvergreenHUD (Core)", version = MOD_REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", guiFactory = "dev.isxander.evergreenhud.gui.EvergreenGuiFactory", modLanguageAdapter = "dev.isxander.evergreenhud.adapter.KotlinLanguageAdapter")
 object EvergreenHUD {
 
     lateinit var elementManager: ElementManager

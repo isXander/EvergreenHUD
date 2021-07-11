@@ -1,24 +1,29 @@
 package dev.isxander.evergreenhud.installer
 
+import co.uk.isxander.libinstaller.InstallerUtils
+import co.uk.isxander.libinstaller.ModCoreInstaller
+import co.uk.isxander.libinstaller.XanderLibInstaller
 import net.minecraft.launchwrapper.Launch
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin
 
 class CorePlugin : IFMLLoadingPlugin {
 
     override fun getASMTransformerClass(): Array<String> {
+        println(InstallerUtils.fetchJSON("https://api.sk1er.club/modcore_versions"))
+
         val initialize = ModCoreInstaller.initialise(Launch.minecraftHome)
 
         if (ModCoreInstaller.isErrored() || initialize != 0 && initialize != -1) {
             println("Failed to load Sk1er Modcore - " + initialize + " - " + ModCoreInstaller.getError())
         }
-        // If true the classes are loaded
-        return if (ModCoreInstaller.isInitialised()) {
-            // ModCore has been successfully installed. Now initialise XanderLib
-            XanderLibInstaller.initialise(Launch.minecraftHome)
+        println("Installing XanderLib....")
+        XanderLibInstaller.initialise(Launch.minecraftHome)
+        println("Installing EvergreenHUD")
+        EvergreenHUDInstaller.install(Launch.minecraftHome)
 
-            // register ModCore's class transformer
-            arrayOf("club.sk1er.mods.core.forge.ClassTransformer")
-        } else arrayOf()
+        // If true the classes are loaded
+        return if (ModCoreInstaller.isInitialised()) arrayOf("club.sk1er.mods.core.forge.ClassTransformer")
+        else arrayOf()
 
     }
 

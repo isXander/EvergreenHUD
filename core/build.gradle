@@ -6,7 +6,7 @@ plugins {
     id 'com.github.gmazzo.buildconfig' version '3.0.1'
 }
 
-def gitHash = (grgit != null ? grgit.head().abbreviatedId : null)
+def gitHash = (grgit != null && grgit.head() != null ? grgit.head().abbreviatedId : null)
 version = {
     def build_num = "0"
     def run_num = System.getenv('GITHUB_RUN_NUMBER')
@@ -57,7 +57,7 @@ buildConfig {
     buildConfigField('String', 'MOD_NAME', "\"${mod_name}\"")
     buildConfigField('String', 'MOD_ID', "\"${mod_id}\"")
     buildConfigField('String', 'MOD_VERSION', "\"${project.version}\"")
-    buildConfigField('String', 'MOD_REVISION', "\"${(grgit != null ? grgit.head().abbreviatedId : '???????')}\"")
+    buildConfigField('String', 'MOD_REVISION', "\"${gitHash == null ? '???????' : gitHash}\"")
     buildConfigField('dev.isxander.evergreenhud.repo.ReleaseChannel', 'CHANNEL', "ReleaseChannel.${!core_prerelease.trim().isEmpty() ? 'BETA' : 'RELEASE'}")
 }
 
@@ -90,17 +90,13 @@ mixin {
 String evergreenArchiveName = "EvergreenHUD (${versionWithGit})"
 
 jar {
-    archiveName = "${evergreenArchiveName}.jar"
+    archiveName = "core.jar"
     enabled = false
 
     manifest {
         attributes (
                 'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-                'MixinConfigs': 'mixins.evergreenhud.json',
-                'FMLCorePlugin': 'co.uk.isxander.libinstaller.fml.XanderLib',
-                'ModSide': 'CLIENT',
-                'FMLCorePluginContainsFMLMod': true,
-                'ForceLoadAsMod': true
+                'MixinConfigs': 'mixins.evergreenhud.json'
         )
     }
 }
@@ -131,7 +127,7 @@ tasks.moveResources.dependsOn processResources
 tasks.classes.dependsOn moveResources
 
 shadowJar {
-    archiveBaseName.set(evergreenArchiveName)
+    archiveBaseName.set('core')
     archiveVersion.set('')
     archiveClassifier.set('')
 }

@@ -17,15 +17,14 @@ package dev.isxander.evergreenhud.elements
 
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
-import co.uk.isxander.evergreenhud.elements.impl.*
-import co.uk.isxander.evergreenhud.settings.*
+import dev.isxander.evergreenhud.elements.impl.*
+import dev.isxander.evergreenhud.settings.*
 import co.uk.isxander.xanderlib.utils.Constants.*
 import co.uk.isxander.xanderlib.utils.json.BetterJsonObject
 import dev.isxander.evergreenhud.elements.impl.TestElement
 import dev.isxander.evergreenhud.settings.ConfigProcessor
 import dev.isxander.evergreenhud.settings.JsonValues
 import dev.isxander.evergreenhud.settings.Setting
-import lombok.Getter
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -39,14 +38,14 @@ class ElementManager : ConfigProcessor {
     /**
      * @return the elements that are currently being rendered
      */
-    @Getter private val currentElements: List<Element> = ArrayList()
+    val currentElements: List<Element> = ArrayList()
 
     /* Config */
-    @Getter private val mainConfig: MainConfig = MainConfig(this)
-    @Getter private val elementConfig: ElementConfig = ElementConfig(this)
+    val mainConfig: MainConfig = MainConfig(this)
+    val elementConfig: ElementConfig = ElementConfig(this)
 
     /* Settings */
-    @Getter private val settings: MutableList<Setting<*, *>> = ArrayList()
+    val settings: MutableList<Setting<*, *>> = ArrayList()
 
     init {
         registerDefaultElements()
