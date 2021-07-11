@@ -21,7 +21,7 @@ think it could become very popular for fabric players and maybe even modpacks.
 
 #### Links
 [Latest Stable Release](https://github.com/Evergreen-Client/EvergreenHUD/releases/latest)  
-[Hypixel Thread](https://hypixel.net/threads/v2-beta-out-now-dev.isxander.evergreenhud-1-3-1.3787277/)  
+[Hypixel Thread](https://hypixel.net/threads/v2-beta-out-now-evergreenhud-1-3-1.3787277/)  
 
 ## Summary
 
@@ -63,7 +63,7 @@ Add an application run configuration with the following details
 
     Classpath: EvergreenHUD.main
     Main Class: GradleStart
-    Program Arguments: --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.dev.isxander.evergreenhud.json
+    Program Arguments: --tweakClass org.spongepowered.asm.launch.MixinTweaker --mixin mixins.evergreenhud.json
 
 ## Deployment
 
@@ -106,6 +106,6 @@ YourKit is the creator of
 Copyright (C) 2021 isXander
 
 <a href="https://www.isxander.co.uk">
-  <img src="https://static.isxander.co.uk/logos/dev.isxander.evergreenhud/v1/icon-transparent.png" alt="Logo" width="200">
+  <img src="https://static.isxander.co.uk/logos/evergreenhud/v1/icon-transparent.png" alt="Logo" width="200">
 </a>
 </div>

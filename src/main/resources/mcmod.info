@@ -1,0 +1,16 @@
+[
+{
+  "modid": "evergreenhud",
+  "name": "EvergreenHUD",
+  "description": "EvergreenHUD is a forge mod to improve and add upon your heads up display. I, Xander, have been working on this mod for over 3 months and believe it really is the best HUD mod out there for 1.8.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "https://github.com/isXander/EvergreenHUD",
+  "updateUrl": "",
+  "authorList": ["isXander"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
