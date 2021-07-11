@@ -15,19 +15,22 @@
 
 package dev.isxander.evergreenhud.elements
 
+import club.chachy.event.on
+import co.uk.isxander.xanderlib.utils.BreakException
+import co.uk.isxander.xanderlib.utils.Constants.mc
+import co.uk.isxander.xanderlib.utils.json.BetterJsonObject
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
-import dev.isxander.evergreenhud.elements.impl.*
-import dev.isxander.evergreenhud.settings.*
-import co.uk.isxander.xanderlib.utils.Constants.*
-import co.uk.isxander.xanderlib.utils.json.BetterJsonObject
-import dev.isxander.evergreenhud.elements.impl.TestElement
 import dev.isxander.evergreenhud.settings.ConfigProcessor
 import dev.isxander.evergreenhud.settings.JsonValues
 import dev.isxander.evergreenhud.settings.Setting
+import dev.isxander.evergreenhud.settings.impl.*
+import net.minecraft.client.gui.GuiChat
+import net.minecraftforge.client.event.RenderGameOverlayEvent
+import org.reflections.Reflections
 import java.util.*
-import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
+import java.util.concurrent.atomic.AtomicReference
+
 
 class ElementManager : ConfigProcessor {
 
@@ -47,20 +50,114 @@ class ElementManager : ConfigProcessor {
     /* Settings */
     val settings: MutableList<Setting<*, *>> = ArrayList()
 
+    @BooleanSetting(name = "Enabled", category = "General", description = "Display any elements you have created.")
+    var enabled = true
+
     init {
-        registerDefaultElements()
+        collectSettings()
+        findAndRegisterElements()
+
+        on<RenderGameOverlayEvent.Post>()
+            .filter { it.type == RenderGameOverlayEvent.ElementType.ALL }
+            .filter { enabled }
+            .subscribe { renderElements(it.partialTicks) }
     }
 
-    private fun registerDefaultElements() {
-        registerElement("TEST_ELEMENT", TestElement::class.java)
-    }
-
-    fun registerElement(id: String, element: Class<out Element>) {
-        availableElements[id] = element
+    private fun findAndRegisterElements() {
+        val reflections = Reflections("")
+        for (clazz in reflections.getTypesAnnotatedWith(ElementMeta::class.java)) {
+            val annotation = clazz.getAnnotation(ElementMeta::class.java)
+            availableElements[annotation.id] = clazz as Class<out Element>
+        }
     }
 
     fun getAvailableElements(): Map<String, Class<out Element>> {
         return Collections.unmodifiableMap(availableElements)
+    }
+
+    /**
+     * Create a new instance of an element
+     * without the need to catch exceptions
+     *
+     * @param id the internal id of the element
+     * @return element instance
+     */
+    fun getNewElementInstance(id: String?): Element? {
+        val elementClass = availableElements[id] ?: return null
+        return elementClass.newInstance()
+    }
+
+    /**
+     * @param element get the identifier of an instance of an element
+     */
+    fun getElementId(element: Element): String? {
+        val name = AtomicReference<String>()
+        try {
+            for (e in availableElements) {
+                if (e.value == e.javaClass) {
+                    name.set(e.key)
+                    break
+                }
+            }
+        } catch (ignored: BreakException) {
+        }
+        return name.get()
+    }
+
+    fun renderElements(partialTicks: Float) {
+        mc.mcProfiler.startSection("Element Render")
+
+        val inChat = mc.currentScreen is GuiChat
+        val inDebug = mc.gameSettings.showDebugInfo
+        val inGui = mc.currentScreen != null && mc.currentScreen !is GuiScreenElements && mc.currentScreen !is GuiChat
+
+        for (e in currentElements) {
+            if (mc.inGameHasFocus && !inDebug || e.showInChat && inChat || e.showInDebug && inDebug && !(!e.showInChat && inChat) || e.showUnderGui && inGui) {
+                e.render(partialTicks, RenderOrigin.HUD)
+            }
+        }
+        mc.mcProfiler.endSection()
+    }
+
+    private fun collectSettings() {
+        val classes = ArrayList<Class<*>>()
+        var clazz: Class<*>? = this::class.java
+        while (clazz != null) {
+            classes.add(clazz)
+            clazz = clazz.superclass
+        }
+        for (declaredClass in classes) {
+            for (field in declaredClass.declaredFields) {
+                val boolean = field.getAnnotation(BooleanSetting::class.java)
+                if (boolean != null)
+                    settings.add(BooleanSettingWrapped(boolean, this, field))
+
+                val int = field.getAnnotation(IntSetting::class.java)
+                if (int != null)
+                    settings.add(IntSettingWrapped(int, this, field))
+
+                val float = field.getAnnotation(FloatSetting::class.java)
+                if (float != null)
+                    settings.add(FloatSettingWrapped(float, this, field))
+
+                val string = field.getAnnotation(StringSetting::class.java)
+                if (string != null)
+                    settings.add(StringSettingWrapped(string, this, field))
+
+                val stringList = field.getAnnotation(StringListSetting::class.java)
+                if (string != null)
+                    settings.add(StringListSettingWrapped(stringList, this, field))
+
+                val enum = field.getAnnotation(EnumSetting::class.java)
+                if (enum != null)
+                    settings.add(EnumSettingWrapped(enum, this, field))
+
+                val color = field.getAnnotation(ColorSetting::class.java)
+                if (color != null)
+                    settings.add(ColorSettingWrapped(color, this, field))
+            }
+        }
+
     }
 
     override fun generateJson(): BetterJsonObject {

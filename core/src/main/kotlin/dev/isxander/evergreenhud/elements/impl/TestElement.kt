@@ -17,9 +17,9 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.ElementMeta
-import dev.isxander.evergreenhud.settings.BooleanSetting
+import dev.isxander.evergreenhud.settings.impl.*
 
-@ElementMeta(name = "Test Element", category = "Test Category", description = "A test element description very descriptive.")
+@ElementMeta(id = "TEST_ELEMENT", name = "Test Element", category = "Test Category", description = "A test element description very descriptive.")
 class TestElement : Element() {
 
     @BooleanSetting(name = "Test Bool setting", category = "pog category", description = "descriptionnnnn")

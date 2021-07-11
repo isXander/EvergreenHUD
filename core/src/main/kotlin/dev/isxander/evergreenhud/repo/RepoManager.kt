@@ -28,7 +28,7 @@ object RepoManager {
         val json = BetterJsonObject(out)
 
         if (json.optBoolean("all", false)) return true
-        return JsonUtils.jsonArrayContains(json.get("versions").getAsJsonArray(), version)
+        return JsonUtils.jsonArrayContains(json.get("versions").asJsonArray, version)
     }
 
 }

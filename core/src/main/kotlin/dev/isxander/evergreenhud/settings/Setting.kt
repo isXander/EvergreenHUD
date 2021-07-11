@@ -15,27 +15,7 @@
 
 package dev.isxander.evergreenhud.settings
 
-import java.lang.IllegalArgumentException
 import java.lang.reflect.Field
-
-@Target(AnnotationTarget.FIELD)
-@MustBeDocumented
-annotation class BooleanSetting(val name: String, val category: String, val description: String, val save: Boolean = true)
-@Target(AnnotationTarget.FIELD)
-@MustBeDocumented
-annotation class IntSetting(val name: String, val category: String, val description: String, val min: Int, val max: Int, val suffix: String = "", val save: Boolean = true)
-@Target(AnnotationTarget.FIELD)
-@MustBeDocumented
-annotation class FloatSetting(val name: String, val category: String, val description: String, val min: Float, val max: Float, val suffix: String = "", val save: Boolean = true)
-@Target(AnnotationTarget.FIELD)
-@MustBeDocumented
-annotation class StringListSetting(val name: String, val category: String, val description: String, val defaultIndex: Int, val save: Boolean = true)
-@Target(AnnotationTarget.FIELD)
-@MustBeDocumented
-annotation class EnumSetting(val name: String, val category: String, val description: String, val save: Boolean = true)
-@Target(AnnotationTarget.FIELD)
-@MustBeDocumented
-annotation class StringSetting(val name: String, val category: String, val description: String, val save: Boolean = true)
 
 abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val annotatedField: Field, val jsonValue: JsonValues) {
 
@@ -48,8 +28,22 @@ abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val an
     abstract fun getDescription(): String
     abstract fun shouldSave(): Boolean
 
-    abstract fun get(): T
-    abstract fun set(new: T)
+    fun get(): T {
+        if (annotatedField.type.equals(SettingAdapter::class.java))
+            return (annotatedField.get(annotatedObject) as SettingAdapter<T>).get()
+
+        return getInternal()
+    }
+    protected abstract fun getInternal(): T
+
+    fun set(new: T) {
+        if (annotatedField.type.equals(SettingAdapter::class.java))
+            (annotatedField.get(annotatedObject) as SettingAdapter<T>).set(new)
+        else
+            setInternal(new)
+    }
+    protected abstract fun setInternal(new: T)
+
     abstract fun setJsonValue(new: Any)
     abstract fun getJsonValue(): Any
     abstract fun getDefault(): T
@@ -59,147 +53,29 @@ abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val an
         set(getDefault())
     }
     fun getJsonKey(): String {
-        return getName().replace(" ", "")
+        return getName().toLowerCase().replace(" ", "")
     }
 }
 
-class BooleanSettingWrapped(annotation: BooleanSetting, annotatedObject: Any, annotatedField: Field) : Setting<Boolean, BooleanSetting>(annotation, annotatedObject, annotatedField, JsonValues.BOOLEAN) {
-    private val default: Boolean = get()
+open class SettingAdapter<T>(var value: T) {
 
-    override fun getName(): String = annotation.name
-    override fun getCategory(): String = annotation.category
-    override fun getDescription(): String = annotation.description
-    override fun shouldSave(): Boolean = annotation.save
-
-    override fun get(): Boolean {
-        return try { annotatedField.getBoolean(annotatedObject) }
-        catch (e: IllegalArgumentException) { (annotatedField.get(annotatedObject) as BooleanSettingWrapped).get() }
+    /**
+     * Adjust the value that is given when getter is invoked
+     */
+    open fun get(): T {
+        return value
     }
 
-    override fun set(new: Boolean) {
-        try { annotatedField.setBoolean(annotatedObject, new) }
-        catch (e: IllegalArgumentException) { (annotatedField.get(annotatedObject) as BooleanSettingWrapped).set(new) }
+    /**
+     * Adjust the value the setting is set to when invoked
+     */
+    open fun set(newVal: T) {
+        value = newVal
     }
-    override fun setJsonValue(new: Any) = set(new as Boolean)
-
-    override fun getJsonValue(): Boolean {
-        return get()
-    }
-
-    override fun getDefault(): Boolean = default
-    override fun getDefaultJsonValue(): Boolean = default
-}
-class IntSettingWrapped(annotation: IntSetting, annotationObject: Any, annotatedField: Field) : Setting<Int, IntSetting>(annotation, annotationObject, annotatedField, JsonValues.INT) {
-    private val default: Int = get()
-
-    override fun getName(): String = annotation.name
-    override fun getCategory(): String = annotation.category
-    override fun getDescription(): String = annotation.description
-    override fun shouldSave(): Boolean = annotation.save
-
-    override fun get(): Int {
-        return try { annotatedField.getInt(annotatedObject) }
-        catch (e: IllegalArgumentException) { (annotatedField.get(annotatedObject) as IntSettingWrapped).get() }
-    }
-
-    override fun set(new: Int) {
-        try { annotatedField.setInt(annotatedObject, new) }
-        catch (e: IllegalArgumentException) { (annotatedField.get(annotatedObject) as IntSettingWrapped).set(new) }
-    }
-    override fun setJsonValue(new: Any) = set(new as Int)
-
-    override fun getDefault(): Int = default
-    override fun getDefaultJsonValue(): Int = default
-
-    override fun getJsonValue(): Int {
-        return get()
-    }
-}
-class FloatSettingWrapped(annotation: FloatSetting, annotationObject: Any, annotatedField: Field) : Setting<Float, FloatSetting>(annotation, annotationObject, annotatedField, JsonValues.FLOAT) {
-    private val default: Float = get()
-
-    override fun getName(): String = annotation.name
-    override fun getCategory(): String = annotation.category
-    override fun getDescription(): String = annotation.description
-    override fun shouldSave(): Boolean = annotation.save
-
-    override fun get(): Float {
-        return try { annotatedField.getFloat(annotatedObject) }
-        catch (e: IllegalArgumentException) { (annotatedField.get(annotatedObject) as FloatSettingWrapped).get() }
-    }
-
-    override fun set(new: Float) {
-        try { annotatedField.setFloat(annotatedObject, new) }
-        catch (e: IllegalArgumentException) { (annotatedField.get(annotatedObject) as FloatSettingWrapped).set(new) }
-    }
-    override fun setJsonValue(new: Any) = set(new as Float)
-
-    override fun getDefault(): Float = default
-    override fun getDefaultJsonValue(): Float = default
-
-    override fun getJsonValue(): Float {
-        return get()
-    }
-}
-class StringListSettingWrapped(annotation: StringListSetting, annotationObject: Any, annotatedField: Field) : Setting<Int, StringListSetting>(annotation, annotationObject, annotatedField, JsonValues.INT) {
-    private val options: List<String> = annotatedField.get(annotationObject) as List<String>
-    private var index: Int = annotation.defaultIndex
-    private val defaultIndex: Int = index
-
-    override fun getName(): String = annotation.name
-    override fun getCategory(): String = annotation.category
-    override fun getDescription(): String = annotation.description
-    override fun shouldSave(): Boolean = annotation.save
-
-    override fun get(): Int {
-        return index
-    }
-    fun getString(): String {
-        return options[index]
-    }
-
-    override fun set(new: Int) {
-        index = new
-    }
-    override fun setJsonValue(new: Any) = set(new as Int)
-    fun setString(new: String) {
-        index = options.indexOf(new)
-    }
-
-    override fun getDefault(): Int = defaultIndex
-    override fun getDefaultJsonValue(): Int = defaultIndex
-
-    override fun getJsonValue(): Int {
-        return get()
-    }
-}
-class StringSettingWrapped(annotation: StringSetting, annotationObject: Any, annotatedField: Field) : Setting<String, StringSetting>(annotation, annotationObject, annotatedField, JsonValues.STRING) {
-    private val defaultString: String = get()
-
-    override fun getName(): String = annotation.name
-    override fun getCategory(): String = annotation.category
-    override fun getDescription(): String = annotation.description
-    override fun shouldSave(): Boolean = annotation.save
-
-    override fun get(): String {
-        val obj = annotatedField.get(annotatedObject)
-        if (obj is String) return obj
-        return (obj as StringSettingWrapped).get()
-    }
-
-    override fun set(new: String) {
-        if (String::class.java.isAssignableFrom(annotatedField.type)) annotatedField.set(annotatedObject, new)
-        (annotatedField.get(annotatedObject) as StringSettingWrapped).set(new)
-    }
-    override fun setJsonValue(new: Any) = set(new as String)
-
-    override fun getJsonValue(): String {
-        return get()
-    }
-
-    override fun getDefault(): String = get()
-    override fun getDefaultJsonValue(): String = get()
 
 }
+
+
+
 
 

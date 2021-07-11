@@ -19,6 +19,7 @@ import club.sk1er.mods.core.ModCore
 import dev.isxander.evergreenhud.elements.ElementManager
 import co.uk.isxander.xanderlib.XanderLib
 import co.uk.isxander.xanderlib.utils.Constants.*
+import dev.isxander.evergreenhud.elements.impl.TestElement
 import net.minecraft.client.settings.KeyBinding
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.ProgressManager
@@ -35,8 +36,7 @@ val DATA_DIR: File = File(mc.mcDataDir, "evergreenhud")
 @Mod(modid = MOD_ID, name = "EvergreenHUD (Core)", version = MOD_REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", guiFactory = "dev.isxander.evergreenhud.gui.EvergreenGuiFactory", modLanguageAdapter = "dev.isxander.evergreenhud.adapter.KotlinLanguageAdapter")
 object EvergreenHUD {
 
-    lateinit var elementManager: ElementManager
-        private set
+    lateinit var elementManager: ElementManager private set
 
     private val guiKeybind: KeyBinding = KeyBinding("Open EvergreenHUD GUI", Keyboard.KEY_HOME, "EvergreenHUD")
 

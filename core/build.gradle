@@ -70,7 +70,9 @@ repositories {
 
 dependencies {
     provided files('libs/modcore.jar')
+
     provided 'uk.co.isXander:XanderLib:1.0.3'
+    implementation 'org.reflections:reflections:0.9.12'
 
     include ('club.chachy.kotlin-forge-api:forge-event-dsl:0.1.0') {
         exclude module: 'kotlin-stdlib-jdk8'
@@ -119,7 +121,7 @@ processResources {
 task moveResources {
     doLast {
         ant.move file: "${buildDir}/resources/main",
-                todir: "${buildDir}/classes/kotlin"
+                todir: "${buildDir}/classes/java"
     }
 }
 
