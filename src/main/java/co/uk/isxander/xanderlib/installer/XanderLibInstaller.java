@@ -58,7 +58,7 @@ public class XanderLibInstaller {
         if (metaExists)
             metadata = ModCoreInstaller.readFile(data);
         if (!metaExists || !metadata.has("installed_versions") || !jsonArrayContains(metadata.optJSONArray("installed_versions"), DESIRED_VERSION)) {
-            download("https://static.isxander.co.uk/mods/xanderlib/" + DESIRED_VERSION + ".jar", DESIRED_VERSION, jar, metadata);
+            download("https://static.isxander.dev/mods/xanderlib/" + DESIRED_VERSION + ".jar", DESIRED_VERSION, jar, metadata);
         }
 
         ModCoreInstaller.addToClasspath(jar);
