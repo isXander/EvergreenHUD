@@ -15,28 +15,26 @@
 
 package dev.isxander.evergreenhud.elements
 
-import co.uk.isxander.xanderlib.utils.Position
-import co.uk.isxander.xanderlib.utils.json.BetterJsonObject
 import dev.isxander.evergreenhud.settings.ConfigProcessor
 import dev.isxander.evergreenhud.settings.JsonValues
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.SettingAdapter
 import dev.isxander.evergreenhud.settings.impl.*
-import net.minecraft.client.gui.Gui
+import dev.isxander.evergreenhud.utils.JsonObjectExt
+import dev.isxander.evergreenhud.utils.Position
 
-abstract class Element : Gui(), ConfigProcessor {
+abstract class Element : ConfigProcessor {
 
     val settings: MutableList<Setting<*, *>> = ArrayList()
     val metadata: ElementMeta = this::class.java.getAnnotation(ElementMeta::class.java)
-    val position: Position = Position.getPositionWithScaledPositioning(0.5f, 0.5f, 1f)
+    val position: Position = Position.scaledPositioning(0.5f, 0.5f, 1f)
 
     @FloatSetting(name = "Scale", category = "Display", description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
-    var scale = object : SettingAdapter<Float>(100f) {
-        override fun set(newVal: Float) {
-            super.set(newVal)
-            position.scale = newVal / 100f
+    var scale = SettingAdapter(100f)
+        .set {
+            position.scale = it / 100f
+            return@set it
         }
-    }
 
     @BooleanSetting(name = "Show In Chat", category = "Visibility", description = "Whether or not element should be displayed in the chat menu. (Takes priority over show under gui)")
     var showInChat: Boolean = false
@@ -51,13 +49,13 @@ abstract class Element : Gui(), ConfigProcessor {
 
     abstract fun render(partialTicks: Float, renderOrigin: Int)
 
-    override fun generateJson(): BetterJsonObject {
-        val json = BetterJsonObject()
+    override fun generateJson(): JsonObjectExt {
+        val json = JsonObjectExt()
 
-        json.addProperty("x", position.xScaled)
-        json.addProperty("y", position.yScaled)
+        json.addProperty("x", position.scaledX)
+        json.addProperty("y", position.scaledY)
         json.addProperty("scale", position.scale)
-        val dynamic = BetterJsonObject()
+        val dynamic = JsonObjectExt()
         for (setting in settings) {
             if (!setting.shouldSave()) continue
 
@@ -76,17 +74,17 @@ abstract class Element : Gui(), ConfigProcessor {
         return json
     }
 
-    override fun processJson(json: BetterJsonObject) {
-        position.setScaledX(json.optFloat("x"))
-        position.setScaledY(json.optFloat("y"))
+    override fun processJson(json: JsonObjectExt) {
+        position.scaledX = json.optFloat("x")
+        position.scaledY = json.optFloat("y")
         position.scale = json.optFloat("scale")
 
-        val dynamic = json.getObj("dynamic")
-        for (key in dynamic.allKeys) {
+        val dynamic = json.optObject("dynamic")!!
+        for (key in dynamic.keys) {
             for (setting in settings) {
                 if (setting.getJsonKey() == key) {
                     when (setting.jsonValue) {
-                        JsonValues.STRING -> setting.setJsonValue(dynamic.optString(key, setting.getDefaultJsonValue() as String))
+                        JsonValues.STRING -> setting.setJsonValue(dynamic.optString(key, setting.getDefaultJsonValue() as String)!!)
                         JsonValues.BOOLEAN -> setting.setJsonValue(dynamic.optBoolean(key, setting.getDefaultJsonValue() as Boolean))
                         JsonValues.FLOAT -> setting.setJsonValue(dynamic.optFloat(key, setting.getDefaultJsonValue() as Float))
                         JsonValues.INT -> setting.setJsonValue(dynamic.optInt(key, setting.getDefaultJsonValue() as Int))

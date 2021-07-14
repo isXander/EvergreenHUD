@@ -3,24 +3,64 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     // Languages
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version '1.5.20'
+    id 'org.jetbrains.kotlin.jvm' version '1.5.21'
 
     // Build
     id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'org.ajoberstar.grgit' version '4.1.0'
+    id 'com.github.gmazzo.buildconfig' version '3.0.1'
+}
+
+ext {
+    gitHash = (grgit != null && grgit.head() != null ? grgit.head().abbreviatedId : null)
+    versionWithRev = {
+        String ver = project.version
+
+        if (ext.gitHash) {
+            ver += "-rev.${ext.gitHash}"
+        }
+
+        return ver
+    }()
 }
 
 allprojects {
     apply plugin: 'java'
     apply plugin: 'org.jetbrains.kotlin.jvm'
     apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'org.ajoberstar.grgit'
+    apply plugin: 'com.github.gmazzo.buildconfig'
 
-    group 'co.uk.isxander'
+    version = {
+        def ver = core_version
+
+        // CI Builds Only
+        def run_num = System.getenv('GITHUB_RUN_NUMBER')
+        if (run_num != null)
+            ver += "-build.${run_num}"
+
+        if (!core_prerelease.trim().isEmpty())
+            ver += "-pre.${core_prerelease}"
+
+        return ver
+    }()
+
+    group = 'co.uk.isxander'
+
+    targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
+    tasks.withType(JavaCompile) {
+        options.encoding = 'UTF-8'
+    }
 
     repositories {
         mavenCentral()
         maven {
             name = 'JitPack'
             url = 'https://jitpack.io/'
+        }
+        maven {
+            name = 'Sk1er Public'
+            url = 'https://repo.sk1er.club/repository/maven-public'
         }
     }
 
@@ -30,6 +70,8 @@ allprojects {
     }
 
     shadowJar {
+        archiveFileName.set(jar.archiveFileName.get())
+
         configurations = [project.configurations.include]
         duplicatesStrategy DuplicatesStrategy.EXCLUDE
     }

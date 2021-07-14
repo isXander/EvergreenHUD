@@ -16,6 +16,7 @@
 package dev.isxander.evergreenhud.settings
 
 import java.lang.reflect.Field
+import java.util.*
 
 abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val annotatedField: Field, val jsonValue: JsonValues) {
 
@@ -30,7 +31,7 @@ abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val an
 
     fun get(): T {
         if (annotatedField.type.equals(SettingAdapter::class.java))
-            return (annotatedField.get(annotatedObject) as SettingAdapter<T>).get()
+            return (annotatedField.get(annotatedObject) as SettingAdapter<T>).getVal()
 
         return getInternal()
     }
@@ -38,7 +39,7 @@ abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val an
 
     fun set(new: T) {
         if (annotatedField.type.equals(SettingAdapter::class.java))
-            (annotatedField.get(annotatedObject) as SettingAdapter<T>).set(new)
+            (annotatedField.get(annotatedObject) as SettingAdapter<T>).setVal(new)
         else
             setInternal(new)
     }
@@ -53,24 +54,32 @@ abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val an
         set(getDefault())
     }
     fun getJsonKey(): String {
-        return getName().toLowerCase().replace(" ", "")
+        return getName().lowercase().replace(" ", "")
     }
 }
 
-open class SettingAdapter<T>(var value: T) {
+class SettingAdapter<T>(private var value: T) {
+
+    private var getter: (T) -> T = { it }
+    private var setter: (T) -> T = { it }
 
     /**
      * Adjust the value that is given when getter is invoked
      */
-    open fun get(): T {
-        return value
+    fun get(block: (T) -> T) {
+        getter = block
     }
 
     /**
      * Adjust the value the setting is set to when invoked
      */
-    open fun set(newVal: T) {
-        value = newVal
+    fun set(block: (T) -> T) {
+        setter = block
+    }
+
+    fun getVal(): T = getter.invoke(value)
+    fun setVal(new: T) {
+        value = setter.invoke(new)
     }
 
 }

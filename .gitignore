@@ -22,6 +22,8 @@ build
 # other
 eclipse
 run/**
+forge-1.8.9/run/**
+fabric-1.17.1/run/**
 !**/*.gitkeep
 
 # i cloned the repo here cuz why

@@ -15,21 +15,18 @@
 
 package dev.isxander.evergreenhud.elements
 
-import club.chachy.event.on
-import co.uk.isxander.xanderlib.utils.BreakException
-import co.uk.isxander.xanderlib.utils.Constants.mc
-import co.uk.isxander.xanderlib.utils.json.BetterJsonObject
+import club.chachy.event.keventbus.on
+import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
+import dev.isxander.evergreenhud.event.RenderHUDEvent
 import dev.isxander.evergreenhud.settings.ConfigProcessor
 import dev.isxander.evergreenhud.settings.JsonValues
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.impl.*
-import net.minecraft.client.gui.GuiChat
-import net.minecraftforge.client.event.RenderGameOverlayEvent
+import dev.isxander.evergreenhud.utils.JsonObjectExt
 import org.reflections.Reflections
 import java.util.*
-import java.util.concurrent.atomic.AtomicReference
 
 
 class ElementManager : ConfigProcessor {
@@ -57,10 +54,9 @@ class ElementManager : ConfigProcessor {
         collectSettings()
         findAndRegisterElements()
 
-        on<RenderGameOverlayEvent.Post>()
-            .filter { it.type == RenderGameOverlayEvent.ElementType.ALL }
+        on<RenderHUDEvent>(EvergreenHUD.EVENT_BUS)
             .filter { enabled }
-            .subscribe { renderElements(it.partialTicks) }
+            .subscribe { renderElements(it.dt) }
     }
 
     private fun findAndRegisterElements() {
@@ -91,32 +87,27 @@ class ElementManager : ConfigProcessor {
      * @param element get the identifier of an instance of an element
      */
     fun getElementId(element: Element): String? {
-        val name = AtomicReference<String>()
-        try {
-            for (e in availableElements) {
-                if (e.value == e.javaClass) {
-                    name.set(e.key)
-                    break
-                }
+        for ((id, clazz) in availableElements) {
+            if (clazz == element.javaClass) {
+                return id
             }
-        } catch (ignored: BreakException) {
         }
-        return name.get()
+        return null
     }
 
     fun renderElements(partialTicks: Float) {
-        mc.mcProfiler.startSection("Element Render")
-
-        val inChat = mc.currentScreen is GuiChat
-        val inDebug = mc.gameSettings.showDebugInfo
-        val inGui = mc.currentScreen != null && mc.currentScreen !is GuiScreenElements && mc.currentScreen !is GuiChat
-
-        for (e in currentElements) {
-            if (mc.inGameHasFocus && !inDebug || e.showInChat && inChat || e.showInDebug && inDebug && !(!e.showInChat && inChat) || e.showUnderGui && inGui) {
-                e.render(partialTicks, RenderOrigin.HUD)
-            }
-        }
-        mc.mcProfiler.endSection()
+//        mc.mcProfiler.startSection("Element Render")
+//
+//        val inChat = mc.currentScreen is GuiChat
+//        val inDebug = mc.gameSettings.showDebugInfo
+//        val inGui = mc.currentScreen != null && mc.currentScreen !is GuiScreenElements && mc.currentScreen !is GuiChat
+//
+//        for (e in currentElements) {
+//            if (mc.inGameHasFocus && !inDebug || e.showInChat && inChat || e.showInDebug && inDebug && !(!e.showInChat && inChat) || e.showUnderGui && inGui) {
+//                e.render(partialTicks, RenderOrigin.HUD)
+//            }
+//        }
+//        mc.mcProfiler.endSection()
     }
 
     private fun collectSettings() {
@@ -160,8 +151,8 @@ class ElementManager : ConfigProcessor {
 
     }
 
-    override fun generateJson(): BetterJsonObject {
-        val json = BetterJsonObject()
+    override fun generateJson(): JsonObjectExt {
+        val json = JsonObjectExt()
 
         for (setting in settings) {
             if (!setting.shouldSave()) continue
@@ -179,12 +170,12 @@ class ElementManager : ConfigProcessor {
         return json
     }
 
-    override fun processJson(json: BetterJsonObject) {
-        for (key in json.allKeys) {
+    override fun processJson(json: JsonObjectExt) {
+        for (key in json.keys) {
             for (setting in settings) {
                 if (setting.getJsonKey() == key) {
                     when (setting.jsonValue) {
-                        JsonValues.STRING -> setting.setJsonValue(json.optString(key, setting.getDefaultJsonValue() as String))
+                        JsonValues.STRING -> setting.setJsonValue(json.optString(key, setting.getDefaultJsonValue() as String)!!)
                         JsonValues.BOOLEAN -> setting.setJsonValue(json.optBoolean(key, setting.getDefaultJsonValue() as Boolean))
                         JsonValues.FLOAT -> setting.setJsonValue(json.optFloat(key, setting.getDefaultJsonValue() as Float))
                         JsonValues.INT -> setting.setJsonValue(json.optInt(key, setting.getDefaultJsonValue() as Int))

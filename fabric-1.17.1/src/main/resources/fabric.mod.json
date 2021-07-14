@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": [
+    "isXander"
+  ],
+  "contact": {
+    "homepage": "https://www.isxander.dev/",
+    "issues": "https://github.com/isXander/EvergreenHUD/issues",
+    "sources": "https://github.com/isXander/EvergreenHUD"
+  },
+  "license": "GNU General Public License version 3 (GPLv3)",
+  "icon": "assets/evergreenhud/textures/evergreenhud.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.isxander.evergreenhud.compatibility.fabric11701.FabricMod"
+      }
+    ]
+  },
+  "mixins": [
+    "evergreenhud.fabric11701.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.11.6",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.6.2+kotlin.1.5.20",
+    "minecraft": "1.17.x",
+    "java": ">=8"
+  }
+}

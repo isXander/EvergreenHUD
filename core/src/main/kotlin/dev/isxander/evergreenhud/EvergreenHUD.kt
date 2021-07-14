@@ -15,53 +15,32 @@
 
 package dev.isxander.evergreenhud
 
-import club.sk1er.mods.core.ModCore
+import dev.isxander.evergreenhud.compatibility.universal.KEYBIND_MANAGER
 import dev.isxander.evergreenhud.elements.ElementManager
-import co.uk.isxander.xanderlib.XanderLib
-import co.uk.isxander.xanderlib.utils.Constants.*
-import dev.isxander.evergreenhud.elements.impl.TestElement
-import net.minecraft.client.settings.KeyBinding
-import net.minecraftforge.fml.common.Mod
-import net.minecraftforge.fml.common.ProgressManager
-import net.minecraftforge.fml.common.event.FMLInitializationEvent
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
-import org.lwjgl.input.Keyboard
+import dev.isxander.evergreenhud.compatibility.universal.MC
+import dev.isxander.evergreenhud.compatibility.universal.SCREEN_HANDLER
+import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.CustomKeybind
+import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.Keyboard
+import dev.isxander.evergreenhud.gui.MainGui
+import me.kbrewster.eventbus.EventBus
+import me.kbrewster.eventbus.eventbus
+import me.kbrewster.eventbus.invokers.LMFInvoker
 import java.io.File
-import java.lang.NullPointerException
 
-val LOGGER: Logger = LogManager.getLogger("EvergreenHUD")
-val DATA_DIR: File = File(mc.mcDataDir, "evergreenhud")
-
-@Mod(modid = MOD_ID, name = "EvergreenHUD (Core)", version = MOD_REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", guiFactory = "dev.isxander.evergreenhud.gui.EvergreenGuiFactory", modLanguageAdapter = "dev.isxander.evergreenhud.adapter.KotlinLanguageAdapter")
 object EvergreenHUD {
+
+    val DATA_DIR: File = File(MC.dataDir(), "evergreenhud")
+    val EVENT_BUS: EventBus = eventbus {
+        invoker { LMFInvoker() }
+        exceptionHandler { exception -> println("Error occurred in method: ${exception.message}")  }
+    }
 
     lateinit var elementManager: ElementManager private set
 
-    private val guiKeybind: KeyBinding = KeyBinding("Open EvergreenHUD GUI", Keyboard.KEY_HOME, "EvergreenHUD")
-
-    @Mod.EventHandler
-    fun onFMLInit(event: FMLInitializationEvent) {
-        ModCore.getInstance().initialize(mc.mcDataDir)
-        XanderLib.getInstance().initPhase()
-
-        val progress = ProgressManager.push("EvergreenHUD", 9)
-
+    fun init() {
         elementManager = ElementManager()
-        for (entry in elementManager.getAvailableElements()) {
-            val element = entry.value.newInstance()
-            println(element.metadata.name)
-            for (setting in element.settings) {
-                println("  ${setting.getName()}")
-            }
-        }
 
-        progress.step("Blacklist Check")
-        try {
-
-        } catch (e: NullPointerException) {
-
-        }
+        KEYBIND_MANAGER.registerKeybind(CustomKeybind(Keyboard.KEY_HOME, "Open EvergreenHUD GUI", "EvergreenHUD") { SCREEN_HANDLER.displayComponentNextTick(MainGui()) })
     }
 
 }

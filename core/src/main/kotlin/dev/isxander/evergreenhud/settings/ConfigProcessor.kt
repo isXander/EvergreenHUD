@@ -15,11 +15,11 @@
 
 package dev.isxander.evergreenhud.settings
 
-import co.uk.isxander.xanderlib.utils.json.BetterJsonObject
+import dev.isxander.evergreenhud.utils.JsonObjectExt
 
 interface ConfigProcessor {
 
-    fun generateJson(): BetterJsonObject
-    fun processJson(json: BetterJsonObject)
+    fun generateJson(): JsonObjectExt
+    fun processJson(json: JsonObjectExt)
 
 }

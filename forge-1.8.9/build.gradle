@@ -1,0 +1,106 @@
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = "https://jitpack.io" }
+        maven { url = "https://repo.spongepowered.org/maven/" }
+    }
+    dependencies {
+        classpath 'com.github.asbyth:ForgeGradle:8708bf3e0'
+        classpath 'com.github.xcfrg:MixinGradle:0.6-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
+
+minecraft {
+    version = '1.8.9-11.15.1.2318-1.8.9'
+    runDir = 'run'
+    mappings = 'stable_22'
+    makeObfSourceJar = false
+
+    clientRunArgs += '--tweakClass org.spongepowered.asm.launch.MixinTweaker'
+    clientRunArgs += '--mixin mixins.evergreenhud.json'
+}
+
+repositories {
+    maven {
+        name = 'SpongePowered'
+        url = 'https://repo.spongepowered.org/maven/'
+    }
+}
+
+dependencies {
+    include (project(":core")) {
+        transitive = true
+
+        exclude module: 'Elementa'
+        exclude module: 'UniversalCraft'
+    }
+    include 'gg.essential:Elementa:next-337-10809-SNAPSHOT'
+    include 'gg.essential:UniversalCraft:next-137-10809-SNAPSHOT'
+
+    include 'com.github.KevinPriv:KEventBus:86cf2e023e'
+    include 'dev.isXander.chachy-mc-api:keventbus-dsl:481f6203d2'
+    include 'dev.isXander.chachy-mc-api:forge-event-dsl:481f6203d2'
+
+    include 'org.reflections:reflections:0.9.12'
+    include 'com.squareup.okhttp3:okhttp:4.9.1'
+
+    include 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+
+    implementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+}
+
+mixin {
+    disableRefMapWarning = true
+    add sourceSets.main, 'mixins.evergreenhud.refmap.json'
+}
+
+jar {
+    archiveFileName.set("EvergreenHUD (1.8.9-${project.versionWithRev})")
+    enabled = false
+
+    manifest {
+        attributes (
+                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+                'MixinConfigs': 'mixins.evergreenhud.json'
+        )
+    }
+}
+
+processResources {
+    inputs.property 'mod_id', mod_id
+    inputs.property 'mod_version', project.version
+    inputs.property 'mod_name', mod_name
+    inputs.property 'mod_description', mod_description
+
+//    filesMatching('mcmod.info') {
+//        expand (
+//                'mod_id': mod_id,
+//                'mod_version': project.version,
+//                'mod_name': mod_name,
+//                'mod_description', mod_description
+//        )
+//    }
+}
+
+// Forge does not import resources properly.
+task moveResources {
+    doLast {
+        ant.move file: "${buildDir}/resources/main",
+                todir: "${buildDir}/classes/java"
+    }
+}
+
+tasks.moveResources.dependsOn processResources
+tasks.classes.dependsOn moveResources
+
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+    }
+}
+
+reobfJar.dependsOn tasks.shadowJar

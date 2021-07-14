@@ -15,9 +15,9 @@
 
 package dev.isxander.evergreenhud.repo
 
-import co.uk.isxander.xanderlib.utils.HttpsUtils
-import co.uk.isxander.xanderlib.utils.json.BetterJsonObject
-import co.uk.isxander.xanderlib.utils.json.JsonUtils
+import com.google.gson.JsonPrimitive
+import dev.isxander.evergreenhud.utils.HttpsUtils
+import dev.isxander.evergreenhud.utils.JsonObjectExt
 
 object RepoManager {
 
@@ -25,10 +25,10 @@ object RepoManager {
 
     fun isVersionBlacklisted(version: String): Boolean {
         val out = HttpsUtils.getString(blacklistedJson) ?: return false
-        val json = BetterJsonObject(out)
+        val json = JsonObjectExt(out)
 
         if (json.optBoolean("all", false)) return true
-        return JsonUtils.jsonArrayContains(json.get("versions").asJsonArray, version)
+        return json.optArray("versions")!!.contains(JsonPrimitive(version))
     }
 
 }

@@ -1,0 +1,14 @@
+{
+  "required": true,
+  "package": "dev.isxander.evergreenhud.compatibility.fabric11701.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "mixins": [
+    "AccessorMinecraftClient",
+    "MixinInGameHud"
+  ]
+}

@@ -17,10 +17,11 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.ElementMeta
+import dev.isxander.evergreenhud.elements.abstractimp.BackgroundElement
 import dev.isxander.evergreenhud.settings.impl.*
 
 @ElementMeta(id = "TEST_ELEMENT", name = "Test Element", category = "Test Category", description = "A test element description very descriptive.")
-class TestElement : Element() {
+class TestElement : BackgroundElement() {
 
     @BooleanSetting(name = "Test Bool setting", category = "pog category", description = "descriptionnnnn")
     var setting: Boolean = true
