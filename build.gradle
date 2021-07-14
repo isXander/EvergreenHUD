@@ -78,7 +78,7 @@ repositories {
 dependencies {
     implementation files('libs/modcore.jar')
     implementation 'dev.isXander:XanderLib:1.0.2'
-
+    implementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }
 
