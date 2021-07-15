@@ -15,11 +15,32 @@
 
 package dev.isxander.evergreenhud.settings
 
+import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.utils.JsonObjectExt
 
 interface ConfigProcessor {
 
     fun generateJson(): JsonObjectExt
     fun processJson(json: JsonObjectExt)
+
+    fun addSettingToJson(setting: Setting<*, *>, json: JsonObjectExt) {
+        val category = setting.getCategoryJsonKey()
+
+        var obj = json
+        for (categoryEntry in category) {
+            val newObj = obj.optObject(categoryEntry, JsonObjectExt())!!
+            obj.add(categoryEntry, newObj)
+            obj = newObj
+        }
+
+        when (setting.jsonValue) {
+            JsonValues.STRING -> obj.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as String)
+            JsonValues.BOOLEAN -> obj.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as Boolean)
+            JsonValues.FLOAT -> obj.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as Float)
+            JsonValues.INT -> obj.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as Int)
+        }
+
+        LOGGER.info("\n${json.toPrettyString()}")
+    }
 
 }

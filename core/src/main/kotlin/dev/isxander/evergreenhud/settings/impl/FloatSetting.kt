@@ -7,13 +7,13 @@ import java.lang.reflect.Field
 
 @Target(AnnotationTarget.FIELD)
 @MustBeDocumented
-annotation class FloatSetting(val name: String, val category: String, val description: String, val min: Float, val max: Float, val suffix: String = "", val save: Boolean = true)
+annotation class FloatSetting(val name: String, val category: Array<String>, val description: String, val min: Float, val max: Float, val suffix: String = "", val save: Boolean = true)
 
 class FloatSettingWrapped(annotation: FloatSetting, annotationObject: Any, annotatedField: Field) : Setting<Float, FloatSetting>(annotation, annotationObject, annotatedField, JsonValues.FLOAT) {
     private val default: Float = get()
 
     override fun getName(): String = annotation.name
-    override fun getCategory(): String = annotation.category
+    override fun getCategory(): Array<String> = annotation.category
     override fun getDescription(): String = annotation.description
     override fun shouldSave(): Boolean = annotation.save
 
@@ -30,6 +30,6 @@ class FloatSettingWrapped(annotation: FloatSetting, annotationObject: Any, annot
     override fun getDefaultJsonValue(): Float = default
 
     override fun getJsonValue(): Float {
-        return getInternal()
+        return get()
     }
 }

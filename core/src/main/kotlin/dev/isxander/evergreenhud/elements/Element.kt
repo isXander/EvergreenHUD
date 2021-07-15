@@ -15,6 +15,8 @@
 
 package dev.isxander.evergreenhud.elements
 
+import dev.isxander.evergreenhud.compatibility.universal.LOGGER
+import dev.isxander.evergreenhud.compatibility.universal.MCVersion
 import dev.isxander.evergreenhud.settings.ConfigProcessor
 import dev.isxander.evergreenhud.settings.JsonValues
 import dev.isxander.evergreenhud.settings.Setting
@@ -29,23 +31,19 @@ abstract class Element : ConfigProcessor {
     val metadata: ElementMeta = this::class.java.getAnnotation(ElementMeta::class.java)
     val position: Position = Position.scaledPositioning(0.5f, 0.5f, 1f)
 
-    @FloatSetting(name = "Scale", category = "Display", description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
-    var scale = SettingAdapter(100f)
-        .set {
+    @FloatSetting(name = "Scale", category = ["Display"], description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
+    val scale = SettingAdapter(100f)
+        .modSet {
             position.scale = it / 100f
-            return@set it
+            return@modSet it
         }
 
-    @BooleanSetting(name = "Show In Chat", category = "Visibility", description = "Whether or not element should be displayed in the chat menu. (Takes priority over show under gui)")
+    @BooleanSetting(name = "Show In Chat", category = ["Visibility"], description = "Whether or not element should be displayed in the chat menu. (Takes priority over show under gui)")
     var showInChat: Boolean = false
-    @BooleanSetting(name = "Show In F3", category = "Visibility", description = "Whether or not element should be displayed when you have the debug menu open.")
+    @BooleanSetting(name = "Show In F3", category = ["Visibility"], description = "Whether or not element should be displayed when you have the debug menu open.")
     var showInDebug: Boolean = false
-    @BooleanSetting(name = "Show Under GUIs", category = "Visibility", description = "Whether or not element should be displayed when you have a gui open.")
+    @BooleanSetting(name = "Show Under GUIs", category = ["Visibility"], description = "Whether or not element should be displayed when you have a gui open.")
     var showUnderGui: Boolean = false
-
-    init {
-        collectSettings()
-    }
 
     abstract fun render(partialTicks: Float, renderOrigin: Int)
 
@@ -58,16 +56,7 @@ abstract class Element : ConfigProcessor {
         val dynamic = JsonObjectExt()
         for (setting in settings) {
             if (!setting.shouldSave()) continue
-
-            // TODO: why is this breaking
-            // if (setting.getDefaultJsonValue() == setting.getJsonValue()) continue
-
-            when (setting.jsonValue) {
-                JsonValues.STRING -> dynamic.addProperty(setting.getJsonKey(), setting.getJsonValue() as String)
-                JsonValues.BOOLEAN -> dynamic.addProperty(setting.getJsonKey(), setting.getJsonValue() as Boolean)
-                JsonValues.FLOAT -> dynamic.addProperty(setting.getJsonKey(), setting.getJsonValue() as Float)
-                JsonValues.INT -> dynamic.addProperty(setting.getJsonKey(), setting.getJsonValue() as Int)
-            }
+            addSettingToJson(setting, dynamic)
         }
         json.add("dynamic", dynamic)
 
@@ -80,23 +69,27 @@ abstract class Element : ConfigProcessor {
         position.scale = json.optFloat("scale")
 
         val dynamic = json.optObject("dynamic")!!
-        for (key in dynamic.keys) {
-            for (setting in settings) {
-                if (setting.getJsonKey() == key) {
-                    when (setting.jsonValue) {
-                        JsonValues.STRING -> setting.setJsonValue(dynamic.optString(key, setting.getDefaultJsonValue() as String)!!)
-                        JsonValues.BOOLEAN -> setting.setJsonValue(dynamic.optBoolean(key, setting.getDefaultJsonValue() as Boolean))
-                        JsonValues.FLOAT -> setting.setJsonValue(dynamic.optFloat(key, setting.getDefaultJsonValue() as Float))
-                        JsonValues.INT -> setting.setJsonValue(dynamic.optInt(key, setting.getDefaultJsonValue() as Int))
-                    }
-
-                    break
+        for (categoryName in dynamic.keys) {
+            val category = dynamic.optObject(categoryName)!!
+            for (name in category.keys) {
+                for (setting in settings) {
+//                    if (setting.getNameJsonKey().equals(name, true) && setting.getCategoryJsonKey().equals(categoryName, true)) {
+//                        when (setting.jsonValue) {
+//                            JsonValues.STRING -> setting.setJsonValue(category.optString(name, setting.getDefaultJsonValue() as String)!!)
+//                            JsonValues.BOOLEAN -> setting.setJsonValue(category.optBoolean(name, setting.getDefaultJsonValue() as Boolean))
+//                            JsonValues.FLOAT -> setting.setJsonValue(category.optFloat(name, setting.getDefaultJsonValue() as Float))
+//                            JsonValues.INT -> setting.setJsonValue(category.optInt(name, setting.getDefaultJsonValue() as Int))
+//                        }
+//
+//                        break
+//                    }
                 }
             }
+
         }
     }
 
-    private fun collectSettings() {
+    fun collectSettings() {
         val classes = ArrayList<Class<*>>()
         var clazz: Class<*>? = this::class.java
         while (clazz != null) {
@@ -105,6 +98,8 @@ abstract class Element : ConfigProcessor {
         }
         for (declaredClass in classes) {
             for (field in declaredClass.declaredFields) {
+                LOGGER.info("Checking out ${field.name}")
+
                 val boolean = field.getAnnotation(BooleanSetting::class.java)
                 if (boolean != null)
                     settings.add(BooleanSettingWrapped(boolean, this, field))
@@ -137,7 +132,11 @@ abstract class Element : ConfigProcessor {
 
     }
 
+    init {
+        collectSettings()
+    }
+
 }
 
 @Target(AnnotationTarget.CLASS)
-annotation class ElementMeta(val id: String, val name: String, val category: String, val description: String, val maxInstances: Int = Int.MAX_VALUE)
+annotation class ElementMeta(val id: String, val name: String, val category: String, val description: String, val allowedVersions: Array<MCVersion> = [MCVersion.FORGE_1_8_9, MCVersion.FABRIC_1_17_1], val maxInstances: Int = Int.MAX_VALUE)

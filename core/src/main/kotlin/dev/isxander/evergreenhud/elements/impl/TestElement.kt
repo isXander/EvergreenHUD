@@ -23,7 +23,7 @@ import dev.isxander.evergreenhud.settings.impl.*
 @ElementMeta(id = "TEST_ELEMENT", name = "Test Element", category = "Test Category", description = "A test element description very descriptive.")
 class TestElement : BackgroundElement() {
 
-    @BooleanSetting(name = "Test Bool setting", category = "pog category", description = "descriptionnnnn")
+    @BooleanSetting(name = "Test Bool setting", category = ["pog category"], description = "descriptionnnnn")
     var setting: Boolean = true
 
 }

@@ -14,6 +14,7 @@ import gg.essential.universal.UMinecraft
 import gg.essential.universal.UScreen
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
+import net.minecraft.client.renderer.Tessellator
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.FMLModContainer
 import net.minecraftforge.fml.common.ILanguageAdapter
@@ -28,7 +29,7 @@ import java.io.File
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 
-@Mod(modid = EvergreenInfo.MOD_ID, name = "EvergreenHUD", version = EvergreenInfo.MOD_REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", guiFactory = "dev.isxander.evergreenhud.gui.EvergreenGuiFactory", modLanguageAdapter = "dev.isxander.evergreenhud.compatibility.forge10809.KotlinLanguageAdapter")
+@Mod(modid = EvergreenInfo.MOD_ID, name = "EvergreenHUD", version = EvergreenInfo.MOD_REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", modLanguageAdapter = "dev.isxander.evergreenhud.compatibility.forge10809.KotlinLanguageAdapter")
 object ForgeMod {
 
     val logger: Logger = LogManager.getLogger("EvergreenHUD")
@@ -62,6 +63,8 @@ object ForgeMod {
             override fun getScaleFactor(): Double = scaledRes.scaleFactor.toDouble()
         }
 
+        KEYBIND_MANAGER = KeybindManager()
+
         SCREEN_HANDLER = object : AIScreenHandler() {
             override fun displayComponent(component: UIComponent) {
                 mc.displayGuiScreen(object : WindowScreen() {
@@ -69,8 +72,6 @@ object ForgeMod {
                 })
             }
         }
-
-        KeybindManager()
 
         registerEvents()
 

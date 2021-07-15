@@ -15,16 +15,20 @@
 
 package dev.isxander.evergreenhud
 
-import dev.isxander.evergreenhud.compatibility.universal.KEYBIND_MANAGER
+import club.chachy.event.keventbus.on
+import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.compatibility.universal.MC
-import dev.isxander.evergreenhud.compatibility.universal.SCREEN_HANDLER
 import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.CustomKeybind
 import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.Keyboard
+import dev.isxander.evergreenhud.elements.impl.TestElement
+import dev.isxander.evergreenhud.event.RenderHUDEvent
+import dev.isxander.evergreenhud.event.TickEvent
 import dev.isxander.evergreenhud.gui.MainGui
 import me.kbrewster.eventbus.EventBus
+import me.kbrewster.eventbus.Subscribe
 import me.kbrewster.eventbus.eventbus
 import me.kbrewster.eventbus.invokers.LMFInvoker
+import java.awt.Color
 import java.io.File
 
 object EvergreenHUD {
@@ -32,15 +36,24 @@ object EvergreenHUD {
     val DATA_DIR: File = File(MC.dataDir(), "evergreenhud")
     val EVENT_BUS: EventBus = eventbus {
         invoker { LMFInvoker() }
-        exceptionHandler { exception -> println("Error occurred in method: ${exception.message}")  }
+        threadSaftey { true }
+        exceptionHandler { LOGGER.err("Error occurred in method: ${it.message}")  }
     }
 
-    lateinit var elementManager: ElementManager private set
+    val elementManager: ElementManager = ElementManager()
 
     fun init() {
-        elementManager = ElementManager()
+        EVENT_BUS.register(this)
+        KEYBIND_MANAGER.registerKeybind(CustomKeybind(Keyboard.KEY_HOME, "Open EvergreenHUD GUI", "EvergreenHUD") { SCREEN_HANDLER.displayComponent(MainGui()) })
 
-        KEYBIND_MANAGER.registerKeybind(CustomKeybind(Keyboard.KEY_HOME, "Open EvergreenHUD GUI", "EvergreenHUD") { SCREEN_HANDLER.displayComponentNextTick(MainGui()) })
+        val test = TestElement()
+        test.collectSettings()
+        LOGGER.info("\n\n\n\n\n\n${test.generateJson().toPrettyString()}")
+    }
+
+    @Subscribe
+    fun onRenderHud(event: RenderHUDEvent) {
+        FONT_RENDERER.draw("FPS: ${MC.fps()}", 20f, 20f, Color(255, 50, 50).rgb, true)
     }
 
 }

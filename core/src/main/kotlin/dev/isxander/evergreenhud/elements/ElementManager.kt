@@ -47,7 +47,7 @@ class ElementManager : ConfigProcessor {
     /* Settings */
     val settings: MutableList<Setting<*, *>> = ArrayList()
 
-    @BooleanSetting(name = "Enabled", category = "General", description = "Display any elements you have created.")
+    @BooleanSetting(name = "Enabled", category = ["General"], description = "Display any elements you have created.")
     var enabled = true
 
     init {
@@ -160,10 +160,10 @@ class ElementManager : ConfigProcessor {
             if (setting.getDefaultJsonValue() == setting.getJsonValue()) continue
 
             when (setting.jsonValue) {
-                JsonValues.STRING -> json.addProperty(setting.getJsonKey(), setting.getJsonValue() as String)
-                JsonValues.BOOLEAN -> json.addProperty(setting.getJsonKey(), setting.getJsonValue() as Boolean)
-                JsonValues.FLOAT -> json.addProperty(setting.getJsonKey(), setting.getJsonValue() as Float)
-                JsonValues.INT -> json.addProperty(setting.getJsonKey(), setting.getJsonValue() as Int)
+                JsonValues.STRING -> json.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as String)
+                JsonValues.BOOLEAN -> json.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as Boolean)
+                JsonValues.FLOAT -> json.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as Float)
+                JsonValues.INT -> json.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as Int)
             }
         }
 
@@ -173,7 +173,7 @@ class ElementManager : ConfigProcessor {
     override fun processJson(json: JsonObjectExt) {
         for (key in json.keys) {
             for (setting in settings) {
-                if (setting.getJsonKey() == key) {
+                if (setting.getNameJsonKey() == key) {
                     when (setting.jsonValue) {
                         JsonValues.STRING -> setting.setJsonValue(json.optString(key, setting.getDefaultJsonValue() as String)!!)
                         JsonValues.BOOLEAN -> setting.setJsonValue(json.optBoolean(key, setting.getDefaultJsonValue() as Boolean))

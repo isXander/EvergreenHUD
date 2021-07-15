@@ -6,7 +6,7 @@ import java.lang.reflect.Field
 
 @Target(AnnotationTarget.FIELD)
 @MustBeDocumented
-annotation class StringListSetting(val name: String, val category: String, val description: String, val defaultIndex: Int, val save: Boolean = true)
+annotation class StringListSetting(val name: String, val category: Array<String>, val description: String, val defaultIndex: Int, val save: Boolean = true)
 
 class StringListSettingWrapped(annotation: StringListSetting, annotationObject: Any, annotatedField: Field) : Setting<Int, StringListSetting>(annotation, annotationObject, annotatedField, JsonValues.INT) {
     private val options: List<String> = annotatedField.get(annotationObject) as List<String>
@@ -14,7 +14,7 @@ class StringListSettingWrapped(annotation: StringListSetting, annotationObject: 
     private val defaultIndex: Int = index
 
     override fun getName(): String = annotation.name
-    override fun getCategory(): String = annotation.category
+    override fun getCategory(): Array<String> = annotation.category
     override fun getDescription(): String = annotation.description
     override fun shouldSave(): Boolean = annotation.save
 
@@ -37,6 +37,6 @@ class StringListSettingWrapped(annotation: StringListSetting, annotationObject: 
     override fun getDefaultJsonValue(): Int = defaultIndex
 
     override fun getJsonValue(): Int {
-        return getInternal()
+        return get()
     }
 }

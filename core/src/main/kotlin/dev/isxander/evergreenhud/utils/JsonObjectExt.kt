@@ -2,6 +2,7 @@ package dev.isxander.evergreenhud.utils
 
 import com.google.gson.*
 import java.io.*
+import java.lang.IllegalArgumentException
 import java.util.stream.Collectors
 import kotlin.jvm.Throws
 
@@ -12,13 +13,13 @@ class JsonObjectExt(val data: JsonObject) {
     constructor() : this(JsonObject())
     constructor(jsonIn: String) : this(JsonParser.parseString(jsonIn).asJsonObject)
 
-    fun optString(key: String, value: String? = ""): String? {
+    fun optString(key: String, value: String? = "", split: Boolean = true): String? {
         if (key.isEmpty() || !has(key)) return value
         val prim = asPrimitive(get(key))
         return if (prim != null && prim.isString) prim.asString else value
     }
 
-    fun optInt(key: String, value: Int = 0): Int {
+    fun optInt(key: String, value: Int = 0, split: Boolean = true): Int {
         if (key.isEmpty() || !has(key)) {
             return value
         }
@@ -32,7 +33,7 @@ class JsonObjectExt(val data: JsonObject) {
         return value
     }
 
-    fun optFloat(key: String, value: Float = 0f): Float {
+    fun optFloat(key: String, value: Float = 0f, split: Boolean = true): Float {
         if (key.isEmpty() || !has(key)) return value
         val primitive: JsonPrimitive? = asPrimitive(get(key))
         try {
@@ -42,7 +43,7 @@ class JsonObjectExt(val data: JsonObject) {
         return value
     }
 
-    fun optDouble(key: String, value: Double = 0.0): Double {
+    fun optDouble(key: String, value: Double = 0.0, split: Boolean = true): Double {
         if (key.isEmpty() || !has(key)) {
             return value
         }
@@ -56,7 +57,7 @@ class JsonObjectExt(val data: JsonObject) {
         return value
     }
 
-    fun optBoolean(key: String, value: Boolean = false): Boolean {
+    fun optBoolean(key: String, value: Boolean = false, split: Boolean = true): Boolean {
         if (key.isEmpty() || !has(key)) return value
 
         val primitive: JsonPrimitive? = asPrimitive(get(key))
@@ -65,14 +66,28 @@ class JsonObjectExt(val data: JsonObject) {
         } else value
     }
 
-    fun optObject(key: String, value: JsonObjectExt? = JsonObjectExt()): JsonObjectExt? {
+    fun optObject(key: String, value: JsonObjectExt? = JsonObjectExt(), split: Boolean = true): JsonObjectExt? {
         if (key.isEmpty() || !has(key)) return value
         return JsonObjectExt(data.getAsJsonObject(key))
     }
 
-    fun optArray(key: String, value: JsonArray? = JsonArray()): JsonArray? {
+    fun optArray(key: String, value: JsonArray? = JsonArray(), split: Boolean = true): JsonArray? {
         if (key.isEmpty() || !has(key)) return value
         return data.getAsJsonArray(key)
+    }
+
+    fun splitKey(key: String, lazy: Boolean = true): JsonElement {
+        val split = key.split('.')
+        var obj = this.data
+        for (i in 0 until split.size - 2) {
+            val element = obj.get(split[i])
+            when {
+                element.isJsonObject -> obj = element.asJsonObject
+                lazy -> return element
+                else -> throw IllegalArgumentException("Invalid key.")
+            }
+        }
+        return obj[split[split.size - 1]]
     }
 
     fun has(key: String): Boolean = data.has(key)

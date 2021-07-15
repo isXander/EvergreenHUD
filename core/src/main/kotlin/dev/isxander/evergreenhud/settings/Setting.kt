@@ -15,9 +15,10 @@
 
 package dev.isxander.evergreenhud.settings
 
+import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import java.lang.reflect.Field
-import java.util.*
 
+@Suppress("UNCHECKED_CAST")
 abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val annotatedField: Field, val jsonValue: JsonValues) {
 
     init {
@@ -25,21 +26,21 @@ abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val an
     }
 
     abstract fun getName(): String
-    abstract fun getCategory(): String
+    abstract fun getCategory(): Array<String>
     abstract fun getDescription(): String
     abstract fun shouldSave(): Boolean
 
     fun get(): T {
-        if (annotatedField.type.equals(SettingAdapter::class.java))
-            return (annotatedField.get(annotatedObject) as SettingAdapter<T>).getVal()
+        if (SettingAdapter::class.java.isAssignableFrom(annotatedField.type))
+            return (annotatedField.get(annotatedObject) as SettingAdapter<T>).get()
 
         return getInternal()
     }
     protected abstract fun getInternal(): T
 
     fun set(new: T) {
-        if (annotatedField.type.equals(SettingAdapter::class.java))
-            (annotatedField.get(annotatedObject) as SettingAdapter<T>).setVal(new)
+        if (SettingAdapter::class.java.isAssignableFrom(annotatedField.type))
+            (annotatedField.get(annotatedObject) as SettingAdapter<T>).set(new)
         else
             setInternal(new)
     }
@@ -53,8 +54,13 @@ abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val an
     fun reset() {
         set(getDefault())
     }
-    fun getJsonKey(): String {
-        return getName().lowercase().replace(" ", "")
+    fun getNameJsonKey(): String {
+        return getName().lowercase().trim().replace(" ", "_")
+    }
+    fun getCategoryJsonKey(): List<String> {
+        return getCategory().map {
+            it.lowercase().trim().replace(" ", "_")
+        }
     }
 }
 
@@ -66,19 +72,21 @@ class SettingAdapter<T>(private var value: T) {
     /**
      * Adjust the value that is given when getter is invoked
      */
-    fun get(block: (T) -> T) {
+    fun modGet(block: (T) -> T): SettingAdapter<T> {
         getter = block
+        return this
     }
 
     /**
      * Adjust the value the setting is set to when invoked
      */
-    fun set(block: (T) -> T) {
+    fun modSet(block: (T) -> T): SettingAdapter<T> {
         setter = block
+        return this
     }
 
-    fun getVal(): T = getter.invoke(value)
-    fun setVal(new: T) {
+    fun get(): T = getter.invoke(value)
+    fun set(new: T) {
         value = setter.invoke(new)
     }
 

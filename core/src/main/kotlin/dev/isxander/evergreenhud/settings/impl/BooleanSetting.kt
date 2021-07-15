@@ -7,13 +7,13 @@ import java.lang.reflect.Field
 
 @Target(AnnotationTarget.FIELD)
 @MustBeDocumented
-annotation class BooleanSetting(val name: String, val category: String, val description: String, val save: Boolean = true)
+annotation class BooleanSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true)
 
 class BooleanSettingWrapped(annotation: BooleanSetting, annotatedObject: Any, annotatedField: Field) : Setting<Boolean, BooleanSetting>(annotation, annotatedObject, annotatedField, JsonValues.BOOLEAN) {
-    private val default: Boolean = getInternal()
+    private val default: Boolean = true
 
     override fun getName(): String = annotation.name
-    override fun getCategory(): String = annotation.category
+    override fun getCategory(): Array<String> = annotation.category
     override fun getDescription(): String = annotation.description
     override fun shouldSave(): Boolean = annotation.save
 
@@ -27,7 +27,7 @@ class BooleanSettingWrapped(annotation: BooleanSetting, annotatedObject: Any, an
     override fun setJsonValue(new: Any) = set(new as Boolean)
 
     override fun getJsonValue(): Boolean {
-        return getInternal()
+        return get()
     }
 
     override fun getDefault(): Boolean = default

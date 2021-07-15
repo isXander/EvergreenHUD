@@ -7,14 +7,14 @@ import java.lang.reflect.Field
 
 @Target(AnnotationTarget.FIELD)
 @MustBeDocumented
-annotation class EnumSetting(val name: String, val category: String, val description: String, val save: Boolean = true)
+annotation class EnumSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true)
 
 class EnumSettingWrapped(annotation: EnumSetting, annotationObject: Any, annotatedField: Field) : Setting<Int, EnumSetting>(annotation, annotationObject, annotatedField, JsonValues.INT) {
 
-    private val default = getInternal()
+    private val default = get()
 
     override fun getName(): String = annotation.name
-    override fun getCategory(): String = annotation.category
+    override fun getCategory(): Array<String> = annotation.category
     override fun getDescription(): String = annotation.description
     override fun shouldSave(): Boolean = annotation.save
 
@@ -36,7 +36,7 @@ class EnumSettingWrapped(annotation: EnumSetting, annotationObject: Any, annotat
     }
 
     override fun getJsonValue(): Any {
-        return getInternal()
+        return get()
     }
 
     override fun getDefault(): Int {

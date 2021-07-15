@@ -18,7 +18,7 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
     include 'com.google.code.gson:gson:2.8.7'
 
-    include 'dev.isXander.chachy-mc-api:keventbus-dsl:481f6203d2'
+    include 'dev.isXander.chachy-mc-api:keventbus-dsl:0.2.0'
     include 'com.github.KevinPriv:KEventBus:86cf2e023e'
 
     include 'org.reflections:reflections:0.9.12'

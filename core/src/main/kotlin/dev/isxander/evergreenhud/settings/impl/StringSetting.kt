@@ -6,13 +6,13 @@ import java.lang.reflect.Field
 
 @Target(AnnotationTarget.FIELD)
 @MustBeDocumented
-annotation class StringSetting(val name: String, val category: String, val description: String, val save: Boolean = true)
+annotation class StringSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true)
 
 class StringSettingWrapped(annotation: StringSetting, annotationObject: Any, annotatedField: Field) : Setting<String, StringSetting>(annotation, annotationObject, annotatedField, JsonValues.STRING) {
-    private val defaultString: String = getInternal()
+    private val defaultString: String = get()
 
     override fun getName(): String = annotation.name
-    override fun getCategory(): String = annotation.category
+    override fun getCategory(): Array<String> = annotation.category
     override fun getDescription(): String = annotation.description
     override fun shouldSave(): Boolean = annotation.save
 
@@ -29,7 +29,7 @@ class StringSettingWrapped(annotation: StringSetting, annotationObject: Any, ann
         return getInternal()
     }
 
-    override fun getDefault(): String = getInternal()
-    override fun getDefaultJsonValue(): String = getInternal()
+    override fun getDefault(): String = defaultString
+    override fun getDefaultJsonValue(): String = get()
 
 }

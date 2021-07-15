@@ -18,8 +18,12 @@ dependencies {
         exclude module: 'UniversalCraft'
     }
 
-    include 'gg.essential:Elementa:next-337-11700-fabric-SNAPSHOT'
-    include 'gg.essential:UniversalCraft:next-137-11700-fabric-SNAPSHOT'
+    include ('gg.essential:Elementa:next-337-11700-fabric-SNAPSHOT') {
+        exclude module: 'fabric-loader'
+    }
+    include ('gg.essential:UniversalCraft:next-137-11700-fabric-SNAPSHOT') {
+        exclude module: 'fabric-loader'
+    }
 
     include 'com.github.KevinPriv:KEventBus:86cf2e023e'
 
@@ -51,4 +55,10 @@ runClient {
     javaLauncher.set(javaToolchains.launcherFor {
         languageVersion.set(JavaLanguageVersion.of(16))
     })
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(16))
+    }
 }

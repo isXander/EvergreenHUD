@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "${mod_id}",
+  "id": "evergreenhud",
   "version": "${mod_version}",
-  "name": "${mod_name}",
+  "name": "EvergreenHUD",
   "description": "${mod_description}",
   "authors": [
     "isXander"
@@ -19,7 +19,7 @@
     "client": [
       {
         "adapter": "kotlin",
-        "value": "dev.isxander.evergreenhud.compatibility.fabric11701.FabricMod"
+        "value": "dev.isxander.evergreenhud.compatibility.fabric11701.Main"
       }
     ]
   },

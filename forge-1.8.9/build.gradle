@@ -41,8 +41,8 @@ dependencies {
     include 'gg.essential:UniversalCraft:next-137-10809-SNAPSHOT'
 
     include 'com.github.KevinPriv:KEventBus:86cf2e023e'
-    include 'dev.isXander.chachy-mc-api:keventbus-dsl:481f6203d2'
-    include 'dev.isXander.chachy-mc-api:forge-event-dsl:481f6203d2'
+    include 'dev.isXander.chachy-mc-api:keventbus-dsl:0.2.0'
+    include 'dev.isXander.chachy-mc-api:forge-event-dsl:0.2.0'
 
     include 'org.reflections:reflections:0.9.12'
     include 'com.squareup.okhttp3:okhttp:4.9.1'
