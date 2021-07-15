@@ -15,6 +15,7 @@
 
 package dev.isxander.evergreenhud.elements
 
+import com.google.gson.JsonElement
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.compatibility.universal.MCVersion
 import dev.isxander.evergreenhud.settings.ConfigProcessor
@@ -27,15 +28,17 @@ import dev.isxander.evergreenhud.utils.Position
 
 abstract class Element : ConfigProcessor {
 
+    var initialized = false
+        private set
     val settings: MutableList<Setting<*, *>> = ArrayList()
     val metadata: ElementMeta = this::class.java.getAnnotation(ElementMeta::class.java)
     val position: Position = Position.scaledPositioning(0.5f, 0.5f, 1f)
 
     @FloatSetting(name = "Scale", category = ["Display"], description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
     val scale = SettingAdapter(100f)
-        .modSet {
+        .adaptSetter {
             position.scale = it / 100f
-            return@modSet it
+            return@adaptSetter it
         }
 
     @BooleanSetting(name = "Show In Chat", category = ["Visibility"], description = "Whether or not element should be displayed in the chat menu. (Takes priority over show under gui)")
@@ -45,51 +48,54 @@ abstract class Element : ConfigProcessor {
     @BooleanSetting(name = "Show Under GUIs", category = ["Visibility"], description = "Whether or not element should be displayed when you have a gui open.")
     var showUnderGui: Boolean = false
 
+    fun init(): Element {
+        if (initialized) return this
+
+        collectSettings()
+
+        initialized = true
+        return this
+    }
+
     abstract fun render(partialTicks: Float, renderOrigin: Int)
 
     override fun generateJson(): JsonObjectExt {
         val json = JsonObjectExt()
 
-        json.addProperty("x", position.scaledX)
-        json.addProperty("y", position.scaledY)
-        json.addProperty("scale", position.scale)
+        json["x"] = position.scaledX
+        json["y"] = position.scaledY
+        json["scale"] = position.scale
         val dynamic = JsonObjectExt()
         for (setting in settings) {
             if (!setting.shouldSave()) continue
             addSettingToJson(setting, dynamic)
         }
-        json.add("dynamic", dynamic)
+        json["dynamic"] = dynamic
 
         return json
     }
 
     override fun processJson(json: JsonObjectExt) {
-        position.scaledX = json.optFloat("x")
-        position.scaledY = json.optFloat("y")
-        position.scale = json.optFloat("scale")
+        position.scaledX = json["x", position.scaledX]
+        position.scaledY = json["y", position.scaledY]
+        position.scale = json["scale", position.scale]
 
-        val dynamic = json.optObject("dynamic")!!
-        for (categoryName in dynamic.keys) {
-            val category = dynamic.optObject(categoryName)!!
-            for (name in category.keys) {
-                for (setting in settings) {
-//                    if (setting.getNameJsonKey().equals(name, true) && setting.getCategoryJsonKey().equals(categoryName, true)) {
-//                        when (setting.jsonValue) {
-//                            JsonValues.STRING -> setting.setJsonValue(category.optString(name, setting.getDefaultJsonValue() as String)!!)
-//                            JsonValues.BOOLEAN -> setting.setJsonValue(category.optBoolean(name, setting.getDefaultJsonValue() as Boolean))
-//                            JsonValues.FLOAT -> setting.setJsonValue(category.optFloat(name, setting.getDefaultJsonValue() as Float))
-//                            JsonValues.INT -> setting.setJsonValue(category.optInt(name, setting.getDefaultJsonValue() as Int))
-//                        }
-//
-//                        break
-//                    }
-                }
+        val dynamic = json["dynamic", JsonObjectExt()]!!
+        for (setting in settings) {
+            var categoryJson = dynamic
+            for (categoryName in setting.getCategory())
+                categoryJson = categoryJson[categoryName, JsonObjectExt()]!!
+
+            when (setting.jsonValue) {
+                JsonValues.BOOLEAN -> setting.setJsonValue(categoryJson[setting.getNameJsonKey(), setting.getDefault() as Boolean])
+                JsonValues.FLOAT -> setting.setJsonValue(categoryJson[setting.getNameJsonKey(), setting.getDefault() as Float])
+                JsonValues.INT -> setting.setJsonValue(categoryJson[setting.getNameJsonKey(), setting.getDefault() as Int])
+                JsonValues.STRING -> setting.setJsonValue(categoryJson[setting.getNameJsonKey(), setting.getDefault() as String]!!)
             }
-
         }
     }
 
-    fun collectSettings() {
+    private fun collectSettings() {
         val classes = ArrayList<Class<*>>()
         var clazz: Class<*>? = this::class.java
         while (clazz != null) {
@@ -132,11 +138,7 @@ abstract class Element : ConfigProcessor {
 
     }
 
-    init {
-        collectSettings()
-    }
-
 }
 
 @Target(AnnotationTarget.CLASS)
-annotation class ElementMeta(val id: String, val name: String, val category: String, val description: String, val allowedVersions: Array<MCVersion> = [MCVersion.FORGE_1_8_9, MCVersion.FABRIC_1_17_1], val maxInstances: Int = Int.MAX_VALUE)
+annotation class ElementMeta(val id: String, val name: String, val category: Array<String>, val description: String, val allowedVersions: Array<MCVersion> = [MCVersion.FORGE_1_8_9, MCVersion.FABRIC_1_17_1], val maxInstances: Int = Int.MAX_VALUE)

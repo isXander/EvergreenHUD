@@ -18,4 +18,7 @@ package dev.isxander.evergreenhud.config
 import dev.isxander.evergreenhud.elements.ElementManager
 
 class ElementConfig(element: ElementManager) {
+
+
+
 }

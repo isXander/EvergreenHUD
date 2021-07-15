@@ -13,13 +13,13 @@ class JsonObjectExt(val data: JsonObject) {
     constructor() : this(JsonObject())
     constructor(jsonIn: String) : this(JsonParser.parseString(jsonIn).asJsonObject)
 
-    fun optString(key: String, value: String? = "", split: Boolean = true): String? {
+    operator fun get(key: String, value: String? = ""): String? {
         if (key.isEmpty() || !has(key)) return value
         val prim = asPrimitive(get(key))
         return if (prim != null && prim.isString) prim.asString else value
     }
 
-    fun optInt(key: String, value: Int = 0, split: Boolean = true): Int {
+    operator fun get(key: String, value: Int = 0): Int {
         if (key.isEmpty() || !has(key)) {
             return value
         }
@@ -33,7 +33,7 @@ class JsonObjectExt(val data: JsonObject) {
         return value
     }
 
-    fun optFloat(key: String, value: Float = 0f, split: Boolean = true): Float {
+    operator fun get(key: String, value: Float = 0f): Float {
         if (key.isEmpty() || !has(key)) return value
         val primitive: JsonPrimitive? = asPrimitive(get(key))
         try {
@@ -43,7 +43,7 @@ class JsonObjectExt(val data: JsonObject) {
         return value
     }
 
-    fun optDouble(key: String, value: Double = 0.0, split: Boolean = true): Double {
+    operator fun get(key: String, value: Double = 0.0): Double {
         if (key.isEmpty() || !has(key)) {
             return value
         }
@@ -57,7 +57,7 @@ class JsonObjectExt(val data: JsonObject) {
         return value
     }
 
-    fun optBoolean(key: String, value: Boolean = false, split: Boolean = true): Boolean {
+    operator fun get(key: String, value: Boolean = false): Boolean {
         if (key.isEmpty() || !has(key)) return value
 
         val primitive: JsonPrimitive? = asPrimitive(get(key))
@@ -66,12 +66,12 @@ class JsonObjectExt(val data: JsonObject) {
         } else value
     }
 
-    fun optObject(key: String, value: JsonObjectExt? = JsonObjectExt(), split: Boolean = true): JsonObjectExt? {
+    operator fun get(key: String, value: JsonObjectExt? = JsonObjectExt()): JsonObjectExt? {
         if (key.isEmpty() || !has(key)) return value
         return JsonObjectExt(data.getAsJsonObject(key))
     }
 
-    fun optArray(key: String, value: JsonArray? = JsonArray(), split: Boolean = true): JsonArray? {
+    operator fun get(key: String, value: JsonArray? = JsonArray()): JsonArray? {
         if (key.isEmpty() || !has(key)) return value
         return data.getAsJsonArray(key)
     }
@@ -92,26 +92,26 @@ class JsonObjectExt(val data: JsonObject) {
 
     fun has(key: String): Boolean = data.has(key)
 
-    fun get(key: String): JsonElement {
+    operator fun get(key: String): JsonElement {
         return data.get(key)
     }
 
-    fun addProperty(key: String, value: String?): JsonObjectExt {
+    operator fun set(key: String, value: String?): JsonObjectExt {
         data.addProperty(key, value)
         return this
     }
 
-    fun addProperty(key: String, value: Number?): JsonObjectExt {
+    operator fun set(key: String, value: Number?): JsonObjectExt {
         data.addProperty(key, value)
         return this
     }
 
-    fun addProperty(key: String, value: Boolean?): JsonObjectExt {
+    operator fun set(key: String, value: Boolean?): JsonObjectExt {
         data.addProperty(key, value)
         return this
     }
 
-    fun add(key: String, obj: JsonObjectExt): JsonObjectExt {
+    operator fun set(key: String, obj: JsonObjectExt): JsonObjectExt {
         data.add(key, obj.data)
         return this
     }

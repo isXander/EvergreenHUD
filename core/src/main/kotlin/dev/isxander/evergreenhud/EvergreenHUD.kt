@@ -46,9 +46,7 @@ object EvergreenHUD {
         EVENT_BUS.register(this)
         KEYBIND_MANAGER.registerKeybind(CustomKeybind(Keyboard.KEY_HOME, "Open EvergreenHUD GUI", "EvergreenHUD") { SCREEN_HANDLER.displayComponent(MainGui()) })
 
-        val test = TestElement()
-        test.collectSettings()
-        LOGGER.info("\n\n\n\n\n\n${test.generateJson().toPrettyString()}")
+        LOGGER.info("\n\n\n\n\n\n${TestElement().init().generateJson().toPrettyString()}")
     }
 
     @Subscribe

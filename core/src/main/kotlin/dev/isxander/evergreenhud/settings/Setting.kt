@@ -72,7 +72,7 @@ class SettingAdapter<T>(private var value: T) {
     /**
      * Adjust the value that is given when getter is invoked
      */
-    fun modGet(block: (T) -> T): SettingAdapter<T> {
+    fun adaptGetter(block: (T) -> T): SettingAdapter<T> {
         getter = block
         return this
     }
@@ -80,7 +80,7 @@ class SettingAdapter<T>(private var value: T) {
     /**
      * Adjust the value the setting is set to when invoked
      */
-    fun modSet(block: (T) -> T): SettingAdapter<T> {
+    fun adaptSetter(block: (T) -> T): SettingAdapter<T> {
         setter = block
         return this
     }
