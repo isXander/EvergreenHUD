@@ -105,7 +105,7 @@ YourKit is the creator of
 ---
 Copyright (C) 2021 isXander
 
-<a href="https://www.isxander.co.uk">
-  <img src="https://static.isxander.co.uk/logos/evergreenhud/v1/icon-transparent.png" alt="Logo" width="200">
+<a href="https://www.isxander.dev">
+  <img src="https://static.isxander.dev/logos/evergreenhud/v1/icon-transparent.png" alt="Logo" width="200">
 </a>
 </div>
