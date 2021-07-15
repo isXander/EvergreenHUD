@@ -3,7 +3,7 @@
 
 # EvergreenHUD
 
-[![](https://jitpack.io/v/uk.co.isXander/EvergreenHUD.svg)](https://jitpack.io/#uk.co.isXander/EvergreenHUD)
+[![](https://jitpack.io/v/dev.isXander/EvergreenHUD.svg)](https://jitpack.io/#dev.isXander/EvergreenHUD)
 [![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-ff3333.svg)](https://opensource.org/licenses/)
 [![Github All Releases](https://img.shields.io/github/downloads/isXander/EvergreenHUD/total.svg?style=flat)](https://github.com/isXander/EvergreenHUD)
 [![Donate](https://img.shields.io/badge/donate-patreon-ff6666.svg?style=flat)](https://paypal.me/isxander)
@@ -20,7 +20,7 @@ think it could become very popular for fabric players and maybe even modpacks.
 *Contact me on discord @ isXander#0162*
 
 #### Links
-[Latest Stable Release](https://github.com/Evergreen-Client/EvergreenHUD/releases/latest)  
+[Latest Stable Release](https://github.com/isXander/EvergreenHUD/releases/latest)  
 [Hypixel Thread](https://hypixel.net/threads/v2-beta-out-now-dev.isxander.evergreenhud-1-3-1.3787277/)  
 
 ## Summary
@@ -105,7 +105,7 @@ YourKit is the creator of
 ---
 Copyright (C) 2021 isXander
 
-<a href="https://www.isxander.co.uk">
-  <img src="https://static.isxander.co.uk/logos/dev.isxander.evergreenhud/v1/icon-transparent.png" alt="Logo" width="200">
+<a href="https://www.isxander.dev">
+  <img src="https://static.isxander.dev/logos/dev.isxander.evergreenhud/v1/icon-transparent.png" alt="Logo" width="200">
 </a>
 </div>
