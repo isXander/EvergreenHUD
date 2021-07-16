@@ -197,9 +197,9 @@ object StringUtils {
      *
      * @param original original text
      */
-    fun firstUpper(original: String): String? {
-        return if (original.length == 1) original.toUpperCase() else original.substring(0, 1)
-            .toUpperCase() + original.substring(1).toLowerCase()
+    fun firstUpper(original: String): String {
+        return if (original.length == 1) original.uppercase() else original.substring(0, 1)
+            .uppercase() + original.substring(1).lowercase()
     }
 
     /**

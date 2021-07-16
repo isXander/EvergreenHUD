@@ -8,6 +8,7 @@ import java.lang.reflect.Field
 @MustBeDocumented
 annotation class StringListSetting(val name: String, val category: Array<String>, val description: String, val defaultIndex: Int, val save: Boolean = true)
 
+@Suppress("UNCHECKED_CAST")
 class StringListSettingWrapped(annotation: StringListSetting, annotationObject: Any, annotatedField: Field) : Setting<Int, StringListSetting>(annotation, annotationObject, annotatedField, JsonValues.INT) {
     private val options: List<String> = annotatedField.get(annotationObject) as List<String>
     private var index: Int = annotation.defaultIndex

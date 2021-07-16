@@ -66,11 +66,11 @@ jar {
 }
 
 processResources {
-    inputs.property 'mod_id', mod_id
-    inputs.property 'mod_version', project.version
-    inputs.property 'mod_name', mod_name
-    inputs.property 'mod_description', mod_description
-
+//    inputs.property 'mod_id', mod_id
+//    inputs.property 'mod_version', project.version
+//    inputs.property 'mod_name', mod_name
+//    inputs.property 'mod_description', mod_description
+//
 //    filesMatching('mcmod.info') {
 //        expand (
 //                'mod_id': mod_id,

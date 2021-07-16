@@ -65,6 +65,7 @@ class ElementManager : ConfigProcessor {
             .subscribe { renderElements(it.dt) }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun findAndRegisterElements() {
         val reflections = Reflections("")
         for (clazz in reflections.getTypesAnnotatedWith(ElementMeta::class.java)) {

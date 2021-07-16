@@ -70,6 +70,8 @@ allprojects {
         archiveBaseName.set("EvergreenHUD (${project.name}-${project.versionWithRev})")
         archiveVersion.set("")
         enabled = false
+
+        exclude 'META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'module-info.class'
     }
 
     shadowJar {
