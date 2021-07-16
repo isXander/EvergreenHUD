@@ -1,5 +1,5 @@
 {
-  "package": "co.uk.isxander.evergreenhud.mixins",
+  "package": "dev.isxander.evergreenhud.mixins",
   "refmap": "mixins.evergreenhud.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "mixins": [

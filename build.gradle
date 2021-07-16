@@ -37,7 +37,7 @@ def versionWithGit = {
     return ver
 }()
 
-group = 'co.uk.isxander'
+group = 'dev.isxander'
 archivesBaseName = 'evergreenhud'
 
 targetCompatibility = sourceCompatibility = JavaVersion.VERSION_1_8
@@ -73,11 +73,17 @@ repositories {
         name = 'JitPack'
         url = 'https://jitpack.io/'
     }
+    maven {
+        name = 'Sk1er Public'
+        url = 'https://repo.sk1er.club/repository/maven-public/'
+    }
 }
 
 dependencies {
-    implementation files('libs/modcore.jar')
-    implementation 'dev.isXander:XanderLib:1.0.2'
+    include 'gg.essential:loader-launchwrapper:1.0.2'
+    implementation 'gg.essential:Essential:1194-10809-SNAPSHOT'
+
+    implementation 'dev.isXander:XanderLib:1.1.0'
     implementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }
@@ -95,12 +101,9 @@ jar {
 
     manifest {
         attributes (
-                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+                'TweakClass': 'dev.isxander.evergreenhud.forge.EvergreenHUDTweaker',
                 'MixinConfigs': 'mixins.evergreenhud.json',
-                'FMLCorePlugin': 'co.uk.isxander.evergreenhud.forge.FMLLoadingPlugin',
-                'ModSide': 'CLIENT',
-                'FMLCorePluginContainsFMLMod': true,
-                'ForceLoadAsMod': true
+                'TweakOrder': 0
         )
     }
 }
