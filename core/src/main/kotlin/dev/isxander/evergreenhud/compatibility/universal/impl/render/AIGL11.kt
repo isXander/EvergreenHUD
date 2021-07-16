@@ -1,5 +1,6 @@
 package dev.isxander.evergreenhud.compatibility.universal.impl.render
 
+import dev.isxander.evergreenhud.compatibility.universal.BUFFER_BUILDER
 import dev.isxander.evergreenhud.compatibility.universal.RESOLUTION
 
 abstract class AIGL11 {
@@ -50,6 +51,7 @@ abstract class AIGL11 {
     fun defaultBlendFunc() = blendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO)
 
     abstract fun rect(x: Float, y: Float, width: Float, height: Float, color: Int)
+    abstract fun modalRect(x: Float, y: Float, u: Float, v: Float, uWidth: Float, vHeight: Float, width: Float, height: Float, tileWidth: Float, tileHeight: Float)
     abstract fun roundedRect(x: Float, y: Float, width: Float, height: Float, color: Int, angle: Float)
 
     open fun scissorStart(x: Int, y: Int, width: Int, height: Int) {

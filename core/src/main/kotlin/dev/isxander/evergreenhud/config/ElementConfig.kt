@@ -15,10 +15,17 @@
 
 package dev.isxander.evergreenhud.config
 
+import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.ElementManager
+import java.io.File
 
 class ElementConfig(element: ElementManager) {
 
 
+
+    companion object {
+        const val SCHEMA = 4
+        val ELEMENTS_FILE = File(EvergreenHUD.DATA_DIR, "elements.json")
+    }
 
 }

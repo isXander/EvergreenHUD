@@ -50,6 +50,12 @@ class ElementManager : ConfigProcessor {
     @BooleanSetting(name = "Enabled", category = ["General"], description = "Display any elements you have created.")
     var enabled = true
 
+    @BooleanSetting(name = "Check For Updates", category = ["Connectivity"], "Should EvergreenHUD check for updates when you start up the game.")
+    var checkForUpdates = true
+
+    @BooleanSetting(name = "Check For Safety", category = ["Connectivity"], "(HIGHLY RECOMMENDED) Should EvergreenHUD check if the current version of the mod you are playing on has been known to cause issues like an unfair advantage.")
+    var checkForSafety = true
+
     init {
         collectSettings()
         findAndRegisterElements()

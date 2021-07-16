@@ -15,20 +15,28 @@
 
 package dev.isxander.evergreenhud.repo
 
+import com.google.gson.JsonArray
 import com.google.gson.JsonPrimitive
+import dev.isxander.evergreenhud.EvergreenInfo
 import dev.isxander.evergreenhud.utils.HttpsUtils
 import dev.isxander.evergreenhud.utils.JsonObjectExt
+import java.lang.Exception
 
 object RepoManager {
 
-    private const val blacklistedJson = "https://raw.githubusercontent.com/isXander/EvergreenHUD/main/blacklisted.json"
+    private const val jsonUrl = "https://raw.githubusercontent.com/isXander/EvergreenHUD/main/blacklisted.json"
 
-    fun isVersionBlacklisted(version: String): Boolean {
-        val out = HttpsUtils.getString(blacklistedJson) ?: return false
+    fun getResponse(): RepoResponse {
+        val out = try { HttpsUtils.getString(jsonUrl) }
+        catch (e: Exception) { return RepoResponse(outdated = false, blacklisted = false) }
+
         val json = JsonObjectExt(out)
 
-        if (json.optBoolean("all", false)) return true
-        return json.optArray("versions")!!.contains(JsonPrimitive(version))
+        val blacklisted = json["blacklisted", JsonArray()]!!.contains(JsonPrimitive(EvergreenInfo.MOD_REVISION))
+        val outdated = json["latest", EvergreenInfo.MOD_REVISION]!!.equals(EvergreenInfo.MOD_REVISION, ignoreCase = true)
+        return RepoResponse(outdated, blacklisted)
     }
 
 }
+
+data class RepoResponse(val outdated: Boolean, val blacklisted: Boolean)

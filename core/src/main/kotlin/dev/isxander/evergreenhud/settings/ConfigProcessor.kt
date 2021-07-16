@@ -28,16 +28,16 @@ interface ConfigProcessor {
 
         var obj = json
         for (categoryEntry in category) {
-            val newObj = obj.optObject(categoryEntry, JsonObjectExt())!!
-            obj.add(categoryEntry, newObj)
+            val newObj = obj[categoryEntry, JsonObjectExt()]!!
+            obj[categoryEntry] = newObj
             obj = newObj
         }
 
         when (setting.jsonValue) {
-            JsonValues.STRING -> obj.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as String)
-            JsonValues.BOOLEAN -> obj.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as Boolean)
-            JsonValues.FLOAT -> obj.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as Float)
-            JsonValues.INT -> obj.addProperty(setting.getNameJsonKey(), setting.getJsonValue() as Int)
+            JsonValues.STRING -> obj[setting.getNameJsonKey()] = setting.getJsonValue() as String
+            JsonValues.BOOLEAN -> obj[setting.getNameJsonKey()] = setting.getJsonValue() as Boolean
+            JsonValues.FLOAT -> obj[setting.getNameJsonKey()] = setting.getJsonValue() as Float
+            JsonValues.INT -> obj[setting.getNameJsonKey()] = setting.getJsonValue() as Int
         }
 
         LOGGER.info("\n${json.toPrettyString()}")

@@ -10,11 +10,8 @@ import dev.isxander.evergreenhud.event.RenderHUDEvent
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.dsl.childOf
-import gg.essential.universal.UMinecraft
-import gg.essential.universal.UScreen
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
-import net.minecraft.client.renderer.Tessellator
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.FMLModContainer
 import net.minecraftforge.fml.common.ILanguageAdapter
@@ -25,7 +22,6 @@ import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.fml.relauncher.Side
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
-import java.io.File
 import java.lang.reflect.Field
 import java.lang.reflect.Method
 
@@ -47,11 +43,11 @@ object ForgeMod {
             override fun err(msg: String) = logger.error(msg)
         }
 
-        MC = object : AIMinecraft() {
-            override fun dataDir(): File = mc.mcDataDir
-            override fun fps(): Int = Minecraft.getDebugFPS()
-            override fun inGameHasFocus(): Boolean = mc.inGameHasFocus
-        }
+//        MC = object : AIMinecraft() {
+//            override fun dataDir(): File = mc.mcDataDir
+//            override fun fps(): Int = Minecraft.getDebugFPS()
+//            override fun inGameHasFocus(): Boolean = mc.inGameHasFocus
+//        }
 
         RESOLUTION = object : AIResolution() {
             override fun getDisplayWidth(): Int = mc.displayWidth
@@ -81,7 +77,7 @@ object ForgeMod {
     private fun registerEvents() {
         on<TickEvent.ClientTickEvent>()
             .filter { it.phase == TickEvent.Phase.END }
-            .subscribe { EvergreenHUD.EVENT_BUS.post(dev.isxander.evergreenhud.event.TickEvent()) }
+            .subscribe { EvergreenHUD.EVENT_BUS.post(dev.isxander.evergreenhud.event.ClientTickEvent()) }
 
         on<RenderGameOverlayEvent.Post>()
             .filter { it.type == RenderGameOverlayEvent.ElementType.ALL }

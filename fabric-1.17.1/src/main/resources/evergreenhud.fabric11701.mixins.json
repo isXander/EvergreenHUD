@@ -9,6 +9,8 @@
   },
   "mixins": [
     "AccessorMinecraftClient",
-    "MixinInGameHud"
+    "MixinInGameHud",
+    "MixinMinecraftClient",
+    "MixinTitleScreen"
   ]
 }

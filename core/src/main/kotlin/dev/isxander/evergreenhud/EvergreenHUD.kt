@@ -15,15 +15,14 @@
 
 package dev.isxander.evergreenhud
 
-import club.chachy.event.keventbus.on
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.CustomKeybind
 import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.Keyboard
-import dev.isxander.evergreenhud.elements.impl.TestElement
 import dev.isxander.evergreenhud.event.RenderHUDEvent
-import dev.isxander.evergreenhud.event.TickEvent
 import dev.isxander.evergreenhud.gui.MainGui
+import dev.isxander.evergreenhud.repo.RepoManager
+import dev.isxander.evergreenhud.utils.Notifications
 import me.kbrewster.eventbus.EventBus
 import me.kbrewster.eventbus.Subscribe
 import me.kbrewster.eventbus.eventbus
@@ -43,10 +42,18 @@ object EvergreenHUD {
     val elementManager: ElementManager = ElementManager()
 
     fun init() {
+        if (elementManager.checkForUpdates || elementManager.checkForSafety) {
+            val response = RepoManager.getResponse()
+            if (elementManager.checkForUpdates && response.outdated) {
+                repeat(10) {
+                    Notifications.push("EvergreenHUD", "Hellow! This is a test notification using EvergreenHUD 2.0")
+                }
+
+            }
+        }
+
         EVENT_BUS.register(this)
         KEYBIND_MANAGER.registerKeybind(CustomKeybind(Keyboard.KEY_HOME, "Open EvergreenHUD GUI", "EvergreenHUD") { SCREEN_HANDLER.displayComponent(MainGui()) })
-
-        LOGGER.info("\n\n\n\n\n\n${TestElement().init().generateJson().toPrettyString()}")
     }
 
     @Subscribe

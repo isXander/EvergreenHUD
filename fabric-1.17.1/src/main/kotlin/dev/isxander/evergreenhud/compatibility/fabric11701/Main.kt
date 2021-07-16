@@ -9,14 +9,13 @@ import dev.isxander.evergreenhud.compatibility.fabric11701.provider.AIEntityProv
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.compatibility.universal.impl.*
 import dev.isxander.evergreenhud.compatibility.universal.impl.entity.AIEntity
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.AIGL11
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.AIBufferBuilder
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.VertexFormats
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.AIGL11
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.DrawMode.*
-import dev.isxander.evergreenhud.event.TickEvent
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.VertexFormats
+import dev.isxander.evergreenhud.event.ClientTickEvent
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
-import gg.essential.elementa.dsl.childOf
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.MinecraftClient
@@ -36,6 +35,7 @@ object Main : ClientModInitializer {
 
     val logger: Logger = LogManager.getLogger("EvergreenHUD")
     lateinit var matrices: MatrixStack
+    var postInitialized = false
 
     override fun onInitializeClient() {
         val mc = MinecraftClient.getInstance()
@@ -70,9 +70,10 @@ object Main : ClientModInitializer {
         SCREEN_HANDLER = object : AIScreenHandler() {
             override fun displayComponent(component: UIComponent) {
                 LOGGER.info("afiah")
-                mc.setScreen(object : WindowScreen() {
-                    init { component childOf window }
-                })
+                object: WindowScreen() {}
+//                mc.setScreen(object : WindowScreen() {
+//                    init { component childOf window }
+//                })
             }
         }
 
@@ -163,7 +164,8 @@ object Main : ClientModInitializer {
             override fun enableDepth() = RenderSystem.enableDepthTest()
             override fun disableDepth() = RenderSystem.disableDepthTest()
 
-            override fun blendFuncSeparate(srcFactorRGB: Int, dstFactorRGB: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) = RenderSystem.blendFuncSeparate(srcFactorRGB, dstFactorRGB, srcFactorAlpha, dstFactorAlpha)
+            override fun blendFuncSeparate(srcFactorRGB: Int, dstFactorRGB: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) =
+                RenderSystem.blendFuncSeparate(srcFactorRGB, dstFactorRGB, srcFactorAlpha, dstFactorAlpha)
             override fun blendFunc(srcFactor: Int, dstFactor: Int) = RenderSystem.blendFunc(srcFactor, dstFactor)
 
             override fun rect(x: Float, y: Float, width: Float, height: Float, color: Int) {
@@ -189,6 +191,25 @@ object Main : ClientModInitializer {
                 disableBlend()
             }
 
+            override fun modalRect(x: Float, y: Float, u: Float, v: Float, uWidth: Float, vHeight: Float, width: Float, height: Float, tileWidth: Float, tileHeight: Float) {
+                val f = 1.0 / tileWidth
+                val f1 = 1.0 / tileHeight
+
+                enableBlend()
+                disableTexture()
+                defaultBlendFunc()
+                RenderSystem.setShader { GameRenderer.getPositionColorShader() }
+                BUFFER_BUILDER
+                    .begin(QUADS, VertexFormats.POSITION_TEXTURE)
+                    .vertex(x.toDouble(), y.toDouble() + height, 0.0).tex(u * f, (v + vHeight) * f1).next()
+                    .vertex(x.toDouble() + width, y.toDouble() + height, 0.0).tex((u + uWidth) * f, (v + vHeight) * f1).next()
+                    .vertex(x.toDouble() + width, y.toDouble(), 0.0).tex((u + uWidth) * f, v * f1).next()
+                    .vertex(x.toDouble(), y.toDouble(), 0.0).tex(u * f, v * f1).next()
+                    .end().draw()
+                enableTexture()
+                disableBlend()
+            }
+
             override fun roundedRect(x: Float, y: Float, width: Float, height: Float, color: Int, angle: Float) {
                 TODO("Not yet implemented")
             }
@@ -199,15 +220,27 @@ object Main : ClientModInitializer {
         }
 
         FONT_RENDERER = object : AIFontRenderer() {
-            override fun draw(text: String, x: Float, y: Float, color: Int, shadow: Boolean): AIFontRenderer {
+            override fun draw(text: String, _x: Float, y: Float, color: Int, shadow: Boolean, centered: Boolean): AIFontRenderer {
+                var x = _x
+                if (centered) x -= width(text) / 2
+
                 if (shadow) mc.textRenderer.drawWithShadow(matrices, text, x, y, color)
                 else mc.textRenderer.draw(matrices, text, x, y, color)
 
                 return this
             }
 
-            override fun fontHeight(): Int = mc.textRenderer.fontHeight
+            override val fontHeight: Int
+                get() = mc.textRenderer.fontHeight
+
             override fun width(text: String): Int = mc.textRenderer.getWidth(text)
+        }
+
+        MOUSE_HELPER = object : AIMouseHelper() {
+            override fun getMouseX(): Float = mc.mouse.x.toFloat()
+            override fun getMouseY(): Float = mc.mouse.y.toFloat()
+            override fun wasLeftMouseDown(): Boolean = mc.mouse.wasLeftButtonClicked()
+            override fun wasRightMouseDown(): Boolean = mc.mouse.wasRightButtonClicked()
         }
 
         registerEvents()
@@ -217,7 +250,7 @@ object Main : ClientModInitializer {
 
     private fun registerEvents() {
         ClientTickEvents.END_CLIENT_TICK.register {
-            EvergreenHUD.EVENT_BUS.post(TickEvent())
+            EvergreenHUD.EVENT_BUS.post(ClientTickEvent())
         }
 
     }

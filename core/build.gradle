@@ -50,3 +50,7 @@ dependencies {
     }
 }
 
+jar {
+    enabled = true
+}
+

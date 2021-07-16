@@ -156,20 +156,24 @@ class JsonObjectExt(val data: JsonObject) {
         return pp.toJson(data)
     }
 
-    @Throws(IOException::class)
-    fun getFromFile(file: File): JsonObjectExt {
-        if (!file.getParentFile().exists() || !file.exists()) throw FileNotFoundException()
-        val f = BufferedReader(FileReader(file))
-        val lines = f.lines().collect(Collectors.toList())
-        f.close()
-        if (lines.isEmpty()) return JsonObjectExt()
-        val builder = java.lang.String.join("", lines)
-        return if (builder.trim { it <= ' ' }.isNotEmpty()) JsonObjectExt(builder.trim { it <= ' ' }) else JsonObjectExt()
+    companion object {
+        @Throws(IOException::class)
+        fun getFromFile(file: File): JsonObjectExt {
+            if (!file.getParentFile().exists() || !file.exists()) throw FileNotFoundException()
+            val f = BufferedReader(FileReader(file))
+            val lines = f.lines().collect(Collectors.toList())
+            f.close()
+            if (lines.isEmpty()) return JsonObjectExt()
+            val builder = java.lang.String.join("", lines)
+            return if (builder.trim { it <= ' ' }.isNotEmpty()) JsonObjectExt(builder.trim { it <= ' ' }) else JsonObjectExt()
+        }
+
+        fun getFromLines(lines: List<String?>): JsonObjectExt {
+            if (lines.isEmpty()) return JsonObjectExt()
+            val builder = java.lang.String.join("", lines)
+            return if (builder.trim { it <= ' ' }.isNotEmpty()) JsonObjectExt(builder.trim { it <= ' ' }) else JsonObjectExt()
+        }
     }
 
-    fun getFromLines(lines: List<String?>): JsonObjectExt {
-        if (lines.isEmpty()) return JsonObjectExt()
-        val builder = java.lang.String.join("", lines)
-        return if (builder.trim { it <= ' ' }.isNotEmpty()) JsonObjectExt(builder.trim { it <= ' ' }) else JsonObjectExt()
-    }
+
 }

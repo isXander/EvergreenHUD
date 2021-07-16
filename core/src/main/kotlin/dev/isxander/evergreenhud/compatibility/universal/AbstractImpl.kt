@@ -14,3 +14,4 @@ lateinit var SCREEN_HANDLER: AIScreenHandler
 lateinit var GL: AIGL11
 lateinit var BUFFER_BUILDER: AIBufferBuilder
 lateinit var FONT_RENDERER: AIFontRenderer
+lateinit var MOUSE_HELPER: AIMouseHelper

@@ -15,7 +15,6 @@
 
 package dev.isxander.evergreenhud.elements
 
-import com.google.gson.JsonElement
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.compatibility.universal.MCVersion
 import dev.isxander.evergreenhud.settings.ConfigProcessor
@@ -28,11 +27,12 @@ import dev.isxander.evergreenhud.utils.Position
 
 abstract class Element : ConfigProcessor {
 
-    var initialized = false
+    var preloaded = false
         private set
     val settings: MutableList<Setting<*, *>> = ArrayList()
     val metadata: ElementMeta = this::class.java.getAnnotation(ElementMeta::class.java)
-    val position: Position = Position.scaledPositioning(0.5f, 0.5f, 1f)
+    var position: Position = Position.scaledPositioning(0.5f, 0.5f, 1f)
+        private set
 
     @FloatSetting(name = "Scale", category = ["Display"], description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
     val scale = SettingAdapter(100f)
@@ -48,16 +48,34 @@ abstract class Element : ConfigProcessor {
     @BooleanSetting(name = "Show Under GUIs", category = ["Visibility"], description = "Whether or not element should be displayed when you have a gui open.")
     var showUnderGui: Boolean = false
 
-    fun init(): Element {
-        if (initialized) return this
+    fun preload(): Element {
+        if (preloaded) return this
 
         collectSettings()
 
-        initialized = true
+        preloaded = true
         return this
     }
 
+    // called after settings have loaded
+    open fun init() {}
+    // called when element is added
+    open fun onAdded() {}
+    // called when element is removed
+    open fun onRemoved() {}
+
     abstract fun render(partialTicks: Float, renderOrigin: Int)
+
+    abstract fun calculateHitBox(glScale: Float, drawScale: Float)
+    protected open fun calculateHitBoxWidth(): Float = 10f
+    protected open fun calculateHitBoxHeight(): Float = 10f
+
+    fun resetSettings(save: Boolean = false) {
+        position = Position.scaledPositioning(0.5f, 0.5f, 1f)
+
+        for (s in settings) s.reset()
+        if (save) {} // TODO: 16/07/2021 add saving
+    }
 
     override fun generateJson(): JsonObjectExt {
         val json = JsonObjectExt()
