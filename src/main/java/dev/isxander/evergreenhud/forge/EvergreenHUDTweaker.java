@@ -15,7 +15,6 @@
 
 package dev.isxander.evergreenhud.forge;
 
-import dev.isxander.xanderlib.installer.XanderLibInstaller;
 import gg.essential.loader.stage0.EssentialSetupTweaker;
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import org.spongepowered.asm.launch.MixinTweaker;
@@ -34,8 +33,6 @@ public class EvergreenHUDTweaker extends EssentialSetupTweaker {
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
         super.acceptOptions(args, gameDir, assetsDir, profile);
         mixinTweaker.acceptOptions(args, gameDir, assetsDir, profile);
-
-        XanderLibInstaller.initialize(gameDir);
     }
 
     @Override
