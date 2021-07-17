@@ -83,7 +83,7 @@ dependencies {
     include 'gg.essential:loader-launchwrapper:1.0.2'
     implementation 'gg.essential:Essential:1194-10809-SNAPSHOT'
 
-    include ('dev.isXander:XanderLib:1.1.1') {
+    include ('dev.isXander:XanderLib:1.1.2') {
         exclude module: 'Essential'
     }
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
