@@ -79,7 +79,7 @@ public class ServerPingerUtil {
             }
 
             if (serverUpdateStatus.getOrDefault(server.serverIP, false)) serverPlayerCount = null;
-            else if (!("".equals(server.populationInfo))) {
+            else if (!("".equals(server.populationInfo)) && server.populationInfo != null) {
                 String[] splitPopulationInfo = GuiUtils.stripFormattingCodes(server.populationInfo).split("/");
 
                 serverPlayerCount = Integer.parseInt(splitPopulationInfo[0]);
