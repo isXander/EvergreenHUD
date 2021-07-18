@@ -1,3 +1,5 @@
+apply plugin: 'java-library'
+
 buildConfig {
     className('EvergreenInfo')
     packageName('dev.isxander.evergreenhud')
@@ -15,20 +17,22 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    include 'com.google.code.gson:gson:2.8.7'
+    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    api "org.jetbrains.kotlin:kotlin-reflect"
 
-    include 'dev.isXander.chachy-mc-api:keventbus-dsl:0.2.0'
-    include 'com.github.KevinPriv:KEventBus:86cf2e023e'
+    api 'com.google.code.gson:gson:2.8.7'
 
-    include 'org.reflections:reflections:0.9.12'
-    include 'com.squareup.okhttp3:okhttp:4.9.1'
+    api 'dev.isXander.chachy-mc-api:keventbus-dsl:0.2.0'
+    api 'com.github.KevinPriv:KEventBus:86cf2e023e'
+
+    api 'org.reflections:reflections:0.9.12'
+    api 'com.squareup.okhttp3:okhttp:4.9.1'
 
     // there is no api jar for Elementa or UniversalCraft so
     // depend on whatever version and exclude all dependencies
     // then in the other modules depend on them properly.
     // gross but I don't see any other way
-    implementation ('gg.essential:Elementa:next-337-10809-SNAPSHOT') {
+    compileOnly ('gg.essential:Elementa:next-337-10809-SNAPSHOT') {
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'
         exclude module: 'UniversalCraft'
@@ -38,7 +42,7 @@ dependencies {
         exclude module: 'fabric-api'
         exclude module: 'forge'
     }
-    implementation ('gg.essential:UniversalCraft:next-137-10809-SNAPSHOT') {
+    compileOnly ('gg.essential:UniversalCraft:next-137-10809-SNAPSHOT') {
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'
         exclude module: 'UniversalCraft'
@@ -48,6 +52,10 @@ dependencies {
         exclude module: 'fabric-api'
         exclude module: 'forge'
     }
+}
+
+shadowJar {
+    relocate 'com.google.gson', 'dev.isxander.gson'
 }
 
 jar {

@@ -1,5 +1,7 @@
 package dev.isxander.evergreenhud.compatibility.universal.impl.render
 
+import gg.essential.universal.UMatrixStack
+
 abstract class AIBufferBuilder {
 
     abstract fun vertex(x: Double, y: Double, z: Double): AIBufferBuilder

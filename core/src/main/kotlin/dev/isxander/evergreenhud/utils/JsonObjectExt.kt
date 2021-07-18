@@ -116,6 +116,11 @@ class JsonObjectExt(val data: JsonObject) {
         return this
     }
 
+    operator fun set(key: String, value: JsonElement): JsonObjectExt {
+        data.add(key, value)
+        return this
+    }
+
     fun writeToFile(file: File) {
         if (file.exists() && file.isDirectory) {
             return

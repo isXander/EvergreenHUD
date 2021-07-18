@@ -17,28 +17,25 @@ package dev.isxander.evergreenhud.elements
 
 import club.chachy.event.keventbus.on
 import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.compatibility.universal.PROFILER
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
 import dev.isxander.evergreenhud.event.RenderHUDEvent
 import dev.isxander.evergreenhud.settings.ConfigProcessor
-import dev.isxander.evergreenhud.settings.JsonValues
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.impl.*
 import dev.isxander.evergreenhud.utils.JsonObjectExt
+import gg.essential.universal.UMatrixStack
+import me.kbrewster.eventbus.Subscribe
 import org.reflections.Reflections
 import java.util.*
+import kotlin.collections.ArrayList
 
 
-class ElementManager : ConfigProcessor {
+class ElementManager : ConfigProcessor, Iterable<Element> {
 
-    /**
-     * all registered elements
-     */
     private val availableElements: MutableMap<String, Class<out Element>> = HashMap()
-    /**
-     * @return the elements that are currently being rendered
-     */
-    val currentElements: List<Element> = ArrayList()
+    val currentElements: ArrayList<Element> = ArrayList()
 
     /* Config */
     val mainConfig: MainConfig = MainConfig(this)
@@ -57,12 +54,10 @@ class ElementManager : ConfigProcessor {
     var checkForSafety = true
 
     init {
-        collectSettings()
+        collectSettings(this) { settings.add(it) }
         findAndRegisterElements()
 
-        on<RenderHUDEvent>(EvergreenHUD.EVENT_BUS)
-            .filter { enabled }
-            .subscribe { renderElements(it.dt) }
+        EvergreenHUD.EVENT_BUS.register(this)
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -102,7 +97,13 @@ class ElementManager : ConfigProcessor {
         return null
     }
 
-    fun renderElements(partialTicks: Float) {
+    @Subscribe
+    fun renderElements(event: RenderHUDEvent) {
+        PROFILER.push("EvergreenHUD Render")
+        for (e in currentElements) {
+            e.render(event.matrices, event.dt, RenderOrigin.HUD)
+        }
+        PROFILER.pop()
 //        mc.mcProfiler.startSection("Element Render")
 //
 //        val inChat = mc.currentScreen is GuiChat
@@ -117,71 +118,27 @@ class ElementManager : ConfigProcessor {
 //        mc.mcProfiler.endSection()
     }
 
-    private fun collectSettings() {
-        val classes = ArrayList<Class<*>>()
-        var clazz: Class<*>? = this::class.java
-        while (clazz != null) {
-            classes.add(clazz)
-            clazz = clazz.superclass
+    override var json: JsonObjectExt
+        get() {
+            val json = JsonObjectExt()
+
+            for (setting in settings) {
+                if (!setting.shouldSave) continue
+                addSettingToJson(setting, json)
+            }
+
+            return json
         }
-        for (declaredClass in classes) {
-            for (field in declaredClass.declaredFields) {
-                val boolean = field.getAnnotation(BooleanSetting::class.java)
-                if (boolean != null)
-                    settings.add(BooleanSettingWrapped(boolean, this, field))
+        set(value) {
+            for (setting in settings) {
+                var categoryJson = value
+                for (categoryName in setting.category)
+                    categoryJson = categoryJson[categoryName, JsonObjectExt()]!!
 
-                val int = field.getAnnotation(IntSetting::class.java)
-                if (int != null)
-                    settings.add(IntSettingWrapped(int, this, field))
-
-                val float = field.getAnnotation(FloatSetting::class.java)
-                if (float != null)
-                    settings.add(FloatSettingWrapped(float, this, field))
-
-                val string = field.getAnnotation(StringSetting::class.java)
-                if (string != null)
-                    settings.add(StringSettingWrapped(string, this, field))
-
-                val stringList = field.getAnnotation(StringListSetting::class.java)
-                if (string != null)
-                    settings.add(StringListSettingWrapped(stringList, this, field))
-
-                val enum = field.getAnnotation(EnumSetting::class.java)
-                if (enum != null)
-                    settings.add(EnumSettingWrapped(enum, this, field))
-
-                val color = field.getAnnotation(ColorSetting::class.java)
-                if (color != null)
-                    settings.add(ColorSettingWrapped(color, this, field))
+                setSettingFromJson(categoryJson, setting)
             }
         }
 
-    }
-
-    override fun generateJson(): JsonObjectExt {
-        val json = JsonObjectExt()
-
-        for (setting in settings) {
-            if (!setting.shouldSave()) continue
-            addSettingToJson(setting, json)
-        }
-
-        return json
-    }
-
-    override fun processJson(json: JsonObjectExt) {
-        for (setting in settings) {
-            var categoryJson = json
-            for (categoryName in setting.getCategory())
-                categoryJson = categoryJson[categoryName, JsonObjectExt()]!!
-
-            when (setting.jsonValue) {
-                JsonValues.BOOLEAN -> setting.setJsonValue(categoryJson[setting.getNameJsonKey(), setting.getDefault() as Boolean])
-                JsonValues.FLOAT -> setting.setJsonValue(categoryJson[setting.getNameJsonKey(), setting.getDefault() as Float])
-                JsonValues.INT -> setting.setJsonValue(categoryJson[setting.getNameJsonKey(), setting.getDefault() as Int])
-                JsonValues.STRING -> setting.setJsonValue(categoryJson[setting.getNameJsonKey(), setting.getDefault() as String]!!)
-            }
-        }
-    }
+    override fun iterator(): Iterator<Element> = currentElements.iterator()
 
 }

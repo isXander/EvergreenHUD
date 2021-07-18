@@ -15,17 +15,85 @@
 
 package dev.isxander.evergreenhud.config
 
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.elements.ElementManager
+import dev.isxander.evergreenhud.utils.JsonObjectExt
 import java.io.File
 
-class ElementConfig(element: ElementManager) {
+class ElementConfig(private val manager: ElementManager) {
 
+    fun save() {
+        val json = JsonObjectExt()
+        json["schema"] = SCHEMA
 
+        val arr = JsonArray()
+        for (element in manager) {
+            val obj = JsonObjectExt()
+            obj["id"] = manager.getElementId(element)
+            obj["data"] = element.json
+            arr.add(obj.data)
+        }
+        json["elements"] = arr
+
+        json.writeToFile(CONFIG_FILE)
+    }
+
+    fun load() {
+        if (!CONFIG_FILE.exists()) save().also { return@load }
+        val json = attemptConversion(JsonObjectExt.getFromFile(CONFIG_FILE))
+
+        val arr = json["elements", JsonArray()]!!
+        for (elementJsonElement in arr) {
+            if (elementJsonElement is JsonObject) {
+                val elementJson = JsonObjectExt(elementJsonElement)
+                val id = elementJson["id", "null"]
+                val element = manager.getNewElementInstance(id)
+
+                if (element == null) {
+                    LOGGER.err("Found unknown element id ($id) in json! This probably means someone tampered with the json!")
+                    continue
+                }
+
+                element.preload().json = elementJson["data", JsonObjectExt()]!!
+                manager.currentElements.add(element)
+            }
+        }
+
+        // just in case our config needed conversion
+        save()
+    }
+
+    private fun attemptConversion(json: JsonObjectExt): JsonObjectExt {
+        val currentSchema = json["schema", 0]
+
+        // corrupt config. Reset
+        if (currentSchema == 0 || currentSchema > SCHEMA) {
+            return JsonObjectExt()
+        }
+
+        // there is no point recoding every conversion
+        // when a new schema comes to be
+        // so just convert the old conversions until done
+        var convertedJson = json
+        var convertedSchema = currentSchema
+        while (convertedSchema != SCHEMA) {
+            LOGGER.info("Converting element configuration v$convertedSchema -> ${convertedSchema + 1}")
+            when (convertedSchema) {
+
+            }
+            convertedSchema++
+        }
+
+        return convertedJson
+    }
 
     companion object {
         const val SCHEMA = 4
-        val ELEMENTS_FILE = File(EvergreenHUD.DATA_DIR, "elements.json")
+        val CONFIG_FILE: File
+            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.json")
     }
 
 }

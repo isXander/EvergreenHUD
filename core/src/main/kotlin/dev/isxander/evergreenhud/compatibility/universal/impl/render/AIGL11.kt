@@ -2,19 +2,16 @@ package dev.isxander.evergreenhud.compatibility.universal.impl.render
 
 import dev.isxander.evergreenhud.compatibility.universal.BUFFER_BUILDER
 import dev.isxander.evergreenhud.compatibility.universal.RESOLUTION
+import gg.essential.universal.UMatrixStack
+import kotlin.math.cos
+import kotlin.math.sin
 
 abstract class AIGL11 {
 
     /* ---------------------------------- */
     /* Render Stuff                 BEGIN */
     /* ---------------------------------- */
-    abstract fun push()
-    abstract fun pop()
-
-    abstract fun scale(x: Float, y: Float, z: Float)
-    abstract fun translate(x: Double, y: Double, z: Double)
     abstract fun color(r: Float, g: Float, b: Float, a: Float = 1f)
-    abstract fun rotate(angle: Float, x: Float, y: Float, z: Float)
 
     abstract fun bindTexture(texture: Int)
 
@@ -50,25 +47,115 @@ abstract class AIGL11 {
     /* ---------------------------------- */
     fun defaultBlendFunc() = blendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO)
 
-    abstract fun rect(x: Float, y: Float, width: Float, height: Float, color: Int)
-    abstract fun modalRect(x: Float, y: Float, u: Float, v: Float, uWidth: Float, vHeight: Float, width: Float, height: Float, tileWidth: Float, tileHeight: Float)
-    abstract fun roundedRect(x: Float, y: Float, width: Float, height: Float, color: Int, angle: Float)
+    open fun rect(x: Float, y: Float, width: Float, height: Float, color: Int) {
+        val x2 = x + width
+        val y2 = y + height
+
+        val f = (color shr 24 and 255).toFloat() / 255.0f
+        val g = (color shr 16 and 255).toFloat() / 255.0f
+        val h = (color shr 8 and 255).toFloat() / 255.0f
+        val k = (color and 255).toFloat() / 255.0f
+        enableBlend()
+        disableTexture()
+        defaultBlendFunc()
+        BUFFER_BUILDER
+            .begin(DrawMode.QUADS, VertexFormats.POSITION_COLOR)
+            .vertex(x.toDouble(), y2.toDouble(), 0.0).color(g, h, k, f).next()
+            .vertex(x2.toDouble(), y2.toDouble(), 0.0).color(g, h, k, f).next()
+            .vertex(x2.toDouble(), y.toDouble(), 0.0).color(g, h, k, f).next()
+            .vertex(x.toDouble(), y.toDouble(), 0.0).color(g, h, k, f).next()
+            .end().draw()
+        enableTexture()
+        disableBlend()
+    }
+
+    open fun modalRect(x: Float, y: Float, u: Float, v: Float, uWidth: Float, vHeight: Float, width: Float, height: Float, tileWidth: Float, tileHeight: Float) {
+        val f = 1.0 / tileWidth
+        val f1 = 1.0 / tileHeight
+
+        enableBlend()
+        disableTexture()
+        defaultBlendFunc()
+
+        BUFFER_BUILDER
+            .begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
+            .vertex(x.toDouble(), y.toDouble() + height, 0.0).tex(u * f, (v + vHeight) * f1).next()
+            .vertex(x.toDouble() + width, y.toDouble() + height, 0.0).tex((u + uWidth) * f, (v + vHeight) * f1).next()
+            .vertex(x.toDouble() + width, y.toDouble(), 0.0).tex((u + uWidth) * f, v * f1).next()
+            .vertex(x.toDouble(), y.toDouble(), 0.0).tex(u * f, v * f1).next()
+            .end().draw()
+        enableTexture()
+        disableBlend()
+    }
+
+    open fun borderRect(x: Float, y: Float, width: Float, height: Float, color: Int, thickness: Float) {
+        rect(x, y, thickness, height, color)
+        rect(x + thickness, y, width - thickness - thickness, thickness, color)
+        rect(x + thickness, y + height - thickness, width - thickness - thickness, thickness, color)
+        rect(x + width - thickness, y, thickness, height, color)
+    }
+
+    open fun roundedRect(matrices: UMatrixStack, x: Float, y: Float, width: Float, height: Float, color: Int, angle: Float) {
+        if (angle == 0f) {
+            rect(x, y, width, height, color)
+        } else {
+            partialCircle(matrices, x + angle, y + angle, angle, 0, 90, color)
+            partialCircle(matrices, x + width - angle, y + angle, angle, 270, 360, color)
+            partialCircle(matrices, x + width - angle, y + height - angle, angle, 180, 270, color)
+            partialCircle(matrices, x + angle, y + height - angle, width - angle, 90, 180, color)
+            rect(x + angle, y + height - angle, width - (angle * 2), angle, color)
+            rect(x + angle, y, width - (angle * 2), angle, color)
+            rect(x, y + angle,  width, height - (angle * 2), color)
+        }
+    }
+
+    open fun partialCircle(matrices: UMatrixStack, x: Float, y: Float, radius: Float, startAngle: Int, endAngle: Int, color: Int) {
+        matrices.push()
+        enableBlend()
+        disableTexture()
+        defaultBlendFunc()
+        val r = (color shr 24 and 255).toFloat() / 255.0f
+        val g = (color shr 16 and 255).toFloat() / 255.0f
+        val b = (color shr 8 and 255).toFloat() / 255.0f
+        val a = (color and 255).toFloat() / 255.0f
+        color(r, g, b, a)
+
+        BUFFER_BUILDER
+            .begin(DrawMode.TRIANGLE_FAN, VertexFormats.POSITION)
+            .vertex(x.toDouble(), y.toDouble(), 0.0).next()
+
+        var i = (startAngle / 360.0 * 100.0)
+        val end = (endAngle / 360.0 * 100.0)
+        while (i <= end) {
+            val angle = (Math.PI * 2 * i / 100) + Math.toRadians(100.0)
+            BUFFER_BUILDER
+                .vertex(x + sin(angle) * radius, y + cos(angle) * radius, 0.0).next()
+            i++
+        }
+
+        BUFFER_BUILDER.end().draw()
+
+        enableTexture()
+        disableDepth()
+        matrices.pop()
+
+        color(1f, 1f, 1f, 1f)
+    }
 
     open fun scissorStart(x: Int, y: Int, width: Int, height: Int) {
         enableScissor()
         scissor(
-            (x * RESOLUTION.getDisplayWidth()
-                    / RESOLUTION.getScaledWidth()),
-            (((RESOLUTION.getScaledHeight() - (y + height))
-                    * RESOLUTION.getDisplayHeight())
-                    / RESOLUTION.getScaledHeight()),
-            (width * RESOLUTION.getDisplayWidth() / RESOLUTION.getScaledWidth()),
-            (height * RESOLUTION.getDisplayHeight() / RESOLUTION.getScaledHeight())
+            (x * RESOLUTION.displayWidth
+                    / RESOLUTION.scaledWidth),
+            (((RESOLUTION.scaledHeight - (y + height))
+                    * RESOLUTION.displayHeight)
+                    / RESOLUTION.scaledHeight),
+            (width * RESOLUTION.displayWidth / RESOLUTION.scaledWidth),
+            (height * RESOLUTION.displayHeight / RESOLUTION.scaledHeight)
         )
     }
-    open fun scissorEnd() = disableScissor()
 
-    abstract fun circle(x: Float, y: Float, radius: Float, color: Int)
+    open fun scissorEnd() = disableScissor()
 
     @Suppress("UNUSED")
     companion object {

@@ -5,9 +5,9 @@ import java.io.File
 
 abstract class AIMinecraft {
 
-    abstract fun player(): AIEntity
-    abstract fun dataDir(): File
-    abstract fun fps(): Int
-    abstract fun inGameHasFocus(): Boolean
+    abstract val player: AIEntity
+    abstract val dataDir: File
+    abstract val fps: Int
+    abstract val inGameHasFocus: Boolean
 
 }

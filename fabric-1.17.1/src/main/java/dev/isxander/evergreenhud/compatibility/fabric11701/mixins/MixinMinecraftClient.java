@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import dev.isxander.evergreenhud.EvergreenHUD;
 import dev.isxander.evergreenhud.compatibility.fabric11701.Main;
 import dev.isxander.evergreenhud.event.RenderTickEvent;
+import gg.essential.universal.UMatrixStack;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.RunArgs;
 import net.minecraft.client.util.math.MatrixStack;
@@ -21,7 +22,7 @@ public class MixinMinecraftClient {
             Main.matrices = new MatrixStack();
             RenderSystem.enableTexture();
             RenderSystem.enableCull();
-            EvergreenHUD.INSTANCE.getEVENT_BUS().post(new RenderTickEvent(MinecraftClient.getInstance().getTickDelta()));
+            EvergreenHUD.INSTANCE.getEVENT_BUS().post(new RenderTickEvent(MinecraftClient.getInstance().getTickDelta(), UMatrixStack.Compat.INSTANCE.get()));
             Main.matrices = null;
         }
     }

@@ -5,27 +5,27 @@ buildscript {
         maven { url = 'https://jitpack.io' }
     }
     dependencies {
-        classpath 'dev.isXander:fabric-loom:f9812494c4'
+        classpath 'dev.isXander:fabric-loom:2641fb0d9a'
     }
 }
 
 apply plugin: 'fabric-loom'
 
 dependencies {
-    include (project(":core")) {
+    embed (project(":core")) {
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'Elementa'
         exclude module: 'UniversalCraft'
     }
 
-    include ('gg.essential:Elementa:next-337-11700-fabric-SNAPSHOT') {
+    embed ('gg.essential:Elementa:next-337-11700-fabric-SNAPSHOT') {
         exclude module: 'fabric-loader'
     }
-    include ('gg.essential:UniversalCraft:next-137-11700-fabric-SNAPSHOT') {
+    embed ('gg.essential:UniversalCraft:next-137-11700-fabric-SNAPSHOT') {
         exclude module: 'fabric-loader'
     }
 
-    include 'com.github.KevinPriv:KEventBus:86cf2e023e'
+    embed 'com.github.KevinPriv:KEventBus:86cf2e023e'
 
     minecraft 'com.mojang:minecraft:1.17.1'
     mappings 'net.fabricmc:yarn:1.17.1+build.14:v2'
@@ -36,19 +36,33 @@ dependencies {
 }
 
 processResources {
-//    inputs.property 'mod_id', mod_id
-//    inputs.property 'mod_version', version
-//    inputs.property 'mod_name', mod_name
-//    inputs.property 'mod_description', mod_description
-//
-//    filesMatching('fabric.mod.json') {
-//        expand (
-//                'mod_id': mod_id,
-//                'mod_version': version,
-//                'mod_name': mod_name,
-//                'mod_description', mod_description
-//        )
-//    }
+    inputs.property 'mod_id', mod_id
+    inputs.property 'mod_version', project.version
+    inputs.property 'mod_name', mod_name
+    inputs.property 'mod_description', mod_description
+
+    filesMatching('fabric.mod.json') {
+        expand(
+                'mod_id': mod_id,
+                'mod_version': project.version,
+                'mod_name': mod_name,
+                'mod_description': mod_description
+        )
+    }
+}
+
+shadowJar {
+    archiveClassifier.set 'shadow'
+}
+
+// use shadow as input jar for remap
+remapJar {
+    dependsOn shadowJar
+    input.fileValue shadowJar.outputs.files.singleFile
+
+    archiveBaseName.set shadowJar.archiveBaseName.get()
+    archiveVersion.set shadowJar.archiveVersion.get()
+    archiveClassifier.set ''
 }
 
 runClient {

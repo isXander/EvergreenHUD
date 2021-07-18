@@ -1,12 +1,11 @@
 package dev.isxander.evergreenhud.compatibility.universal.impl
 
 abstract class AIResolution {
-    abstract fun getDisplayWidth(): Int
-    abstract fun getDisplayHeight(): Int
+    abstract val displayWidth: Int
+    abstract val displayHeight: Int
 
-    abstract fun getScaledWidth(): Int
-    abstract fun getScaledHeight(): Int
+    abstract val scaledWidth: Int
+    abstract val scaledHeight: Int
 
-    abstract fun getScaleFactor(): Double
-
+    abstract val scaleFactor: Double
 }

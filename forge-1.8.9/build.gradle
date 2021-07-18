@@ -31,21 +31,21 @@ repositories {
 }
 
 dependencies {
-    include (project(":core")) {
+    embed (project(":core")) {
         exclude module: 'Elementa'
         exclude module: 'UniversalCraft'
     }
-    include 'gg.essential:Elementa:next-337-10809-SNAPSHOT'
-    include 'gg.essential:UniversalCraft:next-137-10809-SNAPSHOT'
+    embed 'gg.essential:Elementa:next-337-10809-SNAPSHOT'
+    embed 'gg.essential:UniversalCraft:next-137-10809-SNAPSHOT'
 
-    include 'com.github.KevinPriv:KEventBus:86cf2e023e'
-    include 'dev.isXander.chachy-mc-api:keventbus-dsl:0.2.0'
-    include 'dev.isXander.chachy-mc-api:forge-event-dsl:0.2.0'
+    embed 'com.github.KevinPriv:KEventBus:86cf2e023e'
+    embed 'dev.isXander.chachy-mc-api:keventbus-dsl:0.2.0'
+    embed 'dev.isXander.chachy-mc-api:forge-event-dsl:0.2.0'
 
-    include 'org.reflections:reflections:0.9.12'
-    include 'com.squareup.okhttp3:okhttp:4.9.1'
+    embed 'org.reflections:reflections:0.9.12'
+    embed 'com.squareup.okhttp3:okhttp:4.9.1'
 
-    include 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    embed 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
     implementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
@@ -57,28 +57,26 @@ mixin {
 }
 
 jar {
-    manifest {
-        attributes (
-                'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
-                'MixinConfigs': 'mixins.evergreenhud.json'
-        )
-    }
+    manifest.attributes (
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+            'MixinConfigs': 'evergreenhud.forge10809.mixins.json'
+    )
 }
 
 processResources {
-//    inputs.property 'mod_id', mod_id
-//    inputs.property 'mod_version', project.version
-//    inputs.property 'mod_name', mod_name
-//    inputs.property 'mod_description', mod_description
-//
-//    filesMatching('mcmod.info') {
-//        expand (
-//                'mod_id': mod_id,
-//                'mod_version': project.version,
-//                'mod_name': mod_name,
-//                'mod_description', mod_description
-//        )
-//    }
+    inputs.property 'mod_id', mod_id
+    inputs.property 'mod_version', project.version
+    inputs.property 'mod_name', mod_name
+    inputs.property 'mod_description', mod_description
+
+    filesMatching('mcmod.info') {
+        expand(
+                'mod_id': mod_id,
+                'mod_version': project.version,
+                'mod_name': mod_name,
+                'mod_description': mod_description
+        )
+    }
 }
 
 // Forge does not import resources properly.

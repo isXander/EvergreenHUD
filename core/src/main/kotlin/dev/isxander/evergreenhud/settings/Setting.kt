@@ -15,52 +15,61 @@
 
 package dev.isxander.evergreenhud.settings
 
-import dev.isxander.evergreenhud.compatibility.universal.LOGGER
+import dev.isxander.evergreenhud.settings.impl.*
+import gg.essential.elementa.UIComponent
 import java.lang.reflect.Field
 
 @Suppress("UNCHECKED_CAST")
-abstract class Setting<T, E>(val annotation: E, val annotatedObject: Any, val annotatedField: Field, val jsonValue: JsonValues) {
+abstract class Setting<T, A>(val annotation: A, val annotatedObject: Any, val annotatedField: Field, val jsonType: JsonType) {
+
+    abstract val name: String
+    abstract val category: Array<String>
+    abstract val description: String
+    abstract val shouldSave: Boolean
+    val default = value
 
     init {
         annotatedField.isAccessible = true
     }
 
-    abstract fun getName(): String
-    abstract fun getCategory(): Array<String>
-    abstract fun getDescription(): String
-    abstract fun shouldSave(): Boolean
+    var value: T
+        get() {
+            if (SettingAdapter::class.java.isAssignableFrom(annotatedField.type))
+                return (annotatedField.get(annotatedObject) as SettingAdapter<T>).get()
 
-    fun get(): T {
-        if (SettingAdapter::class.java.isAssignableFrom(annotatedField.type))
-            return (annotatedField.get(annotatedObject) as SettingAdapter<T>).get()
+            return getInternal()
+        }
+        set(new) {
+            if (SettingAdapter::class.java.isAssignableFrom(annotatedField.type))
+                (annotatedField.get(annotatedObject) as SettingAdapter<T>).set(new)
+            else
+                setInternal(new)
+        }
 
-        return getInternal()
-    }
     protected abstract fun getInternal(): T
-
-    fun set(new: T) {
-        if (SettingAdapter::class.java.isAssignableFrom(annotatedField.type))
-            (annotatedField.get(annotatedObject) as SettingAdapter<T>).set(new)
-        else
-            setInternal(new)
-    }
     protected abstract fun setInternal(new: T)
 
-    abstract fun setJsonValue(new: Any)
-    abstract fun getJsonValue(): Any
-    abstract fun getDefault(): T
-    abstract fun getDefaultJsonValue(): Any
+    abstract var jsonValue: Any
+    abstract val defaultJsonValue: Any
+    val nameJsonKey: String
+        get() = name.lowercase().trim().replace(" ", "_")
 
     fun reset() {
-        set(getDefault())
+        value = default
     }
-    fun getNameJsonKey(): String {
-        return getName().lowercase().trim().replace(" ", "_")
-    }
-    fun getCategoryJsonKey(): List<String> {
-        return getCategory().map {
-            it.lowercase().trim().replace(" ", "_")
-        }
+
+    abstract fun addComponentToUI(parent: UIComponent)
+
+    companion object {
+        val registeredSettings = mapOf<Class<Annotation>, Class<out Setting<*, *>>>(
+            BooleanSetting::class.java as Class<Annotation> to BooleanSettingWrapped::class.java,
+            ColorSetting::class.java as Class<Annotation> to ColorSettingWrapped::class.java,
+            OptionSetting::class.java as Class<Annotation> to OptionSettingWrapped::class.java,
+            FloatSetting::class.java as Class<Annotation> to FloatSettingWrapped::class.java,
+            IntSetting::class.java as Class<Annotation> to IntSettingWrapped::class.java,
+            StringListSetting::class.java as Class<Annotation> to StringListSettingWrapped::class.java,
+            StringSetting::class.java as Class<Annotation> to StringSettingWrapped::class.java
+        )
     }
 }
 

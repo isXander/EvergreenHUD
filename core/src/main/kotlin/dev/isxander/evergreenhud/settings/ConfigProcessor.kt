@@ -16,15 +16,25 @@
 package dev.isxander.evergreenhud.settings
 
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
+import dev.isxander.evergreenhud.settings.impl.*
 import dev.isxander.evergreenhud.utils.JsonObjectExt
+import java.lang.reflect.Field
+import java.util.ArrayList
+import kotlin.reflect.KClass
+import kotlin.reflect.full.allSuperclasses
+import kotlin.reflect.full.declaredMemberProperties
+import kotlin.reflect.full.findAnnotation
+import kotlin.reflect.full.hasAnnotation
+import kotlin.reflect.jvm.isAccessible
+import kotlin.reflect.jvm.javaField
+import kotlin.reflect.jvm.jvmName
 
 interface ConfigProcessor {
 
-    fun generateJson(): JsonObjectExt
-    fun processJson(json: JsonObjectExt)
+    var json: JsonObjectExt
 
     fun addSettingToJson(setting: Setting<*, *>, json: JsonObjectExt) {
-        val category = setting.getCategoryJsonKey()
+        val category = setting.category
 
         var obj = json
         for (categoryEntry in category) {
@@ -33,14 +43,66 @@ interface ConfigProcessor {
             obj = newObj
         }
 
-        when (setting.jsonValue) {
-            JsonValues.STRING -> obj[setting.getNameJsonKey()] = setting.getJsonValue() as String
-            JsonValues.BOOLEAN -> obj[setting.getNameJsonKey()] = setting.getJsonValue() as Boolean
-            JsonValues.FLOAT -> obj[setting.getNameJsonKey()] = setting.getJsonValue() as Float
-            JsonValues.INT -> obj[setting.getNameJsonKey()] = setting.getJsonValue() as Int
+        when (setting.jsonType) {
+            JsonType.STRING -> obj[setting.nameJsonKey] = setting.jsonValue as String
+            JsonType.BOOLEAN -> obj[setting.nameJsonKey] = setting.jsonValue as Boolean
+            JsonType.FLOAT -> obj[setting.nameJsonKey] = setting.jsonValue as Float
+            JsonType.INT -> obj[setting.nameJsonKey] = setting.jsonValue as Int
         }
+    }
 
-        LOGGER.info("\n${json.toPrettyString()}")
+    fun setSettingFromJson(json: JsonObjectExt, setting: Setting<*, *>) {
+        when (setting.jsonType) {
+            JsonType.BOOLEAN -> setting.jsonValue = json[setting.nameJsonKey, setting.default as Boolean]
+            JsonType.FLOAT -> setting.jsonValue = json[setting.nameJsonKey, setting.default as Float]
+            JsonType.INT -> setting.jsonValue = json[setting.nameJsonKey, setting.default as Int]
+            JsonType.STRING -> setting.jsonValue = json[setting.nameJsonKey, setting.default as String]!!
+        }
+    }
+
+    fun collectSettings(instance: Any, settingProcessor: (Setting<*, *>) -> Unit) {
+        val classes = arrayListOf(instance::class)
+        classes.addAll(instance::class.allSuperclasses)
+        for (declaredClass in classes) {
+            LOGGER.info(declaredClass.jvmName)
+            for (field in declaredClass.declaredMemberProperties) {
+                LOGGER.info("  ${field.name}")
+                field.isAccessible = true
+                for (declaredAnnotation in field.annotations) {
+                    LOGGER.info("    ${declaredAnnotation.annotationClass.qualifiedName}")
+                }
+
+                when {
+                    field.hasAnnotation<BooleanSetting>() ->
+                        settingProcessor.invoke(BooleanSettingWrapped(field.findAnnotation()!!, instance, field.javaField!!))
+                    field.hasAnnotation<ColorSetting>() ->
+                        settingProcessor.invoke(ColorSettingWrapped(field.findAnnotation()!!, instance, field.javaField!!))
+                    field.hasAnnotation<OptionSetting>() ->
+                        settingProcessor.invoke(OptionSettingWrapped(field.findAnnotation()!!, instance, field.javaField!!))
+                    field.hasAnnotation<FloatSetting>() ->
+                        settingProcessor.invoke(FloatSettingWrapped(field.findAnnotation()!!, instance, field.javaField!!))
+                    field.hasAnnotation<IntSetting>() ->
+                        settingProcessor.invoke(IntSettingWrapped(field.findAnnotation()!!, instance, field.javaField!!))
+                    field.hasAnnotation<StringListSetting>() ->
+                        settingProcessor.invoke(StringListSettingWrapped(field.findAnnotation()!!, instance, field.javaField!!))
+                    field.hasAnnotation<StringSetting>() ->
+                        settingProcessor.invoke(StringSettingWrapped(field.findAnnotation()!!, instance, field.javaField!!))
+                }
+
+                // FIXME: 18/07/2021 ahhhh
+//                for ((annotation, wrapped) in Setting.registeredSettings) {
+//                    LOGGER.info("    ${annotation.name}, ${wrapped.name}")
+//                    field.isAccessible = true
+//                    val fieldAnnotation = field.getAnnotation(annotation)
+//                    if (fieldAnnotation != null) {
+//                        LOGGER.info("    Success!")
+//                        settingProcessor.invoke(wrapped.getConstructor(annotation, Any::class.java, Field::class.java)
+//                            .newInstance(fieldAnnotation, instance, field))
+//                        break
+//                    }
+//                }
+            }
+        }
     }
 
 }

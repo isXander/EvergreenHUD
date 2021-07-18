@@ -51,25 +51,19 @@ allprojects {
 
     repositories {
         mavenCentral()
-        maven {
-            name = 'JitPack'
-            url = 'https://jitpack.io/'
-        }
-        maven {
-            name = 'Sk1er Public'
-            url = 'https://repo.sk1er.club/repository/maven-public'
-        }
+        maven { url = 'https://jitpack.io/' }
+        maven { url = 'https://repo.sk1er.club/repository/maven-public' }
     }
 
     configurations {
-        include
-        implementation.extendsFrom(include)
+        embed
+        implementation.extendsFrom(embed)
     }
 
     jar {
         archiveBaseName.set("EvergreenHUD (${project.name}-${project.versionWithRev})")
         archiveVersion.set("")
-        enabled = false
+        archiveClassifier.set("dev")
 
         exclude 'META-INF/INDEX.LIST', 'META-INF/*.SF', 'META-INF/*.DSA', 'META-INF/*.RSA', 'module-info.class'
     }
@@ -79,7 +73,7 @@ allprojects {
         archiveClassifier.set('')
         archiveVersion.set('')
 
-        configurations = [project.configurations.include]
+        configurations = [project.configurations.embed]
         duplicatesStrategy DuplicatesStrategy.EXCLUDE
     }
 

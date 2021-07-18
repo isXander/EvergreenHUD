@@ -15,3 +15,5 @@ lateinit var GL: AIGL11
 lateinit var BUFFER_BUILDER: AIBufferBuilder
 lateinit var FONT_RENDERER: AIFontRenderer
 lateinit var MOUSE_HELPER: AIMouseHelper
+lateinit var PROFILER: AIProfiler
+lateinit var LOADER: AILoader

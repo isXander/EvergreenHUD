@@ -15,7 +15,7 @@
 
 package dev.isxander.evergreenhud.settings
 
-enum class JsonValues {
+enum class JsonType {
     STRING,
     INT,
     FLOAT,

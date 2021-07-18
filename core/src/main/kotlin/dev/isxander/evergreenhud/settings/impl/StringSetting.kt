@@ -1,35 +1,30 @@
 package dev.isxander.evergreenhud.settings.impl
 
-import dev.isxander.evergreenhud.settings.JsonValues
+import dev.isxander.evergreenhud.settings.JsonType
 import dev.isxander.evergreenhud.settings.Setting
+import gg.essential.elementa.UIComponent
 import java.lang.reflect.Field
 
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 @MustBeDocumented
 annotation class StringSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true)
 
-class StringSettingWrapped(annotation: StringSetting, annotationObject: Any, annotatedField: Field) : Setting<String, StringSetting>(annotation, annotationObject, annotatedField, JsonValues.STRING) {
-    private val defaultString: String = get()
+class StringSettingWrapped(annotation: StringSetting, annotationObject: Any, annotatedField: Field) : Setting<String, StringSetting>(annotation, annotationObject, annotatedField, JsonType.STRING) {
+    override val name: String = annotation.name
+    override val category: Array<String> = annotation.category
+    override val description: String = annotation.description
+    override val shouldSave: Boolean = annotation.save
 
-    override fun getName(): String = annotation.name
-    override fun getCategory(): Array<String> = annotation.category
-    override fun getDescription(): String = annotation.description
-    override fun shouldSave(): Boolean = annotation.save
+    override fun getInternal(): String = annotatedField.get(annotatedObject) as String
+    override fun setInternal(new: String) = annotatedField.set(annotatedObject, new)
 
-    override fun getInternal(): String {
-        return annotatedField.get(annotatedObject) as String
+    override var jsonValue: Any
+        get() = value
+        set(new) { value = new as String }
+
+    override val defaultJsonValue: Any = default
+
+    override fun addComponentToUI(parent: UIComponent) {
+        TODO("Not yet implemented")
     }
-
-    override fun setInternal(new: String) {
-        annotatedField.set(annotatedObject, new)
-    }
-    override fun setJsonValue(new: Any) = set(new as String)
-
-    override fun getJsonValue(): String {
-        return getInternal()
-    }
-
-    override fun getDefault(): String = defaultString
-    override fun getDefaultJsonValue(): String = get()
-
 }

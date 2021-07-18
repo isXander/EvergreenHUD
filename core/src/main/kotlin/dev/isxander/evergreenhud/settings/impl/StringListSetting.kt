@@ -1,43 +1,37 @@
 package dev.isxander.evergreenhud.settings.impl
 
-import dev.isxander.evergreenhud.settings.JsonValues
+import dev.isxander.evergreenhud.settings.JsonType
 import dev.isxander.evergreenhud.settings.Setting
+import gg.essential.elementa.UIComponent
 import java.lang.reflect.Field
 
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 @MustBeDocumented
-annotation class StringListSetting(val name: String, val category: Array<String>, val description: String, val defaultIndex: Int, val save: Boolean = true)
+annotation class StringListSetting(val name: String, val category: Array<String>, val description: String, val options: Array<String>, val save: Boolean = true)
 
 @Suppress("UNCHECKED_CAST")
-class StringListSettingWrapped(annotation: StringListSetting, annotationObject: Any, annotatedField: Field) : Setting<Int, StringListSetting>(annotation, annotationObject, annotatedField, JsonValues.INT) {
-    private val options: List<String> = annotatedField.get(annotationObject) as List<String>
-    private var index: Int = annotation.defaultIndex
-    private val defaultIndex: Int = index
+class StringListSettingWrapped(annotation: StringListSetting, annotationObject: Any, annotatedField: Field) : Setting<Int, StringListSetting>(annotation, annotationObject, annotatedField, JsonType.INT) {
+    override val name: String = annotation.name
+    override val category: Array<String> = annotation.category
+    override val description: String = annotation.description
+    override val shouldSave: Boolean = annotation.save
+    val options: Array<String> = annotation.options
 
-    override fun getName(): String = annotation.name
-    override fun getCategory(): Array<String> = annotation.category
-    override fun getDescription(): String = annotation.description
-    override fun shouldSave(): Boolean = annotation.save
-
-    override fun getInternal(): Int {
-        return index
-    }
-    fun getString(): String {
-        return options[index]
-    }
-
+    var string: String
+        get() = annotatedField.get(annotatedObject) as String
+        set(new) { annotatedField.set(annotatedObject, new) }
+    override fun getInternal(): Int = options.indexOf(string)
     override fun setInternal(new: Int) {
-        index = new
-    }
-    override fun setJsonValue(new: Any) = set(new as Int)
-    fun setString(new: String) {
-        index = options.indexOf(new)
+        string = options[new]
     }
 
-    override fun getDefault(): Int = defaultIndex
-    override fun getDefaultJsonValue(): Int = defaultIndex
+    override var jsonValue: Any
+        get() = value
+        set(new) { value = new as Int }
 
-    override fun getJsonValue(): Int {
-        return get()
+    override val defaultJsonValue: Any = default
+
+    override fun addComponentToUI(parent: UIComponent) {
+        TODO("Not yet implemented")
     }
 }

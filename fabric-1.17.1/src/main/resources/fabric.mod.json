@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "evergreenhud",
+  "id": "${mod_id}",
   "version": "${mod_version}",
-  "name": "EvergreenHUD",
+  "name": "${mod_name}",
   "description": "${mod_description}",
   "authors": [
     "isXander"
