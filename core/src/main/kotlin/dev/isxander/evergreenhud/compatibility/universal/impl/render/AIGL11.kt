@@ -1,8 +1,26 @@
+/*
+ | EvergreenHUD - A mod to improve on your heads-up-display.
+ | Copyright (C) isXander [2019 - 2021]
+ |
+ | This program comes with ABSOLUTELY NO WARRANTY
+ | This is free software, and you are welcome to redistribute it
+ | under the certain conditions that can be found here
+ | https://www.gnu.org/licenses/gpl-3.0.en.html
+ |
+ | If you have any questions or concerns, please create
+ | an issue on the github page that can be found here
+ | https://github.com/isXander/EvergreenHUD
+ |
+ | If you have a private concern, please contact
+ | isXander @ business.isxander@gmail.com
+ */
+
 package dev.isxander.evergreenhud.compatibility.universal.impl.render
 
 import dev.isxander.evergreenhud.compatibility.universal.BUFFER_BUILDER
 import dev.isxander.evergreenhud.compatibility.universal.RESOLUTION
 import gg.essential.universal.UMatrixStack
+import java.awt.Color
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -11,6 +29,12 @@ abstract class AIGL11 {
     /* ---------------------------------- */
     /* Render Stuff                 BEGIN */
     /* ---------------------------------- */
+    abstract fun push()
+    abstract fun pop()
+
+    abstract fun scale(x: Float, y: Float, z: Float = 1f)
+    abstract fun translate(x: Float, y: Float, z: Float = 0f)
+    abstract fun rotate(angle: Float, x: Float, y: Float, z: Float)
     abstract fun color(r: Float, g: Float, b: Float, a: Float = 1f)
 
     abstract fun bindTexture(texture: Int)
@@ -95,41 +119,42 @@ abstract class AIGL11 {
         rect(x + width - thickness, y, thickness, height, color)
     }
 
-    open fun roundedRect(matrices: UMatrixStack, x: Float, y: Float, width: Float, height: Float, color: Int, angle: Float) {
+    open fun roundedRect(x: Float, y: Float, width: Float, height: Float, color: Int, angle: Float) {
         if (angle == 0f) {
             rect(x, y, width, height, color)
         } else {
-            partialCircle(matrices, x + angle, y + angle, angle, 0, 90, color)
-            partialCircle(matrices, x + width - angle, y + angle, angle, 270, 360, color)
-            partialCircle(matrices, x + width - angle, y + height - angle, angle, 180, 270, color)
-            partialCircle(matrices, x + angle, y + height - angle, width - angle, 90, 180, color)
-            rect(x + angle, y + height - angle, width - (angle * 2), angle, color)
-            rect(x + angle, y, width - (angle * 2), angle, color)
-            rect(x, y + angle,  width, height - (angle * 2), color)
+            partialCircle(x + angle, y + angle, angle, 0, 90, color);
+            partialCircle(x + width - angle, y + angle, angle, 270, 360, color);
+            partialCircle(
+                x + width - angle, y + height - angle, angle, 180, 270, color);
+            partialCircle(x + angle, y + height - angle, angle, 90, 180, color);
+            rect(x + angle, y + height - angle, width - (angle * 2), angle, color);
+            rect(x + angle, y, width - (angle * 2), angle, color);
+            rect(x, y + angle, width, height - (angle * 2), color);
         }
     }
 
-    open fun partialCircle(matrices: UMatrixStack, x: Float, y: Float, radius: Float, startAngle: Int, endAngle: Int, color: Int) {
-        matrices.push()
+    open fun partialCircle(x: Float, y: Float, radius: Float, startAngle: Int, endAngle: Int, color: Int) {
+        push()
         enableBlend()
         disableTexture()
         defaultBlendFunc()
-        val r = (color shr 24 and 255).toFloat() / 255.0f
-        val g = (color shr 16 and 255).toFloat() / 255.0f
-        val b = (color shr 8 and 255).toFloat() / 255.0f
-        val a = (color and 255).toFloat() / 255.0f
-        color(r, g, b, a)
+        val c = Color(color)
+        val r = c.red / 255.0f
+        val g = c.green / 255.0f
+        val b = c.blue / 255.0f
+        val a = c.alpha / 255.0f
 
         BUFFER_BUILDER
-            .begin(DrawMode.TRIANGLE_FAN, VertexFormats.POSITION)
-            .vertex(x.toDouble(), y.toDouble(), 0.0).next()
+            .begin(DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR)
+            .vertex(x.toDouble(), y.toDouble(), 0.0).color(r, g, b, a).next()
 
         var i = (startAngle / 360.0 * 100.0)
         val end = (endAngle / 360.0 * 100.0)
         while (i <= end) {
-            val angle = (Math.PI * 2 * i / 100) + Math.toRadians(100.0)
+            val angle = (Math.PI * 2 * i / 100) + Math.toRadians(180.0)
             BUFFER_BUILDER
-                .vertex(x + sin(angle) * radius, y + cos(angle) * radius, 0.0).next()
+                .vertex(x + sin(angle) * radius, y + cos(angle) * radius, 0.0).color(r, g, b, a).next()
             i++
         }
 
@@ -137,7 +162,7 @@ abstract class AIGL11 {
 
         enableTexture()
         disableDepth()
-        matrices.pop()
+        pop()
 
         color(1f, 1f, 1f, 1f)
     }

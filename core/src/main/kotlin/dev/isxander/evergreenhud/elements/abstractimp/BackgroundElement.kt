@@ -1,3 +1,20 @@
+/*
+ | EvergreenHUD - A mod to improve on your heads-up-display.
+ | Copyright (C) isXander [2019 - 2021]
+ |
+ | This program comes with ABSOLUTELY NO WARRANTY
+ | This is free software, and you are welcome to redistribute it
+ | under the certain conditions that can be found here
+ | https://www.gnu.org/licenses/gpl-3.0.en.html
+ |
+ | If you have any questions or concerns, please create
+ | an issue on the github page that can be found here
+ | https://github.com/isXander/EvergreenHUD
+ |
+ | If you have a private concern, please contact
+ | isXander @ business.isxander@gmail.com
+ */
+
 package dev.isxander.evergreenhud.elements.abstractimp
 
 import dev.isxander.evergreenhud.compatibility.universal.GL
@@ -8,7 +25,6 @@ import dev.isxander.evergreenhud.settings.impl.BooleanSetting
 import dev.isxander.evergreenhud.settings.impl.ColorSetting
 import dev.isxander.evergreenhud.settings.impl.FloatSetting
 import dev.isxander.evergreenhud.utils.HitBox2D
-import gg.essential.universal.UMatrixStack
 import java.awt.Color
 
 abstract class BackgroundElement : Element() {
@@ -16,8 +32,9 @@ abstract class BackgroundElement : Element() {
     @BooleanSetting(name = "Enabled", category = ["Background"], description = "If the background is rendered.")
     val backgroundEnabled: SettingAdapter<Boolean> = SettingAdapter(true)
         .adaptSetter { enabled ->
-            backgroundColor.set(if (enabled) Color(backgroundColor.get().red, backgroundColor.get().green, backgroundColor.get().blue, 100)
-            else Color(backgroundColor.get().red, backgroundColor.get().green, backgroundColor.get().blue, 0))
+            val new = if (enabled) Color(backgroundColor.get().red, backgroundColor.get().green, backgroundColor.get().blue, 100)
+            else Color(backgroundColor.get().red, backgroundColor.get().green, backgroundColor.get().blue, 0)
+            if (backgroundColor.get() != new) backgroundColor.value = new
 
             return@adaptSetter enabled
         }
@@ -26,15 +43,16 @@ abstract class BackgroundElement : Element() {
     val backgroundColor: SettingAdapter<Color> = SettingAdapter(Color(0, 0, 0, 100))
         .adaptSetter {
             val enabled = it.alpha != 0
-            if (backgroundEnabled.get() != enabled) backgroundEnabled.set(enabled)
+            if (backgroundEnabled.get() != enabled) backgroundEnabled.value = enabled
             return@adaptSetter it
         }
 
     @BooleanSetting(name = "Enabled", category = ["Outline"], description = "If the background is rendered.")
     val outlineEnabled: SettingAdapter<Boolean> = SettingAdapter(false)
         .adaptSetter { enabled ->
-            outlineColor.set(if (enabled) Color(outlineColor.get().red, outlineColor.get().green, outlineColor.get().blue, 255)
-            else Color(outlineColor.get().red, outlineColor.get().green, outlineColor.get().blue, 0))
+            val new = if (enabled) Color(outlineColor.get().red, outlineColor.get().green, outlineColor.get().blue, 255)
+            else Color(outlineColor.get().red, outlineColor.get().green, outlineColor.get().blue, 0)
+            if (outlineColor.get() != new) outlineColor.value = new
 
             return@adaptSetter enabled
         }
@@ -43,7 +61,7 @@ abstract class BackgroundElement : Element() {
     val outlineColor: SettingAdapter<Color> = SettingAdapter(Color(0, 0, 0, 0))
         .adaptSetter {
             val enabled = it.alpha != 0
-            if (outlineEnabled.get() != enabled) outlineEnabled.set(enabled)
+            if (outlineEnabled.get() != enabled) outlineEnabled.value = enabled
             return@adaptSetter it
         }
 
@@ -62,7 +80,7 @@ abstract class BackgroundElement : Element() {
     @FloatSetting(name = "Corner Radius", category = ["Background"], description = "How curvy the edges of the background is.", min = 0f, max = 6f)
     var cornerRadius = 0f
 
-    override fun render(matrices: UMatrixStack, deltaTicks: Float, renderOrigin: RenderOrigin) {
+    override fun render(deltaTicks: Float, renderOrigin: RenderOrigin) {
         val bgCol = backgroundColor.get()
         val outlineCol = outlineColor.get()
 
@@ -70,7 +88,7 @@ abstract class BackgroundElement : Element() {
         val hitbox = calculateHitBox(1f, scale)
 
         if (backgroundEnabled.get()) {
-            GL.roundedRect(matrices, hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol.rgb, cornerRadius)
+            GL.roundedRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol.rgb, cornerRadius)
         }
         if (outlineEnabled.get()) {
             GL.borderRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height, outlineCol.rgb, outlineThickness)

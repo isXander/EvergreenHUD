@@ -1,16 +1,18 @@
 /*
- * Copyright (C) isXander [2019 - 2021]
- * This program comes with ABSOLUTELY NO WARRANTY
- * This is free software, and you are welcome to redistribute it
- * under the certain conditions that can be found here
- * https://www.gnu.org/licenses/gpl-3.0.en.html
- *
- * If you have any questions or concerns, please create
- * an issue on the github page that can be found here
- * https://github.com/isXander/EvergreenHUD
- *
- * If you have a private concern, please contact
- * isXander @ business.isxander@gmail.com
+ | EvergreenHUD - A mod to improve on your heads-up-display.
+ | Copyright (C) isXander [2019 - 2021]
+ |
+ | This program comes with ABSOLUTELY NO WARRANTY
+ | This is free software, and you are welcome to redistribute it
+ | under the certain conditions that can be found here
+ | https://www.gnu.org/licenses/gpl-3.0.en.html
+ |
+ | If you have any questions or concerns, please create
+ | an issue on the github page that can be found here
+ | https://github.com/isXander/EvergreenHUD
+ |
+ | If you have a private concern, please contact
+ | isXander @ business.isxander@gmail.com
  */
 
 package dev.isxander.evergreenhud.elements
@@ -18,8 +20,7 @@ package dev.isxander.evergreenhud.elements
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.compatibility.universal.MCVersion
-import dev.isxander.evergreenhud.settings.ConfigProcessor
-import dev.isxander.evergreenhud.settings.JsonType
+import dev.isxander.evergreenhud.config.ConfigProcessor
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.SettingAdapter
 import dev.isxander.evergreenhud.settings.impl.*
@@ -54,11 +55,7 @@ abstract class Element : ConfigProcessor {
     fun preload(): Element {
         if (preloaded) return this
 
-        LOGGER.info("--------- PRELOADING ----------")
-        collectSettings(this) {
-            LOGGER.info("COLLECTED SETTING")
-            settings.add(it)
-        }
+        collectSettings(this) { settings.add(it) }
 
         preloaded = true
         return this
@@ -71,7 +68,7 @@ abstract class Element : ConfigProcessor {
     // called when element is removed
     open fun onRemoved() {}
 
-    abstract fun render(matrices: UMatrixStack, deltaTicks: Float, renderOrigin: RenderOrigin)
+    abstract fun render(deltaTicks: Float, renderOrigin: RenderOrigin)
 
     abstract fun calculateHitBox(glScale: Float, drawScale: Float): HitBox2D
     protected open val hitboxWidth = 10f

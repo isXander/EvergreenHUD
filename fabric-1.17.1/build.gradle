@@ -11,21 +11,25 @@ buildscript {
 
 apply plugin: 'fabric-loom'
 
+configurations {
+    modInclude
+    modImplementation.extendsFrom modInclude
+}
+
 dependencies {
     embed (project(":core")) {
         exclude module: 'kotlin-stdlib-jdk8'
+        exclude module: 'kotlin-reflect'
         exclude module: 'Elementa'
         exclude module: 'UniversalCraft'
     }
 
-    embed ('gg.essential:Elementa:next-337-11700-fabric-SNAPSHOT') {
+    modInclude ('gg.essential:Elementa:next-337-11700-fabric-SNAPSHOT') {
         exclude module: 'fabric-loader'
     }
-    embed ('gg.essential:UniversalCraft:next-137-11700-fabric-SNAPSHOT') {
+    modInclude ('gg.essential:UniversalCraft:next-137-11700-fabric-SNAPSHOT') {
         exclude module: 'fabric-loader'
     }
-
-    embed 'com.github.KevinPriv:KEventBus:86cf2e023e'
 
     minecraft 'com.mojang:minecraft:1.17.1'
     mappings 'net.fabricmc:yarn:1.17.1+build.14:v2'
@@ -52,6 +56,7 @@ processResources {
 }
 
 shadowJar {
+    configurations = [project.configurations.embed, project.configurations.modInclude]
     archiveClassifier.set 'shadow'
 }
 

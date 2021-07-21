@@ -1,16 +1,18 @@
 /*
- * Copyright (C) isXander [2019 - 2021]
- * This program comes with ABSOLUTELY NO WARRANTY
- * This is free software, and you are welcome to redistribute it
- * under the certain conditions that can be found here
- * https://www.gnu.org/licenses/gpl-3.0.en.html
- *
- * If you have any questions or concerns, please create
- * an issue on the github page that can be found here
- * https://github.com/isXander/EvergreenHUD
- *
- * If you have a private concern, please contact
- * isXander @ business.isxander@gmail.com
+ | EvergreenHUD - A mod to improve on your heads-up-display.
+ | Copyright (C) isXander [2019 - 2021]
+ |
+ | This program comes with ABSOLUTELY NO WARRANTY
+ | This is free software, and you are welcome to redistribute it
+ | under the certain conditions that can be found here
+ | https://www.gnu.org/licenses/gpl-3.0.en.html
+ |
+ | If you have any questions or concerns, please create
+ | an issue on the github page that can be found here
+ | https://github.com/isXander/EvergreenHUD
+ |
+ | If you have a private concern, please contact
+ | isXander @ business.isxander@gmail.com
  */
 
 package dev.isxander.evergreenhud
@@ -31,6 +33,7 @@ import me.kbrewster.eventbus.eventbus
 import me.kbrewster.eventbus.invokers.LMFInvoker
 import org.reflections.Reflections
 import org.reflections.scanners.ResourcesScanner
+import java.awt.Color
 import java.io.File
 import java.net.URI
 import java.nio.file.Files
@@ -76,10 +79,18 @@ object EvergreenHUD {
         }
 
         if (elementManager.checkForUpdates || elementManager.checkForSafety) {
+            LOGGER.info("Getting information from API...")
             Multithreading.runAsync {
                 val response = RepoManager.getResponse()
                 if (elementManager.checkForUpdates && response.outdated) {
+                    LOGGER.info("Found update. Pushing notification to user.")
                     Notifications.push("EvergreenHUD", "EvergreenHUD is out of date. Click here to download the new update.") {
+                        UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
+                    }
+                }
+                if (elementManager.checkForSafety && response.blacklisted) {
+                    LOGGER.info("Mod version has been marked as dangerous. Pushing notification to user.")
+                    Notifications.push("EvergreenHUD", "This version has been remotely marked as dangerous. Please update here.", textColor = Color.red) {
                         UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
                     }
                 }
@@ -101,6 +112,8 @@ object EvergreenHUD {
      * profile icons etc
      */
     private fun exportResources() {
+        LOGGER.info("Exporting resources...")
+
         val reflections = Reflections("evergreenhud.export", ResourcesScanner())
         RESOURCE_DIR.mkdirs()
         File(DATA_DIR, "resources/user").also { it.mkdirs() }
@@ -112,11 +125,13 @@ object EvergreenHUD {
 
         for (file in RESOURCE_DIR.listFiles()) {
             // delete old resources
-            if (resourceMap[file] == null) file.delete()
+            if (resourceMap[file] == null) {
+                LOGGER.info("Deleting unknown resource. (Please use evergreenhud/resources/user for user resources) - ${file.path}")
+                file.delete()
+            }
         }
 
         for ((outputFile, resourceName) in resourceMap) {
-
             val resourceStream = EvergreenHUD::class.java.getResourceAsStream("/$resourceName")
             if (resourceStream == null) {
                 LOGGER.err("Failed to export resource: ${outputFile.path}")

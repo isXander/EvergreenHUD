@@ -1,3 +1,20 @@
+/*
+ | EvergreenHUD - A mod to improve on your heads-up-display.
+ | Copyright (C) isXander [2019 - 2021]
+ |
+ | This program comes with ABSOLUTELY NO WARRANTY
+ | This is free software, and you are welcome to redistribute it
+ | under the certain conditions that can be found here
+ | https://www.gnu.org/licenses/gpl-3.0.en.html
+ |
+ | If you have any questions or concerns, please create
+ | an issue on the github page that can be found here
+ | https://github.com/isXander/EvergreenHUD
+ |
+ | If you have a private concern, please contact
+ | isXander @ business.isxander@gmail.com
+ */
+
 package dev.isxander.evergreenhud.utils
 
 import dev.isxander.evergreenhud.EvergreenHUD
@@ -34,7 +51,6 @@ object Notifications {
     fun onRender(event: RenderTickEvent) {
         if (notifications.isEmpty()) return
 
-        val matrices = event.matrices
         val notif = notifications.first()
         var opacity = 200f
 
@@ -71,27 +87,28 @@ object Notifications {
         notif.mouseOverAdd = MathUtils.lerp(notif.mouseOverAdd, if (mouseOver) 40f else 0f, event.dt / 4f)
             .also { opacity += it }
 
-        matrices.push()
+        GL.push()
         val clampedOpacity = MathUtils.clamp(opacity, 5f, 255f).toInt()
         notif.backColor = Color(notif.backColor.red, notif.backColor.green, notif.backColor.blue, clampedOpacity)
         notif.textColor = Color(notif.textColor.red, notif.textColor.green, notif.textColor.blue, clampedOpacity)
-        GL.roundedRect(matrices, rectX, rectY, rectWidth, rectHeight, notif.backColor.rgb, 5f)
+        GL.roundedRect(rectX, rectY, rectWidth, rectHeight, notif.backColor.rgb, 5f)
+        GL.color(1f, 1f, 1f)
 
         if (notif.time > 0.1f) {
             GL.scissorStart(rectX.toInt(), rectY.toInt(), rectWidth.toInt(), rectHeight.toInt())
             var i = 0
             for (line in wrappedTitle) {
-                GuiUtils.drawString(matrices, DefaultFonts.JETBRAINS_MONO_FONT_RENDERER, line, RESOLUTION.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + FONT_RENDERER.fontHeight * i, notif.textColor, centered = true, shadow = true)
+                GuiUtils.drawString(line, RESOLUTION.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + FONT_RENDERER.fontHeight * i, notif.textColor.rgb, centered = true, shadow = true)
                 i++
             }
             for (line in wrappedDesc) {
-                GuiUtils.drawString(matrices, DefaultFonts.JETBRAINS_MONO_FONT_RENDERER, line, RESOLUTION.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + FONT_RENDERER.fontHeight * i, notif.textColor, centered = true, shadow = true)
+                GuiUtils.drawString(line, RESOLUTION.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + FONT_RENDERER.fontHeight * i, notif.textColor.rgb, centered = true, shadow = true)
                 i++
             }
             GL.scissorEnd()
         }
 
-        matrices.pop()
+        GL.pop()
 
         if (notif.time >= (if (notif.duration == -1) 5 else notif.duration)) {
             notif.closing = true

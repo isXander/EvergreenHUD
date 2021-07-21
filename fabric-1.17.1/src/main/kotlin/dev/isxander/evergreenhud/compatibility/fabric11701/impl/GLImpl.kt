@@ -1,3 +1,20 @@
+/*
+ | EvergreenHUD - A mod to improve on your heads-up-display.
+ | Copyright (C) isXander [2019 - 2021]
+ |
+ | This program comes with ABSOLUTELY NO WARRANTY
+ | This is free software, and you are welcome to redistribute it
+ | under the certain conditions that can be found here
+ | https://www.gnu.org/licenses/gpl-3.0.en.html
+ |
+ | If you have any questions or concerns, please create
+ | an issue on the github page that can be found here
+ | https://github.com/isXander/EvergreenHUD
+ |
+ | If you have a private concern, please contact
+ | isXander @ business.isxander@gmail.com
+ */
+
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
 import com.mojang.blaze3d.platform.GlStateManager
@@ -5,10 +22,19 @@ import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.compatibility.fabric11701.Main
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.AIGL11
 import net.minecraft.client.render.GameRenderer
+import net.minecraft.util.math.Quaternion
+import net.minecraft.util.math.Vec3f
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL20
 
 class GLImpl : AIGL11() {
-    override fun color(r: Float, g: Float, b: Float, a: Float) = GL11.glColor4f(r, g, b, a)
+    override fun push() = Main.matrices.push()
+    override fun pop() = Main.matrices.pop()
+    override fun scale(x: Float, y: Float, z: Float) = Main.matrices.scale(x, y, z)
+    override fun translate(x: Float, y: Float, z: Float) = Main.matrices.translate(x.toDouble(), y.toDouble(), z.toDouble())
+    override fun rotate(angle: Float, x: Float, y: Float, z: Float) = Main.matrices.multiply(Quaternion(Vec3f(x, y, z), angle, true))
+
+    override fun color(r: Float, g: Float, b: Float, a: Float) = RenderSystem.clearColor(r, g, b, a)
 
     override fun bindTexture(texture: Int) = RenderSystem.bindTexture(texture)
 
@@ -18,11 +44,11 @@ class GLImpl : AIGL11() {
 
     override fun lineWidth(width: Float) = RenderSystem.lineWidth(width)
 
-    override fun enable(target: Int) = GL11.glEnable(target)
-    override fun disable(target: Int) = GL11.glDisable(target)
+    override fun enable(target: Int) = GL20.glEnable(target)
+    override fun disable(target: Int) = GL20.glDisable(target)
 
-    override fun begin(mode: Int) = GL11.glBegin(mode)
-    override fun end() = GL11.glEnd()
+    override fun begin(mode: Int) = GL20.glBegin(mode)
+    override fun end() = GL20.glEnd()
 
     override fun enableBlend() = RenderSystem.enableBlend()
     override fun disableBlend() = RenderSystem.disableBlend()
@@ -48,6 +74,11 @@ class GLImpl : AIGL11() {
     override fun modalRect(x: Float, y: Float, u: Float, v: Float, uWidth: Float, vHeight: Float, width: Float, height: Float, tileWidth: Float, tileHeight: Float) {
         RenderSystem.setShader { GameRenderer.getPositionColorShader() }
         super.modalRect(x, y, u, v, uWidth, vHeight, width, height, tileWidth, tileHeight)
+    }
+
+    override fun partialCircle(x: Float, y: Float, radius: Float, startAngle: Int, endAngle: Int, color: Int) {
+        RenderSystem.setShader { GameRenderer.getPositionColorShader() }
+        super.partialCircle(x, y, radius, startAngle, endAngle, color)
     }
 
 }
