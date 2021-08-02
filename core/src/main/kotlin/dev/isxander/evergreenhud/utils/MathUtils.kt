@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -18,7 +18,6 @@
 package dev.isxander.evergreenhud.utils
 
 import java.math.BigDecimal
-import java.util.*
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -107,6 +106,18 @@ object MathUtils {
         var bd = BigDecimal(num.toString())
         bd = bd.setScale(places, BigDecimal.ROUND_DOWN)
         return bd.toFloat()
+    }
+
+    fun wrapAngleTo180(_value: Float): Float {
+        var value = _value
+        value %= 360.0f
+        if (value >= 180.0f) {
+            value -= 360.0f
+        }
+        if (value < -180.0f) {
+            value += 360.0f
+        }
+        return value
     }
     
 }

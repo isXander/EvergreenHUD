@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -69,13 +69,8 @@ interface ConfigProcessor {
         val classes = arrayListOf(instance::class)
         classes.addAll(instance::class.allSuperclasses)
         for (declaredClass in classes) {
-            LOGGER.info(declaredClass.jvmName)
             for (property in declaredClass.declaredMemberProperties) {
-                LOGGER.info("  ${property.name}")
                 property.isAccessible = true
-                for (declaredAnnotation in property.annotations) {
-                    LOGGER.info("    ${declaredAnnotation.annotationClass.qualifiedName}")
-                }
 
                 @Suppress("UNCHECKED_CAST")
                 try {
@@ -127,7 +122,7 @@ interface ConfigProcessor {
                     LOGGER.err("---------------------------")
                     LOGGER.err("FAILED TO COLLECT SETTING!")
                     LOGGER.err("Setting is incorrect type!")
-                    LOGGER.err("Offendor: ${property.name}")
+                    LOGGER.err("Offender: ${property.name}")
                     LOGGER.err("Class: ${declaredClass.qualifiedName ?: "UNKNOWN"}")
                     LOGGER.err("---------------------------")
                 }

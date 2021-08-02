@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -19,10 +19,12 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.compatibility.universal.MC
 import dev.isxander.evergreenhud.elements.ElementMeta
-import dev.isxander.evergreenhud.elements.abstractimp.SimpleTextElement
+import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 
 @ElementMeta(id = "FPS", name = "FPS Display", category = "Simple", description = "Display how many times your screen is updating every second.")
 class ElementFps : SimpleTextElement() {
+
     override fun calculateValue(): String = MC.fps.toString()
     override var title: String = "FPS"
+
 }

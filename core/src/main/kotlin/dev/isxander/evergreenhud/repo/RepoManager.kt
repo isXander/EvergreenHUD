@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -26,7 +26,7 @@ import java.lang.Exception
 
 object RepoManager {
 
-    private const val jsonUrl = "https://raw.githubusercontent.com/isXander/EvergreenHUD/main/blacklisted.json"
+    private const val jsonUrl = "https://dl.isxander.dev/mods/evergreenhud/blacklisted.json"
 
     fun getResponse(): RepoResponse {
         val out = try { HttpsUtils.getString(jsonUrl) }
@@ -34,8 +34,18 @@ object RepoManager {
 
         val json = JsonObjectExt(out)
 
-        val blacklisted = json["blacklisted", JsonArray()]!!.contains(JsonPrimitive(EvergreenInfo.MOD_REVISION))
-        val outdated = json["latest", EvergreenInfo.MOD_REVISION]!!.equals(EvergreenInfo.MOD_REVISION, ignoreCase = true)
+        val blacklisted = json["blacklisted", JsonArray()]!!.contains(JsonPrimitive(EvergreenInfo.REVISION))
+
+        val latestJson = json["latest", JsonObjectExt()]!!
+        val major = latestJson["major", 1]
+        val minor = latestJson["minor", 0]
+        val patch = latestJson["patch", 0]
+        val prerelease = latestJson["pre", -1]
+
+        val outdated = EvergreenInfo.VERSION_MAJOR < major
+                || EvergreenInfo.VERSION_MINOR < minor
+                || EvergreenInfo.VERSION_PATCH < patch
+                || EvergreenInfo.VERSION_PRERELEASE ?: -1 < prerelease
         return RepoResponse(outdated, blacklisted)
     }
 

@@ -5,11 +5,17 @@ buildConfig {
     packageName('dev.isxander.evergreenhud')
     useKotlinOutput()
 
-    buildConfigField('String', 'MOD_NAME', "\"${mod_name}\"")
-    buildConfigField('String', 'MOD_ID', "\"${mod_id}\"")
-    buildConfigField('String', 'MOD_VERSION', "\"${project.version}\"")
-    buildConfigField('String', 'MOD_REVISION', "\"${project.gitHash == null ? '???????' : project.gitHash}\"")
-    buildConfigField('dev.isxander.evergreenhud.repo.ReleaseChannel', 'CHANNEL', "ReleaseChannel.${!core_prerelease.trim().isEmpty() ? 'BETA' : 'RELEASE'}")
+    buildConfigField('String', 'NAME', "\"${mod_name}\"")
+    buildConfigField('String', 'ID', "\"${mod_id}\"")
+
+    buildConfigField('Int', 'VERSION_MAJOR', version_major)
+    buildConfigField('Int', 'VERSION_MINOR', version_minor)
+    buildConfigField('Int', 'VERSION_PATCH', version_patch)
+    buildConfigField('Int?', 'VERSION_PRERELEASE', (prerelease ? version_prerelease : 'null'))
+    buildConfigField('String', 'VERSION_FULL', "\"${project.version}\"")
+    buildConfigField('String', 'REVISION', "\"${project.gitHash == null ? '???????' : project.gitHash}\"")
+
+    buildConfigField('dev.isxander.evergreenhud.repo.ReleaseChannel', 'CHANNEL', "ReleaseChannel.${!version_prerelease.trim().isEmpty() ? 'BETA' : 'RELEASE'}")
 }
 
 repositories {
@@ -17,16 +23,18 @@ repositories {
 }
 
 dependencies {
-    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
-    api "org.jetbrains.kotlin:kotlin-reflect"
+    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21'
+    api 'org.jetbrains.kotlin:kotlin-reflect:1.5.21'
 
     api 'com.google.code.gson:gson:2.8.7'
 
-    api 'dev.isXander.chachy-mc-api:keventbus-dsl:0.2.0'
+    api 'club.chachy.kotlin-forge-api:forge-event-dsl:89d6c3b503'
     api 'com.github.KevinPriv:KEventBus:86cf2e023e'
 
     api 'org.reflections:reflections:0.9.12'
-    api 'com.squareup.okhttp3:okhttp:4.9.1'
+    api ('com.squareup.okhttp3:okhttp:4.9.1') {
+        exclude module: 'kotlin-stdlib'
+    }
 
     // there is no api jar for Elementa or UniversalCraft so
     // depend on whatever version and exclude all dependencies
@@ -55,7 +63,7 @@ dependencies {
 }
 
 shadowJar {
-    relocate 'com.google.gson', 'dev.isxander.gson'
+    relocate 'com.google.gson', 'dev.isxander.lib.gson'
 }
 
 jar {

@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -31,8 +31,7 @@ import gg.essential.universal.UMatrixStack
 
 abstract class Element : ConfigProcessor {
 
-    var preloaded = false
-        private set
+    private var preloaded = false
     val settings: ArrayList<Setting<*, *>> = ArrayList()
     val metadata: ElementMeta = this::class.java.getAnnotation(ElementMeta::class.java)
     var position: Position = Position.scaledPositioning(0.5f, 0.5f, 1f)
@@ -47,8 +46,10 @@ abstract class Element : ConfigProcessor {
 
     @BooleanSetting(name = "Show In Chat", category = ["Visibility"], description = "Whether or not element should be displayed in the chat menu. (Takes priority over show under gui)")
     var showInChat: Boolean = false
+
     @BooleanSetting(name = "Show In F3", category = ["Visibility"], description = "Whether or not element should be displayed when you have the debug menu open.")
     var showInDebug: Boolean = false
+
     @BooleanSetting(name = "Show Under GUIs", category = ["Visibility"], description = "Whether or not element should be displayed when you have a gui open.")
     var showUnderGui: Boolean = false
 
@@ -56,6 +57,7 @@ abstract class Element : ConfigProcessor {
         if (preloaded) return this
 
         collectSettings(this) { settings.add(it) }
+        init()
 
         preloaded = true
         return this
@@ -64,9 +66,13 @@ abstract class Element : ConfigProcessor {
     // called after settings have loaded
     open fun init() {}
     // called when element is added
-    open fun onAdded() {}
+    open fun onAdded() {
+        EvergreenHUD.EVENT_BUS.register(this)
+    }
     // called when element is removed
-    open fun onRemoved() {}
+    open fun onRemoved() {
+        EvergreenHUD.EVENT_BUS.unregister(this)
+    }
 
     abstract fun render(deltaTicks: Float, renderOrigin: RenderOrigin)
 
@@ -111,6 +117,10 @@ abstract class Element : ConfigProcessor {
                 setSettingFromJson(categoryJson, setting)
             }
         }
+
+    companion object {
+        val UTILITY_SHARER = ElementUtilitySharer()
+    }
 
 }
 

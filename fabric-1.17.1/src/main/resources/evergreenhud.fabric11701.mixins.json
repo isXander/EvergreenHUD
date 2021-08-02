@@ -9,8 +9,11 @@
   },
   "mixins": [
     "AccessorMinecraftClient",
+    "MixinClientConnection",
+    "MixinClientPlayerEntity",
     "MixinInGameHud",
     "MixinMinecraftClient",
+    "MixinPlayerEntity",
     "MixinTitleScreen"
   ]
 }

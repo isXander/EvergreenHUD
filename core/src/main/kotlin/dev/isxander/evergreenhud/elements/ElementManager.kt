@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -18,24 +18,26 @@
 package dev.isxander.evergreenhud.elements
 
 import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.compatibility.universal.MC_VERSION
 import dev.isxander.evergreenhud.compatibility.universal.PROFILER
 import dev.isxander.evergreenhud.config.ConfigProcessor
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
 import dev.isxander.evergreenhud.event.RenderHUDEvent
+import dev.isxander.evergreenhud.event.on
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.impl.*
 import dev.isxander.evergreenhud.utils.JsonObjectExt
 import me.kbrewster.eventbus.Subscribe
 import org.reflections.Reflections
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
-
 
 class ElementManager : ConfigProcessor, Iterable<Element> {
 
     private val availableElements: MutableMap<String, Class<out Element>> = HashMap()
-    val currentElements: ArrayList<Element> = ArrayList()
+    private val currentElements: ArrayList<Element> = ArrayList()
 
     /* Config */
     val mainConfig: MainConfig = MainConfig(this)
@@ -57,7 +59,22 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         collectSettings(this) { settings.add(it) }
         findAndRegisterElements()
 
+        on<RenderHUDEvent>()
+            .filter { enabled }
+            .subscribe {  }
         EvergreenHUD.EVENT_BUS.register(this)
+    }
+
+    fun addElement(element: Element) {
+        if (!element.metadata.allowedVersions.contains(MC_VERSION)) throw IllegalArgumentException("Element not compatible with this version.")
+
+        currentElements.add(element)
+        element.onAdded()
+    }
+
+    fun removeElement(element: Element) {
+        currentElements.remove(element)
+        element.onRemoved()
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -95,6 +112,14 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
             }
         }
         return null
+    }
+
+    fun getCurrentElements(): List<Element> {
+        return Collections.unmodifiableList(currentElements)
+    }
+
+    fun clearElements() {
+        currentElements.clear()
     }
 
     @Subscribe

@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -30,4 +30,8 @@ class MouseHelperImpl : AIMouseHelper() {
         get() = Mouse.isButtonDown(0)
     override val wasRightMouseDown: Boolean
         get() = Mouse.isButtonDown(1)
+
+    override fun isButtonDown(button: Int): Boolean {
+        return Mouse.isButtonDown(button)
+    }
 }

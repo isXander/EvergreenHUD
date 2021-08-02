@@ -10,17 +10,18 @@ plugins {
 }
 
 ext {
+    prerelease = !version_prerelease.trim().isEmpty()
     gitHash = (grgit != null && grgit.head() != null ? grgit.head().abbreviatedId : null)
     versionStr = {
-        def ver = core_version
+        def ver = "$version_major.$version_minor.$version_patch"
 
         // CI Builds Only
         def run_num = System.getenv('GITHUB_RUN_NUMBER')
         if (run_num != null)
             ver += "-build.${run_num}"
 
-        if (!core_prerelease.trim().isEmpty())
-            ver += "-pre.${core_prerelease}"
+        if (prerelease)
+            ver += "-pre.${version_prerelease}"
 
         return ver
     }()

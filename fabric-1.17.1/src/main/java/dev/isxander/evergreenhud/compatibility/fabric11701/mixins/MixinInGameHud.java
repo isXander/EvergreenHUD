@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -20,7 +20,6 @@ package dev.isxander.evergreenhud.compatibility.fabric11701.mixins;
 import dev.isxander.evergreenhud.EvergreenHUD;
 import dev.isxander.evergreenhud.compatibility.fabric11701.Main;
 import dev.isxander.evergreenhud.event.RenderHUDEvent;
-import gg.essential.universal.UMatrixStack;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;

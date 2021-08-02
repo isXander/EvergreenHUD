@@ -86,8 +86,8 @@ Please make sure to make a useful contribution that will benefit either the user
 
 ## License
 
-This project is licensed under the [GPL 3.0](LICENSE)
-GNU General Public License v3.0 - see the [LICENSE](LICENSE) file for
+This project is licensed under the [GPL 3.0](LICENSE.md)
+GNU General Public License v3.0 - see the [LICENSE](LICENSE.md) file for
 details.
 
 ## Credits

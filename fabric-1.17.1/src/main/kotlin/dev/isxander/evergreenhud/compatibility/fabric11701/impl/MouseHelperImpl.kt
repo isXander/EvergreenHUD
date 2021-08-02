@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -27,4 +27,8 @@ class MouseHelperImpl : AIMouseHelper() {
     override val mouseY: Float get() = (mc.mouse.y * (RESOLUTION.scaledHeight / RESOLUTION.displayHeight)).toFloat()
     override val wasLeftMouseDown: Boolean get() = mc.mouse.wasLeftButtonClicked()
     override val wasRightMouseDown: Boolean get() = mc.mouse.wasRightButtonClicked()
+
+    override fun isButtonDown(button: Int): Boolean {
+        return GLFW.glfwGetMouseButton(mc.window.handle, button) == GLFW.GLFW_PRESS
+    }
 }

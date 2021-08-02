@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -18,20 +18,25 @@
 package dev.isxander.evergreenhud.compatibility.universal.impl.entity
 
 abstract class AIEntity {
-    abstract fun isNull(): Boolean
+    abstract val isNull: Boolean
 
-    abstract fun getX(): Double
-    abstract fun getY(): Double
-    abstract fun getZ(): Double
+    override operator fun equals(other: Any?): Boolean {
+        if (other == null && isNull) return true
+        return super.equals(other)
+    }
 
-    abstract fun getPrevX(): Double
-    abstract fun getPrevY(): Double
-    abstract fun getPrevZ(): Double
+    abstract val x: Double
+    abstract val y: Double
+    abstract val z: Double
 
-    abstract fun getId(): Int
+    abstract val prevX: Double
+    abstract val prevY: Double
+    abstract val prevZ: Double
 
-    abstract fun getYaw(): Float
-    abstract fun getPitch(): Float
+    abstract val id: Int
+
+    abstract val yaw: Float
+    abstract val pitch: Float
 
     abstract fun getReachDistFromEntity(entity: AIEntity): Double
 

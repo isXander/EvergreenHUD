@@ -5,7 +5,7 @@
  | This program comes with ABSOLUTELY NO WARRANTY
  | This is free software, and you are welcome to redistribute it
  | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/gpl-3.0.en.html
+ | https://www.gnu.org/licenses/lgpl-3.0.en.html
  |
  | If you have any questions or concerns, please create
  | an issue on the github page that can be found here
@@ -21,6 +21,7 @@ import dev.isxander.evergreenhud.compatibility.fabric11701.mc
 import dev.isxander.evergreenhud.compatibility.fabric11701.mixins.AccessorMinecraftClient
 import dev.isxander.evergreenhud.compatibility.universal.impl.AIMinecraft
 import dev.isxander.evergreenhud.compatibility.universal.impl.entity.AIEntity
+import net.fabricmc.loader.api.FabricLoader
 import java.io.File
 
 class MinecraftImpl : AIMinecraft() {
@@ -29,5 +30,6 @@ class MinecraftImpl : AIMinecraft() {
     override val dataDir: File = mc.runDirectory
     override val fps: Int get() = AccessorMinecraftClient.getFps()
     override val inGameHasFocus: Boolean get() = mc.currentScreen != null
+    override val devEnv: Boolean = FabricLoader.getInstance().isDevelopmentEnvironment
 
 }
