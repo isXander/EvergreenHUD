@@ -17,10 +17,13 @@
 
 package dev.isxander.evergreenhud.config.profile
 
+import dev.isxander.evergreenhud.EvergreenHUD
+import java.io.File
+
 data class Profile(
     val id: String,
     val name: String,
     val description: String,
-    val icon: DefaultIconProvider = DefaultIconProvider()
+    val icon: String = File(EvergreenHUD.RESOURCE_DIR, "icon.png").path
 )
 

@@ -17,17 +17,15 @@
 
 package dev.isxander.evergreenhud.elements
 
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigObject
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.compatibility.universal.MCVersion
 import dev.isxander.evergreenhud.config.ConfigProcessor
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.SettingAdapter
 import dev.isxander.evergreenhud.settings.impl.*
-import dev.isxander.evergreenhud.utils.HitBox2D
-import dev.isxander.evergreenhud.utils.JsonObjectExt
-import dev.isxander.evergreenhud.utils.Position
-import gg.essential.universal.UMatrixStack
+import dev.isxander.evergreenhud.utils.*
 
 abstract class Element : ConfigProcessor {
 
@@ -87,34 +85,35 @@ abstract class Element : ConfigProcessor {
         if (save) EvergreenHUD.elementManager.elementConfig.save()
     }
 
-    override var json: JsonObjectExt
+    override var conf: ConfigObject
         get() {
-            val json = JsonObjectExt()
+            var config = ConfigFactory.empty()
+                .withValue("x", position.scaledX.asConfig())
+                .withValue("y", position.scaledY.asConfig())
+                .withValue("scale", position.scale.asConfig())
+                .root()
 
-            json["x"] = position.scaledX
-            json["y"] = position.scaledY
-            json["scale"] = position.scale
-            val dynamic = JsonObjectExt()
+            var settingsData = ConfigFactory.empty().root()
             for (setting in settings) {
                 if (!setting.shouldSave) continue
-                addSettingToJson(setting, dynamic)
+                settingsData = addSettingToConfig(setting, settingsData)
             }
-            json["dynamic"] = dynamic
+            config = config.withValue("settings", settingsData)
 
-            return json
+            return config
         }
         set(json) {
-            position.scaledX = json["x", position.scaledX]
-            position.scaledY = json["y", position.scaledY]
-            position.scale = json["scale", position.scale]
+            position.scaledX = json.getOrDefault("x", position.scaledX.asConfig()).float()
+            position.scaledY = json.getOrDefault("y", position.scaledY.asConfig()).float()
+            position.scale = json.getOrDefault("scale", position.scale.asConfig()).float()
 
-            val dynamic = json["dynamic", JsonObjectExt()]!!
+            val settingsData = json.getOrDefault("settings", ConfigFactory.empty().root()).obj()
             for (setting in settings) {
-                var categoryJson = dynamic
+                var categoryData = settingsData
                 for (categoryName in setting.category)
-                    categoryJson = categoryJson[categoryName, JsonObjectExt()]!!
+                    categoryData = categoryData.getOrDefault(categoryName, ConfigFactory.empty().root()).obj()
 
-                setSettingFromJson(categoryJson, setting)
+                setSettingFromConfig(categoryData, setting)
             }
         }
 

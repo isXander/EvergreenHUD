@@ -17,11 +17,9 @@
 
 package dev.isxander.evergreenhud.settings.impl
 
-import dev.isxander.evergreenhud.settings.JsonType
+import dev.isxander.evergreenhud.settings.HoconType
 import dev.isxander.evergreenhud.settings.Setting
 import gg.essential.elementa.UIComponent
-import java.lang.reflect.Field
-import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
@@ -29,7 +27,7 @@ import kotlin.reflect.KProperty1
 annotation class StringListSetting(val name: String, val category: Array<String>, val description: String, val options: Array<String>, val save: Boolean = true)
 
 @Suppress("UNCHECKED_CAST")
-class StringListSettingWrapped(annotation: StringListSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, String>) : Setting<String, StringListSetting>(annotation, annotationObject, annotatedProperty, JsonType.INT) {
+class StringListSettingWrapped(annotation: StringListSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, String>) : Setting<String, StringListSetting>(annotation, annotationObject, annotatedProperty, HoconType.INT) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description
@@ -39,11 +37,11 @@ class StringListSettingWrapped(annotation: StringListSetting, annotationObject: 
     override fun getInternal(): String = annotatedProperty.call(annotatedObject)
     override fun setInternal(new: String) = mutableProperty!!.setter.call(annotatedObject, new)
 
-    override var jsonValue: Any
+    override var serializedValue: Any
         get() = value
         set(new) { value = options[new as Int] }
 
-    override val defaultJsonValue: Any = options.indexOf(default)
+    override val defaultSerializedValue: Any = options.indexOf(default)
 
     override fun addComponentToUI(parent: UIComponent) {
         TODO("Not yet implemented")

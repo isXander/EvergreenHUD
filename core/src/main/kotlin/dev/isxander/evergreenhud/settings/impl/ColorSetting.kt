@@ -17,18 +17,17 @@
 
 package dev.isxander.evergreenhud.settings.impl
 
-import dev.isxander.evergreenhud.settings.JsonType
+import dev.isxander.evergreenhud.settings.HoconType
 import dev.isxander.evergreenhud.settings.Setting
 import gg.essential.elementa.UIComponent
 import java.awt.Color
-import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 @MustBeDocumented
 annotation class ColorSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true, val transparency: Boolean = true)
 
-class ColorSettingWrapped(annotation: ColorSetting, annotatedObject: Any, annotatedProperty: KProperty1<out Any, Color>) : Setting<Color, ColorSetting>(annotation, annotatedObject, annotatedProperty, JsonType.INT) {
+class ColorSettingWrapped(annotation: ColorSetting, annotatedObject: Any, annotatedProperty: KProperty1<out Any, Color>) : Setting<Color, ColorSetting>(annotation, annotatedObject, annotatedProperty, HoconType.INT) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description
@@ -38,11 +37,11 @@ class ColorSettingWrapped(annotation: ColorSetting, annotatedObject: Any, annota
     override fun getInternal(): Color = annotatedProperty.call(annotatedObject)
     override fun setInternal(new: Color) = mutableProperty!!.setter.call(annotatedObject, new)
 
-    override var jsonValue: Any
+    override var serializedValue: Any
         get() = value.rgb
         set(new) { value = Color(new as Int) }
 
-    override val defaultJsonValue: Any = default.rgb
+    override val defaultSerializedValue: Any = default.rgb
 
     override fun addComponentToUI(parent: UIComponent) {
         TODO("Not yet implemented")

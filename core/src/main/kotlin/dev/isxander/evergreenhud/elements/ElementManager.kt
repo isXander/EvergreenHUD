@@ -17,6 +17,8 @@
 
 package dev.isxander.evergreenhud.elements
 
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigObject
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.MC_VERSION
 import dev.isxander.evergreenhud.compatibility.universal.PROFILER
@@ -27,7 +29,7 @@ import dev.isxander.evergreenhud.event.RenderHUDEvent
 import dev.isxander.evergreenhud.event.on
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.impl.*
-import dev.isxander.evergreenhud.utils.JsonObjectExt
+import dev.isxander.evergreenhud.utils.obj
 import me.kbrewster.eventbus.Subscribe
 import org.reflections.Reflections
 import java.lang.IllegalArgumentException
@@ -143,24 +145,24 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 //        mc.mcProfiler.endSection()
     }
 
-    override var json: JsonObjectExt
+    override var conf: ConfigObject
         get() {
-            val json = JsonObjectExt()
+            var data = ConfigFactory.empty().root()
 
             for (setting in settings) {
                 if (!setting.shouldSave) continue
-                addSettingToJson(setting, json)
+                data = addSettingToConfig(setting, data)
             }
 
-            return json
+            return data
         }
         set(value) {
             for (setting in settings) {
-                var categoryJson = value
+                var categoryData = value
                 for (categoryName in setting.category)
-                    categoryJson = categoryJson[categoryName, JsonObjectExt()]!!
+                    categoryData = categoryData.getOrDefault(categoryName, ConfigFactory.empty().root()).obj()
 
-                setSettingFromJson(categoryJson, setting)
+                setSettingFromConfig(categoryData, setting)
             }
         }
 

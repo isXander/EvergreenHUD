@@ -22,12 +22,11 @@ import gg.essential.elementa.UIComponent
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
-import kotlin.reflect.full.createType
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.isAccessible
 
 @Suppress("UNCHECKED_CAST")
-abstract class Setting<T, A>(val annotation: A, val annotatedObject: Any, val annotatedProperty: KProperty1<out Any, T>, val jsonType: JsonType) {
+abstract class Setting<T, A>(val annotation: A, val annotatedObject: Any, val annotatedProperty: KProperty1<out Any, T>, val hoconType: HoconType) {
 
     abstract val name: String
     abstract val category: Array<String>
@@ -61,10 +60,10 @@ abstract class Setting<T, A>(val annotation: A, val annotatedObject: Any, val an
     protected abstract fun getInternal(): T
     protected abstract fun setInternal(new: T)
 
-    abstract var jsonValue: Any
-    abstract val defaultJsonValue: Any
-    val nameJsonKey: String
-        get() = name.lowercase().trim().replace(" ", "_")
+    abstract var serializedValue: Any
+    abstract val defaultSerializedValue: Any
+    val nameSerializedKey: String
+        get() = name.lowercase().trim().replace(" ", "")
 
     fun reset() {
         value = default

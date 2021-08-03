@@ -17,75 +17,81 @@
 
 package dev.isxander.evergreenhud.config
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigObject
+import com.typesafe.config.ConfigRenderOptions
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.utils.JsonObjectExt
+import dev.isxander.evergreenhud.utils.*
 import java.io.File
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 class ElementConfig(private val manager: ElementManager) {
 
     private var shouldSave = false
 
     fun save() {
-        val json = JsonObjectExt()
-        json["schema"] = SCHEMA
+        var data = ConfigFactory.empty()
+            .withValue("schema", SCHEMA.asConfig())
+            .root()
 
-        val arr = JsonArray()
+        val arr = arrayListOf<ConfigObject>()
         for (element in manager) {
-            val obj = JsonObjectExt()
-            obj["id"] = manager.getElementId(element)
-            obj["data"] = element.json
-            arr.add(obj.data)
+            arr.add(ConfigFactory.empty()
+                .withValue("id", manager.getElementId(element).asConfig())
+                .withValue("data", element.conf).root())
         }
-        json["elements"] = arr
+        data = data.withValue("elements", arr.asConfig())
 
-        json.writeToFile(CONFIG_FILE)
+
+        CONFIG_FILE.parentFile.mkdirs()
+        Files.write(
+            CONFIG_FILE.toPath(),
+            data.toConfig().resolve().root().render(HoconUtils.niceRender).lines(),
+            StandardCharsets.UTF_8
+        )
         shouldSave = false
     }
 
     fun load() {
         if (!CONFIG_FILE.exists()) save().also { return@load }
-        val json = attemptConversion(JsonObjectExt.getFromFile(CONFIG_FILE))
+        val json = attemptConversion(ConfigFactory.parseFile(CONFIG_FILE).root())
 
         manager.clearElements()
-        val arr = json["elements", JsonArray()]!!
-        for (elementJsonElement in arr) {
-            if (elementJsonElement is JsonObject) {
-                val elementJson = JsonObjectExt(elementJsonElement)
-                val id = elementJson["id", "null"]
-                val element = manager.getNewElementInstance(id)
+        val arr = json.toConfig().getObjectList("elements")
+        for (elementData in arr) {
+            val id = elementData.getOrDefault("id", "null".asConfig()).string()
+            val element = manager.getNewElementInstance(id)
 
-                if (element == null) {
-                    LOGGER.err("Found unknown element id ($id) in json! This probably means someone tampered with the json!")
-                    continue
-                }
-
-                element.preload().json = elementJson["data", JsonObjectExt()]!!
-                manager.addElement(element)
+            if (element == null) {
+                LOGGER.err("Found unknown element id ($id) in json! This probably means someone tampered with the json!")
+                continue
             }
+
+            element.preload().conf = elementData["data"]!!.obj()
+            manager.addElement(element)
         }
 
         if (shouldSave) save()
     }
 
-    private fun attemptConversion(json: JsonObjectExt): JsonObjectExt {
-        val currentSchema = json["schema", 0]
+    @Suppress("UNUSED_EXPRESSION")
+    private fun attemptConversion(hocon: ConfigObject): ConfigObject {
+        val currentSchema = hocon.getOrDefault("schema", 0.asConfig()).int()
 
         // corrupt config. Reset
-        if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return JsonObjectExt()
+        if (currentSchema == 0 || currentSchema > MainConfig.SCHEMA) {
+            return ConfigFactory.empty().root()
         }
 
         // there is no point recoding every conversion
         // when a new schema comes to be
         // so just convert the old conversions until done
-        var convertedJson = json
+        var convertedHocon = hocon
         var convertedSchema = currentSchema
-        while (convertedSchema != SCHEMA) {
-            shouldSave = true
+        while (convertedSchema != MainConfig.SCHEMA) {
             LOGGER.info("Converting element configuration v$convertedSchema -> ${convertedSchema + 1}")
             when (convertedSchema) {
 
@@ -93,13 +99,13 @@ class ElementConfig(private val manager: ElementManager) {
             convertedSchema++
         }
 
-        return convertedJson
+        return convertedHocon
     }
 
     companion object {
         const val SCHEMA = 4
         val CONFIG_FILE: File
-            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.json")
+            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.conf")
     }
 
 }

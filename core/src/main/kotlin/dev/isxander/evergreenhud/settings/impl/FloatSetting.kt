@@ -17,17 +17,16 @@
 
 package dev.isxander.evergreenhud.settings.impl
 
-import dev.isxander.evergreenhud.settings.JsonType
+import dev.isxander.evergreenhud.settings.HoconType
 import dev.isxander.evergreenhud.settings.Setting
 import gg.essential.elementa.UIComponent
-import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 @MustBeDocumented
 annotation class FloatSetting(val name: String, val category: Array<String>, val description: String, val min: Float, val max: Float, val suffix: String = "", val save: Boolean = true)
 
-class FloatSettingWrapped(annotation: FloatSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, Float>) : Setting<Float, FloatSetting>(annotation, annotationObject, annotatedProperty, JsonType.FLOAT) {
+class FloatSettingWrapped(annotation: FloatSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, Float>) : Setting<Float, FloatSetting>(annotation, annotationObject, annotatedProperty, HoconType.FLOAT) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description
@@ -36,11 +35,11 @@ class FloatSettingWrapped(annotation: FloatSetting, annotationObject: Any, annot
     override fun getInternal(): Float = annotatedProperty.call(annotatedObject)
     override fun setInternal(new: Float) = mutableProperty!!.setter.call(annotatedObject, new)
 
-    override var jsonValue: Any
+    override var serializedValue: Any
         get() = value
         set(new) { value = new as Float }
 
-    override val defaultJsonValue: Any = default
+    override val defaultSerializedValue: Any = default
 
     override fun addComponentToUI(parent: UIComponent) {
         TODO("Not yet implemented")

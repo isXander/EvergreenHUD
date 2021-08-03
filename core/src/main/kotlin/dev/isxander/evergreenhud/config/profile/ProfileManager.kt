@@ -17,12 +17,19 @@
 
 package dev.isxander.evergreenhud.config.profile
 
-import com.google.gson.GsonBuilder
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigObject
+import com.typesafe.config.ConfigRenderOptions
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.utils.JsonObjectExt
+import dev.isxander.evergreenhud.compatibility.universal.LOGGER
+import dev.isxander.evergreenhud.config.MainConfig
+import dev.isxander.evergreenhud.utils.HoconUtils
+import dev.isxander.evergreenhud.utils.asConfig
+import dev.isxander.evergreenhud.utils.int
+import dev.isxander.evergreenhud.utils.string
 import java.io.File
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
 
 class ProfileManager {
 
@@ -31,21 +38,22 @@ class ProfileManager {
     val profileDirectory: File
         get() = File(EvergreenHUD.DATA_DIR, "profiles/${currentProfile.id}")
 
-    private val gson = GsonBuilder().setPrettyPrinting().create()
-
     fun load() {
-        if (!PROFILES_JSON.exists()) save().also { return@load }
+        if (!PROFILES_DATA.exists()) save().also { return@load }
 
-        val json = attemptConversion(JsonObjectExt.getFromFile(PROFILES_JSON))
+        val data = attemptConversion(ConfigFactory.parseFile(PROFILES_DATA).root())
         availableProfiles.clear()
-        for (profileObj in json["profiles", JsonArray()]!!) {
-            if (profileObj is JsonObject) {
-                val profile = gson.fromJson(profileObj, Profile::class.java)
-                availableProfiles[profile.id] = profile
-            }
+        for (profileData in data.toConfig().getObjectList("profiles")) {
+            val profile = Profile(
+                profileData["id"]!!.string(),
+                profileData["name"]!!.string(),
+                profileData["description"]!!.string(),
+                profileData["icon"]!!.string()
+            )
+            availableProfiles[profile.id] = profile
         }
 
-        val newCurrent = availableProfiles[json["current", "default"]!!]
+        val newCurrent = availableProfiles[data.getOrDefault("current", "default".asConfig()).string()]
         if (newCurrent == null) {
             currentProfile = DEFAULT_PROFILE
             availableProfiles[currentProfile.id] = currentProfile
@@ -55,46 +63,59 @@ class ProfileManager {
     }
 
     fun save() {
-        val json = JsonObjectExt()
+        var data = ConfigFactory.empty()
+            .withValue("schema", SCHEMA.asConfig())
+            .withValue("current", currentProfile.id.asConfig())
+            .root()
 
-        json["schema"] = SCHEMA
-        json["current"] = currentProfile.id
-
-        val profileJson = JsonArray()
+        val profileData = arrayListOf<ConfigObject>()
         for ((_, profile) in availableProfiles) {
-            profileJson.add(JsonObjectExt(gson.toJson(profile)).data)
+            profileData.add(ConfigFactory.empty()
+                .withValue("id", profile.id.asConfig())
+                .withValue("name", profile.description.asConfig())
+                .withValue("description", profile.description.asConfig())
+                .withValue("icon", profile.icon.asConfig())
+                .root()
+            )
         }
-        json["profiles"] = profileJson
+        data = data.withValue("profiles", profileData.asConfig())
 
-        json.writeToFile(PROFILES_JSON)
+        PROFILES_DATA.parentFile.mkdirs()
+        Files.write(
+            PROFILES_DATA.toPath(),
+            data.toConfig().resolve().root().render(HoconUtils.niceRender).lines(),
+            StandardCharsets.UTF_8
+        )
     }
 
-    private fun attemptConversion(json: JsonObjectExt): JsonObjectExt {
-        val currentSchema = json["schema", 0]
+    @Suppress("UNUSED_EXPRESSION")
+    private fun attemptConversion(hocon: ConfigObject): ConfigObject {
+        val currentSchema = hocon.getOrDefault("schema", 0.asConfig()).int()
 
         // corrupt config. Reset
-        if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return JsonObjectExt()
+        if (currentSchema == 0 || currentSchema > MainConfig.SCHEMA) {
+            return ConfigFactory.empty().root()
         }
 
         // there is no point recoding every conversion
         // when a new schema comes to be
         // so just convert the old conversions until done
-        var convertedJson = json
+        var convertedHocon = hocon
         var convertedSchema = currentSchema
-        while (convertedSchema != SCHEMA) {
+        while (convertedSchema != MainConfig.SCHEMA) {
+            LOGGER.info("Converting element configuration v$convertedSchema -> ${convertedSchema + 1}")
             when (convertedSchema) {
 
             }
             convertedSchema++
         }
 
-        return convertedJson
+        return convertedHocon
     }
 
     companion object {
         const val SCHEMA = 1
-        val PROFILES_JSON = File(EvergreenHUD.DATA_DIR, "profiles/profiles.json")
+        val PROFILES_DATA = File(EvergreenHUD.DATA_DIR, "profiles/profiles.conf")
         val DEFAULT_PROFILE = Profile("default", "Default", "The default profile of EvergreenHUD")
     }
 

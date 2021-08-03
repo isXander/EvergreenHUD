@@ -17,11 +17,12 @@
 
 package dev.isxander.evergreenhud.config
 
+import com.typesafe.config.ConfigObject
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
-import dev.isxander.evergreenhud.settings.JsonType
+import dev.isxander.evergreenhud.settings.HoconType
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.impl.*
-import dev.isxander.evergreenhud.utils.JsonObjectExt
+import dev.isxander.evergreenhud.utils.*
 import java.awt.Color
 import java.lang.ClassCastException
 import kotlin.reflect.KProperty1
@@ -30,38 +31,34 @@ import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.full.findAnnotation
 import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.isAccessible
-import kotlin.reflect.jvm.javaField
-import kotlin.reflect.jvm.jvmName
 
 interface ConfigProcessor {
 
-    var json: JsonObjectExt
+    var conf: ConfigObject
 
-    fun addSettingToJson(setting: Setting<*, *>, json: JsonObjectExt) {
+    fun addSettingToConfig(setting: Setting<*, *>, data: ConfigObject): ConfigObject {
         val category = setting.category
 
-        var obj = json
-        for (categoryEntry in category) {
-            val newObj = obj[categoryEntry, JsonObjectExt()]!!
-            obj[categoryEntry] = newObj
-            obj = newObj
+        var obj = data.toConfig()
+        val path = category.joinToString(separator = ".", postfix = ".${setting.nameSerializedKey}")
+
+        obj = when (setting.hoconType) {
+            HoconType.STRING -> obj.withValue(path, (setting.serializedValue as String).asConfig())
+            HoconType.BOOLEAN -> obj.withValue(path, (setting.serializedValue as Boolean).asConfig())
+            HoconType.FLOAT -> obj.withValue(path, (setting.serializedValue as Float).asConfig())
+            HoconType.INT -> obj.withValue(path, (setting.serializedValue as Int).asConfig())
         }
 
-        when (setting.jsonType) {
-            JsonType.STRING -> obj[setting.nameJsonKey] = setting.jsonValue as String
-            JsonType.BOOLEAN -> obj[setting.nameJsonKey] = setting.jsonValue as Boolean
-            JsonType.FLOAT -> obj[setting.nameJsonKey] = setting.jsonValue as Float
-            JsonType.INT -> obj[setting.nameJsonKey] = setting.jsonValue as Int
-        }
+        return obj.root()
     }
 
-    fun setSettingFromJson(json: JsonObjectExt, setting: Setting<*, *>) {
+    fun setSettingFromConfig(data: ConfigObject, setting: Setting<*, *>) {
         if (setting.readOnly) return
-        when (setting.jsonType) {
-            JsonType.BOOLEAN -> setting.jsonValue = json[setting.nameJsonKey, setting.defaultJsonValue as Boolean]
-            JsonType.FLOAT -> setting.jsonValue = json[setting.nameJsonKey, setting.defaultJsonValue as Float]
-            JsonType.INT -> setting.jsonValue = json[setting.nameJsonKey, setting.defaultJsonValue as Int]
-            JsonType.STRING -> setting.jsonValue = json[setting.nameJsonKey, setting.defaultJsonValue as String]!!
+        when (setting.hoconType) {
+            HoconType.BOOLEAN -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Boolean).asConfig()).bool()
+            HoconType.FLOAT -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Float).asConfig()).float()
+            HoconType.INT -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Int).asConfig()).int()
+            HoconType.STRING -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as String).asConfig()).string()
         }
     }
 

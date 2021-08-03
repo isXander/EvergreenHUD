@@ -17,16 +17,17 @@
 
 package dev.isxander.evergreenhud
 
+import com.typesafe.config.ConfigFactory
+import com.typesafe.config.ConfigRenderOptions
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.CustomKeybind
 import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.Keyboard
+import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.profile.ProfileManager
 import dev.isxander.evergreenhud.gui.MainGui
 import dev.isxander.evergreenhud.repo.RepoManager
-import dev.isxander.evergreenhud.utils.JsonObjectExt
-import dev.isxander.evergreenhud.utils.Multithreading
-import dev.isxander.evergreenhud.utils.Notifications
+import dev.isxander.evergreenhud.utils.*
 import gg.essential.universal.UDesktop
 import me.kbrewster.eventbus.EventBus
 import me.kbrewster.eventbus.eventbus
@@ -36,6 +37,7 @@ import org.reflections.scanners.ResourcesScanner
 import java.awt.Color
 import java.io.File
 import java.net.URI
+import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.StandardCopyOption
 
@@ -118,8 +120,8 @@ object EvergreenHUD {
         LOGGER.info("Exporting resources...")
 
         // every 3 days export resources
-        val metadataFile = File(RESOURCE_DIR, "metadata.json")
-        if (!metadataFile.exists() || JsonObjectExt.getFromFile(metadataFile)["version", "1.0"]!! != EvergreenInfo.VERSION_FULL) {
+        val metadataFile = File(RESOURCE_DIR, "metadata.conf")
+        if (!metadataFile.exists() || ConfigFactory.parseFile(metadataFile).root().getOrDefault("version", "1.0") != EvergreenInfo.VERSION_FULL) {
             val reflections = Reflections("evergreenhud.export", ResourcesScanner())
             RESOURCE_DIR.mkdirs()
             File(DATA_DIR, "resources/user").also { it.mkdirs() }
@@ -129,7 +131,7 @@ object EvergreenHUD {
                 resourceMap[File(RESOURCE_DIR, it.replaceFirst("evergreenhud/export/", ""))] = it
             }
 
-            for (file in RESOURCE_DIR.listFiles()) {
+            for (file in RESOURCE_DIR.listFiles() ?: arrayOf()) {
                 // delete old resources
                 if (resourceMap[file] == null) {
                     LOGGER.info("Deleting unknown resource. (Please use evergreenhud/resources/user for user resources) - ${file.path}")
@@ -146,9 +148,15 @@ object EvergreenHUD {
                 Files.copy(resourceStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
             }
 
-            val json = JsonObjectExt()
-            json["updated"] = EvergreenInfo.VERSION_FULL
-            json.writeToFile(metadataFile)
+            val metadata = ConfigFactory.empty()
+                .withValue("updated", EvergreenInfo.VERSION_FULL.asConfig())
+
+            metadataFile.parentFile.mkdirs()
+            Files.write(
+                metadataFile.toPath(),
+                metadata.resolve().root().render(HoconUtils.niceRender).lines(),
+                StandardCharsets.UTF_8
+            )
         }
     }
 }

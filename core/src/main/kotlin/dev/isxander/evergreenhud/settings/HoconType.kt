@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.settings
 
-enum class JsonType {
+enum class HoconType {
     STRING,
     INT,
     FLOAT,

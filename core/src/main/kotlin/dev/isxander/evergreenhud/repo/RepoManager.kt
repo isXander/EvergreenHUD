@@ -17,11 +17,11 @@
 
 package dev.isxander.evergreenhud.repo
 
-import com.google.gson.JsonArray
-import com.google.gson.JsonPrimitive
+import com.typesafe.config.ConfigFactory
 import dev.isxander.evergreenhud.EvergreenInfo
 import dev.isxander.evergreenhud.utils.HttpsUtils
-import dev.isxander.evergreenhud.utils.JsonObjectExt
+import dev.isxander.evergreenhud.utils.asConfig
+import dev.isxander.evergreenhud.utils.int
 import java.lang.Exception
 
 object RepoManager {
@@ -32,20 +32,20 @@ object RepoManager {
         val out = try { HttpsUtils.getString(jsonUrl) }
         catch (e: Exception) { return RepoResponse(outdated = false, blacklisted = false) }
 
-        val json = JsonObjectExt(out)
+        val data = ConfigFactory.parseString(out)
 
-        val blacklisted = json["blacklisted", JsonArray()]!!.contains(JsonPrimitive(EvergreenInfo.REVISION))
+        val blacklisted = data.getStringList("blacklisted").contains(EvergreenInfo.REVISION)
 
-        val latestJson = json["latest", JsonObjectExt()]!!
-        val major = latestJson["major", 1]
-        val minor = latestJson["minor", 0]
-        val patch = latestJson["patch", 0]
-        val prerelease = latestJson["pre", -1]
+        val latestJson = data.getObject("latest")
+        val major = latestJson.getOrDefault("major", 1.asConfig()).int()
+        val minor = latestJson.getOrDefault("minor", 0.asConfig()).int()
+        val patch = latestJson.getOrDefault("patch", 0.asConfig()).int()
+        val prerelease = latestJson.getOrDefault("patch", (-1).asConfig()).int()
 
-        val outdated = EvergreenInfo.VERSION_MAJOR < major
+        val outdated = (EvergreenInfo.VERSION_MAJOR < major
                 || EvergreenInfo.VERSION_MINOR < minor
                 || EvergreenInfo.VERSION_PATCH < patch
-                || EvergreenInfo.VERSION_PRERELEASE ?: -1 < prerelease
+                || (EvergreenInfo.VERSION_PRERELEASE ?: -1) < prerelease)
         return RepoResponse(outdated, blacklisted)
     }
 
