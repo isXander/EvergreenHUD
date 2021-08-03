@@ -30,28 +30,28 @@ import java.text.DecimalFormat
 @ElementMeta(id = "COORDINATES", name = "Coordinates", description = "Show your current coordinates in the world.", category = "World")
 class ElementCoordinates : MultiLineTextElement() {
 
-    @OptionSetting(name = "Mode", category = ["Advanced"], description = "How the coordinates should be displayed.")
+    @OptionSetting(name = "Mode", category = ["Coordinates"], description = "How the coordinates should be displayed.")
     var displayMode = DisplayMode.VERTICAL
 
-    @BooleanSetting(name = "Show Axis", category = ["Advanced"], description = "Show the 'X: ' before the number.")
+    @BooleanSetting(name = "Show Axis", category = ["Coordinates"], description = "Show the 'X: ' before the number.")
     var showAxis = true
 
-    @BooleanSetting(name = "Show Direction", category = ["Advanced"], description = "Show if the axis is going to increase or decrease based on your direction.")
+    @BooleanSetting(name = "Show Direction", category = ["Coordinates"], description = "Show if the axis is going to increase or decrease based on your direction.")
     var showDirection = false
 
-    @BooleanSetting(name = "Show X", category = ["Advanced"], description = "Show the X axis.")
+    @BooleanSetting(name = "Show X", category = ["Coordinates"], description = "Show the X axis.")
     var showX = true
 
-    @BooleanSetting(name = "Show Y", category = ["Advanced"], description = "Show the Y axis.")
+    @BooleanSetting(name = "Show Y", category = ["Coordinates"], description = "Show the Y axis.")
     var showY = true
 
-    @BooleanSetting(name = "Show Z", category = ["Advanced"], description = "Show the Z axis.")
+    @BooleanSetting(name = "Show Z", category = ["Coordinates"], description = "Show the Z axis.")
     var showZ = true
 
-    @IntSetting(name = "Accuracy", category = ["Advanced"], description = "How many decimal places the value should display.", min = 0, max = 4, suffix = " places")
+    @IntSetting(name = "Accuracy", category = ["Coordinates"], description = "How many decimal places the value should display.", min = 0, max = 4, suffix = " places")
     var accuracy = 0
 
-    @BooleanSetting(name = "Trailing Zeros", category = ["Advanced"], description = "Match the accuracy using zeros.")
+    @BooleanSetting(name = "Trailing Zeros", category = ["Coordinates"], description = "Match the accuracy using zeros.")
     var trailingZeros = false
 
     override var title: String = "Coords"

@@ -17,24 +17,25 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.MC
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.settings.impl.BooleanSetting
-import dev.isxander.evergreenhud.utils.Facing
+import java.text.SimpleDateFormat
+import java.util.*
 
-@ElementMeta(id = "DIRECTION", name = "Direction", category = "Player", description = "Which way the player is facing.")
-class ElementDirection : SimpleTextElement() {
+@ElementMeta(id = "IRL_TIME", name = "IRL Time", description = "Show the current time in real life.", category = "IRL")
+class ElementIRLTime : SimpleTextElement() {
 
-    @BooleanSetting(name = "Abbreviated", category = ["Direction"], description = "Make the name of the direction shorter.")
-    var abbreviated = false
+    @BooleanSetting(name = "Time", category = ["Time"], description = "If the clock will be 12 hour of 24 hour.")
+    var twelveHour = false
 
-    override var title = "Direction"
+    @BooleanSetting(name = "Seconds", category = ["Time"], description = "Show the seconds.")
+    var seconds = false
 
-    override fun calculateValue(): String {
-        if (MC.player.equals(null)) return "Unknown"
+    override var title: String = "Time"
 
-        val facing = Facing.parse(MC.player.yaw)
-        return if (abbreviated) facing.abbreviated else facing.full
-    }
+    override fun calculateValue(): String =
+        SimpleDateFormat(String.format(if (twelveHour) "hh:mm%s a" else "HH:mm%s", if (seconds) ":ss" else ""))
+            .format(Calendar.getInstance().time).uppercase()
+
 }

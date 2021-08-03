@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.impl.entity.UEntity
+import dev.isxander.evergreenhud.compatibility.universal.impl.UEntity
 import net.minecraft.entity.Entity
 
 class EntityImpl(val entity: Entity?) : UEntity() {

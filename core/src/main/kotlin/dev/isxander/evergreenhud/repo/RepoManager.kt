@@ -26,7 +26,7 @@ import java.lang.Exception
 
 object RepoManager {
 
-    private const val jsonUrl = "https://dl.isxander.dev/mods/evergreenhud/blacklisted.json"
+    private const val jsonUrl = "https://dl.isxander.dev/mods/evergreenhud/info.json"
 
     fun getResponse(): RepoResponse {
         val out = try { HttpsUtils.getString(jsonUrl) }

@@ -21,7 +21,7 @@ import dev.isxander.evergreenhud.compatibility.universal.impl.*
 import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.AIKeybindManager
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.UGL
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.UBufferBuilder
-import dev.isxander.evergreenhud.compatibility.universal.impl.world.UWorld
+import dev.isxander.evergreenhud.compatibility.universal.impl.UWorld
 
 lateinit var MC_VERSION: MCVersion
 lateinit var LOGGER: ULogger

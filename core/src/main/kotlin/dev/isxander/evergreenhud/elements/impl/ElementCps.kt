@@ -30,7 +30,7 @@ import kotlin.collections.ArrayDeque
 @ElementMeta(id = "CPS", name = "Cps Counter", category = "Combat", description = "How many times you click in a second.")
 class ElementCps : SimpleTextElement() {
 
-    @OptionSetting(name = "Button", category = ["Advanced"], description = "Which button to track.")
+    @OptionSetting(name = "Button", category = ["CPS"], description = "Which button to track.")
     val button = MouseButton.BOTH
 
     private val left = ArrayDeque<Long>()

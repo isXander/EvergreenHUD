@@ -17,14 +17,16 @@
 
 package dev.isxander.evergreenhud.compatibility.universal.impl
 
-import java.io.File
+abstract class UWorld {
 
-abstract class UMinecraft {
+    abstract val isNull: Boolean
 
-    abstract val player: UEntity
-    abstract val dataDir: File
-    abstract val fps: Int
-    abstract val inGameHasFocus: Boolean
-    abstract val devEnv: Boolean
+    override operator fun equals(other: Any?): Boolean {
+        if (other == null && isNull) return true
+        return super.equals(other)
+    }
+    
+    abstract fun getBiomeAt(x: Int, y: Int = 256, z: Int): String
+    abstract val time: Long
 
 }

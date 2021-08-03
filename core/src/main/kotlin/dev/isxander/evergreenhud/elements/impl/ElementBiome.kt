@@ -30,7 +30,7 @@ class ElementBiome : SimpleTextElement() {
     override fun calculateValue(): String {
         val player = MC.player
         if (player.equals(null)) return "Unknown"
-        return WORLD.getBiomeAt(player.x.toInt(), player.y.toInt(), player.z.toInt()).display
+        return WORLD.getBiomeAt(player.x.toInt(), player.y.toInt(), player.z.toInt())
     }
 
 }

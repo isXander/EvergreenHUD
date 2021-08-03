@@ -15,10 +15,20 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal.impl.world
+package dev.isxander.evergreenhud.elements.impl
 
-abstract class UWorld {
-    
-    abstract fun getBiomeAt(x: Int, y: Int, z: Int = 256): Biome
+import dev.isxander.evergreenhud.compatibility.universal.WORLD
+import dev.isxander.evergreenhud.elements.ElementMeta
+import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+
+@ElementMeta(id = "DAY_COUNTER", name = "Day Counter", description = "Displays the current day in the world.", category = "World")
+class ElementDay : SimpleTextElement() {
+
+    override var title: String = "Day"
+
+    override fun calculateValue(): String {
+        if (WORLD.isNull) return "0"
+        return (WORLD.time / 24000L).toString()
+    }
 
 }

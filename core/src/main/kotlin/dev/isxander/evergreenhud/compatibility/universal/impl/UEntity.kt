@@ -15,7 +15,7 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal.impl.entity
+package dev.isxander.evergreenhud.compatibility.universal.impl
 
 abstract class UEntity {
     abstract val isNull: Boolean

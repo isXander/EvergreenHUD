@@ -18,16 +18,20 @@
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
 import dev.isxander.evergreenhud.compatibility.fabric11701.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.world.UWorld
-import dev.isxander.evergreenhud.compatibility.universal.impl.world.Biome
+import dev.isxander.evergreenhud.compatibility.universal.impl.UWorld
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.registry.Registry
 
 class WorldImpl : UWorld() {
 
-    override fun getBiomeAt(x: Int, y: Int, z: Int): Biome {
-        return Biome.parseBiome(mc.world!!.registryManager!!.get(Registry.BIOME_KEY)!!.getId(mc.world?.getBiome(BlockPos(x, y, z))).toString())
-    }
+    override val isNull: Boolean
+        get() = mc.world == null
+
+    override fun getBiomeAt(x: Int, y: Int, z: Int): String =
+        mc.world!!.registryManager!!.get(Registry.BIOME_KEY)!!.getId(mc.world?.getBiome(BlockPos(x, y, z))).toString()
+
+    override val time: Long
+        get() = mc.world!!.timeOfDay
 
 
 }

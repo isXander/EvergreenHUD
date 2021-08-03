@@ -15,20 +15,17 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal.impl.world
+package dev.isxander.evergreenhud.compatibility.forge10809.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.LOGGER
+import dev.isxander.evergreenhud.compatibility.forge10809.mc
+import dev.isxander.evergreenhud.compatibility.universal.impl.world.UWorld
+import net.minecraft.util.BlockPos
 
-enum class Biome(val display: String) {
-    UNKNOWN("Unknown");
+class WorldImpl : UWorld() {
 
-    companion object {
-        fun parseBiome(name: String): Biome {
-            LOGGER.info(name)
-            return when (name.lowercase()) {
+    override fun getBiomeAt(x: Int, y: Int, z: Int): String =
+        mc.theWorld.getBiomeGenForCoords(BlockPos(x, y, z)).biomeName
 
-                else -> UNKNOWN
-            }
-        }
-    }
+    override val time: Long
+        get() = mc.theWorld.worldTime
 }
