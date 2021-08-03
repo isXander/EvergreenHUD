@@ -19,14 +19,14 @@ package dev.isxander.evergreenhud.compatibility.forge10809.impl
 
 import dev.isxander.evergreenhud.compatibility.forge10809.mc
 import dev.isxander.evergreenhud.compatibility.universal.PROFILER
-import dev.isxander.evergreenhud.compatibility.universal.impl.entity.AIEntity
+import dev.isxander.evergreenhud.compatibility.universal.impl.UEntity
 import net.minecraft.entity.Entity
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.Vec3
 import java.lang.IllegalStateException
 
 
-class EntityImpl(val entity: Entity) : AIEntity() {
+class EntityImpl(val entity: Entity) : UEntity() {
 
     override val isNull: Boolean = false
 
@@ -43,7 +43,7 @@ class EntityImpl(val entity: Entity) : AIEntity() {
     override val yaw: Float = entity.rotationYaw
     override val pitch: Float = entity.rotationPitch
 
-    override fun getReachDistFromEntity(entity: AIEntity): Double {
+    override fun getReachDistFromEntity(entity: UEntity): Double {
         PROFILER.push("Calculate Reach Distance")
         if (entity !is EntityImpl) {
             throw IllegalStateException("Universal entity type from unknown origin")

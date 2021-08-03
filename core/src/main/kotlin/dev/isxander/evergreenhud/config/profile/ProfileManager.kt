@@ -93,7 +93,7 @@ class ProfileManager {
         val currentSchema = hocon.getOrDefault("schema", 0.asConfig()).int()
 
         // corrupt config. Reset
-        if (currentSchema == 0 || currentSchema > MainConfig.SCHEMA) {
+        if (currentSchema == 0 || currentSchema > SCHEMA) {
             return ConfigFactory.empty().root()
         }
 
@@ -102,8 +102,8 @@ class ProfileManager {
         // so just convert the old conversions until done
         var convertedHocon = hocon
         var convertedSchema = currentSchema
-        while (convertedSchema != MainConfig.SCHEMA) {
-            LOGGER.info("Converting element configuration v$convertedSchema -> ${convertedSchema + 1}")
+        while (convertedSchema != SCHEMA) {
+            LOGGER.info("Converting profile configuration v$convertedSchema -> v${convertedSchema + 1}")
             when (convertedSchema) {
 
             }

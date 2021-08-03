@@ -17,44 +17,43 @@
 
 package dev.isxander.evergreenhud.compatibility.forge10809.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.AIBufferBuilder
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.DrawMode
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.UBufferBuilder
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.VertexFormats
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.WorldRenderer
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
-import net.minecraft.client.renderer.vertex.VertexFormat
 
-class BufferBuilderImpl : AIBufferBuilder() {
+class BufferBuilderImpl : UBufferBuilder() {
 
     private val tes = Tessellator.getInstance()
     private val buf: WorldRenderer = tes.worldRenderer
 
-    override fun vertex(x: Double, y: Double, z: Double): AIBufferBuilder {
+    override fun vertex(x: Double, y: Double, z: Double): UBufferBuilder {
         buf.pos(x, y, z)
         return this
     }
 
-    override fun color(r: Float, g: Float, b: Float, a: Float): AIBufferBuilder {
+    override fun color(r: Float, g: Float, b: Float, a: Float): UBufferBuilder {
         buf.color(r, g, b, a)
         return this
     }
 
-    override fun tex(u: Double, v: Double): AIBufferBuilder {
+    override fun tex(u: Double, v: Double): UBufferBuilder {
         buf.tex(u, v)
         return this
     }
 
-    override fun next(): AIBufferBuilder {
+    override fun next(): UBufferBuilder {
         buf.endVertex()
         return this
     }
-    override fun end(): AIBufferBuilder {
+    override fun end(): UBufferBuilder {
         buf.endVertex()
         return this
     }
 
-    override fun begin(mode: DrawMode, format: VertexFormats): AIBufferBuilder {
+    override fun begin(mode: DrawMode, format: VertexFormats): UBufferBuilder {
         val parsedFormat = when (format) {
             VertexFormats.POSITION -> DefaultVertexFormats.POSITION
             VertexFormats.POSITION_COLOR -> DefaultVertexFormats.POSITION_COLOR

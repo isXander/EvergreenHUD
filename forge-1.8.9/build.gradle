@@ -40,6 +40,17 @@ dependencies {
     embed 'gg.essential:Elementa:next-337-10809-SNAPSHOT'
     embed 'gg.essential:UniversalCraft:next-137-10809-SNAPSHOT'
 
+    // not sure why but gradle ass
+    embed 'club.chachy.kotlin-forge-api:forge-event-dsl:0.3.1'
+    embed ('com.github.KevinPriv:KEventBus:86cf2e023e') {
+        exclude module: 'kotlin-stdlib-jdk8'
+    }
+    embed 'org.reflections:reflections:0.9.12'
+    embed ('com.squareup.okhttp3:okhttp:4.9.1') {
+        exclude module: 'kotlin-stdlib'
+        exclude module: 'kotlin-stdlib-common'
+    }
+
     implementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }

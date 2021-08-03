@@ -28,12 +28,15 @@ dependencies {
 
     api 'com.typesafe:config:1.4.1'
 
-    api 'club.chachy.kotlin-forge-api:forge-event-dsl:89d6c3b503'
-    api 'com.github.KevinPriv:KEventBus:86cf2e023e'
+    api 'club.chachy.kotlin-forge-api:forge-event-dsl:0.3.1'
+    api ('com.github.KevinPriv:KEventBus:86cf2e023e') {
+        exclude module: 'kotlin-stdlib-jdk8'
+    }
 
     api 'org.reflections:reflections:0.9.12'
     api ('com.squareup.okhttp3:okhttp:4.9.1') {
         exclude module: 'kotlin-stdlib'
+        exclude module: 'kotlin-stdlib-common'
     }
 
     // there is no api jar for Elementa or UniversalCraft so

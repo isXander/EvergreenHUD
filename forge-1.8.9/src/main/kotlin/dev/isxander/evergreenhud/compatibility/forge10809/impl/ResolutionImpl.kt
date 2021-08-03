@@ -19,11 +19,11 @@ package dev.isxander.evergreenhud.compatibility.forge10809.impl
 
 import club.chachy.event.on
 import dev.isxander.evergreenhud.compatibility.forge10809.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.AIResolution
+import dev.isxander.evergreenhud.compatibility.universal.impl.UResolution
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraftforge.fml.common.gameevent.TickEvent
 
-class ResolutionImpl : AIResolution() {
+class ResolutionImpl : UResolution() {
 
     private lateinit var resolution: ScaledResolution
 

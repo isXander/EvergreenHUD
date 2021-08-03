@@ -63,7 +63,7 @@ class MainConfig(private val manager: ElementManager) {
         var convertedHocon = hocon
         var convertedSchema = currentSchema
         while (convertedSchema != SCHEMA) {
-            LOGGER.info("Converting element configuration v$convertedSchema -> ${convertedSchema + 1}")
+            LOGGER.info("Converting global configuration v$convertedSchema -> v${convertedSchema + 1}")
             when (convertedSchema) {
 
             }

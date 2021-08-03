@@ -17,11 +17,11 @@
 
 package dev.isxander.evergreenhud.compatibility.forge10809.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.AIGL11
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.UGL
 import net.minecraft.client.renderer.GlStateManager
 import org.lwjgl.opengl.GL11
 
-class GLImpl : AIGL11() {
+class GLImpl : UGL() {
     override fun push() = GlStateManager.pushMatrix()
     override fun pop() = GlStateManager.popMatrix()
     override fun scale(x: Float, y: Float, z: Float) = GlStateManager.scale(x, y, z)

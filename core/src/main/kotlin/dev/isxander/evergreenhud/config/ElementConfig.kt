@@ -77,8 +77,8 @@ class ElementConfig(private val manager: ElementManager) {
     }
 
     @Suppress("UNUSED_EXPRESSION")
-    private fun attemptConversion(hocon: ConfigObject): ConfigObject {
-        val currentSchema = hocon.getOrDefault("schema", 0.asConfig()).int()
+    private fun attemptConversion(data: ConfigObject): ConfigObject {
+        val currentSchema = data.getOrDefault("schema", 0.asConfig()).int()
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > MainConfig.SCHEMA) {
@@ -88,10 +88,10 @@ class ElementConfig(private val manager: ElementManager) {
         // there is no point recoding every conversion
         // when a new schema comes to be
         // so just convert the old conversions until done
-        var convertedData = hocon
+        var convertedData = data
         var convertedSchema = currentSchema
-        while (convertedSchema != MainConfig.SCHEMA) {
-            LOGGER.info("Converting element configuration v$convertedSchema -> ${convertedSchema + 1}")
+        while (convertedSchema != SCHEMA) {
+            LOGGER.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
             when (convertedSchema) {
 
             }

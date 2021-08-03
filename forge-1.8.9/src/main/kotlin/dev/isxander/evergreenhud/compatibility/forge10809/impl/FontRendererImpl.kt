@@ -18,10 +18,10 @@
 package dev.isxander.evergreenhud.compatibility.forge10809.impl
 
 import dev.isxander.evergreenhud.compatibility.forge10809.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.AIFontRenderer
+import dev.isxander.evergreenhud.compatibility.universal.impl.UFontRenderer
 
-class FontRendererImpl : AIFontRenderer() {
-    override fun draw(text: String, x: Float, y: Float, color: Int, shadow: Boolean): AIFontRenderer {
+class FontRendererImpl : UFontRenderer() {
+    override fun draw(text: String, x: Float, y: Float, color: Int, shadow: Boolean): UFontRenderer {
         mc.fontRendererObj.drawString(text, x, y, color, shadow)
 
         return this

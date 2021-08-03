@@ -18,15 +18,15 @@
 package dev.isxander.evergreenhud.compatibility.forge10809.impl
 
 import dev.isxander.evergreenhud.compatibility.forge10809.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.AIMinecraft
-import dev.isxander.evergreenhud.compatibility.universal.impl.entity.AIEntity
+import dev.isxander.evergreenhud.compatibility.universal.impl.UEntity
+import dev.isxander.evergreenhud.compatibility.universal.impl.UMinecraft
 import net.minecraft.client.Minecraft
 import net.minecraft.launchwrapper.Launch
 import java.io.File
 
-class MinecraftImpl : AIMinecraft() {
+class MinecraftImpl : UMinecraft() {
 
-    override val player: AIEntity get() = EntityImpl(mc.thePlayer)
+    override val player: UEntity get() = EntityImpl(mc.thePlayer)
     override val dataDir: File = mc.mcDataDir
     override val fps: Int get() = Minecraft.getDebugFPS()
     override val inGameHasFocus: Boolean get() = mc.currentScreen != null

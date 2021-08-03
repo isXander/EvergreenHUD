@@ -18,10 +18,12 @@
 package dev.isxander.evergreenhud.compatibility.forge10809.impl
 
 import dev.isxander.evergreenhud.compatibility.forge10809.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.world.UWorld
+import dev.isxander.evergreenhud.compatibility.universal.impl.UWorld
 import net.minecraft.util.BlockPos
 
 class WorldImpl : UWorld() {
+
+    override val isNull: Boolean = mc.theWorld == null
 
     override fun getBiomeAt(x: Int, y: Int, z: Int): String =
         mc.theWorld.getBiomeGenForCoords(BlockPos(x, y, z)).biomeName
