@@ -18,9 +18,9 @@
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
 import dev.isxander.evergreenhud.compatibility.fabric11701.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.AIProfiler
+import dev.isxander.evergreenhud.compatibility.universal.impl.UProfiler
 
-class ProfilerImpl : AIProfiler() {
+class ProfilerImpl : UProfiler() {
     override fun push(name: String) = mc.profiler.push(name)
     override fun pop() = mc.profiler.pop()
 }

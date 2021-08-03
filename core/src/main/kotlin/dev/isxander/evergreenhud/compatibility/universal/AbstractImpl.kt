@@ -19,20 +19,20 @@ package dev.isxander.evergreenhud.compatibility.universal
 
 import dev.isxander.evergreenhud.compatibility.universal.impl.*
 import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.AIKeybindManager
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.AIGL11
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.AIBufferBuilder
-import dev.isxander.evergreenhud.compatibility.universal.impl.world.AIWorld
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.UGL
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.UBufferBuilder
+import dev.isxander.evergreenhud.compatibility.universal.impl.world.UWorld
 
 lateinit var MC_VERSION: MCVersion
-lateinit var LOGGER: AILogger
-lateinit var MC: AIMinecraft
+lateinit var LOGGER: ULogger
+lateinit var MC: UMinecraft
 lateinit var KEYBIND_MANAGER: AIKeybindManager
-lateinit var RESOLUTION: AIResolution
-lateinit var SCREEN_HANDLER: AIScreenHandler
-lateinit var GL: AIGL11
-lateinit var BUFFER_BUILDER: AIBufferBuilder
-lateinit var FONT_RENDERER: AIFontRenderer
-lateinit var MOUSE_HELPER: AIMouseHelper
-lateinit var PROFILER: AIProfiler
-lateinit var LOADER: AILoader
-lateinit var WORLD: AIWorld
+lateinit var RESOLUTION: UResolution
+lateinit var SCREEN_HANDLER: UScreenHandler
+lateinit var GL: UGL
+lateinit var BUFFER_BUILDER: UBufferBuilder
+lateinit var FONT_RENDERER: UFontRenderer
+lateinit var MOUSE_HELPER: UMouseHelper
+lateinit var PROFILER: UProfiler
+lateinit var LOADER: ULoader
+lateinit var WORLD: UWorld

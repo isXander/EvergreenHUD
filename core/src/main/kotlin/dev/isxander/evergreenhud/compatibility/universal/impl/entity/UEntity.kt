@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.compatibility.universal.impl.entity
 
-abstract class AIEntity {
+abstract class UEntity {
     abstract val isNull: Boolean
 
     override operator fun equals(other: Any?): Boolean {
@@ -38,6 +38,6 @@ abstract class AIEntity {
     abstract val yaw: Float
     abstract val pitch: Float
 
-    abstract fun getReachDistFromEntity(entity: AIEntity): Double
+    abstract fun getReachDistFromEntity(entity: UEntity): Double
 
 }

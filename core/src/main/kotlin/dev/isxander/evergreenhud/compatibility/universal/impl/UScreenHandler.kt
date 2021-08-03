@@ -17,10 +17,26 @@
 
 package dev.isxander.evergreenhud.compatibility.universal.impl
 
-abstract class AILogger {
+import dev.isxander.evergreenhud.event.ClientTickEvent
+import dev.isxander.evergreenhud.event.on
+import gg.essential.elementa.UIComponent
 
-    abstract fun info(msg: String)
-    abstract fun warn(msg: String)
-    abstract fun err(msg: String)
+abstract class UScreenHandler {
+
+    init {
+        on<ClientTickEvent>()
+            .filter { component != null }
+            .subscribe {
+                displayComponent(component!!)
+                component = null
+            }
+    }
+
+    private var component: UIComponent? = null
+    fun displayComponentNextTick(component: UIComponent) {
+        this.component = component
+    }
+
+    abstract fun displayComponent(component: UIComponent)
 
 }

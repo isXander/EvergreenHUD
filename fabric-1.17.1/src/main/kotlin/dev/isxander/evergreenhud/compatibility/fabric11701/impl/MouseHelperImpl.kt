@@ -19,10 +19,10 @@ package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
 import dev.isxander.evergreenhud.compatibility.fabric11701.mc
 import dev.isxander.evergreenhud.compatibility.universal.RESOLUTION
-import dev.isxander.evergreenhud.compatibility.universal.impl.AIMouseHelper
+import dev.isxander.evergreenhud.compatibility.universal.impl.UMouseHelper
 import org.lwjgl.glfw.GLFW
 
-class MouseHelperImpl : AIMouseHelper() {
+class MouseHelperImpl : UMouseHelper() {
     override val mouseX: Float get() = (mc.mouse.x * (RESOLUTION.scaledWidth / RESOLUTION.displayWidth)).toFloat()
     override val mouseY: Float get() = (mc.mouse.y * (RESOLUTION.scaledHeight / RESOLUTION.displayHeight)).toFloat()
     override val wasLeftMouseDown: Boolean get() = mc.mouse.wasLeftButtonClicked()

@@ -20,7 +20,7 @@ package dev.isxander.evergreenhud.compatibility.fabric11701.events
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.fabric11701.impl.EntityImpl
 import dev.isxander.evergreenhud.compatibility.fabric11701.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.entity.AIEntity
+import dev.isxander.evergreenhud.compatibility.universal.impl.entity.UEntity
 import dev.isxander.evergreenhud.event.ClientDamageEntity
 import dev.isxander.evergreenhud.event.ServerDamageEntity
 import me.kbrewster.eventbus.Subscribe
@@ -29,7 +29,7 @@ import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket
 
 object ServerDamageEntityEventManager {
 
-    private var attacker: AIEntity? = null
+    private var attacker: UEntity? = null
     private var targetId = -1
 
     init {

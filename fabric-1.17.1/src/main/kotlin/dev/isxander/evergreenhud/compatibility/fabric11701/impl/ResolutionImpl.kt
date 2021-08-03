@@ -18,9 +18,9 @@
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
 import dev.isxander.evergreenhud.compatibility.fabric11701.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.AIResolution
+import dev.isxander.evergreenhud.compatibility.universal.impl.UResolution
 
-class ResolutionImpl : AIResolution() {
+class ResolutionImpl : UResolution() {
 
     override val displayWidth: Int get() = mc.window.width
     override val displayHeight: Int get() = mc.window.height

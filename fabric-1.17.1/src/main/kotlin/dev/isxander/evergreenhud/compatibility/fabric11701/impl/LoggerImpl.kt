@@ -17,11 +17,11 @@
 
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.impl.AILogger
+import dev.isxander.evergreenhud.compatibility.universal.impl.ULogger
 import org.apache.logging.log4j.LogManager
 import org.apache.logging.log4j.Logger
 
-class LoggerImpl : AILogger() {
+class LoggerImpl : ULogger() {
     private val logger: Logger = LogManager.getLogger("EvergreenHUD")
 
     override fun info(msg: String) = logger.info(msg)

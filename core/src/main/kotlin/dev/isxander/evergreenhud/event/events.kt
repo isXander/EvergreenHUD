@@ -17,11 +17,11 @@
 
 package dev.isxander.evergreenhud.event
 
-import dev.isxander.evergreenhud.compatibility.universal.impl.entity.AIEntity
+import dev.isxander.evergreenhud.compatibility.universal.impl.entity.UEntity
 
 class ClientTickEvent
 class RenderHUDEvent(val dt: Float)
 class RenderTickEvent(val dt: Float)
 
-class ClientDamageEntity(val attacker: AIEntity, val victim: AIEntity)
-class ServerDamageEntity(val attacker: AIEntity, val victim: AIEntity)
+class ClientDamageEntity(val attacker: UEntity, val victim: UEntity)
+class ServerDamageEntity(val attacker: UEntity, val victim: UEntity)

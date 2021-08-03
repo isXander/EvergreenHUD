@@ -15,13 +15,19 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal.impl
+package dev.isxander.evergreenhud.compatibility.universal.impl.render
 
-abstract class AIFontRenderer {
+abstract class UBufferBuilder {
 
-    abstract val fontHeight: Int
-    abstract fun width(text: String): Int
+    abstract fun vertex(x: Double, y: Double, z: Double): UBufferBuilder
+    abstract fun color(r: Float, g: Float, b: Float, a: Float): UBufferBuilder
+    abstract fun tex(u: Double, v: Double): UBufferBuilder
 
-    abstract fun draw(text: String, x: Float, y: Float, color: Int, shadow: Boolean = true): AIFontRenderer
+    abstract fun next(): UBufferBuilder
+    abstract fun end(): UBufferBuilder
+
+    abstract fun begin(mode: DrawMode, format: VertexFormats): UBufferBuilder
+
+    abstract fun draw()
 
 }

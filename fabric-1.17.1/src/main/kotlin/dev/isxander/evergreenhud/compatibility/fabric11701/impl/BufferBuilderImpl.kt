@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.AIBufferBuilder
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.UBufferBuilder
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.DrawMode
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.VertexFormats
 import net.minecraft.client.render.BufferBuilder
@@ -25,36 +25,36 @@ import net.minecraft.client.render.BufferRenderer
 import net.minecraft.client.render.Tessellator
 import net.minecraft.client.render.VertexFormat
 
-class BufferBuilderImpl : AIBufferBuilder() {
+class BufferBuilderImpl : UBufferBuilder() {
 
     private val tes = Tessellator.getInstance()
     private val buf: BufferBuilder = tes.buffer
 
-    override fun vertex(x: Double, y: Double, z: Double): AIBufferBuilder {
+    override fun vertex(x: Double, y: Double, z: Double): UBufferBuilder {
         buf.vertex(x, y, z)
         return this
     }
 
-    override fun color(r: Float, g: Float, b: Float, a: Float): AIBufferBuilder {
+    override fun color(r: Float, g: Float, b: Float, a: Float): UBufferBuilder {
         buf.color(r, g, b, a)
         return this
     }
 
-    override fun tex(u: Double, v: Double): AIBufferBuilder {
+    override fun tex(u: Double, v: Double): UBufferBuilder {
         buf.texture(u.toFloat(), v.toFloat())
         return this
     }
 
-    override fun next(): AIBufferBuilder {
+    override fun next(): UBufferBuilder {
         buf.next()
         return this
     }
-    override fun end(): AIBufferBuilder {
+    override fun end(): UBufferBuilder {
         buf.end()
         return this
     }
 
-    override fun begin(mode: DrawMode, format: VertexFormats): AIBufferBuilder {
+    override fun begin(mode: DrawMode, format: VertexFormats): UBufferBuilder {
         val parsedFormat = when (format) {
             VertexFormats.POSITION -> net.minecraft.client.render.VertexFormats.POSITION
             VertexFormats.POSITION_COLOR -> net.minecraft.client.render.VertexFormats.POSITION_COLOR

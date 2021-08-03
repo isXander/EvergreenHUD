@@ -17,15 +17,8 @@
 
 package dev.isxander.evergreenhud.compatibility.universal.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.impl.entity.AIEntity
-import java.io.File
+abstract class ULoader {
 
-abstract class AIMinecraft {
-
-    abstract val player: AIEntity
-    abstract val dataDir: File
-    abstract val fps: Int
-    abstract val inGameHasFocus: Boolean
-    abstract val devEnv: Boolean
+    abstract fun isModLoaded(id: String): Boolean
 
 }

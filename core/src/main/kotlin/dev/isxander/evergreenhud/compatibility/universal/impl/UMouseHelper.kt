@@ -17,26 +17,14 @@
 
 package dev.isxander.evergreenhud.compatibility.universal.impl
 
-import dev.isxander.evergreenhud.event.ClientTickEvent
-import dev.isxander.evergreenhud.event.on
-import gg.essential.elementa.UIComponent
+abstract class UMouseHelper {
 
-abstract class AIScreenHandler {
+    abstract val mouseX: Float
+    abstract val mouseY: Float
 
-    init {
-        on<ClientTickEvent>()
-            .filter { component != null }
-            .subscribe {
-                displayComponent(component!!)
-                component = null
-            }
-    }
+    abstract val wasLeftMouseDown: Boolean
+    abstract val wasRightMouseDown: Boolean
 
-    private var component: UIComponent? = null
-    fun displayComponentNextTick(component: UIComponent) {
-        this.component = component
-    }
-
-    abstract fun displayComponent(component: UIComponent)
+    abstract fun isButtonDown(button: Int): Boolean
 
 }

@@ -15,10 +15,17 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal.impl.world
+package dev.isxander.evergreenhud.compatibility.universal.impl
 
-abstract class AIWorld {
-    
-    abstract fun getBiomeAt(x: Int, y: Int, z: Int = 256): Biome
+import dev.isxander.evergreenhud.compatibility.universal.impl.entity.UEntity
+import java.io.File
+
+abstract class UMinecraft {
+
+    abstract val player: UEntity
+    abstract val dataDir: File
+    abstract val fps: Int
+    abstract val inGameHasFocus: Boolean
+    abstract val devEnv: Boolean
 
 }

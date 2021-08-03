@@ -17,12 +17,11 @@
 
 package dev.isxander.evergreenhud.compatibility.universal.impl
 
-abstract class AIResolution {
-    abstract val displayWidth: Int
-    abstract val displayHeight: Int
+abstract class UFontRenderer {
 
-    abstract val scaledWidth: Int
-    abstract val scaledHeight: Int
+    abstract val fontHeight: Int
+    abstract fun width(text: String): Int
 
-    abstract val scaleFactor: Double
+    abstract fun draw(text: String, x: Float, y: Float, color: Int, shadow: Boolean = true): UFontRenderer
+
 }

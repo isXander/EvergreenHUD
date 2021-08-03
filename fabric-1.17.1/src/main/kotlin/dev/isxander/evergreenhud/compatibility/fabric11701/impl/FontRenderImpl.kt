@@ -19,10 +19,10 @@ package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
 import dev.isxander.evergreenhud.compatibility.fabric11701.Main
 import dev.isxander.evergreenhud.compatibility.fabric11701.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.AIFontRenderer
+import dev.isxander.evergreenhud.compatibility.universal.impl.UFontRenderer
 
-class FontRenderImpl : AIFontRenderer() {
-    override fun draw(text: String, x: Float, y: Float, color: Int, shadow: Boolean): AIFontRenderer {
+class FontRenderImpl : UFontRenderer() {
+    override fun draw(text: String, x: Float, y: Float, color: Int, shadow: Boolean): UFontRenderer {
         if (shadow) mc.textRenderer.drawWithShadow(Main.matrices, text, x, y, color)
         else mc.textRenderer.draw(Main.matrices, text, x, y, color)
 

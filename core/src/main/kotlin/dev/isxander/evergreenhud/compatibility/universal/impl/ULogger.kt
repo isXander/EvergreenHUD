@@ -17,9 +17,10 @@
 
 package dev.isxander.evergreenhud.compatibility.universal.impl
 
-abstract class AIProfiler {
+abstract class ULogger {
 
-    abstract fun push(name: String)
-    abstract fun pop()
+    abstract fun info(msg: String)
+    abstract fun warn(msg: String)
+    abstract fun err(msg: String)
 
 }

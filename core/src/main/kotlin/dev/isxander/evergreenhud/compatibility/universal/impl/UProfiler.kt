@@ -17,14 +17,9 @@
 
 package dev.isxander.evergreenhud.compatibility.universal.impl
 
-abstract class AIMouseHelper {
+abstract class UProfiler {
 
-    abstract val mouseX: Float
-    abstract val mouseY: Float
-
-    abstract val wasLeftMouseDown: Boolean
-    abstract val wasRightMouseDown: Boolean
-
-    abstract fun isButtonDown(button: Int): Boolean
+    abstract fun push(name: String)
+    abstract fun pop()
 
 }

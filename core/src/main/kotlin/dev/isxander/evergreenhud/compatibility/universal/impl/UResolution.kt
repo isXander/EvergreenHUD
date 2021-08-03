@@ -15,21 +15,14 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal.impl.render
+package dev.isxander.evergreenhud.compatibility.universal.impl
 
-import gg.essential.universal.UMatrixStack
+abstract class UResolution {
+    abstract val displayWidth: Int
+    abstract val displayHeight: Int
 
-abstract class AIBufferBuilder {
+    abstract val scaledWidth: Int
+    abstract val scaledHeight: Int
 
-    abstract fun vertex(x: Double, y: Double, z: Double): AIBufferBuilder
-    abstract fun color(r: Float, g: Float, b: Float, a: Float): AIBufferBuilder
-    abstract fun tex(u: Double, v: Double): AIBufferBuilder
-
-    abstract fun next(): AIBufferBuilder
-    abstract fun end(): AIBufferBuilder
-
-    abstract fun begin(mode: DrawMode, format: VertexFormats): AIBufferBuilder
-
-    abstract fun draw()
-
+    abstract val scaleFactor: Double
 }

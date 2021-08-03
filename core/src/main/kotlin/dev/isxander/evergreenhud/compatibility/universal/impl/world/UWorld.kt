@@ -15,10 +15,10 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal.impl
+package dev.isxander.evergreenhud.compatibility.universal.impl.world
 
-abstract class AILoader {
-
-    abstract fun isModLoaded(id: String): Boolean
+abstract class UWorld {
+    
+    abstract fun getBiomeAt(x: Int, y: Int, z: Int = 256): Biome
 
 }

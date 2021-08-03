@@ -17,10 +17,10 @@
 
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.impl.entity.AIEntity
+import dev.isxander.evergreenhud.compatibility.universal.impl.entity.UEntity
 import net.minecraft.entity.Entity
 
-class EntityImpl(val entity: Entity?) : AIEntity() {
+class EntityImpl(val entity: Entity?) : UEntity() {
 
     override val isNull: Boolean = false
 
@@ -37,7 +37,7 @@ class EntityImpl(val entity: Entity?) : AIEntity() {
     override val yaw: Float = entity!!.yaw
     override val pitch: Float = entity!!.pitch
 
-    override fun getReachDistFromEntity(entity: AIEntity): Double {
+    override fun getReachDistFromEntity(entity: UEntity): Double {
         return -1.0
     }
 

@@ -24,7 +24,7 @@ import java.awt.Color
 import kotlin.math.cos
 import kotlin.math.sin
 
-abstract class AIGL11 {
+abstract class UGL {
 
     /* ---------------------------------- */
     /* Render Stuff                 BEGIN */

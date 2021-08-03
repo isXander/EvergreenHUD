@@ -18,12 +18,12 @@
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
 import dev.isxander.evergreenhud.compatibility.fabric11701.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.world.AIWorld
+import dev.isxander.evergreenhud.compatibility.universal.impl.world.UWorld
 import dev.isxander.evergreenhud.compatibility.universal.impl.world.Biome
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.registry.Registry
 
-class WorldImpl : AIWorld() {
+class WorldImpl : UWorld() {
 
     override fun getBiomeAt(x: Int, y: Int, z: Int): Biome {
         return Biome.parseBiome(mc.world!!.registryManager!!.get(Registry.BIOME_KEY)!!.getId(mc.world?.getBiome(BlockPos(x, y, z))).toString())

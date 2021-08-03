@@ -20,14 +20,13 @@ package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.compatibility.fabric11701.Main
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.AIGL11
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.UGL
 import net.minecraft.client.render.GameRenderer
 import net.minecraft.util.math.Quaternion
 import net.minecraft.util.math.Vec3f
-import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL20
 
-class GLImpl : AIGL11() {
+class GLImpl : UGL() {
     override fun push() = Main.matrices.push()
     override fun pop() = Main.matrices.pop()
     override fun scale(x: Float, y: Float, z: Float) = Main.matrices.scale(x, y, z)
