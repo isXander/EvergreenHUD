@@ -43,9 +43,9 @@ class MainConfig(private val manager: ElementManager) {
 
     fun load() {
         if (!CONFIG_FILE.exists()) save().also { return@load }
-        val hocon = attemptConversion(ConfigFactory.parseFile(CONFIG_FILE).root())
+        val data = attemptConversion(ConfigFactory.parseFile(CONFIG_FILE).root())
 
-        manager.conf = hocon["data"]!!.obj()
+        manager.conf = data["data"]!!.obj()
     }
 
     @Suppress("UNUSED_EXPRESSION")

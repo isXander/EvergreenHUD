@@ -1,15 +1,8 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url = 'https://maven.fabricmc.net' }
-        maven { url = 'https://jitpack.io' }
-    }
-    dependencies {
-        classpath 'dev.isXander:fabric-loom:2641fb0d9a'
-    }
+plugins {
+    id 'fabric-loom' version '0.8-SNAPSHOT'
 }
 
-apply plugin: 'fabric-loom'
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
 
 configurations {
     modInclude
@@ -70,14 +63,8 @@ remapJar {
     archiveClassifier.set ''
 }
 
-runClient {
-    javaLauncher.set(javaToolchains.launcherFor {
-        languageVersion.set(JavaLanguageVersion.of(16))
-    })
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(16))
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '16'
     }
 }

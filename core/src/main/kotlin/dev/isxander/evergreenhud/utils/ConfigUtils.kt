@@ -31,7 +31,7 @@ fun ConfigValue.double(): Double = this.unwrapped() as Double
 fun ConfigValue.float(): Float = (this.unwrapped() as Double).toFloat()
 fun ConfigValue.string(): String = this.unwrapped() as String
 fun ConfigValue.bool(): Boolean = this.unwrapped() as Boolean
-fun ConfigValue.obj(): ConfigObject = this.unwrapped() as ConfigObject
+fun ConfigValue.obj(): ConfigObject = this as ConfigObject
 
 fun Int.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)
 fun Double.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)

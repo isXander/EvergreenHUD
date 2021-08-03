@@ -4,7 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.21'
 
     // Build
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'org.ajoberstar.grgit' version '4.1.0'
     id 'com.github.gmazzo.buildconfig' version '3.0.1'
 }
@@ -44,7 +44,7 @@ allprojects {
     apply plugin: 'com.github.gmazzo.buildconfig'
 
     version = versionStr
-    group = 'co.uk.isxander'
+    group = 'dev.isxander'
 
     tasks.withType(JavaCompile) {
         options.encoding = 'UTF-8'
@@ -80,13 +80,6 @@ allprojects {
 
     compileKotlin {
         kotlinOptions {
-            jvmTarget = "1.8"
-            freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
-        }
-    }
-    compileTestKotlin {
-        kotlinOptions {
-            jvmTarget = "1.8"
             freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
         }
     }

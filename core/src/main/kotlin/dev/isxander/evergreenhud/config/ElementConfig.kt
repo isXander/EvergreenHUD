@@ -19,7 +19,6 @@ package dev.isxander.evergreenhud.config
 
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigObject
-import com.typesafe.config.ConfigRenderOptions
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.elements.ElementManager
@@ -89,7 +88,7 @@ class ElementConfig(private val manager: ElementManager) {
         // there is no point recoding every conversion
         // when a new schema comes to be
         // so just convert the old conversions until done
-        var convertedHocon = hocon
+        var convertedData = hocon
         var convertedSchema = currentSchema
         while (convertedSchema != MainConfig.SCHEMA) {
             LOGGER.info("Converting element configuration v$convertedSchema -> ${convertedSchema + 1}")
@@ -99,7 +98,7 @@ class ElementConfig(private val manager: ElementManager) {
             convertedSchema++
         }
 
-        return convertedHocon
+        return convertedData
     }
 
     companion object {

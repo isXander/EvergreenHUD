@@ -5,13 +5,15 @@ buildscript {
         maven { url = "https://repo.spongepowered.org/maven/" }
     }
     dependencies {
-        classpath 'com.github.asbyth:ForgeGradle:8708bf3e0'
-        classpath 'com.github.xcfrg:MixinGradle:0.6-SNAPSHOT'
+        classpath 'com.github.ReplayMod:ForgeGradle:d1a7165:all'
+        classpath 'dev.isXander:MixinGradle:0.6-SNAPSHOT'
     }
 }
 
 apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'org.spongepowered.mixin'
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
 
 minecraft {
     version = '1.8.9-11.15.1.2318-1.8.9'
@@ -88,3 +90,9 @@ reobf {
 }
 
 reobfJar.dependsOn tasks.shadowJar
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}

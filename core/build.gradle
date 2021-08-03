@@ -62,10 +62,6 @@ dependencies {
     }
 }
 
-shadowJar {
-    relocate 'com.google.gson', 'dev.isxander.lib.gson'
-}
-
 jar {
     enabled = true
 }
