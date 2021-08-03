@@ -20,7 +20,7 @@ package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 import dev.isxander.evergreenhud.compatibility.fabric11701.mc
 import dev.isxander.evergreenhud.compatibility.fabric11701.mixins.AccessorMinecraftClient
 import dev.isxander.evergreenhud.compatibility.universal.impl.UMinecraft
-import dev.isxander.evergreenhud.compatibility.universal.impl.entity.UEntity
+import dev.isxander.evergreenhud.compatibility.universal.impl.UEntity
 import net.fabricmc.loader.api.FabricLoader
 import java.io.File
 

@@ -20,7 +20,9 @@ package dev.isxander.evergreenhud.gui
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.gui.components.ElementComponent
 import gg.essential.elementa.UIComponent
-import gg.essential.elementa.dsl.childOf
+import gg.essential.elementa.components.UIRoundedRectangle
+import gg.essential.elementa.dsl.*
+import java.awt.Color
 
 // We cannot directly call WindowScreen() because it extends from Minecraft's GuiScreen
 // which :core does not have access to. Modules will wrap this in a WindowScreen as a
@@ -28,6 +30,20 @@ import gg.essential.elementa.dsl.childOf
 class MainGui : UIComponent() {
 
     init {
+        val panel = UIRoundedRectangle(5f).constrain {
+            x = 20.percent()
+            y = 20.percent()
+            width = 50.percent()
+            height = 50.percent()
+            color = Color(18, 18, 18, 240).toConstraint()
+        } childOf this
+
+        val titleBar = UIRoundedRectangle(5f).constrain {
+            height = 3.percentOfWindow()
+            width = 100.percent()
+            color = Color(13, 13, 13, 255).toConstraint()
+        } childOf panel
+
         for (element in EvergreenHUD.elementManager) {
             ElementComponent(element) childOf this
         }

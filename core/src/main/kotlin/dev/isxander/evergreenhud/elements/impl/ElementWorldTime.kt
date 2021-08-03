@@ -37,7 +37,7 @@ class ElementWorldTime : SimpleTextElement() {
     override var title: String = "Time"
 
     override fun calculateValue(): String {
-        if (WORLD.isNull) return "00:00${if (seconds) ":00" else ""}"
+        if (WORLD.isNull) return "06:00${if (seconds) ":00" else ""}"
 
         // ticks to ticks in day to seconds to millis plus six hours (time 0 = 6am)
         val date = Date(WORLD.time % 24000L / 20 * 1000 + TimeUnit.HOURS.toMillis(6))

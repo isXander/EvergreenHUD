@@ -20,7 +20,7 @@ package dev.isxander.evergreenhud.compatibility.fabric11701.events
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.fabric11701.impl.EntityImpl
 import dev.isxander.evergreenhud.compatibility.fabric11701.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.entity.UEntity
+import dev.isxander.evergreenhud.compatibility.universal.impl.UEntity
 import dev.isxander.evergreenhud.event.ClientDamageEntity
 import dev.isxander.evergreenhud.event.ServerDamageEntity
 import me.kbrewster.eventbus.Subscribe

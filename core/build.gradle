@@ -43,7 +43,7 @@ dependencies {
     // depend on whatever version and exclude all dependencies
     // then in the other modules depend on them properly.
     // gross but I don't see any other way
-    compileOnly ('gg.essential:Elementa:next-337-10809-SNAPSHOT') {
+    api ('gg.essential:Elementa:next-337-10809-SNAPSHOT') {
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'
         exclude module: 'UniversalCraft'
@@ -53,7 +53,7 @@ dependencies {
         exclude module: 'fabric-api'
         exclude module: 'forge'
     }
-    compileOnly ('gg.essential:UniversalCraft:next-137-10809-SNAPSHOT') {
+    api ('gg.essential:UniversalCraft:next-137-10809-SNAPSHOT') {
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'
         exclude module: 'UniversalCraft'
