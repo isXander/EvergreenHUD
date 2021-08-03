@@ -4,7 +4,7 @@
     "name": "${mod_name}",
     "description": "${mod_description}",
     "version": "${mod_version}",
-    "mcversion": "1.8.9-11.15.1.2318-1.8.9",
+    "mcversion": "1.8.9",
     "url": "https://github.com/isXander/EvergreenHUD",
     "updateUrl": "",
     "authorList": ["isXander"],

@@ -22,7 +22,7 @@ minecraft {
     makeObfSourceJar = false
 
     clientRunArgs += '--tweakClass org.spongepowered.asm.launch.MixinTweaker'
-    clientRunArgs += '--mixin mixins.evergreenhud.json'
+    clientRunArgs += '--mixin evergreenhud.forge10809.mixins.json'
 }
 
 repositories {
@@ -46,7 +46,7 @@ dependencies {
 
 mixin {
     disableRefMapWarning = true
-    add sourceSets.main, 'mixins.evergreenhud.refmap.json'
+    add sourceSets.main, 'evergreenhud.forge10809.mixins.refmap.json'
 }
 
 jar {
