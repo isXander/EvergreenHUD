@@ -83,7 +83,7 @@ dependencies {
     include 'gg.essential:loader-launchwrapper:1.0.2'
     implementation 'gg.essential:essential-1.8.9-forge:1282'
 
-    include ('dev.isXander:XanderLib:1.1.6') {
+    include ('dev.isXander:XanderLib:1.1.7') {
         exclude module: 'Essential'
         exclude module: 'kotlin-stdlib-jdk8'
     }
