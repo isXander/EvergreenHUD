@@ -20,14 +20,19 @@ package dev.isxander.evergreenhud.gui
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.gui.components.ElementComponent
 import gg.essential.elementa.UIComponent
-import gg.essential.elementa.components.UIRoundedRectangle
+import gg.essential.elementa.components.*
+import gg.essential.elementa.constraints.*
 import gg.essential.elementa.dsl.*
+import gg.essential.elementa.font.DefaultFonts
 import java.awt.Color
+import java.io.File
 
 // We cannot directly call WindowScreen() because it extends from Minecraft's GuiScreen
 // which :core does not have access to. Modules will wrap this in a WindowScreen as a
 // childOf window. So root components within this class should be a child of this
 class MainGui : UIComponent() {
+
+    private var clickPos: Pair<Float, Float>? = null
 
     init {
         val panel = UIRoundedRectangle(5f).constrain {
@@ -35,14 +40,48 @@ class MainGui : UIComponent() {
             y = 20.percent()
             width = 50.percent()
             height = 50.percent()
-            color = Color(18, 18, 18, 240).toConstraint()
+            color = Color(18, 18, 18, 200).toConstraint()
         } childOf this
 
         val titleBar = UIRoundedRectangle(5f).constrain {
             height = 3.percentOfWindow()
             width = 100.percent()
             color = Color(13, 13, 13, 255).toConstraint()
+        }.onMouseClick {
+            clickPos = if (it.relativeX < 0 || it.relativeY < 0 || it.relativeX > getWidth() || it.relativeY > getHeight()) {
+                null
+            } else {
+                it.relativeX to it.relativeY
+            }
+        }.onMouseRelease {
+            clickPos = null
+        }.onMouseDrag { mouseX, mouseY, button ->
+            if (clickPos == null)
+                return@onMouseDrag
+
+            if (button == 0) {
+                panel.constrain {
+                    x = (panel.getLeft() + mouseX - clickPos!!.first).pixels()
+                    y = (panel.getTop() + mouseY - clickPos!!.second).pixels()
+                }
+            }
         } childOf panel
+
+        val titleIcon = UIImage.ofFile(File(EvergreenHUD.RESOURCE_DIR, "evergreenhud-transparent.png")).constrain {
+            x = (-8).pixels()
+            y = (-8).pixels()
+            width = AspectConstraint()
+            height = 300.percent()
+        } childOf titleBar
+
+        val titleText = UIText("/evergreenhud : bash - Minecraft").constrain {
+            x = CenterConstraint()
+            y = CenterConstraint() - (100 / 16).percent()
+            width = TextAspectConstraint()
+            height = 65.percent()
+            color = Color(255, 255, 255, 255).toConstraint()
+            fontProvider = DefaultFonts.ELEMENTA_MINECRAFT_FONT_RENDERER
+        } childOf titleBar
 
         for (element in EvergreenHUD.elementManager) {
             ElementComponent(element) childOf this

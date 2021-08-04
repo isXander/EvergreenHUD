@@ -121,7 +121,7 @@ object EvergreenHUD {
 
         // every 3 days export resources
         val metadataFile = File(DATA_DIR, "resources/metadata.conf")
-        if (!metadataFile.exists() || ConfigFactory.parseFile(metadataFile).root().getOrDefault("version", "1.0") != EvergreenInfo.VERSION_FULL) {
+        if (MC.devEnv || !metadataFile.exists() || ConfigFactory.parseFile(metadataFile).root().getOrDefault("version", "1.0") != EvergreenInfo.VERSION_FULL) {
             val reflections = Reflections("evergreenhud.export", ResourcesScanner())
             RESOURCE_DIR.mkdirs()
             File(DATA_DIR, "resources/user").also { it.mkdirs() }

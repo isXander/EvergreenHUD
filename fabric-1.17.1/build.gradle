@@ -4,9 +4,9 @@ plugins {
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
 
-configurations {
-    modInclude
-    modImplementation.extendsFrom modInclude
+ext.includeMod = { Object... dependencyNotation ->
+    dependencies.modImplementation dependencyNotation
+    dependencies.include dependencyNotation
 }
 
 dependencies {
@@ -17,10 +17,16 @@ dependencies {
         exclude module: 'UniversalCraft'
     }
 
-    modInclude ('gg.essential:Elementa:next-337-11700-fabric-SNAPSHOT') {
+    include ('gg.essential:Elementa:next-337-11700-fabric-SNAPSHOT') {
         exclude module: 'fabric-loader'
     }
-    modInclude ('gg.essential:UniversalCraft:next-137-11700-fabric-SNAPSHOT') {
+    modImplementation ('gg.essential:Elementa:next-337-11700-fabric-SNAPSHOT') {
+        exclude module: 'fabric-loader'
+    }
+    include ('gg.essential:UniversalCraft:next-137-11700-fabric-SNAPSHOT') {
+        exclude module: 'fabric-loader'
+    }
+    modImplementation ('gg.essential:UniversalCraft:next-137-11700-fabric-SNAPSHOT') {
         exclude module: 'fabric-loader'
     }
 
@@ -49,7 +55,6 @@ processResources {
 }
 
 shadowJar {
-    configurations = [project.configurations.embed, project.configurations.modInclude]
     archiveClassifier.set 'shadow'
 }
 

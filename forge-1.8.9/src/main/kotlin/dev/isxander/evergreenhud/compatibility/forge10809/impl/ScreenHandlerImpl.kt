@@ -21,12 +21,18 @@ import dev.isxander.evergreenhud.compatibility.forge10809.mc
 import dev.isxander.evergreenhud.compatibility.universal.impl.UScreenHandler
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
-import gg.essential.elementa.dsl.childOf
+import gg.essential.elementa.dsl.*
 
 class ScreenHandlerImpl : UScreenHandler() {
     override fun displayComponent(component: UIComponent) {
         mc.displayGuiScreen(object : WindowScreen() {
-            init { component childOf window }
+            init {
+                component.constrain {
+                    width = 100.percent()
+                    height = 100.percent()
+                }
+                component childOf window
+            }
         })
     }
 }
