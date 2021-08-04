@@ -81,7 +81,7 @@ repositories {
 
 dependencies {
     include 'gg.essential:loader-launchwrapper:1.0.2'
-    implementation 'gg.essential:Essential:1194-10809-SNAPSHOT'
+    implementation 'gg.essential:Essential:1229-11202-SNAPSHOT'
 
     include ('dev.isXander:XanderLib:1.1.4') {
         exclude module: 'Essential'
