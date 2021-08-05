@@ -38,7 +38,7 @@ public class ElementCps extends SimpleTextElement {
     @Override
     public void initialise() {
         addSettings(button = new ArraySetting("Button", "Display", "Which button to display.", "Both", new String[]{"Left", "Right", "Both"}));
-        addSettings(inputMode = new EnumSetting<>("Input Mode", "Display", "How the element should receive input.", InputMode.CONTROLS));
+        addSettings(inputMode = new EnumSetting<>("Input Mode", "Display", "How the element should receive input.", InputMode.RAW));
     }
 
     @Override
