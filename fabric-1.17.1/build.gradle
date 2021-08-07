@@ -38,7 +38,7 @@ processResources {
     inputs.property 'mod_name', mod_name
     inputs.property 'mod_description', mod_description
 
-    filesMatching('fabric.mod.json') {
+    filesMatching(['fabric.mod.json', 'bundle.project.json']) {
         expand(
                 'mod_id': mod_id,
                 'mod_version': project.version,

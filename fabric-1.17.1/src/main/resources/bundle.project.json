@@ -1,0 +1,6 @@
+{
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "minecraft_version": "1.17.1",
+  "platform": "fabric"
+}
