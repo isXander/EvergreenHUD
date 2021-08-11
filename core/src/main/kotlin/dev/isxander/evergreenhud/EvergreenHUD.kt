@@ -18,12 +18,10 @@
 package dev.isxander.evergreenhud
 
 import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigRenderOptions
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.CustomKeybind
 import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.Keyboard
-import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.profile.ProfileManager
 import dev.isxander.evergreenhud.gui.MainGui
 import dev.isxander.evergreenhud.repo.RepoManager
@@ -43,9 +41,9 @@ import java.nio.file.StandardCopyOption
 
 object EvergreenHUD {
 
-    val DATA_DIR: File = File(MC.dataDir, "evergreenhud")
-    val RESOURCE_DIR: File = File(DATA_DIR, "resources/default")
-    val EVENT_BUS: EventBus = eventbus {
+    val dataDir: File = File(MC.dataDir, "evergreenhud")
+    val resourceDir: File = File(dataDir, "resources/default")
+    val eventBus: EventBus = eventbus {
         invoker { ReflectionInvoker() }
         threadSaftey { true }
         exceptionHandler {
@@ -66,7 +64,7 @@ object EvergreenHUD {
     fun init() {
         LOGGER.info("Starting EvergreenHUD ${EvergreenInfo.VERSION_FULL} (${MC_VERSION.display})")
 
-        DATA_DIR.mkdirs()
+        dataDir.mkdirs()
 
         exportResources()
         profileManager = ProfileManager().also { it.load() }
@@ -100,7 +98,7 @@ object EvergreenHUD {
             LOGGER.info("Skipping update and blacklisting check due to being in a development environment.")
         }
 
-        EVENT_BUS.register(this)
+        eventBus.register(this)
 
         KEYBIND_MANAGER.registerKeybind(CustomKeybind(Keyboard.KEY_HOME, "Open EvergreenHUD GUI", "EvergreenHUD") { SCREEN_HANDLER.displayComponent(MainGui()) })
         KEYBIND_MANAGER.registerKeybind(CustomKeybind(Keyboard.KEY_NONE, "Toggle EvergreenHUD", "EvergreenHUD") {
@@ -120,18 +118,18 @@ object EvergreenHUD {
         LOGGER.info("Exporting resources...")
 
         // every 3 days export resources
-        val metadataFile = File(DATA_DIR, "resources/metadata.conf")
+        val metadataFile = File(dataDir, "resources/metadata.conf")
         if (MC.devEnv || !metadataFile.exists() || ConfigFactory.parseFile(metadataFile).root().getOrDefault("version", "1.0") != EvergreenInfo.VERSION_FULL) {
             val reflections = Reflections("evergreenhud.export", ResourcesScanner())
-            RESOURCE_DIR.mkdirs()
-            File(DATA_DIR, "resources/user").also { it.mkdirs() }
+            resourceDir.mkdirs()
+            File(dataDir, "resources/user").also { it.mkdirs() }
 
             val resourceMap = hashMapOf<File, String>()
             reflections.getResources { true }.forEach {
-                resourceMap[File(RESOURCE_DIR, it.replaceFirst("evergreenhud/export/", ""))] = it
+                resourceMap[File(resourceDir, it.replaceFirst("evergreenhud/export/", ""))] = it
             }
 
-            for (file in RESOURCE_DIR.listFiles() ?: arrayOf()) {
+            for (file in resourceDir.walkTopDown()) {
                 // delete old resources
                 if (resourceMap[file] == null) {
                     LOGGER.info("Deleting unknown resource. (Please use evergreenhud/resources/user for user resources) - ${file.path}")
@@ -154,7 +152,7 @@ object EvergreenHUD {
             metadataFile.parentFile.mkdirs()
             Files.write(
                 metadataFile.toPath(),
-                metadata.resolve().root().render(HoconUtils.niceRender).lines(),
+                metadata.resolve().root().render(niceConfigRender).lines(),
                 StandardCharsets.UTF_8
             )
         }

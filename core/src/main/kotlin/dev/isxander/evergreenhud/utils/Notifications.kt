@@ -20,7 +20,6 @@ package dev.isxander.evergreenhud.utils
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.event.RenderTickEvent
-import gg.essential.elementa.font.DefaultFonts
 import gg.essential.universal.ChatColor
 import me.kbrewster.eventbus.Subscribe
 import java.awt.Color
@@ -38,7 +37,7 @@ object Notifications {
     private val notifications = ConcurrentLinkedQueue<NotifData>()
 
     init {
-        EvergreenHUD.EVENT_BUS.register(this)
+        EvergreenHUD.eventBus.register(this)
     }
 
     fun push(title: String, description: String, backColor: Color = Color(0, 0, 0), textColor: Color = Color(255, 255, 255), duration: Int = 20, consumer: () -> Unit = {}) =

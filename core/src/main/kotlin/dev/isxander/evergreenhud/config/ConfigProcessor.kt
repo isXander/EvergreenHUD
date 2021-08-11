@@ -19,7 +19,7 @@ package dev.isxander.evergreenhud.config
 
 import com.typesafe.config.ConfigObject
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
-import dev.isxander.evergreenhud.settings.HoconType
+import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.impl.*
 import dev.isxander.evergreenhud.utils.*
@@ -42,11 +42,11 @@ interface ConfigProcessor {
         var obj = data.toConfig()
         val path = category.joinToString(separator = ".", postfix = ".${setting.nameSerializedKey}")
 
-        obj = when (setting.hoconType) {
-            HoconType.STRING -> obj.withValue(path, (setting.serializedValue as String).asConfig())
-            HoconType.BOOLEAN -> obj.withValue(path, (setting.serializedValue as Boolean).asConfig())
-            HoconType.FLOAT -> obj.withValue(path, (setting.serializedValue as Float).asConfig())
-            HoconType.INT -> obj.withValue(path, (setting.serializedValue as Int).asConfig())
+        obj = when (setting.dataType) {
+            DataType.STRING -> obj.withValue(path, (setting.serializedValue as String).asConfig())
+            DataType.BOOLEAN -> obj.withValue(path, (setting.serializedValue as Boolean).asConfig())
+            DataType.FLOAT -> obj.withValue(path, (setting.serializedValue as Float).asConfig())
+            DataType.INT -> obj.withValue(path, (setting.serializedValue as Int).asConfig())
         }
 
         return obj.root()
@@ -54,11 +54,11 @@ interface ConfigProcessor {
 
     fun setSettingFromConfig(data: ConfigObject, setting: Setting<*, *>) {
         if (setting.readOnly) return
-        when (setting.hoconType) {
-            HoconType.BOOLEAN -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Boolean).asConfig()).bool()
-            HoconType.FLOAT -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Float).asConfig()).float()
-            HoconType.INT -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Int).asConfig()).int()
-            HoconType.STRING -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as String).asConfig()).string()
+        when (setting.dataType) {
+            DataType.BOOLEAN -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Boolean).asConfig()).bool()
+            DataType.FLOAT -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Float).asConfig()).float()
+            DataType.INT -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Int).asConfig()).int()
+            DataType.STRING -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as String).asConfig()).string()
         }
     }
 

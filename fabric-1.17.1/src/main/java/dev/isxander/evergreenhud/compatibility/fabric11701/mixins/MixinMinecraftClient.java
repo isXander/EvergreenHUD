@@ -37,7 +37,7 @@ public class MixinMinecraftClient {
             Main.matrices = new MatrixStack();
             RenderSystem.enableTexture();
             RenderSystem.enableCull();
-            EvergreenHUD.INSTANCE.getEVENT_BUS().post(new RenderTickEvent(MinecraftClient.getInstance().getTickDelta()));
+            EvergreenHUD.INSTANCE.getEventBus().post(new RenderTickEvent(MinecraftClient.getInstance().getTickDelta()));
             Main.matrices = null;
         }
     }

@@ -70,7 +70,7 @@ class ElementComponent(private val element: Element) : UIComponent() {
             }
         }
 
-        val settingsButton = UIImage.ofFile(File(EvergreenHUD.RESOURCE_DIR, "settings.png")).constrain {
+        val settingsButton = UIImage.ofFile(File(EvergreenHUD.resourceDir, "settings.png")).constrain {
             height = 50.percent()
             SiblingConstraint()
             width = (self.getHeight() / 2f).pixels()

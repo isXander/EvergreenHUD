@@ -17,14 +17,9 @@
 
 package dev.isxander.evergreenhud.utils
 
-import com.typesafe.config.ConfigObject
-import com.typesafe.config.ConfigRenderOptions
-import com.typesafe.config.ConfigValue
-import com.typesafe.config.ConfigValueFactory
+import com.typesafe.config.*
 
-object HoconUtils {
-    val niceRender: ConfigRenderOptions = ConfigRenderOptions.defaults().setJson(false).setOriginComments(false)
-}
+val niceConfigRender = ConfigRenderOptions.defaults().setJson(false).setOriginComments(false)!!
 
 fun ConfigValue.int(): Int = this.unwrapped() as Int
 fun ConfigValue.double(): Double = this.unwrapped() as Double
@@ -40,3 +35,13 @@ fun String.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)
 fun Boolean.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)
 fun Any?.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)
 fun MutableList<*>.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)
+
+fun Config.getFloat(path: String): Float = this.getDouble(path).toFloat()
+
+@Suppress("UNCHECKED_CAST")
+fun <T> Config.get(path: String): T = this.getAnyRef(path) as T
+@Suppress("UNCHECKED_CAST")
+fun <T> Config.getList(path: String): List<T> = this.getAnyRefList(path) as List<T>
+
+fun <T> Config.getOrNull(path: String): T? = try { this.get<T>(path) } catch (e: ConfigException) { null }
+fun <T> Config.getListOrNull(path: String): List<T>? = try { this.getList<T>(path) } catch (e: ConfigException) { null }

@@ -67,7 +67,7 @@ class MainGui : UIComponent() {
             }
         } childOf panel
 
-        val titleIcon = UIImage.ofFile(File(EvergreenHUD.RESOURCE_DIR, "evergreenhud-transparent.png")).constrain {
+        val titleIcon = UIImage.ofFile(File(EvergreenHUD.resourceDir, "evergreenhud-transparent.png")).constrain {
             x = (-8).pixels()
             y = (-8).pixels()
             width = AspectConstraint()

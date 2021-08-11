@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.settings.impl
 
-import dev.isxander.evergreenhud.settings.HoconType
+import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
 import gg.essential.elementa.UIComponent
 import kotlin.reflect.KProperty1
@@ -27,7 +27,7 @@ import kotlin.reflect.KProperty1
 @MustBeDocumented
 annotation class BooleanSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true)
 
-class BooleanSettingWrapped(annotation: BooleanSetting, annotatedObject: Any, annotatedProperty: KProperty1<out Any, Boolean>) : Setting<Boolean, BooleanSetting>(annotation, annotatedObject, annotatedProperty, HoconType.BOOLEAN) {
+class BooleanSettingWrapped(annotation: BooleanSetting, annotatedObject: Any, annotatedProperty: KProperty1<out Any, Boolean>) : Setting<Boolean, BooleanSetting>(annotation, annotatedObject, annotatedProperty, DataType.BOOLEAN) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description

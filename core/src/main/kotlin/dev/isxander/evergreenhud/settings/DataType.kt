@@ -15,15 +15,14 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.config.profile
+package dev.isxander.evergreenhud.settings
 
-import dev.isxander.evergreenhud.EvergreenHUD
-import java.io.File
+enum class DataType {
+    STRING,
+    INT,
+    FLOAT,
+    BOOLEAN
+}
 
-data class Profile(
-    val id: String,
-    val name: String,
-    val description: String,
-    val icon: String = File(EvergreenHUD.resourceDir, "icon.png").path
-)
+
 

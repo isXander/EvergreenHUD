@@ -23,24 +23,29 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.MCVersion
 import dev.isxander.evergreenhud.config.ConfigProcessor
 import dev.isxander.evergreenhud.settings.Setting
-import dev.isxander.evergreenhud.settings.SettingAdapter
+import dev.isxander.evergreenhud.settings.settingAdapter
 import dev.isxander.evergreenhud.settings.impl.*
 import dev.isxander.evergreenhud.utils.*
+import kotlin.reflect.full.findAnnotation
 
 abstract class Element : ConfigProcessor {
 
     private var preloaded = false
     val settings: ArrayList<Setting<*, *>> = ArrayList()
-    val metadata: ElementMeta = this::class.java.getAnnotation(ElementMeta::class.java)
-    var position: Position = Position.scaledPositioning(0.5f, 0.5f, 1f)
-        private set
+    val metadata: ElementMeta = this::class.findAnnotation()!!
+    var position: Position2D =
+        scaledPosition {
+            x = 0.5f
+            y = 0.5f
+        }
 
     @FloatSetting(name = "Scale", category = ["Render"], description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
-    val scale = SettingAdapter(100f)
-        .adaptSetter {
+    val scale = settingAdapter(100f) {
+        set {
             position.scale = it / 100f
-            return@adaptSetter it
+            return@set it
         }
+    }
 
     @BooleanSetting(name = "Show In Chat", category = ["Visibility"], description = "Whether or not element should be displayed in the chat menu. (Takes priority over show under gui)")
     var showInChat: Boolean = false
@@ -65,11 +70,11 @@ abstract class Element : ConfigProcessor {
     open fun init() {}
     // called when element is added
     open fun onAdded() {
-        EvergreenHUD.EVENT_BUS.register(this)
+        EvergreenHUD.eventBus.register(this)
     }
     // called when element is removed
     open fun onRemoved() {
-        EvergreenHUD.EVENT_BUS.unregister(this)
+        EvergreenHUD.eventBus.unregister(this)
     }
 
     abstract fun render(deltaTicks: Float, renderOrigin: RenderOrigin)
@@ -79,7 +84,7 @@ abstract class Element : ConfigProcessor {
     protected open val hitboxHeight = 10f
 
     fun resetSettings(save: Boolean = false) {
-        position = Position.scaledPositioning(0.5f, 0.5f, 1f)
+        position = Position2D.scaledPositioning(0.5f, 0.5f, 1f)
 
         for (s in settings) s.reset()
         if (save) EvergreenHUD.elementManager.elementConfig.save()

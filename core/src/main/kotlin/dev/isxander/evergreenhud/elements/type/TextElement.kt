@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.elements.type
 
-import dev.isxander.evergreenhud.settings.SettingAdapter
+import dev.isxander.evergreenhud.settings.settingAdapter
 import dev.isxander.evergreenhud.settings.impl.*
 import dev.isxander.evergreenhud.utils.HitBox2D
 import java.awt.Color
@@ -37,8 +37,9 @@ abstract class TextElement : BackgroundElement() {
     var chroma = false
 
     @IntSetting(name = "Chroma Speed", category = ["Text"], description = "How fast should the chroma wave be?", min = 500, max = 10000)
-    val chromaSpeed = SettingAdapter(2000)
-        .hiddenIf { !chroma }
+    val chromaSpeed = settingAdapter(2000) {
+        depends { !chroma }
+    }
 
     @OptionSetting(name = "Text Style", category = ["Text"], description = "What style the text is rendered in.")
     var textStyle = TextStyle.SHADOW

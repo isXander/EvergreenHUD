@@ -30,6 +30,6 @@ public class MixinClientPlayerEntity extends MixinPlayerEntity {
 
     @Override
     public void attack(Entity entity, CallbackInfo ci) {
-        EvergreenHUD.INSTANCE.getEVENT_BUS().post(new ClientDamageEntity(new EntityImpl((ClientPlayerEntity) (Object) this), new EntityImpl(entity)));
+        EvergreenHUD.INSTANCE.getEventBus().post(new ClientDamageEntity(new EntityImpl((ClientPlayerEntity) (Object) this), new EntityImpl(entity)));
     }
 }

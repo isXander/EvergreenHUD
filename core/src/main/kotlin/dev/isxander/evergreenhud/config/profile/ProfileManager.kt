@@ -19,10 +19,8 @@ package dev.isxander.evergreenhud.config.profile
 
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigObject
-import com.typesafe.config.ConfigRenderOptions
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
-import dev.isxander.evergreenhud.config.MainConfig
 import dev.isxander.evergreenhud.utils.HoconUtils
 import dev.isxander.evergreenhud.utils.asConfig
 import dev.isxander.evergreenhud.utils.int
@@ -36,7 +34,7 @@ class ProfileManager {
     var currentProfile = DEFAULT_PROFILE
     val availableProfiles = hashMapOf(currentProfile.id to currentProfile)
     val profileDirectory: File
-        get() = File(EvergreenHUD.DATA_DIR, "profiles/${currentProfile.id}")
+        get() = File(EvergreenHUD.dataDir, "profiles/${currentProfile.id}")
 
     fun load() {
         if (!PROFILES_DATA.exists()) save().also { return@load }
@@ -115,7 +113,7 @@ class ProfileManager {
 
     companion object {
         const val SCHEMA = 1
-        val PROFILES_DATA = File(EvergreenHUD.DATA_DIR, "profiles/profiles.conf")
+        val PROFILES_DATA = File(EvergreenHUD.dataDir, "profiles/profiles.conf")
         val DEFAULT_PROFILE = Profile("default", "Default", "The default profile of EvergreenHUD")
     }
 

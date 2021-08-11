@@ -15,14 +15,12 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.settings
+package dev.isxander.evergreenhud.config.convert
 
-enum class HoconType {
-    STRING,
-    INT,
-    FLOAT,
-    BOOLEAN
+import java.io.File
+
+interface ConfigConverter {
+
+    fun process(file: File): String?
+
 }
-
-
-

@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.settings.impl
 
-import dev.isxander.evergreenhud.settings.HoconType
+import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
 import gg.essential.elementa.UIComponent
 import kotlin.reflect.KProperty1
@@ -27,7 +27,7 @@ import kotlin.reflect.KProperty1
 annotation class StringListSetting(val name: String, val category: Array<String>, val description: String, val options: Array<String>, val save: Boolean = true)
 
 @Suppress("UNCHECKED_CAST")
-class StringListSettingWrapped(annotation: StringListSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, String>) : Setting<String, StringListSetting>(annotation, annotationObject, annotatedProperty, HoconType.INT) {
+class StringListSettingWrapped(annotation: StringListSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, String>) : Setting<String, StringListSetting>(annotation, annotationObject, annotatedProperty, DataType.INT) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description

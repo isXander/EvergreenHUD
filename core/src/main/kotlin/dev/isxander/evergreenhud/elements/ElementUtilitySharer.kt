@@ -60,7 +60,7 @@ class ElementUtilitySharer {
         }
         for (clazz in toRemove) {
             LOGGER.info("Unregistered Utility Class: " + clazz.simpleName)
-            EvergreenHUD.EVENT_BUS.unregister(dataManagers[clazz]!!)
+            EvergreenHUD.eventBus.unregister(dataManagers[clazz]!!)
             dataManagers.remove(clazz)
             managerUsers.remove(clazz)
         }

@@ -23,21 +23,10 @@ import dev.isxander.evergreenhud.compatibility.fabric11701.impl.*
 import dev.isxander.evergreenhud.compatibility.fabric11701.keybind.KeybindManager
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.event.ClientTickEvent
-import dev.isxander.evergreenhud.event.ServerDamageEntity
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.event.player.AttackEntityCallback
-import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.Entity
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.util.ActionResult
-import net.minecraft.util.Hand
-import net.minecraft.util.hit.EntityHitResult
-import net.minecraft.world.World
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
 
 val mc: MinecraftClient = MinecraftClient.getInstance()
 
@@ -67,10 +56,10 @@ object Main : ClientModInitializer {
 
     private fun registerEvents() {
         ClientTickEvents.END_CLIENT_TICK.register {
-            EvergreenHUD.EVENT_BUS.post(ClientTickEvent())
+            EvergreenHUD.eventBus.post(ClientTickEvent())
         }
 
-        EvergreenHUD.EVENT_BUS.register(ServerDamageEntityEventManager)
+        EvergreenHUD.eventBus.register(ServerDamageEntityEventManager)
     }
 
 }

@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.settings.impl
 
-import dev.isxander.evergreenhud.settings.HoconType
+import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
 import gg.essential.elementa.UIComponent
 import kotlin.reflect.KProperty1
@@ -26,7 +26,7 @@ import kotlin.reflect.KProperty1
 @MustBeDocumented
 annotation class FloatSetting(val name: String, val category: Array<String>, val description: String, val min: Float, val max: Float, val suffix: String = "", val save: Boolean = true)
 
-class FloatSettingWrapped(annotation: FloatSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, Float>) : Setting<Float, FloatSetting>(annotation, annotationObject, annotatedProperty, HoconType.FLOAT) {
+class FloatSettingWrapped(annotation: FloatSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, Float>) : Setting<Float, FloatSetting>(annotation, annotationObject, annotatedProperty, DataType.FLOAT) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description

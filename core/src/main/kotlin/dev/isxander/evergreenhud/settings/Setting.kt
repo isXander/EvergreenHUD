@@ -22,11 +22,10 @@ import gg.essential.elementa.UIComponent
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
-import kotlin.reflect.full.hasAnnotation
 import kotlin.reflect.jvm.isAccessible
 
 @Suppress("UNCHECKED_CAST")
-abstract class Setting<T, A>(val annotation: A, val annotatedObject: Any, val annotatedProperty: KProperty1<out Any, T>, val hoconType: HoconType) {
+abstract class Setting<T, A>(val annotation: A, val annotatedObject: Any, val annotatedProperty: KProperty1<out Any, T>, val dataType: DataType) {
 
     abstract val name: String
     abstract val category: Array<String>
@@ -39,8 +38,7 @@ abstract class Setting<T, A>(val annotation: A, val annotatedObject: Any, val an
     val adapter: SettingAdapter<T>?
         get() = annotatedProperty.call(annotatedObject) as? SettingAdapter<T>
     val usesAdapter: Boolean = adapter != null
-    val readOnly: Boolean = (!usesAdapter && annotatedProperty.isFinal)
-        || (usesAdapter && annotatedProperty.hasAnnotation<SettingAdapter.ReadOnly>())
+    val readOnly: Boolean = !usesAdapter && annotatedProperty.isFinal
 
     init {
         annotatedProperty.isAccessible = true
@@ -55,7 +53,7 @@ abstract class Setting<T, A>(val annotation: A, val annotatedObject: Any, val an
         }
 
     val hidden: Boolean
-        get() = adapter?.isHidden() ?: false
+        get() = adapter?.hidden ?: false
 
     protected abstract fun getInternal(): T
     protected abstract fun setInternal(new: T)
@@ -82,55 +80,6 @@ abstract class Setting<T, A>(val annotation: A, val annotatedObject: Any, val an
             StringSetting::class to StringSettingWrapped::class
         )
     }
-}
-
-class SettingAdapter<T>(var value: T) {
-
-    private var getter: (T) -> T = { it }
-    private var setter: (T) -> T = { it }
-    private var hidden: ArrayList<(T) -> Boolean> = arrayListOf()
-
-    /**
-     * Adjust the value that is given when getter is invoked
-     */
-    fun adaptGetter(block: (T) -> T): SettingAdapter<T> {
-        getter = block
-        return this
-    }
-
-    /**
-     * Adjust the value the setting is set to when invoked
-     */
-    fun adaptSetter(block: (T) -> T): SettingAdapter<T> {
-        setter = block
-        return this
-    }
-
-    /**
-     * Predicate for GUIs.
-     * When true, setting will be hidden from guis
-     */
-    fun hiddenIf(block: (T) -> Boolean): SettingAdapter<T> {
-        hidden.add(block)
-        return this
-    }
-
-    fun get(): T = getter.invoke(value)
-    fun set(new: T) {
-        value = setter.invoke(new)
-    }
-    fun isHidden(): Boolean {
-        for (predicate in hidden) {
-            if (predicate.invoke(value))
-                return true
-        }
-        return false
-    }
-
-    @Target(AnnotationTarget.FIELD)
-    @MustBeDocumented
-    annotation class ReadOnly
-
 }
 
 

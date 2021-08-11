@@ -35,10 +35,12 @@ import org.reflections.Reflections
 import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.reflect.KClass
+import kotlin.reflect.full.createInstance
 
 class ElementManager : ConfigProcessor, Iterable<Element> {
 
-    private val availableElements: MutableMap<String, Class<out Element>> = HashMap()
+    private val availableElements: MutableMap<String, KClass<out Element>> = HashMap()
     private val currentElements: ArrayList<Element> = ArrayList()
 
     /* Config */
@@ -64,7 +66,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         on<RenderHUDEvent>()
             .filter { enabled }
             .subscribe {  }
-        EvergreenHUD.EVENT_BUS.register(this)
+        EvergreenHUD.eventBus.register(this)
     }
 
     fun addElement(element: Element) {
@@ -84,11 +86,11 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         val reflections = Reflections("")
         for (clazz in reflections.getTypesAnnotatedWith(ElementMeta::class.java)) {
             val annotation = clazz.getAnnotation(ElementMeta::class.java)
-            availableElements[annotation.id] = clazz as Class<out Element>
+            availableElements[annotation.id] = clazz.kotlin as KClass<out Element>
         }
     }
 
-    fun getAvailableElements(): Map<String, Class<out Element>> {
+    fun getAvailableElements(): Map<String, KClass<out Element>> {
         return Collections.unmodifiableMap(availableElements)
     }
 
@@ -100,8 +102,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
      * @return element instance
      */
     fun getNewElementInstance(id: String?): Element? {
-        val elementClass = availableElements[id] ?: return null
-        return elementClass.newInstance()
+        return availableElements[id]?.createInstance()
     }
 
     /**

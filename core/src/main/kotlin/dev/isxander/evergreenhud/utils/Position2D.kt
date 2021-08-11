@@ -19,7 +19,7 @@ package dev.isxander.evergreenhud.utils
 
 import dev.isxander.evergreenhud.compatibility.universal.RESOLUTION
 
-class Position private constructor(var scaledX: Float, var scaledY: Float, var scale: Float) {
+class Position2D private constructor(var scaledX: Float, var scaledY: Float, var scale: Float) {
 
     var rawX: Float
         get() = RESOLUTION.scaledWidth.toFloat() * scaledX
@@ -29,11 +29,29 @@ class Position private constructor(var scaledX: Float, var scaledY: Float, var s
         set(y) { scaledY = MathUtils.getPercent(y, 0f, RESOLUTION.scaledHeight.toFloat()) }
 
     companion object {
-        fun rawPositioning(x: Int, y: Int, scale: Float = 1f): Position =
-            Position(MathUtils.getPercent(x.toFloat(), 0f, RESOLUTION.scaledWidth.toFloat()), MathUtils.getPercent(y.toFloat(), 0f, RESOLUTION.scaledHeight.toFloat()), scale)
+        fun rawPositioning(x: Float, y: Float, scale: Float = 1f): Position2D =
+            Position2D(MathUtils.getPercent(x, 0f, RESOLUTION.scaledWidth.toFloat()), MathUtils.getPercent(y, 0f, RESOLUTION.scaledHeight.toFloat()), scale)
 
-        fun scaledPositioning(x: Float, y: Float, scale: Float = 1f): Position =
-            Position(x, y, scale)
+        fun scaledPositioning(x: Float, y: Float, scale: Float = 1f): Position2D =
+            Position2D(x, y, scale)
     }
+
+}
+
+fun rawPosition(lambda: PositionBuilder.() -> Unit): Position2D =
+    with(PositionBuilder().apply(lambda)) {
+        Position2D.rawPositioning(x, y, scale)
+    }
+
+fun scaledPosition(lambda: PositionBuilder.() -> Unit): Position2D =
+    with(PositionBuilder().apply(lambda)) {
+        Position2D.scaledPositioning(x, y, scale)
+    }
+
+class PositionBuilder {
+
+    var x: Float = 0f
+    var y: Float = 0f
+    var scale: Float = 1f
 
 }

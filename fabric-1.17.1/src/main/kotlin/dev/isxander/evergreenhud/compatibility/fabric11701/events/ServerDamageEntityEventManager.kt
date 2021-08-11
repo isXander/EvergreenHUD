@@ -46,7 +46,7 @@ object ServerDamageEntityEventManager {
 
             val target = packet.getEntity(mc.world) ?: return
             if (attacker != null && targetId == target.id) {
-                EvergreenHUD.EVENT_BUS.post(ServerDamageEntity(attacker!!, EntityImpl(target)))
+                EvergreenHUD.eventBus.post(ServerDamageEntity(attacker!!, EntityImpl(target)))
                 attacker = null
                 targetId = -1
             }

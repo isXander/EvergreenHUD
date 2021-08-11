@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.settings.impl
 
-import dev.isxander.evergreenhud.settings.HoconType
+import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
 import gg.essential.elementa.UIComponent
 import kotlin.reflect.KProperty1
@@ -26,7 +26,7 @@ import kotlin.reflect.KProperty1
 @MustBeDocumented
 annotation class StringSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true)
 
-class StringSettingWrapped(annotation: StringSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, String>) : Setting<String, StringSetting>(annotation, annotationObject, annotatedProperty, HoconType.STRING) {
+class StringSettingWrapped(annotation: StringSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, String>) : Setting<String, StringSetting>(annotation, annotationObject, annotatedProperty, DataType.STRING) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description

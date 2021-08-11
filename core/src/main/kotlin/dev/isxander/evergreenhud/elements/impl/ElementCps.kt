@@ -31,7 +31,7 @@ import kotlin.collections.ArrayDeque
 class ElementCps : SimpleTextElement() {
 
     @OptionSetting(name = "Button", category = ["CPS"], description = "Which button to track.")
-    val button = MouseButton.BOTH
+    var button = MouseButton.BOTH
 
     private val left = ArrayDeque<Long>()
     private var leftPressed = false

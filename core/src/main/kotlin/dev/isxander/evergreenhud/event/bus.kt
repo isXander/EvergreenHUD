@@ -26,7 +26,7 @@ inline fun <reified T : Any> on() = club.chachy.event.on<Any, T>(EvergreenBus)
 
 object EvergreenBus : EventBus<Any> {
     override fun <T : Any> createHandler(event: Class<T>): Handler<T> = KEventBusHandler(event)
-    override fun register(any: Any) = EvergreenHUD.EVENT_BUS.register(any)
+    override fun register(any: Any) = EvergreenHUD.eventBus.register(any)
 }
 
 class KEventBusHandler<T : Any>(private val eventClazz: Class<T>) : Handler<T>() {
