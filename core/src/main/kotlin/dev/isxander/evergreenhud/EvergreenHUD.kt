@@ -20,13 +20,15 @@ package dev.isxander.evergreenhud
 import com.typesafe.config.ConfigFactory
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.CustomKeybind
-import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.Keyboard
+import dev.isxander.evergreenhud.compatibility.universal.impl.registerCommand
+import dev.isxander.evergreenhud.compatibility.universal.impl.registerKeybind
+import dev.isxander.evergreenhud.utils.Keyboard
 import dev.isxander.evergreenhud.config.profile.ProfileManager
 import dev.isxander.evergreenhud.gui.MainGui
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
 import gg.essential.universal.UDesktop
+import gg.essential.universal.UScreen
 import me.kbrewster.eventbus.EventBus
 import me.kbrewster.eventbus.eventbus
 import me.kbrewster.eventbus.invokers.ReflectionInvoker
@@ -100,11 +102,33 @@ object EvergreenHUD {
 
         eventBus.register(this)
 
-        KEYBIND_MANAGER.registerKeybind(CustomKeybind(Keyboard.KEY_HOME, "Open EvergreenHUD GUI", "EvergreenHUD") { SCREEN_HANDLER.displayComponent(MainGui()) })
-        KEYBIND_MANAGER.registerKeybind(CustomKeybind(Keyboard.KEY_NONE, "Toggle EvergreenHUD", "EvergreenHUD") {
-            elementManager.enabled = !elementManager.enabled
-            Notifications.push("EvergreenHUD", "Toggled mod.")
-        })
+        registerCommand {
+            invoke = "evergreenhud"
+
+            execute {
+                SCREEN_HANDLER.displayComponentNextTick(MainGui())
+            }
+        }
+
+        registerKeybind {
+            key = Keyboard.KEY_HOME
+            name = "Open EvergreenHUD GUI"
+            category = "EvergreenHUD"
+
+            execute {
+                SCREEN_HANDLER.displayComponent(MainGui())
+            }
+        }
+        registerKeybind {
+            key = Keyboard.KEY_NONE
+            name = "Toggle EvergreenHUD"
+            category = "EvergreenHUD"
+
+            execute {
+                elementManager.enabled = !elementManager.enabled
+                Notifications.push("EvergreenHUD", "Toggled mod.")
+            }
+        }
     }
 
     /**
@@ -115,11 +139,11 @@ object EvergreenHUD {
      * @author isXander
      */
     private fun exportResources() {
-        LOGGER.info("Exporting resources...")
-
         // every 3 days export resources
         val metadataFile = File(dataDir, "resources/metadata.conf")
         if (MC.devEnv || !metadataFile.exists() || ConfigFactory.parseFile(metadataFile).root().getOrDefault("version", "1.0") != EvergreenInfo.VERSION_FULL) {
+            LOGGER.info("Exporting resources...")
+
             val reflections = Reflections("evergreenhud.export", ResourcesScanner())
             resourceDir.mkdirs()
             File(dataDir, "resources/user").also { it.mkdirs() }

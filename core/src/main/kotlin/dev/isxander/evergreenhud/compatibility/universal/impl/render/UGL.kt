@@ -19,7 +19,6 @@ package dev.isxander.evergreenhud.compatibility.universal.impl.render
 
 import dev.isxander.evergreenhud.compatibility.universal.BUFFER_BUILDER
 import dev.isxander.evergreenhud.compatibility.universal.RESOLUTION
-import gg.essential.universal.UMatrixStack
 import java.awt.Color
 import kotlin.math.cos
 import kotlin.math.sin
@@ -123,14 +122,14 @@ abstract class UGL {
         if (angle == 0f) {
             rect(x, y, width, height, color)
         } else {
-            partialCircle(x + angle, y + angle, angle, 0, 90, color);
-            partialCircle(x + width - angle, y + angle, angle, 270, 360, color);
+            partialCircle(x + angle, y + angle, angle, 0, 90, color)
+            partialCircle(x + width - angle, y + angle, angle, 270, 360, color)
             partialCircle(
-                x + width - angle, y + height - angle, angle, 180, 270, color);
-            partialCircle(x + angle, y + height - angle, angle, 90, 180, color);
-            rect(x + angle, y + height - angle, width - (angle * 2), angle, color);
-            rect(x + angle, y, width - (angle * 2), angle, color);
-            rect(x, y + angle, width, height - (angle * 2), color);
+                x + width - angle, y + height - angle, angle, 180, 270, color)
+            partialCircle(x + angle, y + height - angle, angle, 90, 180, color)
+            rect(x + angle, y + height - angle, width - (angle * 2), angle, color)
+            rect(x + angle, y, width - (angle * 2), angle, color)
+            rect(x, y + angle, width, height - (angle * 2), color)
         }
     }
 

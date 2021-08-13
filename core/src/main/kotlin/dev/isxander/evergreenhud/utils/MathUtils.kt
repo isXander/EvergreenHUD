@@ -18,6 +18,7 @@
 package dev.isxander.evergreenhud.utils
 
 import java.math.BigDecimal
+import java.math.RoundingMode
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
@@ -104,7 +105,7 @@ object MathUtils {
      */
     fun round(num: Float, places: Int): Float {
         var bd = BigDecimal(num.toString())
-        bd = bd.setScale(places, BigDecimal.ROUND_DOWN)
+        bd = bd.setScale(places, RoundingMode.DOWN)
         return bd.toFloat()
     }
 

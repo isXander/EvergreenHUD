@@ -15,23 +15,23 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.fabric11701.keybind
+package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.AIKeybindManager
-import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.CustomKeybind
+import dev.isxander.evergreenhud.compatibility.universal.impl.CustomKeybind
+import dev.isxander.evergreenhud.compatibility.universal.impl.UKeybindManager
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 
-class KeybindManager : AIKeybindManager() {
+class KeybindManagerImpl : UKeybindManager() {
 
     private val keyBindings = HashMap<CustomKeybind, KeyBinding>()
 
     init {
         ClientTickEvents.END_CLIENT_TICK.register {
             keyBindings.forEach { (custom, bind) ->
-                if (bind.wasPressed()) custom.press.invoke()
+                if (bind.wasPressed()) custom.executor()
             }
         }
     }

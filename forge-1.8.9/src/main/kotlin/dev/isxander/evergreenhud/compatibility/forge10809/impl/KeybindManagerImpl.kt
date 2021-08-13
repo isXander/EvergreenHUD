@@ -15,24 +15,24 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.forge10809.keybind
+package dev.isxander.evergreenhud.compatibility.forge10809.impl
 
 import club.chachy.event.on
-import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.AIKeybindManager
-import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.CustomKeybind
+import dev.isxander.evergreenhud.compatibility.universal.impl.UKeybindManager
+import dev.isxander.evergreenhud.compatibility.universal.impl.CustomKeybind
 import net.minecraft.client.settings.KeyBinding
 import net.minecraftforge.fml.client.registry.ClientRegistry
 import net.minecraftforge.fml.common.gameevent.TickEvent
 
-class KeybindManager : AIKeybindManager() {
+class KeybindManagerImpl : UKeybindManager() {
 
     private val keyBindings = HashMap<CustomKeybind, KeyBinding>()
 
     init {
         on<TickEvent.ClientTickEvent>()
             .subscribe {
-                keyBindings.forEach { (custom, bind) ->
-                    if (bind.isPressed) custom.press.invoke()
+                for ((custom, bind) in keyBindings) {
+                    if (bind.isPressed) custom.executor()
                 }
             }
     }

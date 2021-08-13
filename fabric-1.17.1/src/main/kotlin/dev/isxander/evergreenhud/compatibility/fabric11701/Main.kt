@@ -20,13 +20,14 @@ package dev.isxander.evergreenhud.compatibility.fabric11701
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.fabric11701.events.ServerDamageEntityEventManager
 import dev.isxander.evergreenhud.compatibility.fabric11701.impl.*
-import dev.isxander.evergreenhud.compatibility.fabric11701.keybind.KeybindManager
+import dev.isxander.evergreenhud.compatibility.fabric11701.impl.KeybindManagerImpl
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.event.ClientTickEvent
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.potion.Potions
 
 val mc: MinecraftClient = MinecraftClient.getInstance()
 
@@ -42,12 +43,15 @@ object Main : ClientModInitializer {
         PROFILER = ProfilerImpl()
         MC = MinecraftImpl()
         RESOLUTION = ResolutionImpl()
-        KEYBIND_MANAGER = KeybindManager()
-        SCREEN_HANDLER = ScreenHandlerImpl()
+        KEYBIND_MANAGER = KeybindManagerImpl()
         BUFFER_BUILDER = BufferBuilderImpl()
         GL = GLImpl()
         FONT_RENDERER = FontRenderImpl()
         MOUSE_HELPER = MouseHelperImpl()
+        COMMAND_HANDLER = CommandHandlerImpl()
+        SCREEN_HANDLER = ScreenHandlerImpl()
+        TRANSLATION = TranslationImpl()
+        POTIONS = PotionsImpl()
 
         registerEvents()
 

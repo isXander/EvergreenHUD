@@ -21,9 +21,9 @@ import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigObject
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
-import dev.isxander.evergreenhud.utils.HoconUtils
 import dev.isxander.evergreenhud.utils.asConfig
 import dev.isxander.evergreenhud.utils.int
+import dev.isxander.evergreenhud.utils.niceConfigRender
 import dev.isxander.evergreenhud.utils.string
 import java.io.File
 import java.nio.charset.StandardCharsets
@@ -81,7 +81,7 @@ class ProfileManager {
         PROFILES_DATA.parentFile.mkdirs()
         Files.write(
             PROFILES_DATA.toPath(),
-            data.toConfig().resolve().root().render(HoconUtils.niceRender).lines(),
+            data.toConfig().resolve().root().render(niceConfigRender).lines(),
             StandardCharsets.UTF_8
         )
     }

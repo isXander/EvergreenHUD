@@ -15,7 +15,7 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal.impl.keybind
+package dev.isxander.evergreenhud.utils
 
 import dev.isxander.evergreenhud.compatibility.universal.MCVersion
 import dev.isxander.evergreenhud.compatibility.universal.MC_VERSION

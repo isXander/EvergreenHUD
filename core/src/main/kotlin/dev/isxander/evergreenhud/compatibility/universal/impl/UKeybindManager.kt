@@ -15,12 +15,27 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal.impl.keybind
+package dev.isxander.evergreenhud.compatibility.universal.impl
 
-data class CustomKeybind(val key: Keyboard, val name: String, val category: String, val press: () -> Unit)
+import dev.isxander.evergreenhud.compatibility.universal.KEYBIND_MANAGER
+import dev.isxander.evergreenhud.utils.Keyboard
 
-abstract class AIKeybindManager {
-
+abstract class UKeybindManager {
     abstract fun registerKeybind(keybind: CustomKeybind)
+}
 
+class CustomKeybind {
+    lateinit var key: Keyboard
+    lateinit var name: String
+    lateinit var category: String
+    lateinit var executor: () -> Unit
+        private set
+
+    fun execute(lambda: () -> Unit) {
+        executor = lambda
+    }
+}
+
+fun registerKeybind(lambda: CustomKeybind.() -> Unit) {
+    KEYBIND_MANAGER.registerKeybind(CustomKeybind().apply(lambda))
 }

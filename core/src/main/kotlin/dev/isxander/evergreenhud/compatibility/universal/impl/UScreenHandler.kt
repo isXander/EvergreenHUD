@@ -20,6 +20,8 @@ package dev.isxander.evergreenhud.compatibility.universal.impl
 import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.on
 import gg.essential.elementa.UIComponent
+import gg.essential.elementa.WindowScreen
+import gg.essential.universal.UScreen
 
 abstract class UScreenHandler {
 

@@ -17,21 +17,10 @@
 
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
-import dev.isxander.evergreenhud.compatibility.fabric11701.mc
-import dev.isxander.evergreenhud.compatibility.universal.impl.UScreenHandler
-import gg.essential.elementa.UIComponent
-import gg.essential.elementa.WindowScreen
-import gg.essential.elementa.dsl.*
+import dev.isxander.evergreenhud.compatibility.universal.impl.UTranslation
+import net.minecraft.client.resource.language.I18n
 
-class ScreenHandlerImpl : UScreenHandler() {
-    override fun displayComponent(component: UIComponent) {
-        mc.setScreen(object : WindowScreen() {
-            init {
-                component.constrain {
-                    width = 100.percent()
-                    height = 100.percent()
-                } childOf window
-            }
-        })
-    }
+class TranslationImpl : UTranslation() {
+    override fun get(key: String, vararg args: String): String =
+        I18n.translate(key, args)
 }

@@ -21,9 +21,9 @@ import com.typesafe.config.*
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.utils.HoconUtils
 import dev.isxander.evergreenhud.utils.asConfig
 import dev.isxander.evergreenhud.utils.int
+import dev.isxander.evergreenhud.utils.niceConfigRender
 import dev.isxander.evergreenhud.utils.obj
 import java.io.File
 import java.nio.charset.StandardCharsets
@@ -35,7 +35,7 @@ class MainConfig(private val manager: ElementManager) {
         val hocon = ConfigFactory.empty()
             .withValue("schema", SCHEMA.asConfig())
             .withValue("data", manager.conf)
-            .resolve().root().render(HoconUtils.niceRender)
+            .resolve().root().render(niceConfigRender)
 
         CONFIG_FILE.parentFile.mkdirs()
         Files.write(CONFIG_FILE.toPath(), hocon.lines(), StandardCharsets.UTF_8)

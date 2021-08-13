@@ -18,17 +18,13 @@
 package dev.isxander.evergreenhud.compatibility.universal
 
 import dev.isxander.evergreenhud.compatibility.universal.impl.*
-import dev.isxander.evergreenhud.compatibility.universal.impl.keybind.AIKeybindManager
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.UGL
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.UBufferBuilder
-import dev.isxander.evergreenhud.compatibility.universal.impl.UWorld
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.*
 
 lateinit var MC_VERSION: MCVersion
 lateinit var LOGGER: ULogger
 lateinit var MC: UMinecraft
-lateinit var KEYBIND_MANAGER: AIKeybindManager
+lateinit var KEYBIND_MANAGER: UKeybindManager
 lateinit var RESOLUTION: UResolution
-lateinit var SCREEN_HANDLER: UScreenHandler
 lateinit var GL: UGL
 lateinit var BUFFER_BUILDER: UBufferBuilder
 lateinit var FONT_RENDERER: UFontRenderer
@@ -36,3 +32,7 @@ lateinit var MOUSE_HELPER: UMouseHelper
 lateinit var PROFILER: UProfiler
 lateinit var LOADER: ULoader
 lateinit var WORLD: UWorld
+lateinit var COMMAND_HANDLER: UCommandHandler
+lateinit var SCREEN_HANDLER: UScreenHandler
+lateinit var POTIONS: UPotions
+lateinit var TRANSLATION: UTranslation

@@ -22,7 +22,6 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.EvergreenInfo
 import dev.isxander.evergreenhud.compatibility.forge10809.events.ServerDamageEntityEventManager
 import dev.isxander.evergreenhud.compatibility.forge10809.impl.*
-import dev.isxander.evergreenhud.compatibility.forge10809.keybind.KeybindManager
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.event.ClientDamageEntity
 import dev.isxander.evergreenhud.event.RenderHUDEvent
@@ -62,8 +61,12 @@ object ForgeMod {
         GL = GLImpl()
         LOADER = LoaderImpl()
         PROFILER = ProfilerImpl()
+        KEYBIND_MANAGER = KeybindManagerImpl()
+        COMMAND_HANDLER = CommandHandlerImpl()
         SCREEN_HANDLER = ScreenHandlerImpl()
-        KEYBIND_MANAGER = KeybindManager()
+        TRANSLATION = TranslationImpl()
+        POTIONS = PotionsImpl()
+
         registerEvents()
 
         EvergreenHUD.init()
@@ -74,24 +77,24 @@ object ForgeMod {
 
         on<TickEvent.ClientTickEvent>()
             .filter { it.phase == TickEvent.Phase.END }
-            .subscribe { EvergreenHUD.EVENT_BUS.post(dev.isxander.evergreenhud.event.ClientTickEvent()) }
+            .subscribe { EvergreenHUD.eventBus.post(dev.isxander.evergreenhud.event.ClientTickEvent()) }
 
         on<TickEvent.RenderTickEvent>()
             .subscribe {
                 if (it.phase == TickEvent.Phase.START) return@subscribe
 
-                EvergreenHUD.EVENT_BUS.post(RenderTickEvent(it.renderTickTime))
+                EvergreenHUD.eventBus.post(RenderTickEvent(it.renderTickTime))
             }
 
         on<RenderGameOverlayEvent.Post>()
             .filter { it.type == RenderGameOverlayEvent.ElementType.ALL }
             .subscribe {
                 scaledRes = it.resolution
-                EvergreenHUD.EVENT_BUS.post(RenderHUDEvent(it.partialTicks))
+                EvergreenHUD.eventBus.post(RenderHUDEvent(it.partialTicks))
             }
 
         on<AttackEntityEvent>()
-            .subscribe { EvergreenHUD.EVENT_BUS.post(ClientDamageEntity(EntityImpl(it.entityPlayer), EntityImpl(it.target))) }
+            .subscribe { EvergreenHUD.eventBus.post(ClientDamageEntity(EntityImpl(it.entityPlayer), EntityImpl(it.target))) }
     }
 
 }
@@ -110,7 +113,7 @@ class KotlinLanguageAdapter : ILanguageAdapter {
         classLoader: ClassLoader,
         factoryMarkedAnnotation: Method?
     ): Any {
-        return objectClass.fields.find { it.name == "INSTANCE" }?.get(null) ?: objectClass.newInstance()
+        return objectClass.fields.find { it.name == "INSTANCE" }?.get(null) ?: objectClass.getDeclaredConstructor().newInstance()
     }
 
     override fun setInternalProxies(mod: ModContainer?, side: Side?, loader: ClassLoader?) {}

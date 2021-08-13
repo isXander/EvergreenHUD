@@ -48,7 +48,7 @@ class ElementConfig(private val manager: ElementManager) {
         CONFIG_FILE.parentFile.mkdirs()
         Files.write(
             CONFIG_FILE.toPath(),
-            data.toConfig().resolve().root().render(HoconUtils.niceRender).lines(),
+            data.toConfig().resolve().root().render(niceConfigRender).lines(),
             StandardCharsets.UTF_8
         )
         shouldSave = false

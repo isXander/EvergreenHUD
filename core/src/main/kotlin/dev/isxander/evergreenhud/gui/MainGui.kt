@@ -27,9 +27,6 @@ import gg.essential.elementa.font.DefaultFonts
 import java.awt.Color
 import java.io.File
 
-// We cannot directly call WindowScreen() because it extends from Minecraft's GuiScreen
-// which :core does not have access to. Modules will wrap this in a WindowScreen as a
-// childOf window. So root components within this class should be a child of this
 class MainGui : UIComponent() {
 
     private var clickPos: Pair<Float, Float>? = null
