@@ -59,15 +59,15 @@ object Notifications {
         }
 
         val boldedTitle = "${ChatColor.BOLD}${notif.title}"
-        val wrappedTitle = StringUtils.wrapTextLinesFR(boldedTitle, WIDTH, " ")
-        val wrappedDesc = StringUtils.wrapTextLinesFR(notif.description, WIDTH, " ")
+        val wrappedTitle = wrapTextLinesFR(boldedTitle, WIDTH, " ")
+        val wrappedDesc = wrapTextLinesFR(notif.description, WIDTH, " ")
         val textLines = wrappedTitle.size + wrappedDesc.size
 
-        var rectWidth = MathUtils.lerp(notif.width, (WIDTH + (PADDING_WIDTH * 2f)), event.dt / 4f)
+        var rectWidth = lerp(notif.width, (WIDTH + (PADDING_WIDTH * 2f)), event.dt / 4f)
             .also { notif.width = it }
 
         if (notif.closing && notif.time <= 0.45f) {
-            rectWidth = max(MathUtils.lerp(notif.width, -(WIDTH + (PADDING_WIDTH * 2f)), event.dt), 0f)
+            rectWidth = max(lerp(notif.width, -(WIDTH + (PADDING_WIDTH * 2f)), event.dt), 0f)
                 .also { notif.width = it }
         }
 
@@ -83,11 +83,11 @@ object Notifications {
             && mouseY >= rectY
             && mouseY <= rectY + rectHeight
 
-        notif.mouseOverAdd = MathUtils.lerp(notif.mouseOverAdd, if (mouseOver) 40f else 0f, event.dt / 4f)
+        notif.mouseOverAdd = lerp(notif.mouseOverAdd, if (mouseOver) 40f else 0f, event.dt / 4f)
             .also { opacity += it }
 
         GL.push()
-        val clampedOpacity = MathUtils.clamp(opacity, 5f, 255f).toInt()
+        val clampedOpacity = clamp(opacity, 5f, 255f).toInt()
         notif.backColor = Color(notif.backColor.red, notif.backColor.green, notif.backColor.blue, clampedOpacity)
         notif.textColor = Color(notif.textColor.red, notif.textColor.green, notif.textColor.blue, clampedOpacity)
         GL.roundedRect(rectX, rectY, rectWidth, rectHeight, notif.backColor.rgb, 5f)
@@ -97,11 +97,11 @@ object Notifications {
             GL.scissorStart(rectX.toInt(), rectY.toInt(), rectWidth.toInt(), rectHeight.toInt())
             var i = 0
             for (line in wrappedTitle) {
-                GuiUtils.drawString(line, RESOLUTION.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + FONT_RENDERER.fontHeight * i, notif.textColor.rgb, centered = true, shadow = true)
+                drawString(line, RESOLUTION.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + FONT_RENDERER.fontHeight * i, notif.textColor.rgb, centered = true, shadow = true)
                 i++
             }
             for (line in wrappedDesc) {
-                GuiUtils.drawString(line, RESOLUTION.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + FONT_RENDERER.fontHeight * i, notif.textColor.rgb, centered = true, shadow = true)
+                drawString(line, RESOLUTION.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + FONT_RENDERER.fontHeight * i, notif.textColor.rgb, centered = true, shadow = true)
                 i++
             }
             GL.scissorEnd()

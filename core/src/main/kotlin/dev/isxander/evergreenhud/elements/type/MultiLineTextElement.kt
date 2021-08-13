@@ -21,7 +21,7 @@ import dev.isxander.evergreenhud.compatibility.universal.FONT_RENDERER
 import dev.isxander.evergreenhud.compatibility.universal.GL
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.settings.impl.IntSetting
-import dev.isxander.evergreenhud.utils.GuiUtils
+import dev.isxander.evergreenhud.utils.drawString
 import gg.essential.universal.ChatColor
 import kotlin.math.max
 
@@ -74,7 +74,7 @@ abstract class MultiLineTextElement : TextElement() {
             val posX = x - (if (alignment == Alignment.RIGHT) FONT_RENDERER.width(line) else 0)
             val posY = (y / position.scale) + (FONT_RENDERER.fontHeight * i) + (verticalSpacing * i)
 
-            GuiUtils.drawString(
+            drawString(
                 line,
                 posX, posY,
                 textColor.rgb,

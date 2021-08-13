@@ -29,7 +29,7 @@ enum class Facing(val full: String, val abbreviated: String) {
 
     companion object {
         fun parse(yaw: Float): Facing {
-            val rotationYaw = MathUtils.wrapAngleTo180(yaw)
+            val rotationYaw = wrapAngleTo180(yaw)
 
             return when {
                 rotationYaw >= 165f || rotationYaw <= -165 -> NORTH
@@ -46,7 +46,7 @@ enum class Facing(val full: String, val abbreviated: String) {
         }
 
         fun parseExact(yaw: Float): Facing {
-            val rotationYaw = MathUtils.wrapAngleTo180(yaw)
+            val rotationYaw = wrapAngleTo180(yaw)
 
             return when {
                 rotationYaw == -180f -> NORTH

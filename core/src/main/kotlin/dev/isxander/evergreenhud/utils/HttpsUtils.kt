@@ -25,37 +25,33 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
-object HttpsUtils {
+fun setupRequest(url: String): Request.Builder {
+    return Request.Builder()
+        .url(url)
+        .addHeader("User-Agent", "EvergreenHUD/${EvergreenInfo.VERSION_FULL}")
+}
 
-    fun setupRequest(url: String): Request.Builder {
-        return Request.Builder()
-            .url(url)
-            .addHeader("User-Agent", "EvergreenHUD/${EvergreenInfo.VERSION_FULL}")
+fun getResponse(url: String): Response? {
+    try {
+        val client = OkHttpClient()
+        val request: Request = setupRequest(url).build()
+        return client.newCall(request).execute()
+    } catch (e: IOException) {
+        e.printStackTrace()
     }
+    return null
+}
 
-    fun getResponse(url: String): Response? {
-        try {
-            val client = OkHttpClient()
-            val request: Request = setupRequest(url).build()
-            return client.newCall(request).execute()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-        return null
+fun getRemoteBytes(url: String): ByteArray {
+    return getResponse(url)!!.body!!.bytes()
+}
+
+fun getRemoteString(url: String): String {
+    return getResponse(url)!!.body!!.string()
+}
+
+fun downloadFile(url: String, file: File) {
+    FileOutputStream(file).use {
+        it.write(getRemoteBytes(url))
     }
-
-    fun getBytes(url: String): ByteArray {
-        return getResponse(url)!!.body!!.bytes()
-    }
-
-    fun getString(url: String): String {
-        return getResponse(url)!!.body!!.string()
-    }
-
-    fun downloadFile(url: String, file: File) {
-        FileOutputStream(file).use {
-            it.write(getBytes(url))
-        }
-    }
-
 }

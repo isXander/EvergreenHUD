@@ -19,8 +19,8 @@ package dev.isxander.evergreenhud.repo
 
 import com.typesafe.config.ConfigFactory
 import dev.isxander.evergreenhud.EvergreenInfo
-import dev.isxander.evergreenhud.utils.HttpsUtils
 import dev.isxander.evergreenhud.utils.asConfig
+import dev.isxander.evergreenhud.utils.getRemoteString
 import dev.isxander.evergreenhud.utils.int
 import java.lang.Exception
 
@@ -29,7 +29,7 @@ object RepoManager {
     private const val jsonUrl = "https://dl.isxander.dev/mods/evergreenhud/info.json"
 
     fun getResponse(): RepoResponse {
-        val out = try { HttpsUtils.getString(jsonUrl) }
+        val out = try { getRemoteString(jsonUrl) }
         catch (e: Exception) { return RepoResponse(outdated = false, blacklisted = false) }
 
         val data = ConfigFactory.parseString(out)

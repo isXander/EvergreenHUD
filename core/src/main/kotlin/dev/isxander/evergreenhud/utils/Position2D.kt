@@ -23,14 +23,14 @@ class Position2D private constructor(var scaledX: Float, var scaledY: Float, var
 
     var rawX: Float
         get() = RESOLUTION.scaledWidth.toFloat() * scaledX
-        set(x) { scaledX = MathUtils.getPercent(x, 0f, RESOLUTION.scaledWidth.toFloat()) }
+        set(x) { scaledX = x * RESOLUTION.scaledWidth }
     var rawY: Float
         get() = RESOLUTION.scaledHeight.toFloat() * scaledY
-        set(y) { scaledY = MathUtils.getPercent(y, 0f, RESOLUTION.scaledHeight.toFloat()) }
+        set(y) { scaledY = y * RESOLUTION.scaledHeight }
 
     companion object {
         fun rawPositioning(x: Float, y: Float, scale: Float = 1f): Position2D =
-            Position2D(MathUtils.getPercent(x, 0f, RESOLUTION.scaledWidth.toFloat()), MathUtils.getPercent(y, 0f, RESOLUTION.scaledHeight.toFloat()), scale)
+            Position2D(x * RESOLUTION.scaledWidth, y * RESOLUTION.scaledHeight, scale)
 
         fun scaledPositioning(x: Float, y: Float, scale: Float = 1f): Position2D =
             Position2D(x, y, scale)
@@ -49,9 +49,7 @@ fun scaledPosition(lambda: PositionBuilder.() -> Unit): Position2D =
     }
 
 class PositionBuilder {
-
     var x: Float = 0f
     var y: Float = 0f
     var scale: Float = 1f
-
 }

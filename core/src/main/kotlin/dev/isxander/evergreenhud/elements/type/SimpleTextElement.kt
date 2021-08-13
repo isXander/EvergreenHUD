@@ -22,7 +22,7 @@ import dev.isxander.evergreenhud.compatibility.universal.GL
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.settings.impl.OptionContainer
 import dev.isxander.evergreenhud.settings.impl.OptionSetting
-import dev.isxander.evergreenhud.utils.GuiUtils
+import dev.isxander.evergreenhud.utils.drawString
 import java.lang.StringBuilder
 import kotlin.math.max
 
@@ -83,7 +83,7 @@ abstract class SimpleTextElement : TextElement() {
         if (alignment == Alignment.RIGHT)
             x -= FONT_RENDERER.width(cachedDisplayString)
 
-        GuiUtils.drawString(
+        drawString(
             cachedDisplayString,
             x, y,
             textColor.rgb,

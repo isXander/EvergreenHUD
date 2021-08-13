@@ -78,7 +78,7 @@ object EvergreenHUD {
         if (!MC.devEnv) {
             if (elementManager.checkForUpdates || elementManager.checkForSafety) {
                 LOGGER.info("Getting information from API...")
-                Multithreading.runAsync {
+                runAsync {
                     val response = RepoManager.getResponse()
 
                     if (elementManager.checkForUpdates && response.outdated) {
