@@ -15,9 +15,6 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal
+package dev.isxander.evergreenhud.compatibility.universal.impl.render
 
-enum class MCVersion(val display: String, val number: Int) {
-    FORGE_1_8_9("Forge 1.8.9", 10809),
-    FABRIC_1_17_1("Fabric 1.17.1", 11701);
-}
+data class UResourceLocation(val namespace: String = "minecraft", val path: String)

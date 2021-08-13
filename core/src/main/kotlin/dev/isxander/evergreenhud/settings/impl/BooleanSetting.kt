@@ -19,22 +19,20 @@ package dev.isxander.evergreenhud.settings.impl
 
 import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
+import dev.isxander.evergreenhud.settings.providers.IValueProvider
 import gg.essential.elementa.UIComponent
 import kotlin.reflect.KProperty1
 
-@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
 annotation class BooleanSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true)
 
-class BooleanSettingWrapped(annotation: BooleanSetting, annotatedObject: Any, annotatedProperty: KProperty1<out Any, Boolean>) : Setting<Boolean, BooleanSetting>(annotation, annotatedObject, annotatedProperty, DataType.BOOLEAN) {
+class BooleanSettingWrapped(annotation: BooleanSetting, provider: IValueProvider<Boolean>) : Setting<Boolean, BooleanSetting>(annotation, provider, DataType.BOOLEAN) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description
     override val shouldSave: Boolean = annotation.save
-
-    override fun getInternal(): Boolean = annotatedProperty.call(annotatedObject)
-    override fun setInternal(new: Boolean) = mutableProperty!!.setter.call(annotatedObject, new)
 
     override var serializedValue: Any
         get() = value

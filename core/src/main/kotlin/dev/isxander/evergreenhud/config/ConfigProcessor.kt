@@ -21,15 +21,16 @@ import com.typesafe.config.ConfigObject
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
+import dev.isxander.evergreenhud.settings.SettingAdapter
 import dev.isxander.evergreenhud.settings.impl.*
+import dev.isxander.evergreenhud.settings.providers.AdapterProvider
+import dev.isxander.evergreenhud.settings.providers.PropertyProvider
 import dev.isxander.evergreenhud.utils.*
 import java.awt.Color
 import java.lang.ClassCastException
+import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
-import kotlin.reflect.full.allSuperclasses
-import kotlin.reflect.full.declaredMemberProperties
-import kotlin.reflect.full.findAnnotation
-import kotlin.reflect.full.hasAnnotation
+import kotlin.reflect.full.*
 import kotlin.reflect.jvm.isAccessible
 
 interface ConfigProcessor {
@@ -53,7 +54,6 @@ interface ConfigProcessor {
     }
 
     fun setSettingFromConfig(data: ConfigObject, setting: Setting<*, *>) {
-        if (setting.readOnly) return
         when (setting.dataType) {
             DataType.BOOLEAN -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Boolean).asConfig()).bool()
             DataType.FLOAT -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Float).asConfig()).float()
@@ -75,44 +75,79 @@ interface ConfigProcessor {
                         property.hasAnnotation<BooleanSetting>() ->
                             settingProcessor.invoke(BooleanSettingWrapped(
                                 property.findAnnotation()!!,
-                                instance,
-                                property as KProperty1<out Any, Boolean>
+                                if (property.returnType == SettingAdapter::class.createType())
+                                    AdapterProvider(property.call(instance) as SettingAdapter<Boolean>)
+                                else
+                                    PropertyProvider(
+                                        instance,
+                                        property as KMutableProperty1<out Any, Boolean>
+                                    )
                             ))
                         property.hasAnnotation<ColorSetting>() ->
                             settingProcessor.invoke(ColorSettingWrapped(
                                 property.findAnnotation()!!,
-                                instance,
-                                property as KProperty1<out Any, Color>
+                                if (property.returnType == SettingAdapter::class.createType())
+                                    AdapterProvider(property.call(instance) as SettingAdapter<Color>)
+                                else
+                                    PropertyProvider(
+                                        instance,
+                                        property as KMutableProperty1<out Any, Color>
+                                    )
                             ))
                         property.hasAnnotation<OptionSetting>() ->
                             settingProcessor.invoke(OptionSettingWrapped(
                                 property.findAnnotation()!!,
-                                instance,
-                                property as KProperty1<out Any, OptionContainer.Option>
+                                if (property.returnType == SettingAdapter::class.createType())
+                                    AdapterProvider(property.call(instance) as SettingAdapter<OptionContainer.Option>)
+                                else
+                                    PropertyProvider(
+                                        instance,
+                                        property as KMutableProperty1<out Any, OptionContainer.Option>
+                                    )
                             ))
                         property.hasAnnotation<FloatSetting>() ->
                             settingProcessor.invoke(FloatSettingWrapped(
                                 property.findAnnotation()!!,
-                                instance,
-                                property as KProperty1<out Any, Float>
+                                if (property.returnType == SettingAdapter::class.createType())
+                                    AdapterProvider(property.call(instance) as SettingAdapter<Float>)
+                                else
+                                    PropertyProvider(
+                                        instance,
+                                        property as KMutableProperty1<out Any, Float>
+                                    )
                             ))
                         property.hasAnnotation<IntSetting>() ->
                             settingProcessor.invoke(IntSettingWrapped(
                                 property.findAnnotation()!!,
-                                instance,
-                                property as KProperty1<out Any, Int>
+                                if (property.returnType == SettingAdapter::class.createType())
+                                    AdapterProvider(property.call(instance) as SettingAdapter<Int>)
+                                else
+                                    PropertyProvider(
+                                        instance,
+                                        property as KMutableProperty1<out Any, Int>
+                                    )
                             ))
                         property.hasAnnotation<StringListSetting>() ->
                             settingProcessor.invoke(StringListSettingWrapped(
                                 property.findAnnotation()!!,
-                                instance,
-                                property as KProperty1<out Any, String>
+                                if (property.returnType == SettingAdapter::class.createType())
+                                    AdapterProvider(property.call(instance) as SettingAdapter<String>)
+                                else
+                                    PropertyProvider(
+                                        instance,
+                                        property as KMutableProperty1<out Any, String>
+                                    )
                             ))
                         property.hasAnnotation<StringSetting>() ->
                             settingProcessor.invoke(StringSettingWrapped(
                                 property.findAnnotation()!!,
-                                instance,
-                                property as KProperty1<out Any, String>
+                                if (property.returnType == SettingAdapter::class.createType())
+                                    AdapterProvider(property.call(instance) as SettingAdapter<String>)
+                                else
+                                    PropertyProvider(
+                                        instance,
+                                        property as KMutableProperty1<out Any, String>
+                                    )
                             ))
                     }
                 } catch (e: ClassCastException) {

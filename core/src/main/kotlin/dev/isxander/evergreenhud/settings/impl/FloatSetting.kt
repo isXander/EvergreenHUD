@@ -19,6 +19,7 @@ package dev.isxander.evergreenhud.settings.impl
 
 import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
+import dev.isxander.evergreenhud.settings.providers.IValueProvider
 import gg.essential.elementa.UIComponent
 import kotlin.reflect.KProperty1
 
@@ -26,14 +27,11 @@ import kotlin.reflect.KProperty1
 @MustBeDocumented
 annotation class FloatSetting(val name: String, val category: Array<String>, val description: String, val min: Float, val max: Float, val suffix: String = "", val save: Boolean = true)
 
-class FloatSettingWrapped(annotation: FloatSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, Float>) : Setting<Float, FloatSetting>(annotation, annotationObject, annotatedProperty, DataType.FLOAT) {
+class FloatSettingWrapped(annotation: FloatSetting, provider: IValueProvider<Float>) : Setting<Float, FloatSetting>(annotation, provider, DataType.FLOAT) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description
     override val shouldSave: Boolean = annotation.save
-
-    override fun getInternal(): Float = annotatedProperty.call(annotatedObject)
-    override fun setInternal(new: Float) = mutableProperty!!.setter.call(annotatedObject, new)
 
     override var serializedValue: Any
         get() = value

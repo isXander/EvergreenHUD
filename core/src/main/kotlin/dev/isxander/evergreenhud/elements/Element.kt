@@ -59,6 +59,7 @@ abstract class Element : ConfigProcessor {
     fun preload(): Element {
         if (preloaded) return this
 
+        preinit()
         collectSettings(this) { settings.add(it) }
         init()
 
@@ -66,13 +67,16 @@ abstract class Element : ConfigProcessor {
         return this
     }
 
-    // called after settings have loaded
+    /* called before settings have loaded */
+    open fun preinit() {}
+    /* called after settings have loaded */
     open fun init() {}
-    // called when element is added
+
+    /* called when element is added */
     open fun onAdded() {
         EvergreenHUD.eventBus.register(this)
     }
-    // called when element is removed
+    /* called when element is removed */
     open fun onRemoved() {
         EvergreenHUD.eventBus.unregister(this)
     }

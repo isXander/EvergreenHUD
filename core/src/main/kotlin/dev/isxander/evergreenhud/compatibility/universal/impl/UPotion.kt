@@ -17,9 +17,16 @@
 
 package dev.isxander.evergreenhud.compatibility.universal.impl
 
-data class UPotion(val id: Int, val duration: Int, val amplifier: Int, val permanent: Boolean, val translation: String)
+data class UPotion(
+    val id: Int,
+    val duration: Int,
+    val amplifier: Int,
+    val permanent: Boolean,
+    val translation: String
+)
 
 abstract class UPotions {
     abstract val registeredPotions: List<UPotion>
     abstract fun giveEntityEffect(entity: UEntity, potion: UPotion)
+    abstract fun drawPotionIcon(potion: UPotion, x: Float, y: Float)
 }

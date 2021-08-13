@@ -15,9 +15,12 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal
+package dev.isxander.evergreenhud.settings.providers
 
-enum class MCVersion(val display: String, val number: Int) {
-    FORGE_1_8_9("Forge 1.8.9", 10809),
-    FABRIC_1_17_1("Fabric 1.17.1", 11701);
+import dev.isxander.evergreenhud.settings.SettingAdapter
+
+class AdapterProvider<T>(private val adapter: SettingAdapter<T>) : IValueProvider<T> {
+    override var value: T
+        get() = adapter.get()
+        set(value) { adapter.set(value) }
 }

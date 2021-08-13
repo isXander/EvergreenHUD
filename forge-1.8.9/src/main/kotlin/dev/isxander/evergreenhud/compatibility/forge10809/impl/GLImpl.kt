@@ -17,8 +17,11 @@
 
 package dev.isxander.evergreenhud.compatibility.forge10809.impl
 
+import dev.isxander.evergreenhud.compatibility.forge10809.mc
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.UGL
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.UResourceLocation
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
 
 class GLImpl : UGL() {
@@ -59,5 +62,8 @@ class GLImpl : UGL() {
     override fun blendFuncSeparate(srcFactorRGB: Int, dstFactorRGB: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) =
         GlStateManager.tryBlendFuncSeparate(srcFactorRGB, dstFactorRGB, srcFactorAlpha, dstFactorAlpha)
     override fun blendFunc(srcFactor: Int, dstFactor: Int) = GlStateManager.blendFunc(srcFactor, dstFactor)
+
+    override fun bindTexture(location: UResourceLocation) =
+        mc.textureManager.bindTexture(ResourceLocation(location.namespace, location.path))
 
 }

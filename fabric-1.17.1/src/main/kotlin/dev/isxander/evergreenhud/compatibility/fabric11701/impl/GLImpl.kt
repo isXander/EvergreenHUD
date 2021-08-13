@@ -20,8 +20,11 @@ package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.compatibility.fabric11701.Main
+import dev.isxander.evergreenhud.compatibility.fabric11701.mc
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.UGL
+import dev.isxander.evergreenhud.compatibility.universal.impl.render.UResourceLocation
 import net.minecraft.client.render.GameRenderer
+import net.minecraft.util.Identifier
 import net.minecraft.util.math.Quaternion
 import net.minecraft.util.math.Vec3f
 import org.lwjgl.opengl.GL20
@@ -64,6 +67,10 @@ class GLImpl : UGL() {
     override fun blendFuncSeparate(srcFactorRGB: Int, dstFactorRGB: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) =
         RenderSystem.blendFuncSeparate(srcFactorRGB, dstFactorRGB, srcFactorAlpha, dstFactorAlpha)
     override fun blendFunc(srcFactor: Int, dstFactor: Int) = RenderSystem.blendFunc(srcFactor, dstFactor)
+
+    override fun bindTexture(location: UResourceLocation) {
+        mc.textureManager.bindTexture(Identifier(location.namespace, location.path))
+    }
 
     override fun rect(x: Float, y: Float, width: Float, height: Float, color: Int) {
         RenderSystem.setShader { GameRenderer.getPositionColorShader() }

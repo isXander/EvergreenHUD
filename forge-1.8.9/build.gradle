@@ -36,11 +36,8 @@ dependencies {
     embed (project(":core")) {
         exclude module: 'Elementa'
         exclude module: 'UniversalCraft'
-        exclude module: 'minecraft'
-        exclude module: 'yarn'
     }
-    embed 'gg.essential:elementa-1.8.9-forge:356'
-    embed 'gg.essential:universalcraft-1.8.9-forge:148'
+    embed 'gg.essential:elementa-1.8.9-forge:359+next'
 
     // not sure why but gradle ass
     embed 'club.chachy.kotlin-forge-api:forge-event-dsl:0.3.1'

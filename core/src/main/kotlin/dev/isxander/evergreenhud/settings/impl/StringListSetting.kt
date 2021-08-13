@@ -19,6 +19,7 @@ package dev.isxander.evergreenhud.settings.impl
 
 import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
+import dev.isxander.evergreenhud.settings.providers.IValueProvider
 import gg.essential.elementa.UIComponent
 import kotlin.reflect.KProperty1
 
@@ -27,15 +28,12 @@ import kotlin.reflect.KProperty1
 annotation class StringListSetting(val name: String, val category: Array<String>, val description: String, val options: Array<String>, val save: Boolean = true)
 
 @Suppress("UNCHECKED_CAST")
-class StringListSettingWrapped(annotation: StringListSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, String>) : Setting<String, StringListSetting>(annotation, annotationObject, annotatedProperty, DataType.INT) {
+class StringListSettingWrapped(annotation: StringListSetting, provider: IValueProvider<String>) : Setting<String, StringListSetting>(annotation, provider, DataType.INT) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description
     override val shouldSave: Boolean = annotation.save
     val options: Array<String> = annotation.options
-
-    override fun getInternal(): String = annotatedProperty.call(annotatedObject)
-    override fun setInternal(new: String) = mutableProperty!!.setter.call(annotatedObject, new)
 
     override var serializedValue: Any
         get() = value

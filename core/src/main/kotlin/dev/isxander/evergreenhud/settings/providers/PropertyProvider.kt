@@ -15,9 +15,17 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal
+package dev.isxander.evergreenhud.settings.providers
 
-enum class MCVersion(val display: String, val number: Int) {
-    FORGE_1_8_9("Forge 1.8.9", 10809),
-    FABRIC_1_17_1("Fabric 1.17.1", 11701);
+import kotlin.reflect.KMutableProperty1
+import kotlin.reflect.jvm.isAccessible
+
+class PropertyProvider<T>(private val obj: Any, private val property: KMutableProperty1<out Any, T>) : IValueProvider<T> {
+    init {
+        property.isAccessible = true
+    }
+
+    override var value: T
+        get() = property.call(obj)
+        set(value) { property.setter.call(obj, value) }
 }

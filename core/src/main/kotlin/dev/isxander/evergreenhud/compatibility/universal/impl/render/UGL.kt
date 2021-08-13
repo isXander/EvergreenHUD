@@ -36,6 +36,7 @@ abstract class UGL {
     abstract fun rotate(angle: Float, x: Float, y: Float, z: Float)
     abstract fun color(r: Float, g: Float, b: Float, a: Float = 1f)
 
+    abstract fun bindTexture(location: UResourceLocation)
     abstract fun bindTexture(texture: Int)
 
     abstract fun scissor(x: Int, y: Int, width: Int, height: Int)
@@ -109,6 +110,19 @@ abstract class UGL {
             .end().draw()
         enableTexture()
         disableBlend()
+    }
+
+    open fun texModalRect(x: Float, y: Float, textureX: Int, textureY: Int, width: Float, height: Float) {
+        val f = 0.00390625
+        val f1 = 0.00390625
+
+        BUFFER_BUILDER
+            .begin(DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
+            .vertex(x.toDouble(), y.toDouble() + height, 0.0).tex(textureX * f, (textureY + height) * f1).next()
+            .vertex(x.toDouble() + width, y.toDouble() + height, 0.0).tex((textureX + width) * f, (textureY + height) * f1).next()
+            .vertex(x.toDouble() + width, y.toDouble(), 0.0).tex((textureX + width) * f, textureY * f1).next()
+            .vertex(x.toDouble(), y.toDouble(), 0.0).tex(textureX * f, textureY * f1).next()
+            .end().draw()
     }
 
     open fun borderRect(x: Float, y: Float, width: Float, height: Float, color: Int, thickness: Float) {

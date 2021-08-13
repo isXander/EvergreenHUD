@@ -13,7 +13,7 @@
     "sources": "https://github.com/isXander/EvergreenHUD"
   },
   "license": "GNU General Public License version 3 (GPLv3)",
-  "icon": "assets/evergreenhud/textures/evergreenhud.png",
+  "icon": "evergreenhud/export/evergreenhud-transparent.png",
   "environment": "client",
   "entrypoints": {
     "client": [

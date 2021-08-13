@@ -1,13 +1,13 @@
 <!--suppress HtmlDeprecatedAttribute -->
 <div align="center">
 
-# EvergreenHUD
+# `EvergreenHUD`
 
 [![](https://jitpack.io/v/dev.isXander/EvergreenHUD.svg)](https://jitpack.io/#dev.isXander/EvergreenHUD)
-[![GPLv3 License](https://img.shields.io/badge/License-GPL%20v3-ff3333.svg)](https://opensource.org/licenses/)
+[![GPLv3 License](https://img.shields.io/badge/License-LGPL%20v3-ff3333.svg)](https://www.gnu.org/licenses/lgpl-3.0.en.html)
 [![Github All Releases](https://img.shields.io/github/downloads/isXander/EvergreenHUD/total.svg?style=flat)](https://github.com/isXander/EvergreenHUD)
 [![Donate](https://img.shields.io/badge/donate-patreon-ff6666.svg?style=flat)](https://paypal.me/isxander)
-[![Discord Chat](https://img.shields.io/discord/780023008668287017.svg)](https://short.isxander.co.uk/discord)
+[![Discord Chat](https://img.shields.io/discord/780023008668287017.svg)](https://short.isxander.dev/discord)
 
 EvergreenHUD is a forge mod to improve and add upon your heads up display.
 I, Xander, have been working on this mod for over 3 months and believe it really
@@ -43,15 +43,7 @@ This is how you can get a working development environment.
 
 Decompile Minecraft
 
-    gradlew setupDecompWorkspace
-
-If you use [Intellij](https://www.jetbrains.com/idea/), then run this command
-
-    gradlew idea genIntellijRuns
-
-If you use [Eclipse](https://www.eclipse.org/) (not recommended), use this
-
-    gradlew eclipse
+    gradle setupDevWorkspace genSources
 
 Now you will be able to open the folder as a project in your chosen IDE.
 
@@ -106,6 +98,6 @@ YourKit is the creator of
 Copyright (C) 2021 isXander
 
 <a href="https://www.isxander.dev">
-  <img src="https://static.isxander.dev/logos/dev.isxander.evergreenhud/v1/icon-transparent.png" alt="Logo" width="200">
+  <img src="https://dl.isxander.dev/logos/isxander/v2/logo-name.svg" alt="Logo" width="200">
 </a>
 </div>

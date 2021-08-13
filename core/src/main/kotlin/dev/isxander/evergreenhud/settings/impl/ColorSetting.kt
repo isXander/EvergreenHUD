@@ -19,6 +19,7 @@ package dev.isxander.evergreenhud.settings.impl
 
 import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
+import dev.isxander.evergreenhud.settings.providers.IValueProvider
 import gg.essential.elementa.UIComponent
 import java.awt.Color
 import kotlin.reflect.KProperty1
@@ -27,15 +28,12 @@ import kotlin.reflect.KProperty1
 @MustBeDocumented
 annotation class ColorSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true, val transparency: Boolean = true)
 
-class ColorSettingWrapped(annotation: ColorSetting, annotatedObject: Any, annotatedProperty: KProperty1<out Any, Color>) : Setting<Color, ColorSetting>(annotation, annotatedObject, annotatedProperty, DataType.INT) {
+class ColorSettingWrapped(annotation: ColorSetting, provider: IValueProvider<Color>) : Setting<Color, ColorSetting>(annotation, provider, DataType.INT) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description
     override val shouldSave: Boolean = annotation.save
     val transparency: Boolean = annotation.transparency
-
-    override fun getInternal(): Color = annotatedProperty.call(annotatedObject)
-    override fun setInternal(new: Color) = mutableProperty!!.setter.call(annotatedObject, new)
 
     override var serializedValue: Any
         get() = value.rgb

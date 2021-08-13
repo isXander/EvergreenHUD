@@ -17,10 +17,15 @@
 
 package dev.isxander.evergreenhud.compatibility.fabric11701.impl
 
+import com.mojang.blaze3d.systems.RenderSystem
+import dev.isxander.evergreenhud.compatibility.fabric11701.Main
+import dev.isxander.evergreenhud.compatibility.fabric11701.mc
 import dev.isxander.evergreenhud.compatibility.fabric11701.utils.getEntity
 import dev.isxander.evergreenhud.compatibility.universal.impl.UEntity
 import dev.isxander.evergreenhud.compatibility.universal.impl.UPotion
 import dev.isxander.evergreenhud.compatibility.universal.impl.UPotions
+import net.minecraft.client.gui.DrawableHelper
+import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.effect.StatusEffect
 import net.minecraft.entity.effect.StatusEffectInstance
@@ -32,8 +37,16 @@ class PotionsImpl : UPotions() {
         UStatusEffects.values().map { UPotion(it.ordinal, 0, 0, false, it.effect.translationKey) }
 
     override fun giveEntityEffect(entity: UEntity, potion: UPotion) {
+        mc.statusEffectSpriteManager.getSprite(UStatusEffects.values()[potion.id].effect).id
         val entity = getEntity(entity) as? LivingEntity ?: throw IllegalArgumentException("Entity was not living!")
         entity.addStatusEffect(StatusEffectInstance(UStatusEffects.values()[potion.id].effect, potion.duration, potion.amplifier))
+    }
+
+    override fun drawPotionIcon(potion: UPotion, x: Float, y: Float) {
+        val effectManager = mc.statusEffectSpriteManager
+        val sprite = effectManager.getSprite(UStatusEffects.values()[potion.id].effect)
+        RenderSystem.setShaderTexture(0, sprite.atlas.id)
+        DrawableHelper.drawSprite(Main.matrices, x.toInt() + 6, y.toInt() + 7, 0, 18, 18, sprite)
     }
 }
 

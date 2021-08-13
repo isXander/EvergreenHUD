@@ -9,7 +9,7 @@
     "updateUrl": "",
     "authorList": ["isXander"],
     "credits": "",
-    "logoFile": "assets/evergreenhud/textures/evergreenhud.png",
+    "logoFile": "evergreenhud/export/evergreenhud-transparent.png",
     "screenshots": [],
     "dependencies": []
   }

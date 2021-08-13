@@ -19,6 +19,7 @@ package dev.isxander.evergreenhud.settings.impl
 
 import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
+import dev.isxander.evergreenhud.settings.providers.IValueProvider
 import gg.essential.elementa.UIComponent
 import kotlin.reflect.KProperty1
 
@@ -26,14 +27,11 @@ import kotlin.reflect.KProperty1
 @MustBeDocumented
 annotation class IntSetting(val name: String, val category: Array<String>, val description: String, val min: Int, val max: Int, val suffix: String = "", val save: Boolean = true)
 
-class IntSettingWrapped(annotation: IntSetting, annotationObject: Any, annotatedProperty: KProperty1<out Any, Int>) : Setting<Int, IntSetting>(annotation, annotationObject, annotatedProperty, DataType.INT) {
+class IntSettingWrapped(annotation: IntSetting, provider: IValueProvider<Int>) : Setting<Int, IntSetting>(annotation, provider, DataType.INT) {
     override val name: String = annotation.name
     override val category: Array<String> = annotation.category
     override val description: String = annotation.description
     override val shouldSave: Boolean = annotation.save
-
-    override fun getInternal(): Int = annotatedProperty.call(annotatedObject)
-    override fun setInternal(new: Int) = mutableProperty!!.setter.call(annotatedObject, new)
 
     override var serializedValue: Any
         get() = value

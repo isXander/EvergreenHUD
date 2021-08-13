@@ -18,6 +18,7 @@
 package dev.isxander.evergreenhud.settings
 
 import dev.isxander.evergreenhud.settings.impl.*
+import dev.isxander.evergreenhud.settings.providers.IValueProvider
 import gg.essential.elementa.UIComponent
 import kotlin.reflect.KClass
 import kotlin.reflect.KMutableProperty1
@@ -25,38 +26,18 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.jvm.isAccessible
 
 @Suppress("UNCHECKED_CAST")
-abstract class Setting<T, A>(val annotation: A, val annotatedObject: Any, val annotatedProperty: KProperty1<out Any, T>, val dataType: DataType) {
+abstract class Setting<T, A>(val annotation: A, val provider: IValueProvider<T>, val dataType: DataType, val hidden: Boolean = false) : IValueProvider<T> {
 
     abstract val name: String
     abstract val category: Array<String>
     abstract val description: String
     abstract val shouldSave: Boolean
-    val default = value
 
-    protected val mutableProperty = annotatedProperty as? KMutableProperty1<out Any, T>
+    override var value: T
+        get() = provider.value
+        set(value) { provider.value = value }
 
-    val adapter: SettingAdapter<T>?
-        get() = annotatedProperty.call(annotatedObject) as? SettingAdapter<T>
-    val usesAdapter: Boolean = adapter != null
-    val readOnly: Boolean = !usesAdapter && annotatedProperty.isFinal
-
-    init {
-        annotatedProperty.isAccessible = true
-    }
-
-    var value: T
-        get() = adapter?.get() ?: getInternal()
-
-        set(new) {
-            if (readOnly) return
-            adapter?.set(new) ?: setInternal(new)
-        }
-
-    val hidden: Boolean
-        get() = adapter?.hidden ?: false
-
-    protected abstract fun getInternal(): T
-    protected abstract fun setInternal(new: T)
+    val default = provider.value
 
     abstract var serializedValue: Any
     abstract val defaultSerializedValue: Any

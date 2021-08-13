@@ -44,7 +44,7 @@ import java.lang.reflect.Method
 val mc: Minecraft = Minecraft.getMinecraft()
 
 @Mod(modid = EvergreenInfo.ID, name = "EvergreenHUD", version = EvergreenInfo.REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", modLanguageAdapter = "dev.isxander.evergreenhud.compatibility.forge10809.KotlinLanguageAdapter")
-object ForgeMod {
+object Main {
 
     private var scaledRes: ScaledResolution = ScaledResolution(mc)
 
