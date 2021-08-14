@@ -24,6 +24,8 @@ import dev.isxander.evergreenhud.compatibility.universal.impl.registerCommand
 import dev.isxander.evergreenhud.compatibility.universal.impl.registerKeybind
 import dev.isxander.evergreenhud.utils.Keyboard
 import dev.isxander.evergreenhud.config.profile.ProfileManager
+import dev.isxander.evergreenhud.elements.impl.ElementCps
+import dev.isxander.evergreenhud.elements.impl.ElementPotionHUD
 import dev.isxander.evergreenhud.gui.MainGui
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
@@ -73,6 +75,13 @@ object EvergreenHUD {
         elementManager = ElementManager().also {
             it.mainConfig.load()
             it.elementConfig.load()
+            it.addElement(ElementPotionHUD().preload().apply {
+                position = rawPosition {
+                    x = 20f
+                    y = 20f
+                }
+            })
+            it.elementConfig.save()
         }
 
         if (!MC.devEnv) {

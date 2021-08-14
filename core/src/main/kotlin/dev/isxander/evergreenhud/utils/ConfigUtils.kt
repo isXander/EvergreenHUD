@@ -34,7 +34,7 @@ fun Float.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this.toDouble(
 fun String.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)
 fun Boolean.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)
 fun Any?.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)
-fun MutableList<*>.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)
+fun Iterable<*>.asConfig(): ConfigValue = ConfigValueFactory.fromAnyRef(this)
 
 fun Config.getFloat(path: String): Float = this.getDouble(path).toFloat()
 

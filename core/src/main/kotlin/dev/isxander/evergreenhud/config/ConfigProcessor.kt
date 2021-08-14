@@ -75,7 +75,7 @@ interface ConfigProcessor {
                         property.hasAnnotation<BooleanSetting>() ->
                             settingProcessor.invoke(BooleanSettingWrapped(
                                 property.findAnnotation()!!,
-                                if (property.returnType == SettingAdapter::class.createType())
+                                if (property.getter.call(instance) is SettingAdapter<*>)
                                     AdapterProvider(property.call(instance) as SettingAdapter<Boolean>)
                                 else
                                     PropertyProvider(
@@ -86,7 +86,7 @@ interface ConfigProcessor {
                         property.hasAnnotation<ColorSetting>() ->
                             settingProcessor.invoke(ColorSettingWrapped(
                                 property.findAnnotation()!!,
-                                if (property.returnType == SettingAdapter::class.createType())
+                                if (property.getter.call(instance) is SettingAdapter<*>)
                                     AdapterProvider(property.call(instance) as SettingAdapter<Color>)
                                 else
                                     PropertyProvider(
@@ -97,7 +97,7 @@ interface ConfigProcessor {
                         property.hasAnnotation<OptionSetting>() ->
                             settingProcessor.invoke(OptionSettingWrapped(
                                 property.findAnnotation()!!,
-                                if (property.returnType == SettingAdapter::class.createType())
+                                if (property.getter.call(instance) is SettingAdapter<*>)
                                     AdapterProvider(property.call(instance) as SettingAdapter<OptionContainer.Option>)
                                 else
                                     PropertyProvider(
@@ -108,7 +108,7 @@ interface ConfigProcessor {
                         property.hasAnnotation<FloatSetting>() ->
                             settingProcessor.invoke(FloatSettingWrapped(
                                 property.findAnnotation()!!,
-                                if (property.returnType == SettingAdapter::class.createType())
+                                if (property.getter.call(instance) is SettingAdapter<*>)
                                     AdapterProvider(property.call(instance) as SettingAdapter<Float>)
                                 else
                                     PropertyProvider(
@@ -119,7 +119,7 @@ interface ConfigProcessor {
                         property.hasAnnotation<IntSetting>() ->
                             settingProcessor.invoke(IntSettingWrapped(
                                 property.findAnnotation()!!,
-                                if (property.returnType == SettingAdapter::class.createType())
+                                if (property.getter.call(instance) is SettingAdapter<*>)
                                     AdapterProvider(property.call(instance) as SettingAdapter<Int>)
                                 else
                                     PropertyProvider(
@@ -130,7 +130,7 @@ interface ConfigProcessor {
                         property.hasAnnotation<StringListSetting>() ->
                             settingProcessor.invoke(StringListSettingWrapped(
                                 property.findAnnotation()!!,
-                                if (property.returnType == SettingAdapter::class.createType())
+                                if (property.getter.call(instance) is SettingAdapter<*>)
                                     AdapterProvider(property.call(instance) as SettingAdapter<String>)
                                 else
                                     PropertyProvider(
@@ -141,7 +141,7 @@ interface ConfigProcessor {
                         property.hasAnnotation<StringSetting>() ->
                             settingProcessor.invoke(StringSettingWrapped(
                                 property.findAnnotation()!!,
-                                if (property.returnType == SettingAdapter::class.createType())
+                                if (property.getter.call(instance) is SettingAdapter<*>)
                                     AdapterProvider(property.call(instance) as SettingAdapter<String>)
                                 else
                                     PropertyProvider(

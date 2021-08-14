@@ -20,6 +20,7 @@ package dev.isxander.evergreenhud.elements
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigObject
 import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.compatibility.universal.MCVersion
 import dev.isxander.evergreenhud.config.ConfigProcessor
 import dev.isxander.evergreenhud.settings.Setting
@@ -60,8 +61,9 @@ abstract class Element : ConfigProcessor {
         if (preloaded) return this
 
         preinit()
-        collectSettings(this) { settings.add(it) }
+        collectSettings(this, settings::add)
         init()
+        for (setting in settings) LOGGER.info(setting.name)
 
         preloaded = true
         return this

@@ -38,7 +38,7 @@ abstract class TextElement : BackgroundElement() {
 
     @IntSetting(name = "Chroma Speed", category = ["Text"], description = "How fast should the chroma wave be?", min = 500, max = 10000)
     val chromaSpeed = settingAdapter(2000) {
-        depends { !chroma }
+        depends { chroma }
     }
 
     @OptionSetting(name = "Text Style", category = ["Text"], description = "What style the text is rendered in.")

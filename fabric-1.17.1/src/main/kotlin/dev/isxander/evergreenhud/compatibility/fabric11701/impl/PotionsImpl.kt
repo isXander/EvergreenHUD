@@ -34,12 +34,11 @@ import java.lang.IllegalArgumentException
 
 class PotionsImpl : UPotions() {
     override val registeredPotions: List<UPotion> =
-        UStatusEffects.values().map { UPotion(it.ordinal, 0, 0, false, it.effect.translationKey) }
+        UStatusEffects.values().map { UPotion(it.ordinal, 0, 0, false, it.effect.translationKey, it.effect.isInstant) }
 
-    override fun giveEntityEffect(entity: UEntity, potion: UPotion) {
-        mc.statusEffectSpriteManager.getSprite(UStatusEffects.values()[potion.id].effect).id
+    override fun getEffectsForEntity(entity: UEntity): List<UPotion> {
         val entity = getEntity(entity) as? LivingEntity ?: throw IllegalArgumentException("Entity was not living!")
-        entity.addStatusEffect(StatusEffectInstance(UStatusEffects.values()[potion.id].effect, potion.duration, potion.amplifier))
+        return entity.activeStatusEffects.map { (status, instance) -> UPotion(UStatusEffects.getFromVanilla(status).ordinal, instance.duration, instance.amplifier, instance.isPermanent, status.translationKey, status.isInstant) }
     }
 
     override fun drawPotionIcon(potion: UPotion, x: Float, y: Float) {
@@ -82,5 +81,12 @@ private enum class UStatusEffects(val effect: StatusEffect) {
     CONDUIT_POWER(StatusEffects.CONDUIT_POWER),
     DOLPHINS_GRACE(StatusEffects.DOLPHINS_GRACE),
     BAD_OMEN(StatusEffects.BAD_OMEN),
-    HERO_OF_THE_VILLAGE(StatusEffects.HERO_OF_THE_VILLAGE)
+    HERO_OF_THE_VILLAGE(StatusEffects.HERO_OF_THE_VILLAGE);
+
+    companion object {
+        fun getFromVanilla(effect: StatusEffect): UStatusEffects {
+            for (u in values()) if (u.effect.type == effect.type) return u
+            throw IllegalArgumentException("Not a known status effect!")
+        }
+    }
 }

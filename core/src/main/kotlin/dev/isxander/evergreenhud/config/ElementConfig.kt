@@ -19,6 +19,7 @@ package dev.isxander.evergreenhud.config
 
 import com.typesafe.config.ConfigFactory
 import com.typesafe.config.ConfigObject
+import com.typesafe.config.ConfigValueFactory
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.elements.ElementManager

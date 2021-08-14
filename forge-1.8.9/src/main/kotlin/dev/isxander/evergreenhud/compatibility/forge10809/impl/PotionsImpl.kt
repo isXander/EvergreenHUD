@@ -24,6 +24,7 @@ import dev.isxander.evergreenhud.compatibility.universal.impl.UEntity
 import dev.isxander.evergreenhud.compatibility.universal.impl.UPotion
 import dev.isxander.evergreenhud.compatibility.universal.impl.UPotions
 import net.minecraft.entity.EntityLiving
+import net.minecraft.entity.EntityLivingBase
 import net.minecraft.potion.Potion
 import net.minecraft.potion.PotionEffect
 import net.minecraft.util.ResourceLocation
@@ -34,11 +35,11 @@ class PotionsImpl : UPotions() {
     private val effectIcons = ResourceLocation("textures/gui/container/inventory.png")
 
     override val registeredPotions: List<UPotion> =
-        GameData.getPotionRegistry().map { UPotion(it.id, 0, 0, false, it.name) }
+        GameData.getPotionRegistry().map { UPotion(it.id, 0, 0, false, it.name, it.isInstant) }
 
-    override fun giveEntityEffect(entity: UEntity, potion: UPotion) {
-        val entity = getEntity(entity) as? EntityLiving ?: throw IllegalArgumentException("Entity is not living!")
-        entity.addPotionEffect(PotionEffect(potion.id, potion.duration, potion.amplifier))
+    override fun getEffectsForEntity(entity: UEntity): List<UPotion> {
+        val entity = getEntity(entity) as? EntityLivingBase ?: throw IllegalArgumentException("Entity is not living!")
+        return entity.activePotionEffects.map { UPotion(it.potionID, it.duration, it.amplifier, it.isPotionDurationMax, it.effectName, false) }
     }
 
     override fun drawPotionIcon(potion: UPotion, x: Float, y: Float) {

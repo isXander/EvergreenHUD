@@ -36,5 +36,5 @@ class SettingAdapter<T> internal constructor(var value: T) {
     }
 
     val hidden: Boolean
-        get() = depends.all { true }
+        get() = !depends.all { it(value) }
 }

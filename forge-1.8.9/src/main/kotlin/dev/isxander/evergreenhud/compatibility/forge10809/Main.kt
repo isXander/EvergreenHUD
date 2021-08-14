@@ -50,6 +50,7 @@ object Main {
 
     @Mod.EventHandler
     fun onFMLInit(event: FMLInitializationEvent) {
+        PLATFORM = Platform.Forge
         MC_VERSION = MCVersion.FORGE_1_8_9
 
         LOGGER = LoggerImpl()

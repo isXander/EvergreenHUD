@@ -15,19 +15,9 @@
  | isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.compatibility.universal.impl
+package dev.isxander.evergreenhud.compatibility.universal
 
-data class UPotion(
-    val id: Int,
-    val duration: Int,
-    val amplifier: Int,
-    val permanent: Boolean,
-    val translation: String,
-    val instant: Boolean,
-)
-
-abstract class UPotions {
-    abstract val registeredPotions: List<UPotion>
-    abstract fun getEffectsForEntity(entity: UEntity): List<UPotion>
-    abstract fun drawPotionIcon(potion: UPotion, x: Float, y: Float)
+enum class Platform {
+    Forge,
+    Fabric
 }

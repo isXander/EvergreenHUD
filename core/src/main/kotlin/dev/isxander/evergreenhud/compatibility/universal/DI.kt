@@ -20,6 +20,7 @@ package dev.isxander.evergreenhud.compatibility.universal
 import dev.isxander.evergreenhud.compatibility.universal.impl.*
 import dev.isxander.evergreenhud.compatibility.universal.impl.render.*
 
+lateinit var PLATFORM: Platform
 lateinit var MC_VERSION: MCVersion
 lateinit var LOGGER: ULogger
 lateinit var MC: UMinecraft

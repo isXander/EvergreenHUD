@@ -37,6 +37,7 @@ object Main : ClientModInitializer {
     var postInitialized = false
 
     override fun onInitializeClient() {
+        PLATFORM = Platform.Fabric
         MC_VERSION = MCVersion.FABRIC_1_17_1
 
         LOGGER = LoggerImpl()

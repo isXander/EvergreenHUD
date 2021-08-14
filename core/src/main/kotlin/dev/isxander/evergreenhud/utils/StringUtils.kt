@@ -20,7 +20,13 @@ package dev.isxander.evergreenhud.utils
 import dev.isxander.evergreenhud.compatibility.universal.FONT_RENDERER
 import gg.essential.universal.ChatColor
 import java.util.*
-import kotlin.collections.ArrayList
+
+fun ticksToTime(ticks: Int): String {
+    var i = ticks / 20
+    val j = i / 60
+    i %= 60
+    return if (i < 10) "$j:0$i" else "$j:$i"
+}
 
 /**
  * Shifts a string a certain number of places

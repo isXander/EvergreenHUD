@@ -25,7 +25,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent
 
 class ResolutionImpl : UResolution() {
 
-    private lateinit var resolution: ScaledResolution
+    private var resolution: ScaledResolution = ScaledResolution(mc)
 
     init {
         on<TickEvent.RenderTickEvent>()
