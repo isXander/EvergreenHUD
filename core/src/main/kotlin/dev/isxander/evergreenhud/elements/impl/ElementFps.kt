@@ -17,14 +17,30 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.MC
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.event.RenderTickEvent
+import me.kbrewster.eventbus.Subscribe
 
 @ElementMeta(id = "FPS", name = "FPS Display", category = "Simple", description = "Display how many times your screen is updating every second.")
 class ElementFps : SimpleTextElement() {
 
-    override fun calculateValue(): String = MC.fps.toString()
+    private var lastTime = System.currentTimeMillis()
+    private val frameTimes = ArrayList<Double>()
+
     override var title: String = "FPS"
+    override var cacheTime = 20
+
+    override fun calculateValue(): String {
+        // calculate mean of frame times and convert to FPS
+        val fps = (1 / (frameTimes.sum() / frameTimes.size)).toString()
+        frameTimes.clear()
+        return fps
+    }
+
+    @Subscribe
+    fun onRender(event: RenderTickEvent) {
+        frameTimes.add((System.currentTimeMillis() - lastTime) / 1000.0)
+    }
 
 }

@@ -47,8 +47,8 @@ abstract class TextElement : BackgroundElement() {
     @OptionSetting(name = "Alignment", category = ["Text"], description = "How the text is aligned.")
     var alignment = Alignment.LEFT
 
-    @IntSetting(name = "Text Cache", category = ["Text"], description = "How many render ticks to wait before regenerating the text. (Can positively impact performance)", min = 0, max = 10)
-    var cacheTime = 1
+    @IntSetting(name = "Text Cache", category = ["Text"], description = "How many render ticks to wait before regenerating the text. (Can positively impact performance)", min = 0, max = 20)
+    open var cacheTime = 1
     var renderCount = 0
 
     override fun calculateHitBox(glScale: Float, drawScale: Float): HitBox2D {
