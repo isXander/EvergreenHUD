@@ -12,7 +12,7 @@ buildConfig {
     buildConfigField('Int', 'VERSION_MINOR', version_minor)
     buildConfigField('Int', 'VERSION_PATCH', version_patch)
     buildConfigField('Int?', 'VERSION_PRERELEASE', (prerelease ? version_prerelease : 'null'))
-    buildConfigField('String', 'VERSION_FULL', "\"${project.version}\"")
+    buildConfigField('com.asarkar.semver.SemVer', 'VERSION_FULL', "SemVer.parse(\"${project.version}\")")
     buildConfigField('String', 'REVISION', "\"${project.gitHash == null ? '???????' : project.gitHash}\"")
 
     buildConfigField('dev.isxander.evergreenhud.repo.ReleaseChannel', 'CHANNEL', "ReleaseChannel.${!version_prerelease.trim().isEmpty() ? 'BETA' : 'RELEASE'}")
@@ -26,7 +26,9 @@ dependencies {
     api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21'
     api 'org.jetbrains.kotlin:kotlin-reflect:1.5.21'
 
-    api 'com.typesafe:config:1.4.1'
+    api 'com.uchuhimo:konf-toml:1.1.2'
+
+    api 'com.github.asarkar:jsemver:dba4b41b08'
 
     api 'club.chachy.kotlin-forge-api:forge-event-dsl:0.3.1'
     api ('com.github.KevinPriv:KEventBus:86cf2e023e') {

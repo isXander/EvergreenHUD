@@ -17,17 +17,12 @@
 
 package dev.isxander.evergreenhud.config.profile
 
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigObject
+import com.uchuhimo.konf.Config
+import com.uchuhimo.konf.source.toml
+import com.uchuhimo.konf.source.toml.toToml
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
-import dev.isxander.evergreenhud.utils.asConfig
-import dev.isxander.evergreenhud.utils.int
-import dev.isxander.evergreenhud.utils.niceConfigRender
-import dev.isxander.evergreenhud.utils.string
 import java.io.File
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
 
 class ProfileManager {
 
@@ -39,19 +34,11 @@ class ProfileManager {
     fun load() {
         if (!PROFILES_DATA.exists()) save().also { return@load }
 
-        val data = attemptConversion(ConfigFactory.parseFile(PROFILES_DATA).root())
+        val data = attemptConversion(Config().from.toml.file(PROFILES_DATA))
         availableProfiles.clear()
-        for (profileData in data.toConfig().getObjectList("profiles")) {
-            val profile = Profile(
-                profileData["id"]!!.string(),
-                profileData["name"]!!.string(),
-                profileData["description"]!!.string(),
-                profileData["icon"]!!.string()
-            )
-            availableProfiles[profile.id] = profile
-        }
+        data[ProfileSpec.profiles].forEach { availableProfiles[it.id] = it }
 
-        val newCurrent = availableProfiles[data.getOrDefault("current", "default".asConfig()).string()]
+        val newCurrent = availableProfiles[data.getOrNull("current") ?: "default"]
         if (newCurrent == null) {
             currentProfile = DEFAULT_PROFILE
             availableProfiles[currentProfile.id] = currentProfile
@@ -61,59 +48,44 @@ class ProfileManager {
     }
 
     fun save() {
-        var data = ConfigFactory.empty()
-            .withValue("schema", SCHEMA.asConfig())
-            .withValue("current", currentProfile.id.asConfig())
-            .root()
-
-        val profileData = arrayListOf<ConfigObject>()
-        for ((_, profile) in availableProfiles) {
-            profileData.add(ConfigFactory.empty()
-                .withValue("id", profile.id.asConfig())
-                .withValue("name", profile.description.asConfig())
-                .withValue("description", profile.description.asConfig())
-                .withValue("icon", profile.icon.asConfig())
-                .root()
-            )
-        }
-        data = data.withValue("profiles", profileData.asConfig())
-
         PROFILES_DATA.parentFile.mkdirs()
-        Files.write(
-            PROFILES_DATA.toPath(),
-            data.toConfig().resolve().root().render(niceConfigRender).lines(),
-            StandardCharsets.UTF_8
-        )
+        Config {
+            addSpec(ProfileSpec)
+            this[ProfileSpec.schema] = SCHEMA
+            this[ProfileSpec.current] = currentProfile.id
+            this[ProfileSpec.profiles] = availableProfiles.values.toList()
+        }.toToml.toFile(PROFILES_DATA)
     }
 
     @Suppress("UNUSED_EXPRESSION")
-    private fun attemptConversion(hocon: ConfigObject): ConfigObject {
-        val currentSchema = hocon.getOrDefault("schema", 0.asConfig()).int()
+    private fun attemptConversion(data: Config): Config {
+        val currentSchema = data.getOrNull("schema") ?: 0
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return ConfigFactory.empty().root()
+            return Config()
         }
 
         // there is no point recoding every conversion
         // when a new schema comes to be
         // so just convert the old conversions until done
-        var convertedHocon = hocon
+        var convertedData = data
         var convertedSchema = currentSchema
         while (convertedSchema != SCHEMA) {
-            LOGGER.info("Converting profile configuration v$convertedSchema -> v${convertedSchema + 1}")
+            LOGGER.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
             when (convertedSchema) {
 
             }
             convertedSchema++
         }
 
-        return convertedHocon
+        convertedData.addSpec(ProfileSpec)
+        return convertedData
     }
 
     companion object {
         const val SCHEMA = 1
-        val PROFILES_DATA = File(EvergreenHUD.dataDir, "profiles/profiles.conf")
+        val PROFILES_DATA = File(EvergreenHUD.dataDir, "profiles/profiles.toml")
         val DEFAULT_PROFILE = Profile("default", "Default", "The default profile of EvergreenHUD")
     }
 

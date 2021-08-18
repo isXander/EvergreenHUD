@@ -24,30 +24,30 @@ import java.awt.Color
 
 abstract class TextElement : BackgroundElement() {
 
-    @BooleanSetting(name = "Brackets", category = ["Text"], description = "Text is displayed within [square brackets.]")
+    @BooleanSetting(name = "Brackets", category = "Text", description = "Text is displayed within [square brackets.]")
     var brackets = false
 
-    @StringSetting(name = "Title", category = ["Text"], description = "What is displayed before or after the actual value.")
+    @StringSetting(name = "Title", category = "Text", description = "What is displayed before or after the actual value.")
     open var title: String = "UNKNOWN"
 
-    @ColorSetting(name = "Color", category = ["Text"], description = "The color of the text.")
+    @ColorSetting(name = "Color", category = "Text", description = "The color of the text.")
     var textColor = Color(255, 255, 255)
 
-    @BooleanSetting(name = "Chroma", category = ["Text"], description = "Makes the text rainbow barf.")
+    @BooleanSetting(name = "Chroma", category = "Text", description = "Makes the text rainbow barf.")
     var chroma = false
 
-    @IntSetting(name = "Chroma Speed", category = ["Text"], description = "How fast should the chroma wave be?", min = 500, max = 10000)
+    @IntSetting(name = "Chroma Speed", category = "Text", description = "How fast should the chroma wave be?", min = 500, max = 10000)
     val chromaSpeed = settingAdapter(2000) {
         depends { chroma }
     }
 
-    @OptionSetting(name = "Text Style", category = ["Text"], description = "What style the text is rendered in.")
+    @OptionSetting(name = "Text Style", category = "Text", description = "What style the text is rendered in.")
     var textStyle = TextStyle.SHADOW
 
-    @OptionSetting(name = "Alignment", category = ["Text"], description = "How the text is aligned.")
+    @OptionSetting(name = "Alignment", category = "Text", description = "How the text is aligned.")
     var alignment = Alignment.LEFT
 
-    @IntSetting(name = "Text Cache", category = ["Text"], description = "How many render ticks to wait before regenerating the text. (Can positively impact performance)", min = 0, max = 20)
+    @IntSetting(name = "Text Cache", category = "Text", description = "How many render ticks to wait before regenerating the text. (Can positively impact performance)", min = 0, max = 20)
     open var cacheTime = 1
     var renderCount = 0
 

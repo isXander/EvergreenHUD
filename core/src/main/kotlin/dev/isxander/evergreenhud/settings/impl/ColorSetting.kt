@@ -26,11 +26,12 @@ import kotlin.reflect.KProperty1
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 @MustBeDocumented
-annotation class ColorSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true, val transparency: Boolean = true)
+annotation class ColorSetting(val name: String, val category: String, val subcategory: String = "", val description: String, val save: Boolean = true, val transparency: Boolean = true)
 
 class ColorSettingWrapped(annotation: ColorSetting, provider: IValueProvider<Color>) : Setting<Color, ColorSetting>(annotation, provider, DataType.INT) {
     override val name: String = annotation.name
-    override val category: Array<String> = annotation.category
+    override val category: String = annotation.category
+    override val subcategory: String = annotation.subcategory
     override val description: String = annotation.description
     override val shouldSave: Boolean = annotation.save
     val transparency: Boolean = annotation.transparency

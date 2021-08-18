@@ -17,66 +17,59 @@
 
 package dev.isxander.evergreenhud.config
 
-import com.typesafe.config.*
+import com.uchuhimo.konf.Config
+import com.uchuhimo.konf.source.toml
+import com.uchuhimo.konf.source.toml.toToml
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.utils.asConfig
-import dev.isxander.evergreenhud.utils.int
-import dev.isxander.evergreenhud.utils.niceConfigRender
-import dev.isxander.evergreenhud.utils.obj
 import java.io.File
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
 
 class MainConfig(private val manager: ElementManager) {
 
     fun save() {
-        val hocon = ConfigFactory.empty()
-            .withValue("schema", SCHEMA.asConfig())
-            .withValue("data", manager.conf)
-            .resolve().root().render(niceConfigRender)
-
-        CONFIG_FILE.parentFile.mkdirs()
-        Files.write(CONFIG_FILE.toPath(), hocon.lines(), StandardCharsets.UTF_8)
+        val data = Config {
+            this["schema"] = SCHEMA
+            this["data"] = manager.conf
+        }.toToml.toFile(CONFIG_FILE)
     }
 
     fun load() {
         if (!CONFIG_FILE.exists()) save().also { return@load }
-        val data = attemptConversion(ConfigFactory.parseFile(CONFIG_FILE).root())
+        val data = attemptConversion(Config().from.toml.file(CONFIG_FILE))
 
-        manager.conf = data["data"]!!.obj()
+        manager.conf = data["data"]
     }
 
     @Suppress("UNUSED_EXPRESSION")
-    private fun attemptConversion(hocon: ConfigObject): ConfigObject {
-        val currentSchema = hocon.getOrDefault("schema", 0.asConfig()).int()
+    private fun attemptConversion(data: Config): Config {
+        val currentSchema = data.getOrNull("schema") ?: 0
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return ConfigFactory.empty().root()
+            return Config()
         }
 
         // there is no point recoding every conversion
         // when a new schema comes to be
         // so just convert the old conversions until done
-        var convertedHocon = hocon
+        var convertedData = data
         var convertedSchema = currentSchema
         while (convertedSchema != SCHEMA) {
-            LOGGER.info("Converting global configuration v$convertedSchema -> v${convertedSchema + 1}")
+            LOGGER.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
             when (convertedSchema) {
 
             }
             convertedSchema++
         }
 
-        return convertedHocon
+        return convertedData
     }
 
     companion object {
         const val SCHEMA = 4
         val CONFIG_FILE: File
-            get() = File(EvergreenHUD.profileManager.profileDirectory, "global.conf")
+            get() = File(EvergreenHUD.profileManager.profileDirectory, "global.toml")
     }
 
 }

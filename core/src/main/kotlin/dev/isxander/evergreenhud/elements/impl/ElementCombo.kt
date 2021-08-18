@@ -29,10 +29,10 @@ import me.kbrewster.eventbus.Subscribe
 @ElementMeta(id = "COMBO_DISPLAY", name = "Combo Display", description = "Display how many hits you get on a player before they hit you.", category = "Combat")
 class ElementCombo : SimpleTextElement() {
 
-    @IntSetting(name = "Discard Time", category = ["Combo"], description = "How many seconds until the combo is set to 0", min = 1, max = 10, suffix = " secs")
+    @IntSetting(name = "Discard Time", category = "Combo", description = "How many seconds until the combo is set to 0", min = 1, max = 10, suffix = " secs")
     private var discardTime = 3
 
-    @StringSetting(name = "No Hit Message", category = ["Combo"], description = "What message is shown when no combo is in progress.")
+    @StringSetting(name = "No Hit Message", category = "Combo", description = "What message is shown when no combo is in progress.")
     private var noHitMessage = "0"
 
     private var hitTime = 0L

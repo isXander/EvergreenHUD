@@ -25,11 +25,12 @@ import kotlin.reflect.KProperty1
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 @MustBeDocumented
-annotation class OptionSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true)
+annotation class OptionSetting(val name: String, val category: String, val subcategory: String = "", val description: String, val save: Boolean = true)
 
 class OptionSettingWrapped(annotation: OptionSetting, provider: IValueProvider<OptionContainer.Option>) : Setting<OptionContainer.Option, OptionSetting>(annotation, provider, DataType.INT) {
     override val name: String = annotation.name
-    override val category: Array<String> = annotation.category
+    override val category: String = annotation.category
+    override val subcategory: String = annotation.subcategory
     override val description: String = annotation.description
     override val shouldSave: Boolean = annotation.save
     val options = value.values

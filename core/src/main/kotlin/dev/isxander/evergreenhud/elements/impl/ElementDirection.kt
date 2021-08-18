@@ -26,7 +26,7 @@ import dev.isxander.evergreenhud.utils.Facing
 @ElementMeta(id = "DIRECTION", name = "Direction", category = "Player", description = "Which way the player is facing.")
 class ElementDirection : SimpleTextElement() {
 
-    @BooleanSetting(name = "Abbreviated", category = ["Direction"], description = "Make the name of the direction shorter.")
+    @BooleanSetting(name = "Abbreviated", category = "Direction", description = "Make the name of the direction shorter.")
     var abbreviated = false
 
     override var title = "Direction"

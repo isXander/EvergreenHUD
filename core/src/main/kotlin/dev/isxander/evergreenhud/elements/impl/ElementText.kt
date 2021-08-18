@@ -24,7 +24,7 @@ import dev.isxander.evergreenhud.settings.impl.StringSetting
 @ElementMeta(id = "TEXT", name = "Text Display", category = "Other", description = "Displays custom text of your choosing.")
 class ElementText : SimpleTextElement() {
 
-    @StringSetting(name = "Text", category = ["Text"], description = "The text to display.")
+    @StringSetting(name = "Text", category = "Text", description = "The text to display.")
     var text = "Sample Text"
 
     override var title: String = ""

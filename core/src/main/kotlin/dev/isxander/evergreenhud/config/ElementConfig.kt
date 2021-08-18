@@ -17,52 +17,44 @@
 
 package dev.isxander.evergreenhud.config
 
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigObject
-import com.typesafe.config.ConfigValueFactory
+import com.uchuhimo.konf.Config
+import com.uchuhimo.konf.source.toml
+import com.uchuhimo.konf.source.toml.toToml
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.utils.*
 import java.io.File
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
 
 class ElementConfig(private val manager: ElementManager) {
 
     private var shouldSave = false
 
     fun save() {
-        var data = ConfigFactory.empty()
-            .withValue("schema", SCHEMA.asConfig())
-            .root()
-
-        val arr = arrayListOf<ConfigObject>()
-        for (element in manager) {
-            arr.add(ConfigFactory.empty()
-                .withValue("id", manager.getElementId(element).asConfig())
-                .withValue("data", element.conf).root())
+        val data = Config {
+            this["schema"] = SCHEMA
         }
-        data = data.withValue("elements", arr.asConfig())
 
+        val arr = mutableListOf<Config>()
+        for (element in manager) {
+            arr.add(Config {
+                this["id"] = manager.getElementId(element)
+                this["data"] = element.conf
+            })
+        }
+        data["elements"] = arr
 
         CONFIG_FILE.parentFile.mkdirs()
-        Files.write(
-            CONFIG_FILE.toPath(),
-            data.toConfig().resolve().root().render(niceConfigRender).lines(),
-            StandardCharsets.UTF_8
-        )
+        data.toToml.toFile(CONFIG_FILE)
         shouldSave = false
     }
 
     fun load() {
         if (!CONFIG_FILE.exists()) save().also { return@load }
-        val json = attemptConversion(ConfigFactory.parseFile(CONFIG_FILE).root())
+        val data = attemptConversion(Config().from.toml.file(CONFIG_FILE))
 
-        manager.clearElements()
-        val arr = json.toConfig().getObjectList("elements")
+        val arr: List<Config> = data["elements"]
         for (elementData in arr) {
-            val id = elementData.getOrDefault("id", "null".asConfig()).string()
+            val id = elementData.getOrNull("id") ?: "null"
             val element = manager.getNewElementInstance(id)
 
             if (element == null) {
@@ -70,7 +62,7 @@ class ElementConfig(private val manager: ElementManager) {
                 continue
             }
 
-            element.preload().conf = elementData["data"]!!.obj()
+            element.preload().conf = elementData["data"]
             manager.addElement(element)
         }
 
@@ -78,12 +70,12 @@ class ElementConfig(private val manager: ElementManager) {
     }
 
     @Suppress("UNUSED_EXPRESSION")
-    private fun attemptConversion(data: ConfigObject): ConfigObject {
-        val currentSchema = data.getOrDefault("schema", 0.asConfig()).int()
+    private fun attemptConversion(data: Config): Config {
+        val currentSchema = data.getOrNull("schema") ?: 0
 
         // corrupt config. Reset
-        if (currentSchema == 0 || currentSchema > MainConfig.SCHEMA) {
-            return ConfigFactory.empty().root()
+        if (currentSchema == 0 || currentSchema > SCHEMA) {
+            return Config()
         }
 
         // there is no point recoding every conversion
@@ -105,7 +97,7 @@ class ElementConfig(private val manager: ElementManager) {
     companion object {
         const val SCHEMA = 4
         val CONFIG_FILE: File
-            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.conf")
+            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.toml")
     }
 
 }

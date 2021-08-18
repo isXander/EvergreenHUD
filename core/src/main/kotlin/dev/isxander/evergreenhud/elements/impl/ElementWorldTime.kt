@@ -28,10 +28,10 @@ import java.util.concurrent.TimeUnit
 @ElementMeta(id = "WORLD_TIME", name = "World Time", description = "Show the current time in-game.", category = "World")
 class ElementWorldTime : SimpleTextElement() {
 
-    @BooleanSetting(name = "Time", category = ["Time"], description = "If the clock will be 12 hour of 24 hour.")
+    @BooleanSetting(name = "Time", category = "Time", description = "If the clock will be 12 hour of 24 hour.")
     var twelveHour = false
 
-    @BooleanSetting(name = "Seconds", category = ["Time"], description = "Show the seconds.")
+    @BooleanSetting(name = "Seconds", category = "Time", description = "Show the seconds.")
     var seconds = false
 
     override var title: String = "Time"

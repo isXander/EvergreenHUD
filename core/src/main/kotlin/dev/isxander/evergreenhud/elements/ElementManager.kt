@@ -17,8 +17,7 @@
 
 package dev.isxander.evergreenhud.elements
 
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigObject
+import com.uchuhimo.konf.Config
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.MC_VERSION
 import dev.isxander.evergreenhud.compatibility.universal.PROFILER
@@ -29,7 +28,6 @@ import dev.isxander.evergreenhud.event.RenderHUDEvent
 import dev.isxander.evergreenhud.event.on
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.impl.*
-import dev.isxander.evergreenhud.utils.obj
 import me.kbrewster.eventbus.Subscribe
 import org.reflections.Reflections
 import java.lang.IllegalArgumentException
@@ -50,13 +48,13 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     /* Settings */
     val settings: MutableList<Setting<*, *>> = ArrayList()
 
-    @BooleanSetting(name = "Enabled", category = ["General"], description = "Display any elements you have created.")
+    @BooleanSetting(name = "Enabled", category = "General", description = "Display any elements you have created.")
     var enabled = true
 
-    @BooleanSetting(name = "Check For Updates", category = ["Connectivity"], "Should EvergreenHUD check for updates when you start up the game.")
+    @BooleanSetting(name = "Check For Updates", category = "Connectivity", description = "Should EvergreenHUD check for updates when you start up the game.")
     var checkForUpdates = true
 
-    @BooleanSetting(name = "Check For Safety", category = ["Connectivity"], "(HIGHLY RECOMMENDED) Should EvergreenHUD check if the current version of the mod you are playing on has been known to cause issues like an unfair advantage.")
+    @BooleanSetting(name = "Check For Safety", category = "Connectivity", description = "(HIGHLY RECOMMENDED) Should EvergreenHUD check if the current version of the mod you are playing on has been known to cause issues like an unfair advantage.")
     var checkForSafety = true
 
     init {
@@ -72,6 +70,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     fun addElement(element: Element) {
         if (!element.metadata.allowedVersions.contains(MC_VERSION)) throw IllegalArgumentException("Element not compatible with this version.")
 
+        element.preload()
         currentElements.add(element)
         element.onAdded()
     }
@@ -146,9 +145,9 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 //        mc.mcProfiler.endSection()
     }
 
-    override var conf: ConfigObject
+    override var conf: Config
         get() {
-            var data = ConfigFactory.empty().root()
+            var data = Config()
 
             for (setting in settings) {
                 if (!setting.shouldSave) continue
@@ -159,11 +158,9 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         }
         set(value) {
             for (setting in settings) {
-                var categoryData = value
-                for (categoryName in setting.category)
-                    categoryData = categoryData.getOrDefault(categoryName, ConfigFactory.empty().root()).obj()
-
-                setSettingFromConfig(categoryData, setting)
+                var category: Config = value[setting.category]
+                if (setting.subcategory != "") category = value[setting.subcategory]
+                setSettingFromConfig(category, setting)
             }
         }
 

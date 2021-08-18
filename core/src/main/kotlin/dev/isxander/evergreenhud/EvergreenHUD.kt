@@ -17,20 +17,21 @@
 
 package dev.isxander.evergreenhud
 
-import com.typesafe.config.ConfigFactory
+import com.uchuhimo.konf.Config
+import com.uchuhimo.konf.ConfigSpec
+import com.uchuhimo.konf.source.toml
+import com.uchuhimo.konf.source.toml.toToml
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.compatibility.universal.impl.registerCommand
 import dev.isxander.evergreenhud.compatibility.universal.impl.registerKeybind
 import dev.isxander.evergreenhud.utils.Keyboard
 import dev.isxander.evergreenhud.config.profile.ProfileManager
-import dev.isxander.evergreenhud.elements.impl.ElementCps
-import dev.isxander.evergreenhud.elements.impl.ElementPotionHUD
+import dev.isxander.evergreenhud.elements.impl.ElementFps
 import dev.isxander.evergreenhud.gui.MainGui
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
 import gg.essential.universal.UDesktop
-import gg.essential.universal.UScreen
 import me.kbrewster.eventbus.EventBus
 import me.kbrewster.eventbus.eventbus
 import me.kbrewster.eventbus.invokers.ReflectionInvoker
@@ -71,17 +72,17 @@ object EvergreenHUD {
         dataDir.mkdirs()
 
         exportResources()
-        profileManager = ProfileManager().also { it.load() }
-        elementManager = ElementManager().also {
-            it.mainConfig.load()
-            it.elementConfig.load()
-            it.addElement(ElementPotionHUD().preload().apply {
+        profileManager = ProfileManager().apply { load() }
+        elementManager = ElementManager().apply {
+            mainConfig.load()
+            elementConfig.load()
+            addElement(ElementFps().preload().apply {
                 position = rawPosition {
                     x = 20f
                     y = 20f
                 }
             })
-            it.elementConfig.save()
+            elementConfig.save()
         }
 
         if (!MC.devEnv) {
@@ -90,14 +91,14 @@ object EvergreenHUD {
                 runAsync {
                     val response = RepoManager.getResponse()
 
-                    if (elementManager.checkForUpdates && response.outdated) {
+                    if (elementManager.checkForUpdates && response.latest < EvergreenInfo.VERSION_FULL) {
                         LOGGER.info("Found update. Pushing notification to user.")
                         Notifications.push("EvergreenHUD", "EvergreenHUD is out of date. Click here to download the new update.") {
                             UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
                         }
                     }
 
-                    if (elementManager.checkForSafety && response.blacklisted) {
+                    if (elementManager.checkForSafety && EvergreenInfo.REVISION in response.blacklisted) {
                         LOGGER.info("Mod version has been marked as dangerous. Pushing notification to user.")
                         Notifications.push("EvergreenHUD", "This version has been remotely marked as dangerous. Please update here.", textColor = Color.red) {
                             UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
@@ -140,54 +141,5 @@ object EvergreenHUD {
         }
     }
 
-    /**
-     * Exports all resources from the JAR into a folder.
-     * Used to allow users to select default resources for
-     * profile icons etc
-     *
-     * @author isXander
-     */
-    private fun exportResources() {
-        // every 3 days export resources
-        val metadataFile = File(dataDir, "resources/metadata.conf")
-        if (MC.devEnv || !metadataFile.exists() || ConfigFactory.parseFile(metadataFile).root().getOrDefault("version", "1.0") != EvergreenInfo.VERSION_FULL) {
-            LOGGER.info("Exporting resources...")
 
-            val reflections = Reflections("evergreenhud.export", ResourcesScanner())
-            resourceDir.mkdirs()
-            File(dataDir, "resources/user").also { it.mkdirs() }
-
-            val resourceMap = hashMapOf<File, String>()
-            reflections.getResources { true }.forEach {
-                resourceMap[File(resourceDir, it.replaceFirst("evergreenhud/export/", ""))] = it
-            }
-
-            for (file in resourceDir.walkTopDown()) {
-                // delete old resources
-                if (resourceMap[file] == null) {
-                    LOGGER.info("Deleting unknown resource. (Please use evergreenhud/resources/user for user resources) - ${file.path}")
-                    file.delete()
-                }
-            }
-
-            for ((outputFile, resourceName) in resourceMap) {
-                val resourceStream = EvergreenHUD::class.java.getResourceAsStream("/$resourceName")
-                if (resourceStream == null) {
-                    LOGGER.err("Failed to export resource: ${outputFile.path}")
-                    continue
-                }
-                Files.copy(resourceStream, outputFile.toPath(), StandardCopyOption.REPLACE_EXISTING)
-            }
-
-            val metadata = ConfigFactory.empty()
-                .withValue("updated", EvergreenInfo.VERSION_FULL.asConfig())
-
-            metadataFile.parentFile.mkdirs()
-            Files.write(
-                metadataFile.toPath(),
-                metadata.resolve().root().render(niceConfigRender).lines(),
-                StandardCharsets.UTF_8
-            )
-        }
-    }
 }

@@ -28,7 +28,7 @@ import kotlin.math.max
 
 abstract class MultiLineTextElement : TextElement() {
 
-    @IntSetting(name = "Vertical Spacing", category = ["Text"], "How far apart each line of text is.", min = 0, max = 5)
+    @IntSetting(name = "Vertical Spacing", category = "Text", description = "How far apart each line of text is.", min = 0, max = 5)
     var verticalSpacing = 2
 
     var cachedDisplayString: ArrayList<String> = arrayListOf("Calculating...")

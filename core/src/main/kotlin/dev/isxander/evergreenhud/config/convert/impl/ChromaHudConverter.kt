@@ -17,9 +17,7 @@
 
 package dev.isxander.evergreenhud.config.convert.impl
 
-import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigObject
+import com.uchuhimo.konf.Config
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.FONT_RENDERER
 import dev.isxander.evergreenhud.compatibility.universal.RESOLUTION
@@ -50,17 +48,17 @@ object ChromaHudConverter : ConfigConverter {
     override fun process(file: File): String? {
         if (!file.exists() || file.isDirectory) return "Invalid ChromaHUD config."
 
-        val config = ConfigFactory.parseFile(file)
-        EvergreenHUD.elementManager.enabled = config.getBoolean("enabled")
+        val config = Config()
+        EvergreenHUD.elementManager.enabled = config["enabled"]
 
-        for (elementJson in config.getObjectList("elements").map { it.toConfig() }) {
+        for (elementJson in config.get<List<Config>>("elements")) {
             val position = scaledPosition {
-                x = elementJson.get("x")
-                y = elementJson.get("y")
-                scale = elementJson.get("scale")
+                x = elementJson["x"]
+                y = elementJson["y"]
+                scale = elementJson["scale"]
             }
 
-            var textColor = Color(elementJson.getInt("color"))
+            var textColor = Color(elementJson["color"])
             if (elementJson.getOrNull<Boolean>("rgb") == true)
                 textColor = Color(
                     elementJson.getOrNull("red") ?: 255,
@@ -74,7 +72,7 @@ object ChromaHudConverter : ConfigConverter {
 
             var i = 0
             val changeY = (FONT_RENDERER.fontHeight + 4) / RESOLUTION.scaledHeight
-            for (item in elementJson.getList<Config>("items")) {
+            for (item in elementJson.get<List<Config>>("items")) {
                 val id = ids[item.getOrNull("type") ?: ""] ?: continue
                 val element = EvergreenHUD.elementManager.getNewElementInstance(id) ?: continue
 

@@ -22,9 +22,9 @@ import club.chachy.event.api.handler.Handler
 import dev.isxander.evergreenhud.EvergreenHUD
 import me.kbrewster.eventbus.Subscribe
 
-inline fun <reified T : Any> on() = club.chachy.event.on<Any, T>(EvergreenBus)
+inline fun <reified T : Any> on() = club.chachy.event.on<Any, T>(EvergreenBus())
 
-object EvergreenBus : EventBus<Any> {
+class EvergreenBus : EventBus<Any> {
     override fun <T : Any> createHandler(event: Class<T>): Handler<T> = KEventBusHandler(event)
     override fun register(any: Any) = EvergreenHUD.eventBus.register(any)
 }

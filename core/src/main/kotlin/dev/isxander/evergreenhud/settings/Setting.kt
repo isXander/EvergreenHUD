@@ -26,10 +26,11 @@ import kotlin.reflect.KProperty1
 import kotlin.reflect.jvm.isAccessible
 
 @Suppress("UNCHECKED_CAST")
-abstract class Setting<T, A>(val annotation: A, val provider: IValueProvider<T>, val dataType: DataType, val hidden: Boolean = false) : IValueProvider<T> {
+abstract class Setting<T, A>(val annotation: A, private val provider: IValueProvider<T>, val dataType: DataType, val hidden: Boolean = false) : IValueProvider<T> {
 
     abstract val name: String
-    abstract val category: Array<String>
+    abstract val category: String
+    abstract val subcategory: String
     abstract val description: String
     abstract val shouldSave: Boolean
 

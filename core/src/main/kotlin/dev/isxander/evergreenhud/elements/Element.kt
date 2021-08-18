@@ -17,8 +17,7 @@
 
 package dev.isxander.evergreenhud.elements
 
-import com.typesafe.config.ConfigFactory
-import com.typesafe.config.ConfigObject
+import com.uchuhimo.konf.Config
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.compatibility.universal.MCVersion
@@ -40,21 +39,22 @@ abstract class Element : ConfigProcessor {
             y = 0.5f
         }
 
-    @FloatSetting(name = "Scale", category = ["Render"], description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
+    @FloatSetting(name = "Scale", category = "Render", description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
     val scale = settingAdapter(100f) {
         set {
             position.scale = it / 100f
-            return@set it
+            it
         }
+        get { position.scale * 100f }
     }
 
-    @BooleanSetting(name = "Show In Chat", category = ["Visibility"], description = "Whether or not element should be displayed in the chat menu. (Takes priority over show under gui)")
+    @BooleanSetting(name = "Show In Chat", category = "Visibility", description = "Whether or not element should be displayed in the chat menu. (Takes priority over show under gui)")
     var showInChat: Boolean = false
 
-    @BooleanSetting(name = "Show In F3", category = ["Visibility"], description = "Whether or not element should be displayed when you have the debug menu open.")
+    @BooleanSetting(name = "Show In F3", category = "Visibility", description = "Whether or not element should be displayed when you have the debug menu open.")
     var showInDebug: Boolean = false
 
-    @BooleanSetting(name = "Show Under GUIs", category = ["Visibility"], description = "Whether or not element should be displayed when you have a gui open.")
+    @BooleanSetting(name = "Show Under GUIs", category = "Visibility", description = "Whether or not element should be displayed when you have a gui open.")
     var showUnderGui: Boolean = false
 
     fun preload(): Element {
@@ -96,40 +96,38 @@ abstract class Element : ConfigProcessor {
         if (save) EvergreenHUD.elementManager.elementConfig.save()
     }
 
-    override var conf: ConfigObject
+    override var conf: Config
         get() {
-            var config = ConfigFactory.empty()
-                .withValue("x", position.scaledX.asConfig())
-                .withValue("y", position.scaledY.asConfig())
-                .withValue("scale", position.scale.asConfig())
-                .root()
+            val config = Config {
+                this["x"] = position.scaledX
+                this["y"] = position.scaledY
+                this["scale"] = position.scale
+            }
 
-            var settingsData = ConfigFactory.empty().root()
+            var settingsData = Config()
             for (setting in settings) {
                 if (!setting.shouldSave) continue
                 settingsData = addSettingToConfig(setting, settingsData)
             }
-            config = config.withValue("settings", settingsData)
 
+            config["settings"] = settingsData
             return config
         }
-        set(json) {
-            position.scaledX = json.getOrDefault("x", position.scaledX.asConfig()).float()
-            position.scaledY = json.getOrDefault("y", position.scaledY.asConfig()).float()
-            position.scale = json.getOrDefault("scale", position.scale.asConfig()).float()
+        set(value) {
+            position.scaledX = value.getOrNull("x") ?: position.scaledX
+            position.scaledY = value.getOrNull("y") ?: position.scaledY
+            position.scale = value.getOrNull("scale") ?: position.scale
 
-            val settingsData = json.getOrDefault("settings", ConfigFactory.empty().root()).obj()
+            val settingsData = value.getOrNull("settings") ?: Config()
             for (setting in settings) {
-                var categoryData = settingsData
-                for (categoryName in setting.category)
-                    categoryData = categoryData.getOrDefault(categoryName, ConfigFactory.empty().root()).obj()
-
-                setSettingFromConfig(categoryData, setting)
+                var category: Config = settingsData[setting.category]
+                if (setting.subcategory != "") category = value[setting.subcategory]
+                setSettingFromConfig(category, setting)
             }
         }
 
     companion object {
-        val UTILITY_SHARER = ElementUtilitySharer()
+        val utilities = ElementUtilitySharer()
     }
 
 }

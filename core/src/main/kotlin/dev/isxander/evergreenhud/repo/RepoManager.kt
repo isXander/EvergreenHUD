@@ -17,38 +17,20 @@
 
 package dev.isxander.evergreenhud.repo
 
-import com.typesafe.config.ConfigFactory
-import dev.isxander.evergreenhud.EvergreenInfo
-import dev.isxander.evergreenhud.utils.asConfig
-import dev.isxander.evergreenhud.utils.getRemoteString
-import dev.isxander.evergreenhud.utils.int
-import java.lang.Exception
+import com.asarkar.semver.SemVer
+import com.uchuhimo.konf.Config
 
 object RepoManager {
 
     private const val jsonUrl = "https://dl.isxander.dev/mods/evergreenhud/info.json"
 
     fun getResponse(): RepoResponse {
-        val out = try { getRemoteString(jsonUrl) }
-        catch (e: Exception) { return RepoResponse(outdated = false, blacklisted = false) }
+        val data = Config { addSpec(ResponseSpec) }
+            .from.json.url(jsonUrl)
 
-        val data = ConfigFactory.parseString(out)
-
-        val blacklisted = data.getStringList("blacklisted").contains(EvergreenInfo.REVISION)
-
-        val latestJson = data.getObject("latest")
-        val major = latestJson.getOrDefault("major", 1.asConfig()).int()
-        val minor = latestJson.getOrDefault("minor", 0.asConfig()).int()
-        val patch = latestJson.getOrDefault("patch", 0.asConfig()).int()
-        val prerelease = latestJson.getOrDefault("patch", (-1).asConfig()).int()
-
-        val outdated = (EvergreenInfo.VERSION_MAJOR < major
-                || EvergreenInfo.VERSION_MINOR < minor
-                || EvergreenInfo.VERSION_PATCH < patch
-                || (EvergreenInfo.VERSION_PRERELEASE ?: -1) < prerelease)
-        return RepoResponse(outdated, blacklisted)
+        return RepoResponse(SemVer.parse(data[ResponseSpec.latest]), data[ResponseSpec.blacklisted])
     }
 
 }
 
-data class RepoResponse(val outdated: Boolean, val blacklisted: Boolean)
+data class RepoResponse(val latest: SemVer, val blacklisted: List<String>)

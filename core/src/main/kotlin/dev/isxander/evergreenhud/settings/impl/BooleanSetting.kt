@@ -26,11 +26,12 @@ import kotlin.reflect.KProperty1
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 @Retention(AnnotationRetention.RUNTIME)
 @MustBeDocumented
-annotation class BooleanSetting(val name: String, val category: Array<String>, val description: String, val save: Boolean = true)
+annotation class BooleanSetting(val name: String, val category: String, val subcategory: String = "", val description: String, val save: Boolean = true)
 
 class BooleanSettingWrapped(annotation: BooleanSetting, provider: IValueProvider<Boolean>) : Setting<Boolean, BooleanSetting>(annotation, provider, DataType.BOOLEAN) {
     override val name: String = annotation.name
-    override val category: Array<String> = annotation.category
+    override val category: String = annotation.category
+    override val subcategory: String = annotation.subcategory
     override val description: String = annotation.description
     override val shouldSave: Boolean = annotation.save
 

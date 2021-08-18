@@ -28,7 +28,7 @@ import kotlin.math.max
 
 abstract class SimpleTextElement : TextElement() {
 
-    @OptionSetting(name = "Title Location", category = ["Text"], description = "Where to display the title.")
+    @OptionSetting(name = "Title Location", category = "Text", description = "Where to display the title.")
     var titleLocation = TitleLocation.BEGINNING
 
     var cachedDisplayString: String = "Calculating..."

@@ -25,11 +25,12 @@ import kotlin.reflect.KProperty1
 
 @Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY)
 @MustBeDocumented
-annotation class FloatSetting(val name: String, val category: Array<String>, val description: String, val min: Float, val max: Float, val suffix: String = "", val save: Boolean = true)
+annotation class FloatSetting(val name: String, val category: String, val subcategory: String = "", val description: String, val min: Float, val max: Float, val suffix: String = "", val save: Boolean = true)
 
 class FloatSettingWrapped(annotation: FloatSetting, provider: IValueProvider<Float>) : Setting<Float, FloatSetting>(annotation, provider, DataType.FLOAT) {
     override val name: String = annotation.name
-    override val category: Array<String> = annotation.category
+    override val category: String = annotation.category
+    override val subcategory: String = annotation.subcategory
     override val description: String = annotation.description
     override val shouldSave: Boolean = annotation.save
 

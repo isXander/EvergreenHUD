@@ -38,88 +38,88 @@ import kotlin.reflect.full.primaryConstructor
 @ElementMeta(id = "POTIONS", name = "PotionHUD", category = "Player", description = "Display potions.")
 class ElementPotionHUD : BackgroundElement() {
 
-    @BooleanSetting(name = "Visible", category = ["Title"], description = "If the title should be rendered.")
+    @BooleanSetting(name = "Visible", category = "Title", description = "If the title should be rendered.")
     var titleVisible = true
 
-    @ColorSetting(name = "Color", category = ["Title"], description = "Color of the name of the potion effect.")
+    @ColorSetting(name = "Color", category = "Title", description = "Color of the name of the potion effect.")
     var titleColor = Color(255, 255, 255)
 
-    @OptionSetting(name = "Style", category = ["Title"], description = "In what style should the text be rendered.")
+    @OptionSetting(name = "Style", category = "Title", description = "In what style should the text be rendered.")
     var titleStyle = TextElement.TextStyle.SHADOW
 
-    @BooleanSetting(name = "Chroma", category = ["Title"], description = "Makes the text rainbow barf.")
+    @BooleanSetting(name = "Chroma", category = "Title", description = "Makes the text rainbow barf.")
     var titleChroma = false
 
-    @FloatSetting(name = "Chroma Speed", category = ["Title"], description = "How fast should the chroma wave be?", min = 500f, max = 10000f)
+    @FloatSetting(name = "Chroma Speed", category = "Title", description = "How fast should the chroma wave be?", min = 500f, max = 10000f)
     val titleChromaSpeed = settingAdapter(2000f) {
         depends { titleChroma }
     }
 
-    @BooleanSetting(name = "Bold", category = ["Title"], description = "If the title should be bold.")
+    @BooleanSetting(name = "Bold", category = "Title", description = "If the title should be bold.")
     var titleBold = true
 
-    @BooleanSetting(name = "Underlined", category = ["Title"], description = "If the title should be underlined.")
+    @BooleanSetting(name = "Underlined", category = "Title", description = "If the title should be underlined.")
     var titleUnderlined = false
 
-    @BooleanSetting(name = "Italic", category = ["Title"], description = "If the title should be slanted.")
+    @BooleanSetting(name = "Italic", category = "Title", description = "If the title should be slanted.")
     var titleItalic = false
 
-    @BooleanSetting(name = "Show Amplifier", category = ["Title"], description = "Show the amplifier of the potion effect.")
+    @BooleanSetting(name = "Show Amplifier", category = "Title", description = "Show the amplifier of the potion effect.")
     var amplifier = true
 
-    @OptionSetting(name = "Amplifier Style", category = ["Title"], description = "The style of amplifier to use.")
+    @OptionSetting(name = "Amplifier Style", category = "Title", description = "The style of amplifier to use.")
     var amplifierStyle = AmplifierText.ARABIC
 
-    @BooleanSetting(name = "Show LVL 1", category = ["Title"], description = "Show the amplifier if it is level 1.")
+    @BooleanSetting(name = "Show LVL 1", category = "Title", description = "Show the amplifier if it is level 1.")
     var showLvl1 = true
 
 
-    @BooleanSetting(name = "Visible", category = ["Duration"], description = "If the duration should be rendered.")
+    @BooleanSetting(name = "Visible", category = "Duration", description = "If the duration should be rendered.")
     var durationVisible = true
 
-    @ColorSetting(name = "Color", category = ["Duration"], description = "Color of the duration.")
+    @ColorSetting(name = "Color", category = "Duration", description = "Color of the duration.")
     var durationColor = Color(255, 255, 180)
 
-    @OptionSetting(name = "Style", category = ["Duration"], description = "In what style should the text be rendered.")
+    @OptionSetting(name = "Style", category = "Duration", description = "In what style should the text be rendered.")
     var durationStyle = TextElement.TextStyle.SHADOW
 
-    @BooleanSetting(name = "Chroma", category = ["Duration"], description = "Makes the text rainbow barf.")
+    @BooleanSetting(name = "Chroma", category = "Duration", description = "Makes the text rainbow barf.")
     var durationChroma = false
 
-    @FloatSetting(name = "Chroma Speed", category = ["Duration"], description = "How fast should the chroma wave be?", min = 500f, max = 10000f)
+    @FloatSetting(name = "Chroma Speed", category = "Duration", description = "How fast should the chroma wave be?", min = 500f, max = 10000f)
     val durationChromaSpeed = settingAdapter(2000f) {
         depends { durationChroma }
     }
 
-    @BooleanSetting(name = "Bold", category = ["Duration"], description = "If the duration should be bold.")
+    @BooleanSetting(name = "Bold", category = "Duration", description = "If the duration should be bold.")
     var durationBold = true
 
-    @BooleanSetting(name = "Underlined", category = ["Duration"], description = "If the duration should be underlined.")
+    @BooleanSetting(name = "Underlined", category = "Duration", description = "If the duration should be underlined.")
     var durationUnderlined = false
 
-    @BooleanSetting(name = "Italic", category = ["Duration"], description = "If the duration should be slanted.")
+    @BooleanSetting(name = "Italic", category = "Duration", description = "If the duration should be slanted.")
     var durationItalic = false
 
-    @StringSetting(name = "Permanent Text", category = ["Duration"], description = "The text to display when the effect is permanent.")
+    @StringSetting(name = "Permanent Text", category = "Duration", description = "The text to display when the effect is permanent.")
     var permanentText = "**:**"
 
-    @IntSetting(name = "Blinking Time", category = ["Duration"], description = "How many seconds remaining before the duration starts to flash.", min = 0, max = 30, suffix = " secs")
+    @IntSetting(name = "Blinking Time", category = "Duration", description = "How many seconds remaining before the duration starts to flash.", min = 0, max = 30, suffix = " secs")
     var blinkingTime = 5
 
-    @IntSetting(name = "Blinking Speed", category = ["Duration"], description = "How fast the time blinks.", min = 10, max = 45)
+    @IntSetting(name = "Blinking Speed", category = "Duration", description = "How fast the time blinks.", min = 10, max = 45)
     var blinkingSpeed = 30
 
 
-    @BooleanSetting(name = "Show Icon", category = ["Miscellaneous"], description = "Show the potion icon.")
+    @BooleanSetting(name = "Show Icon", category = "Miscellaneous", description = "Show the potion icon.")
     var showIcon = true
 
-    @OptionSetting(name = "Sort", category = ["Miscellaneous"], description = "How the potion effects should be sorted.")
+    @OptionSetting(name = "Sort", category = "Miscellaneous", description = "How the potion effects should be sorted.")
     var sort = PotionSorting.DURATION
 
-    @BooleanSetting(name = "Invert Sort", category = ["Miscellaneous"], description = "Inverts the sorting method.")
+    @BooleanSetting(name = "Invert Sort", category = "Miscellaneous", description = "Inverts the sorting method.")
     var invertSort = false
 
-    @IntSetting(name = "Vertical Spacing", category = ["Miscellaneous"], description = "How far apart each potion is.", min = 1, max = 9, suffix = " px")
+    @IntSetting(name = "Vertical Spacing", category = "Miscellaneous", description = "How far apart each potion is.", min = 1, max = 9, suffix = " px")
     var verticalSpacing = 2
 
     val effectToggles = hashMapOf<Int, SettingAdapter<Boolean>>()

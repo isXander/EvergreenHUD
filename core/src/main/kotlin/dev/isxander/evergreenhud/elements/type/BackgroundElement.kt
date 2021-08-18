@@ -30,7 +30,7 @@ import java.awt.Color
 
 abstract class BackgroundElement : Element() {
 
-    @BooleanSetting(name = "Enabled", category = ["Background"], description = "If the background is rendered.")
+    @BooleanSetting(name = "Enabled", category = "Background", description = "If the background is rendered.")
     val backgroundEnabled = settingAdapter(true) {
         set { enabled ->
             val new = if (enabled) Color(backgroundColor.get().red, backgroundColor.get().green, backgroundColor.get().blue, 100)
@@ -41,7 +41,7 @@ abstract class BackgroundElement : Element() {
         }
     }
 
-    @ColorSetting(name = "Color", category = ["Background"], description = "The color of the background.")
+    @ColorSetting(name = "Color", category = "Background", description = "The color of the background.")
     val backgroundColor: SettingAdapter<Color> = settingAdapter(Color(0, 0, 0, 100)) {
         set {
             val enabled = it.alpha != 0
@@ -50,7 +50,7 @@ abstract class BackgroundElement : Element() {
         }
     }
 
-    @BooleanSetting(name = "Enabled", category = ["Outline"], description = "If the background is rendered.")
+    @BooleanSetting(name = "Enabled", category = "Outline", description = "If the background is rendered.")
     val outlineEnabled: SettingAdapter<Boolean> = settingAdapter(false) {
         set { enabled ->
             val new = if (enabled) Color(outlineColor.get().red, outlineColor.get().green, outlineColor.get().blue, 255)
@@ -61,7 +61,7 @@ abstract class BackgroundElement : Element() {
         }
     }
 
-    @ColorSetting(name = "Color", category = ["Outline"], description = "The color of the outline.")
+    @ColorSetting(name = "Color", category = "Outline", description = "The color of the outline.")
     val outlineColor: SettingAdapter<Color> = settingAdapter(Color(0, 0, 0, 0)) {
         set {
             val enabled = it.alpha != 0
@@ -70,19 +70,19 @@ abstract class BackgroundElement : Element() {
         }
     }
 
-    @FloatSetting(name = "Thickness", category = ["Outline"], description = "How thick the outline is.", min = 0.5f, 8f)
+    @FloatSetting(name = "Thickness", category = "Outline", description = "How thick the outline is.", min = 0.5f, max = 8f)
     var outlineThickness = 1f
 
-    @FloatSetting(name = "Padding (Left)", category = ["Background", "Padding"], description = "How far the background extends to the left past the content.", min = 0f, max = 12f, suffix = " px")
+    @FloatSetting(name = "Padding (Left)", category = "Background", subcategory = "Padding", description = "How far the background extends to the left past the content.", min = 0f, max = 12f, suffix = " px")
     var paddingLeft = 4f
-    @FloatSetting(name = "Padding (Right)", category = ["Background", "Padding"], description = "How far the background extends to the right past the content.", min = 0f, max = 12f, suffix = " px")
+    @FloatSetting(name = "Padding (Right)", category = "Background", subcategory = "Padding", description = "How far the background extends to the right past the content.", min = 0f, max = 12f, suffix = " px")
     var paddingRight = 4f
-    @FloatSetting(name = "Padding (Top)", category = ["Background", "Padding"], description = "How far the background extends to the top past the content.", min = 0f, max = 12f, suffix = " px")
+    @FloatSetting(name = "Padding (Top)", category = "Background", subcategory = "Padding", description = "How far the background extends to the top past the content.", min = 0f, max = 12f, suffix = " px")
     var paddingTop = 4f
-    @FloatSetting(name = "Padding (Bottom)", category = ["Background", "Padding"], description = "How far the background extends to the bottom past the content.", min = 0f, max = 12f, suffix = " px")
+    @FloatSetting(name = "Padding (Bottom)", category = "Background", subcategory = "Padding", description = "How far the background extends to the bottom past the content.", min = 0f, max = 12f, suffix = " px")
     var paddingBottom = 4f
 
-    @FloatSetting(name = "Corner Radius", category = ["Background"], description = "How curvy the edges of the background is.", min = 0f, max = 6f)
+    @FloatSetting(name = "Corner Radius", category = "Background", description = "How curvy the edges of the background is.", min = 0f, max = 6f)
     var cornerRadius = 0f
 
     override fun render(deltaTicks: Float, renderOrigin: RenderOrigin) {

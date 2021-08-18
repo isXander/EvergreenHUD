@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.config
 
-import com.typesafe.config.ConfigObject
+import com.uchuhimo.konf.Config
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
@@ -29,36 +29,33 @@ import dev.isxander.evergreenhud.utils.*
 import java.awt.Color
 import java.lang.ClassCastException
 import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.KProperty1
 import kotlin.reflect.full.*
 import kotlin.reflect.jvm.isAccessible
 
 interface ConfigProcessor {
 
-    var conf: ConfigObject
+    var conf: Config
 
-    fun addSettingToConfig(setting: Setting<*, *>, data: ConfigObject): ConfigObject {
-        val category = setting.category
+    fun addSettingToConfig(setting: Setting<*, *>, data: Config): Config {
+        var value: Config = data[setting.category]
+        if (setting.subcategory != "") value = value[setting.subcategory]
 
-        var obj = data.toConfig()
-        val path = category.joinToString(separator = ".", postfix = ".${setting.nameSerializedKey}")
-
-        obj = when (setting.dataType) {
-            DataType.STRING -> obj.withValue(path, (setting.serializedValue as String).asConfig())
-            DataType.BOOLEAN -> obj.withValue(path, (setting.serializedValue as Boolean).asConfig())
-            DataType.FLOAT -> obj.withValue(path, (setting.serializedValue as Float).asConfig())
-            DataType.INT -> obj.withValue(path, (setting.serializedValue as Int).asConfig())
+        value[setting.nameSerializedKey] = when (setting.dataType) {
+            DataType.STRING -> setting.serializedValue as String
+            DataType.BOOLEAN -> setting.serializedValue as Boolean
+            DataType.FLOAT -> setting.serializedValue as Float
+            DataType.INT -> setting.serializedValue as Int
         }
 
-        return obj.root()
+        return data
     }
 
-    fun setSettingFromConfig(data: ConfigObject, setting: Setting<*, *>) {
+    fun setSettingFromConfig(data: Config, setting: Setting<*, *>) {
         when (setting.dataType) {
-            DataType.BOOLEAN -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Boolean).asConfig()).bool()
-            DataType.FLOAT -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Float).asConfig()).float()
-            DataType.INT -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as Int).asConfig()).int()
-            DataType.STRING -> setting.serializedValue = data.getOrDefault(setting.nameSerializedKey, (setting.defaultSerializedValue as String).asConfig()).string()
+            DataType.BOOLEAN -> setting.serializedValue = data.getOrNull(setting.nameSerializedKey) ?: setting.defaultSerializedValue as Boolean
+            DataType.FLOAT -> setting.serializedValue = data.getOrNull(setting.nameSerializedKey) ?: setting.defaultSerializedValue as Float
+            DataType.INT -> setting.serializedValue = data.getOrNull(setting.nameSerializedKey) ?: setting.defaultSerializedValue as Int
+            DataType.STRING -> setting.serializedValue = data.getOrNull(setting.nameSerializedKey) ?: setting.defaultSerializedValue as String
         }
     }
 
@@ -158,21 +155,6 @@ interface ConfigProcessor {
                     LOGGER.err("Class: ${declaredClass.qualifiedName ?: "UNKNOWN"}")
                     LOGGER.err("---------------------------")
                 }
-
-
-                // FIXME: 18/07/2021 ahhhh
-//                for ((annotationClass, wrapped) in Setting.registeredSettings) {
-//                    LOGGER.info("    ${annotation.name}, ${wrapped.name}")
-//                    property.isAccessible = true
-//
-//                    if (property.hasAnnotation<annotationClass>())
-//                    if (fieldAnnotation != null) {
-//                        LOGGER.info("    Success!")
-//                        settingProcessor.invoke(wrapped.getConstructor(annotation, Any::class.java, Field::class.java)
-//                            .newInstance(fieldAnnotation, instance, field))
-//                        break
-//                    }
-//                }
             }
         }
     }

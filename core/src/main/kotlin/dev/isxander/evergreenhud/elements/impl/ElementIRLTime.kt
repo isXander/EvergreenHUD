@@ -26,10 +26,10 @@ import java.util.*
 @ElementMeta(id = "IRL_TIME", name = "IRL Time", description = "Show the current time in real life.", category = "IRL")
 class ElementIRLTime : SimpleTextElement() {
 
-    @BooleanSetting(name = "Time", category = ["Time"], description = "If the clock will be 12 hour of 24 hour.")
+    @BooleanSetting(name = "Time", category = "Time", description = "If the clock will be 12 hour of 24 hour.")
     var twelveHour = false
 
-    @BooleanSetting(name = "Seconds", category = ["Time"], description = "Show the seconds.")
+    @BooleanSetting(name = "Seconds", category = "Time", description = "Show the seconds.")
     var seconds = false
 
     override var title: String = "Time"
