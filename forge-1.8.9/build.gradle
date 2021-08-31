@@ -85,8 +85,8 @@ processResources {
 // Forge does not import resources properly.
 task moveResources {
     doLast {
-        ant.move file: "${buildDir}/resources/main",
-                todir: "${buildDir}/classes/java"
+        ant.move file: "${project(":core").buildDir}/resources/main",
+                todir: "${project(":core").buildDir}/classes/java"
     }
 }
 

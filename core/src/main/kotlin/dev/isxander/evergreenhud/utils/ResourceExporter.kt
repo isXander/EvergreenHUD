@@ -5,7 +5,6 @@ import com.uchuhimo.konf.ConfigSpec
 import com.uchuhimo.konf.source.toml
 import com.uchuhimo.konf.source.toml.toToml
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.EvergreenInfo
 import dev.isxander.evergreenhud.compatibility.universal.LOGGER
 import dev.isxander.evergreenhud.compatibility.universal.MC
 import org.reflections.Reflections
@@ -28,7 +27,7 @@ fun exportResources() {
     val metadata = Config { addSpec(ResourceSpec) }
         .from.toml.file(metadataFile, optional = true)
 
-    if (MC.devEnv || !metadataFile.exists() || (metadata.getOrNull(ResourceSpec.version) ?: "1.0") != EvergreenInfo.VERSION_FULL.toString()) {
+    if (MC.devEnv || !metadataFile.exists() || (metadata.getOrNull(ResourceSpec.version) ?: "1.0") != EvergreenHUD.VERSION_STR) {
         LOGGER.info("Exporting resources...")
 
         val reflections = Reflections("evergreenhud.export", ResourcesScanner())
@@ -59,12 +58,12 @@ fun exportResources() {
         }
 
         // FIXME: 18/08/2021 version saves under resource object
-        metadata[ResourceSpec.version] = EvergreenInfo.VERSION_FULL.toString()
+        metadata[ResourceSpec.version] = EvergreenHUD.VERSION_STR
         metadataFile.parentFile.mkdirs()
         metadata.toToml.toFile(metadataFile)
     }
 }
 
 object ResourceSpec : ConfigSpec() {
-    val version by optional<String>(EvergreenInfo.VERSION_FULL.toString())
+val version by optional<String>(EvergreenHUD.VERSION_STR)
 }

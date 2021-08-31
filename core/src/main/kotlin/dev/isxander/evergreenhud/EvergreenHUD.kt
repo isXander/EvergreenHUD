@@ -17,10 +17,7 @@
 
 package dev.isxander.evergreenhud
 
-import com.uchuhimo.konf.Config
-import com.uchuhimo.konf.ConfigSpec
-import com.uchuhimo.konf.source.toml
-import com.uchuhimo.konf.source.toml.toToml
+import com.asarkar.semver.SemVer
 import dev.isxander.evergreenhud.compatibility.universal.*
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.compatibility.universal.impl.registerCommand
@@ -29,22 +26,27 @@ import dev.isxander.evergreenhud.utils.Keyboard
 import dev.isxander.evergreenhud.config.profile.ProfileManager
 import dev.isxander.evergreenhud.elements.impl.ElementFps
 import dev.isxander.evergreenhud.gui.MainGui
+import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
 import gg.essential.universal.UDesktop
 import me.kbrewster.eventbus.EventBus
 import me.kbrewster.eventbus.eventbus
 import me.kbrewster.eventbus.invokers.ReflectionInvoker
-import org.reflections.Reflections
-import org.reflections.scanners.ResourcesScanner
 import java.awt.Color
 import java.io.File
 import java.net.URI
-import java.nio.charset.StandardCharsets
-import java.nio.file.Files
-import java.nio.file.StandardCopyOption
 
 object EvergreenHUD {
+    const val NAME = "__GRADLE_NAME__"
+    const val ID = "__GRADLE_ID__"
+    const val REVISION = "__GRADLE_REVISION__"
+    const val VERSION_STR = "__GRADLE_VERSION__"
+    val VERSION = SemVer.parse(VERSION_STR)
+    val RELEASE_CHANNEL: ReleaseChannel
+        get() =
+            if (VERSION.hasPreReleaseVersion()) ReleaseChannel.RELEASE
+            else ReleaseChannel.BETA
 
     val dataDir: File = File(MC.dataDir, "evergreenhud")
     val resourceDir: File = File(dataDir, "resources/default")
@@ -67,7 +69,7 @@ object EvergreenHUD {
      * @author isXander
      */
     fun init() {
-        LOGGER.info("Starting EvergreenHUD ${EvergreenInfo.VERSION_FULL} (${MC_VERSION.display})")
+        LOGGER.info("Starting EvergreenHUD $VERSION_STR (${MC_VERSION.display})")
 
         dataDir.mkdirs()
 
@@ -91,14 +93,14 @@ object EvergreenHUD {
                 runAsync {
                     val response = RepoManager.getResponse()
 
-                    if (elementManager.checkForUpdates && response.latest < EvergreenInfo.VERSION_FULL) {
+                    if (elementManager.checkForUpdates && response.latest < VERSION) {
                         LOGGER.info("Found update. Pushing notification to user.")
                         Notifications.push("EvergreenHUD", "EvergreenHUD is out of date. Click here to download the new update.") {
                             UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
                         }
                     }
 
-                    if (elementManager.checkForSafety && EvergreenInfo.REVISION in response.blacklisted) {
+                    if (elementManager.checkForSafety && REVISION in response.blacklisted) {
                         LOGGER.info("Mod version has been marked as dangerous. Pushing notification to user.")
                         Notifications.push("EvergreenHUD", "This version has been remotely marked as dangerous. Please update here.", textColor = Color.red) {
                             UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))

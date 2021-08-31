@@ -19,7 +19,6 @@ package dev.isxander.evergreenhud.compatibility.forge10809
 
 import club.chachy.event.on
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.EvergreenInfo
 import dev.isxander.evergreenhud.compatibility.forge10809.events.ServerDamageEntityEventManager
 import dev.isxander.evergreenhud.compatibility.forge10809.impl.*
 import dev.isxander.evergreenhud.compatibility.universal.*
@@ -43,7 +42,7 @@ import java.lang.reflect.Method
 
 val mc: Minecraft = Minecraft.getMinecraft()
 
-@Mod(modid = EvergreenInfo.ID, name = "EvergreenHUD", version = EvergreenInfo.REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", modLanguageAdapter = "dev.isxander.evergreenhud.compatibility.forge10809.KotlinLanguageAdapter")
+@Mod(modid = EvergreenHUD.ID, name = "EvergreenHUD", version = EvergreenHUD.REVISION, clientSideOnly = true, acceptedMinecraftVersions = "[1.8.9]", modLanguageAdapter = "dev.isxander.evergreenhud.compatibility.forge10809.KotlinLanguageAdapter")
 object Main {
 
     private var scaledRes: ScaledResolution = ScaledResolution(mc)

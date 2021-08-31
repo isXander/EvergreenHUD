@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.utils
 
-import dev.isxander.evergreenhud.EvergreenInfo
+import dev.isxander.evergreenhud.EvergreenHUD
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -28,7 +28,7 @@ import java.io.IOException
 fun setupRequest(url: String): Request.Builder {
     return Request.Builder()
         .url(url)
-        .addHeader("User-Agent", "EvergreenHUD/${EvergreenInfo.VERSION_FULL}")
+        .addHeader("User-Agent", "EvergreenHUD/${EvergreenHUD.VERSION}")
 }
 
 fun getResponse(url: String): Response? {

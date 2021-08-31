@@ -1,21 +1,15 @@
-apply plugin: 'java-library'
+plugins {
+    id("java-library")
+    id("net.kyori.blossom") version "1.3.0"
+}
 
-buildConfig {
-    className('EvergreenInfo')
-    packageName('dev.isxander.evergreenhud')
-    useKotlinOutput()
+blossom {
+    def evergreenClass = "src/main/kotlin/dev/isxander/evergreenhud/EvergreenHUD.kt"
 
-    buildConfigField('String', 'NAME', "\"${mod_name}\"")
-    buildConfigField('String', 'ID', "\"${mod_id}\"")
-
-    buildConfigField('Int', 'VERSION_MAJOR', version_major)
-    buildConfigField('Int', 'VERSION_MINOR', version_minor)
-    buildConfigField('Int', 'VERSION_PATCH', version_patch)
-    buildConfigField('Int?', 'VERSION_PRERELEASE', (prerelease ? version_prerelease : 'null'))
-    buildConfigField('com.asarkar.semver.SemVer', 'VERSION_FULL', "SemVer.parse(\"${project.version}\")")
-    buildConfigField('String', 'REVISION', "\"${project.gitHash == null ? '???????' : project.gitHash}\"")
-
-    buildConfigField('dev.isxander.evergreenhud.repo.ReleaseChannel', 'CHANNEL', "ReleaseChannel.${!version_prerelease.trim().isEmpty() ? 'BETA' : 'RELEASE'}")
+    replaceToken("__GRADLE_NAME__", mod_name, evergreenClass)
+    replaceToken("__GRADLE_ID__", mod_id, evergreenClass)
+    replaceToken("__GRADLE_REVISION__", project.gitHash == null ? '???????' : project.gitHash, evergreenClass)
+    replaceToken("__GRADLE_VERSION__", project.version, evergreenClass)
 }
 
 repositories {
