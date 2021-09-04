@@ -1,3 +1,5 @@
+import com.modrinth.minotaur.TaskModrinthUpload
+
 buildscript {
     repositories {
         maven { url = 'https://maven.minecraftforge.net' }
@@ -41,14 +43,6 @@ dependencies {
 
     // not sure why but gradle ass
     embed 'club.chachy.kotlin-forge-api:forge-event-dsl:0.3.1'
-    embed ('com.github.KevinPriv:KEventBus:86cf2e023e') {
-        exclude module: 'kotlin-stdlib-jdk8'
-    }
-    embed 'org.reflections:reflections:0.9.12'
-    embed ('com.squareup.okhttp3:okhttp:4.9.1') {
-        exclude module: 'kotlin-stdlib'
-        exclude module: 'kotlin-stdlib-common'
-    }
 
     implementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
@@ -82,16 +76,16 @@ processResources {
     }
 }
 
-// Forge does not import resources properly.
-task moveResources {
-    doLast {
-        ant.move file: "${project(":core").buildDir}/resources/main",
-                todir: "${project(":core").buildDir}/classes/java"
-    }
-}
-
-tasks.moveResources.dependsOn processResources
-tasks.classes.dependsOn moveResources
+//// Forge does not import resources properly.
+//task moveResources {
+//    doLast {
+//        ant.move file: "${project(":core").buildDir}/resources/main",
+//                todir: "${project(":core").buildDir}/classes/java"
+//    }
+//}
+//
+//tasks.moveResources.dependsOn processResources
+//tasks.classes.dependsOn moveResources
 
 reobf {
     shadowJar {
@@ -105,4 +99,9 @@ compileKotlin {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+}
+
+tasks.withType(TaskModrinthUpload) {
+    addGameVersion('1.8.9')
+    addLoader('forge')
 }

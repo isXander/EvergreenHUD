@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.WORLD
+import dev.isxander.evergreenhud.api.world
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 
@@ -27,8 +27,8 @@ class ElementDay : SimpleTextElement() {
     override var title: String = "Day"
 
     override fun calculateValue(): String {
-        if (WORLD.isNull) return "0"
-        return (WORLD.time / 24000L).toString()
+        if (world.isNull) return "0"
+        return (world.time / 24000L).toString()
     }
 
 }

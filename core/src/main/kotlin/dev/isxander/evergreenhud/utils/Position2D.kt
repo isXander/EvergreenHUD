@@ -17,20 +17,20 @@
 
 package dev.isxander.evergreenhud.utils
 
-import dev.isxander.evergreenhud.compatibility.universal.RESOLUTION
+import dev.isxander.evergreenhud.api.resolution
 
 class Position2D private constructor(var scaledX: Float, var scaledY: Float, var scale: Float) {
 
     var rawX: Float
-        get() = RESOLUTION.scaledWidth.toFloat() * scaledX
-        set(x) { scaledX = x * RESOLUTION.scaledWidth }
+        get() = resolution.scaledWidth.toFloat() * scaledX
+        set(x) { scaledX = x * resolution.scaledWidth }
     var rawY: Float
-        get() = RESOLUTION.scaledHeight.toFloat() * scaledY
-        set(y) { scaledY = y * RESOLUTION.scaledHeight }
+        get() = resolution.scaledHeight.toFloat() * scaledY
+        set(y) { scaledY = y * resolution.scaledHeight }
 
     companion object {
         fun rawPositioning(x: Float, y: Float, scale: Float = 1f): Position2D =
-            Position2D(x * RESOLUTION.scaledWidth, y * RESOLUTION.scaledHeight, scale)
+            Position2D(x * resolution.scaledWidth, y * resolution.scaledHeight, scale)
 
         fun scaledPositioning(x: Float, y: Float, scale: Float = 1f): Position2D =
             Position2D(x, y, scale)

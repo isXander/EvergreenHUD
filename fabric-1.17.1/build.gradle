@@ -1,13 +1,10 @@
+import com.modrinth.minotaur.TaskModrinthUpload
+
 plugins {
     id 'fabric-loom' version '0.9-SNAPSHOT'
 }
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
-
-ext.includeMod = { Object... dependencyNotation ->
-    dependencies.modImplementation dependencyNotation
-    dependencies.include dependencyNotation
-}
 
 dependencies {
     embed (project(":core")) {
@@ -19,7 +16,7 @@ dependencies {
         exclude module: 'yarn'
     }
 
-    includeMod ('gg.essential:elementa-1.17-fabric:359+next') {
+    include modImplementation ('gg.essential:elementa-1.17-fabric:359+next') {
         exclude module: 'fabric-loader'
     }
 
@@ -28,7 +25,7 @@ dependencies {
 
     modImplementation 'net.fabricmc:fabric-loader:0.11.6'
     modImplementation 'net.fabricmc.fabric-api:fabric-api:0.37.0+1.17'
-    modImplementation 'net.fabricmc:fabric-language-kotlin:1.6.2+kotlin.1.5.20'
+    modImplementation 'net.fabricmc:fabric-language-kotlin:1.6.4+kotlin.1.5.30'
 }
 
 processResources {
@@ -65,4 +62,11 @@ compileKotlin {
     kotlinOptions {
         jvmTarget = '16'
     }
+}
+
+tasks.withType(TaskModrinthUpload) {
+    uploadFile = remapJar
+
+    addGameVersion('1.17.1')
+    addLoader('fabric')
 }

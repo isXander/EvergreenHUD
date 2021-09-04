@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.MC
+import dev.isxander.evergreenhud.api.mc
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.settings.impl.BooleanSetting
@@ -32,9 +32,9 @@ class ElementDirection : SimpleTextElement() {
     override var title = "Direction"
 
     override fun calculateValue(): String {
-        if (MC.player.equals(null)) return "Unknown"
+        if (mc.player.equals(null)) return "Unknown"
 
-        val facing = Facing.parse(MC.player.yaw)
+        val facing = Facing.parse(mc.player.yaw)
         return if (abbreviated) facing.abbreviated else facing.full
     }
 }

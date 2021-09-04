@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.MC
+import dev.isxander.evergreenhud.api.mc
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.MultiLineTextElement
 import dev.isxander.evergreenhud.settings.impl.BooleanSetting
@@ -58,7 +58,7 @@ class ElementCoordinates : MultiLineTextElement() {
 
     override fun calculateValue(): ArrayList<String> {
         val lines = arrayListOf<String>()
-        if (MC.player.equals(null)) {
+        if (mc.player.equals(null)) {
             lines.add("Unknown")
             return lines
         }
@@ -69,10 +69,10 @@ class ElementCoordinates : MultiLineTextElement() {
         val df = DecimalFormat(formatBuilder.toString())
 
         val sb = StringBuilder()
-        val facing = Facing.parseExact(MC.player.yaw)
+        val facing = Facing.parseExact(mc.player.yaw)
         if (showX) {
             sb.append(if (showAxis) "X: " else "")
-            sb.append(df.format(MC.player.x))
+            sb.append(df.format(mc.player.x))
             if (showDirection) {
                 sb.append(" (")
 
@@ -93,7 +93,7 @@ class ElementCoordinates : MultiLineTextElement() {
         }
         if (showY) {
             sb.append(if (showAxis) "Y: " else "")
-            sb.append(df.format(MC.player.y))
+            sb.append(df.format(mc.player.y))
             if (displayMode == DisplayMode.VERTICAL) {
                 lines.add(sb.toString())
                 sb.setLength(0)
@@ -103,7 +103,7 @@ class ElementCoordinates : MultiLineTextElement() {
         }
         if (showZ) {
             sb.append(if (showAxis) "Z: " else "")
-            sb.append(df.format(MC.player.z))
+            sb.append(df.format(mc.player.z))
             if (showDirection) {
                 sb.append(" (")
 

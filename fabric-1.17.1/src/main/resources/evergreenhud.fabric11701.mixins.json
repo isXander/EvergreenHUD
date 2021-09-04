@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "dev.isxander.evergreenhud.compatibility.fabric11701.mixins",
+  "package": "dev.isxander.evergreenhud.api.fabric11701.mixins",
   "compatibilityLevel": "JAVA_16",
   "client": [
   ],

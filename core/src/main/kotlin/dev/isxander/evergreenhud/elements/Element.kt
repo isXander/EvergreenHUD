@@ -19,8 +19,8 @@ package dev.isxander.evergreenhud.elements
 
 import com.uchuhimo.konf.Config
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.compatibility.universal.LOGGER
-import dev.isxander.evergreenhud.compatibility.universal.MCVersion
+import dev.isxander.evergreenhud.api.MCVersion
+import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.config.ConfigProcessor
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.settingAdapter
@@ -63,7 +63,7 @@ abstract class Element : ConfigProcessor {
         preinit()
         collectSettings(this, settings::add)
         init()
-        for (setting in settings) LOGGER.info(setting.name)
+        for (setting in settings) logger.info(setting.name)
 
         preloaded = true
         return this

@@ -18,10 +18,10 @@
 package dev.isxander.evergreenhud
 
 import com.asarkar.semver.SemVer
-import dev.isxander.evergreenhud.compatibility.universal.*
+import dev.isxander.evergreenhud.api.*
+import dev.isxander.evergreenhud.api.impl.registerCommand
+import dev.isxander.evergreenhud.api.impl.registerKeybind
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.compatibility.universal.impl.registerCommand
-import dev.isxander.evergreenhud.compatibility.universal.impl.registerKeybind
 import dev.isxander.evergreenhud.utils.Keyboard
 import dev.isxander.evergreenhud.config.profile.ProfileManager
 import dev.isxander.evergreenhud.elements.impl.ElementFps
@@ -48,13 +48,13 @@ object EvergreenHUD {
             if (VERSION.hasPreReleaseVersion()) ReleaseChannel.RELEASE
             else ReleaseChannel.BETA
 
-    val dataDir: File = File(MC.dataDir, "evergreenhud")
+    val dataDir: File = File(mc.dataDir, "evergreenhud")
     val resourceDir: File = File(dataDir, "resources/default")
     val eventBus: EventBus = eventbus {
         invoker { ReflectionInvoker() }
         threadSaftey { true }
         exceptionHandler {
-            LOGGER.err("Error occurred in method while posting event")
+            logger.err("Error occurred in method while posting event")
             it.printStackTrace()
         }
     }
@@ -69,11 +69,10 @@ object EvergreenHUD {
      * @author isXander
      */
     fun init() {
-        LOGGER.info("Starting EvergreenHUD $VERSION_STR (${MC_VERSION.display})")
+        logger.info("Starting EvergreenHUD $VERSION_STR (${mcVersion.display})")
 
         dataDir.mkdirs()
 
-        exportResources()
         profileManager = ProfileManager().apply { load() }
         elementManager = ElementManager().apply {
             mainConfig.load()
@@ -87,21 +86,21 @@ object EvergreenHUD {
             elementConfig.save()
         }
 
-        if (!MC.devEnv) {
+        if (!mc.devEnv) {
             if (elementManager.checkForUpdates || elementManager.checkForSafety) {
-                LOGGER.info("Getting information from API...")
+                logger.info("Getting information from API...")
                 runAsync {
                     val response = RepoManager.getResponse()
 
                     if (elementManager.checkForUpdates && response.latest < VERSION) {
-                        LOGGER.info("Found update. Pushing notification to user.")
+                        logger.info("Found update. Pushing notification to user.")
                         Notifications.push("EvergreenHUD", "EvergreenHUD is out of date. Click here to download the new update.") {
                             UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
                         }
                     }
 
                     if (elementManager.checkForSafety && REVISION in response.blacklisted) {
-                        LOGGER.info("Mod version has been marked as dangerous. Pushing notification to user.")
+                        logger.info("Mod version has been marked as dangerous. Pushing notification to user.")
                         Notifications.push("EvergreenHUD", "This version has been remotely marked as dangerous. Please update here.", textColor = Color.red) {
                             UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
                         }
@@ -109,7 +108,7 @@ object EvergreenHUD {
                 }
             }
         } else {
-            LOGGER.info("Skipping update and blacklisting check due to being in a development environment.")
+            logger.info("Skipping update and blacklisting check due to being in a development environment.")
         }
 
         eventBus.register(this)
@@ -118,7 +117,7 @@ object EvergreenHUD {
             invoke = "evergreenhud"
 
             execute {
-                SCREEN_HANDLER.displayComponentNextTick(MainGui())
+                screenHandler.displayComponentNextTick(MainGui())
             }
         }
 
@@ -127,8 +126,8 @@ object EvergreenHUD {
             name = "Open EvergreenHUD GUI"
             category = "EvergreenHUD"
 
-            execute {
-                SCREEN_HANDLER.displayComponent(MainGui())
+            onDown {
+                screenHandler.displayComponent(MainGui())
             }
         }
         registerKeybind {
@@ -136,12 +135,10 @@ object EvergreenHUD {
             name = "Toggle EvergreenHUD"
             category = "EvergreenHUD"
 
-            execute {
+            onDown {
                 elementManager.enabled = !elementManager.enabled
                 Notifications.push("EvergreenHUD", "Toggled mod.")
             }
         }
     }
-
-
 }

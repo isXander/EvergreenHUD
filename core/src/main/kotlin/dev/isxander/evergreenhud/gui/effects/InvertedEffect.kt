@@ -17,19 +17,19 @@
 
 package dev.isxander.evergreenhud.gui.effects
 
-import dev.isxander.evergreenhud.compatibility.universal.GL
-import dev.isxander.evergreenhud.compatibility.universal.impl.render.UGL
+import dev.isxander.evergreenhud.api.gl
+import dev.isxander.evergreenhud.api.impl.render.UGL
 import gg.essential.elementa.effects.Effect
 import gg.essential.universal.UMatrixStack
 
 class InvertedEffect : Effect() {
 
     override fun beforeDraw(matrixStack: UMatrixStack) {
-        GL.blendFuncSeparate(UGL.GL_ONE_MINUS_DST_COLOR, UGL.GL_ONE_MINUS_SRC_COLOR, 1, 0)
+        gl.blendFuncSeparate(UGL.GL_ONE_MINUS_DST_COLOR, UGL.GL_ONE_MINUS_SRC_COLOR, 1, 0)
     }
 
     override fun beforeChildrenDraw(matrixStack: UMatrixStack) {
-        GL.defaultBlendFunc()
+        gl.defaultBlendFunc()
     }
 
 }

@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.utils
 
-import dev.isxander.evergreenhud.compatibility.universal.FONT_RENDERER
+import dev.isxander.evergreenhud.api.fontRenderer
 import gg.essential.universal.ChatColor
 import java.util.*
 
@@ -159,7 +159,7 @@ fun wrapTextFR(text: String, lineWidth: Int, split: String): String {
         }
 
         // length of next word
-        val wordLength: Int = FONT_RENDERER.width(word)
+        val wordLength: Int = fontRenderer.width(word)
         when {
             lineLength + wordLength <= lineWidth -> { // if the current line length plus this next word is less than the maximum line width
                 // if the condition is met, we can just append the word to the current line as it is small enough

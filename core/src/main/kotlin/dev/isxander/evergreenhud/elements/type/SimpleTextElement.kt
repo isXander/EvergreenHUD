@@ -17,8 +17,8 @@
 
 package dev.isxander.evergreenhud.elements.type
 
-import dev.isxander.evergreenhud.compatibility.universal.FONT_RENDERER
-import dev.isxander.evergreenhud.compatibility.universal.GL
+import dev.isxander.evergreenhud.api.fontRenderer
+import dev.isxander.evergreenhud.api.gl
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.settings.impl.OptionContainer
 import dev.isxander.evergreenhud.settings.impl.OptionSetting
@@ -62,9 +62,9 @@ abstract class SimpleTextElement : TextElement() {
         }
 
     override val hitboxWidth: Float
-        get() = max(FONT_RENDERER.width(cachedDisplayString), 10).toFloat()
+        get() = max(fontRenderer.width(cachedDisplayString), 10).toFloat()
     override val hitboxHeight: Float
-        get() = max(FONT_RENDERER.fontHeight, 10).toFloat()
+        get() = max(fontRenderer.fontHeight, 10).toFloat()
 
     override fun render(deltaTicks: Float, renderOrigin: RenderOrigin) {
         if (renderCount == 0) cachedDisplayString = displayString
@@ -74,14 +74,14 @@ abstract class SimpleTextElement : TextElement() {
 
         super.render(deltaTicks, renderOrigin)
 
-        GL.push()
-        GL.scale(position.scale, position.scale)
+        gl.push()
+        gl.scale(position.scale, position.scale)
 
         var x = position.rawX / position.scale
         val y = position.rawY / position.scale
 
         if (alignment == Alignment.RIGHT)
-            x -= FONT_RENDERER.width(cachedDisplayString)
+            x -= fontRenderer.width(cachedDisplayString)
 
         drawString(
             cachedDisplayString,
@@ -93,7 +93,7 @@ abstract class SimpleTextElement : TextElement() {
             chroma = chroma, chromaSpeed = chromaSpeed.get().toFloat()
         )
 
-        GL.pop()
+        gl.pop()
     }
 
     object TitleLocation : OptionContainer() {

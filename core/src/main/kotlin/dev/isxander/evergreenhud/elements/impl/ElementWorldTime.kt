@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.WORLD
+import dev.isxander.evergreenhud.api.world
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.settings.impl.BooleanSetting
@@ -37,10 +37,10 @@ class ElementWorldTime : SimpleTextElement() {
     override var title: String = "Time"
 
     override fun calculateValue(): String {
-        if (WORLD.isNull) return "06:00${if (seconds) ":00" else ""}"
+        if (world.isNull) return "06:00${if (seconds) ":00" else ""}"
 
         // ticks to ticks in day to seconds to millis plus six hours (time 0 = 6am)
-        val date = Date(WORLD.time % 24000L / 20 * 1000 + TimeUnit.HOURS.toMillis(6))
+        val date = Date(world.time % 24000L / 20 * 1000 + TimeUnit.HOURS.toMillis(6))
         return SimpleDateFormat(String.format(if (twelveHour) "hh:mm%s a" else "HH:mm%s", if (seconds) ":ss" else ""))
             .format(date).uppercase()
     }

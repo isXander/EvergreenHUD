@@ -13,14 +13,16 @@ blossom {
 }
 
 repositories {
+    mavenCentral()
     maven { url = 'https://libraries.minecraft.net' }
 }
 
 dependencies {
-    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21'
-    api 'org.jetbrains.kotlin:kotlin-reflect:1.5.21'
+    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30'
+    api 'org.jetbrains.kotlin:kotlin-reflect:1.5.30'
 
-    api 'com.uchuhimo:konf-toml:1.1.2'
+    api 'com.electronwill.night-config:core:3.6.4'
+    api 'com.electronwill.night-config:hocon:3.6.4'
 
     api 'com.github.asarkar:jsemver:dba4b41b08'
 

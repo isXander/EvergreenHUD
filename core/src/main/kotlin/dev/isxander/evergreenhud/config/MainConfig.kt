@@ -21,17 +21,19 @@ import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.toml
 import com.uchuhimo.konf.source.toml.toToml
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.compatibility.universal.LOGGER
+import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.elements.ElementManager
+import dev.isxander.evergreenhud.utils.setOrAdd
+import dev.isxander.evergreenhud.utils.toFileMkdirs
 import java.io.File
 
 class MainConfig(private val manager: ElementManager) {
 
     fun save() {
         val data = Config {
-            this["schema"] = SCHEMA
-            this["data"] = manager.conf
-        }.toToml.toFile(CONFIG_FILE)
+            setOrAdd("schema", SCHEMA)
+            setOrAdd("data", manager.conf)
+        }.toToml.toFileMkdirs(CONFIG_FILE)
     }
 
     fun load() {
@@ -56,7 +58,7 @@ class MainConfig(private val manager: ElementManager) {
         var convertedData = data
         var convertedSchema = currentSchema
         while (convertedSchema != SCHEMA) {
-            LOGGER.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
+            logger.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
             when (convertedSchema) {
 
             }

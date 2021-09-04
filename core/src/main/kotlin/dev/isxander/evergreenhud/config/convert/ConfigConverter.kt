@@ -20,7 +20,5 @@ package dev.isxander.evergreenhud.config.convert
 import java.io.File
 
 interface ConfigConverter {
-
     fun process(file: File): String?
-
 }

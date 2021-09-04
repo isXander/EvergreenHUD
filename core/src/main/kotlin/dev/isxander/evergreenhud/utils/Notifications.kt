@@ -18,7 +18,10 @@
 package dev.isxander.evergreenhud.utils
 
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.compatibility.universal.*
+import dev.isxander.evergreenhud.api.fontRenderer
+import dev.isxander.evergreenhud.api.gl
+import dev.isxander.evergreenhud.api.mouseHelper
+import dev.isxander.evergreenhud.api.resolution
 import dev.isxander.evergreenhud.event.RenderTickEvent
 import gg.essential.universal.ChatColor
 import me.kbrewster.eventbus.Subscribe
@@ -71,12 +74,12 @@ object Notifications {
                 .also { notif.width = it }
         }
 
-        val rectHeight = (PADDING_HEIGHT * 2f) + (textLines * FONT_RENDERER.fontHeight) + ((textLines - 1) * TEXT_DISTANCE)
-        val rectX = RESOLUTION.scaledWidth / 2f - (rectWidth / 2f)
-        val rectY = RESOLUTION.scaledHeight * 0.0015625f // 3 px on a 1080p screen
+        val rectHeight = (PADDING_HEIGHT * 2f) + (textLines * fontRenderer.fontHeight) + ((textLines - 1) * TEXT_DISTANCE)
+        val rectX = resolution.scaledWidth / 2f - (rectWidth / 2f)
+        val rectY = resolution.scaledHeight * 0.0015625f // 3 px on a 1080p screen
 
-        val mouseX = MOUSE_HELPER.mouseX
-        val mouseY = MOUSE_HELPER.mouseY
+        val mouseX = mouseHelper.mouseX
+        val mouseY = mouseHelper.mouseY
         val mouseOver =
                mouseX >= rectX
             && mouseX <= rectX + rectWidth
@@ -86,33 +89,33 @@ object Notifications {
         notif.mouseOverAdd = lerp(notif.mouseOverAdd, if (mouseOver) 40f else 0f, event.dt / 4f)
             .also { opacity += it }
 
-        GL.push()
+        gl.push()
         val clampedOpacity = clamp(opacity, 5f, 255f).toInt()
         notif.backColor = Color(notif.backColor.red, notif.backColor.green, notif.backColor.blue, clampedOpacity)
         notif.textColor = Color(notif.textColor.red, notif.textColor.green, notif.textColor.blue, clampedOpacity)
-        GL.roundedRect(rectX, rectY, rectWidth, rectHeight, notif.backColor.rgb, 5f)
-        GL.color(1f, 1f, 1f)
+        gl.roundedRect(rectX, rectY, rectWidth, rectHeight, notif.backColor.rgb, 5f)
+        gl.color(1f, 1f, 1f)
 
         if (notif.time > 0.1f) {
-            GL.scissorStart(rectX.toInt(), rectY.toInt(), rectWidth.toInt(), rectHeight.toInt())
+            gl.scissorStart(rectX.toInt(), rectY.toInt(), rectWidth.toInt(), rectHeight.toInt())
             var i = 0
             for (line in wrappedTitle) {
-                drawString(line, RESOLUTION.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + FONT_RENDERER.fontHeight * i, notif.textColor.rgb, centered = true, shadow = true)
+                drawString(line, resolution.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + fontRenderer.fontHeight * i, notif.textColor.rgb, centered = true, shadow = true)
                 i++
             }
             for (line in wrappedDesc) {
-                drawString(line, RESOLUTION.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + FONT_RENDERER.fontHeight * i, notif.textColor.rgb, centered = true, shadow = true)
+                drawString(line, resolution.scaledWidth / 2f, rectY + PADDING_HEIGHT + (TEXT_DISTANCE * i) + fontRenderer.fontHeight * i, notif.textColor.rgb, centered = true, shadow = true)
                 i++
             }
-            GL.scissorEnd()
+            gl.scissorEnd()
         }
 
-        GL.pop()
+        gl.pop()
 
         if (notif.time >= (if (notif.duration == -1) 5 else notif.duration)) {
             notif.closing = true
         }
-        if (!notif.clicked && mouseOver && MOUSE_HELPER.wasLeftMouseDown) {
+        if (!notif.clicked && mouseOver && mouseHelper.wasLeftMouseDown) {
             notif.clicked = true
             notif.consumer.invoke()
             notif.closing = true

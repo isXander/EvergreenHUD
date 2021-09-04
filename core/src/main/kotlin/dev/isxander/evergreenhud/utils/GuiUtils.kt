@@ -17,9 +17,7 @@
 
 package dev.isxander.evergreenhud.utils
 
-import dev.isxander.evergreenhud.compatibility.universal.FONT_RENDERER
-import gg.essential.elementa.font.FontProvider
-import gg.essential.universal.UMatrixStack
+import dev.isxander.evergreenhud.api.fontRenderer
 import java.awt.Color
 import java.lang.StringBuilder
 
@@ -31,13 +29,13 @@ fun drawString(text: String, x: Float, y: Float, color: Int, shadow: Boolean = t
         bordered -> drawBorderedString(text, x, y, centered, chroma, color)
         chroma -> drawChromaString(text, x, y, shadow, centered, chromaSpeed)
         centered -> drawCenteredString(text, x, y, shadow, color)
-        else -> FONT_RENDERER.draw(text, x, y, color, shadow)
+        else -> fontRenderer.draw(text, x, y, color, shadow)
     }
 }
 
 private fun drawCenteredString(text: String, _x: Float, y: Float, shadow: Boolean, color: Int) {
-    val x = _x - (FONT_RENDERER.width(text) / 2f)
-    FONT_RENDERER.draw(text, x, y, color, shadow)
+    val x = _x - (fontRenderer.width(text) / 2f)
+    fontRenderer.draw(text, x, y, color, shadow)
 }
 
 private fun drawBorderedString(text: String, x: Float, y: Float, centered: Boolean, chroma: Boolean, color: Int) {
@@ -52,12 +50,12 @@ private fun drawBorderedString(text: String, x: Float, y: Float, centered: Boole
 
 private fun drawChromaString(text: String, _x: Float, y: Float, shadow: Boolean, centered: Boolean, speed: Float = 2000.0f) {
     var x = _x
-    if (centered) x -= FONT_RENDERER.width(text) / 2f
+    if (centered) x -= fontRenderer.width(text) / 2f
 
     for (char in toCharArrNoFormatting(text)) {
         val i = getChroma(x, y, speed).rgb
-        FONT_RENDERER.draw(char, x, y, i, shadow)
-        x += FONT_RENDERER.width(char)
+        fontRenderer.draw(char, x, y, i, shadow)
+        x += fontRenderer.width(char)
     }
 }
 

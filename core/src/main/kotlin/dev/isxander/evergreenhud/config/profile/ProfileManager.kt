@@ -21,11 +21,10 @@ import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.toml
 import com.uchuhimo.konf.source.toml.toToml
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.compatibility.universal.LOGGER
+import dev.isxander.evergreenhud.api.logger
 import java.io.File
 
 class ProfileManager {
-
     var currentProfile = DEFAULT_PROFILE
     val availableProfiles = hashMapOf(currentProfile.id to currentProfile)
     val profileDirectory: File
@@ -34,7 +33,7 @@ class ProfileManager {
     fun load() {
         if (!PROFILES_DATA.exists()) save().also { return@load }
 
-        val data = attemptConversion(Config().from.toml.file(PROFILES_DATA))
+        val data = attemptConversion(Config { addSpec(ProfileSpec) }.from.toml.file(PROFILES_DATA))
         availableProfiles.clear()
         data[ProfileSpec.profiles].forEach { availableProfiles[it.id] = it }
 
@@ -72,7 +71,7 @@ class ProfileManager {
         var convertedData = data
         var convertedSchema = currentSchema
         while (convertedSchema != SCHEMA) {
-            LOGGER.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
+            logger.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
             when (convertedSchema) {
 
             }

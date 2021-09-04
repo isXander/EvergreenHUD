@@ -17,9 +17,10 @@
 
 package dev.isxander.evergreenhud.utils
 
-import dev.isxander.evergreenhud.compatibility.universal.MCVersion
-import dev.isxander.evergreenhud.compatibility.universal.MC_VERSION
+import dev.isxander.evergreenhud.api.MCVersion
+import dev.isxander.evergreenhud.api.mcVersion
 
+@Suppress("UNUSED")
 enum class Keyboard(val glfw: Int, val lwjgl2: Int) {
     KEY_NONE(-1, 0x00),
 
@@ -133,7 +134,7 @@ enum class Keyboard(val glfw: Int, val lwjgl2: Int) {
     KEY_RIGHT_META(347, 0xDC);
 
     fun get(): Int {
-        return when (MC_VERSION) {
+        return when (mcVersion) {
             MCVersion.FORGE_1_8_9 -> lwjgl2
             MCVersion.FABRIC_1_17_1 -> glfw
         }

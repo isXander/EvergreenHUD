@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.event
 
-import dev.isxander.evergreenhud.compatibility.universal.impl.UEntity
+import dev.isxander.evergreenhud.api.impl.UEntity
 
 class ClientTickEvent
 class RenderHUDEvent(val dt: Float)

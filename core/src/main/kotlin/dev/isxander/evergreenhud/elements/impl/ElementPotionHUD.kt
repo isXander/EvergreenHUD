@@ -17,8 +17,8 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.*
-import dev.isxander.evergreenhud.compatibility.universal.impl.UPotion
+import dev.isxander.evergreenhud.api.*
+import dev.isxander.evergreenhud.api.impl.UPotion
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
@@ -125,10 +125,10 @@ class ElementPotionHUD : BackgroundElement() {
     val effectToggles = hashMapOf<Int, SettingAdapter<Boolean>>()
 
     override fun preinit() {
-        for (potion in POTIONS.registeredPotions) {
+        for (potion in potions.registeredPotions) {
             if (potion.instant) continue
 
-            val name = TRANSLATION[potion.translation]
+            val name = translation[potion.translation]
             val setting = settingAdapter(true) {}
 
             settings.add(
@@ -158,19 +158,19 @@ class ElementPotionHUD : BackgroundElement() {
         get() = h
 
     override fun render(deltaTicks: Float, renderOrigin: RenderOrigin) {
-        GL.color(1f, 1f, 1f, 1f)
+        gl.color(1f, 1f, 1f, 1f)
 
         val x = position.rawX
         val y = position.rawY
 
         val potionEffects = arrayListOf<UPotion>()
-        if (MC.player.equals(null)) return
-        potionEffects.addAll(POTIONS.getEffectsForEntity(MC.player).filter {
+        if (mc.player.equals(null)) return
+        potionEffects.addAll(potions.getEffectsForEntity(mc.player).filter {
             effectToggles[it.id]?.get() ?: false
         })
 
         when (sort) {
-            PotionSorting.ALPHABETICAL -> potionEffects.sortWith(Comparator.comparing { TRANSLATION[it.translation] })
+            PotionSorting.ALPHABETICAL -> potionEffects.sortWith(Comparator.comparing { translation[it.translation] })
             PotionSorting.DURATION -> {
                 potionEffects.sortWith(Comparator.comparingInt(UPotion::duration))
                 potionEffects.reverse()
@@ -187,14 +187,14 @@ class ElementPotionHUD : BackgroundElement() {
         super.render(deltaTicks, renderOrigin)
         w = 10f
 
-        GL.push()
-        GL.scale(position.scale, position.scale, 1f)
+        gl.push()
+        gl.scale(position.scale, position.scale, 1f)
         for (effect in potionEffects) {
             var iconX = x
             iconX /= position.scale
-            GL.color(1f, 1f, 1f, 1f)
+            gl.color(1f, 1f, 1f, 1f)
             if (showIcon) {
-                POTIONS.drawPotionIcon(effect, iconX, (y + yOff) / position.scale)
+                potions.drawPotionIcon(effect, iconX, (y + yOff) / position.scale)
                 xOff = iconSize * position.scale
                 w = w.coerceAtLeast(xOff / position.scale)
             }
@@ -204,7 +204,7 @@ class ElementPotionHUD : BackgroundElement() {
                 if (titleBold) titleSb.append(ChatColor.BOLD)
                 if (titleItalic) titleSb.append(ChatColor.ITALIC)
                 if (titleUnderlined) titleSb.append(ChatColor.UNDERLINE)
-                titleSb.append(TRANSLATION[effect.translation])
+                titleSb.append(translation[effect.translation])
                 val amplifier = 1.coerceAtLeast(effect.amplifier + 1)
                 if (this.amplifier && (amplifier != 1 || showLvl1)) {
                     titleSb.append(" ")
@@ -212,12 +212,12 @@ class ElementPotionHUD : BackgroundElement() {
                     else titleSb.append(amplifier)
                 }
                 val builtTitle = titleSb.toString()
-                val titleWidth: Int = FONT_RENDERER.width(builtTitle)
+                val titleWidth: Int = fontRenderer.width(builtTitle)
                 w = w.coerceAtLeast(xOff / position.scale + titleWidth)
                 var titleX = x + xOff
                 titleX /= position.scale
                 var titleY = y + yOff
-                if (!durationVisible) titleY += FONT_RENDERER.fontHeight / 2f
+                if (!durationVisible) titleY += fontRenderer.fontHeight / 2f
                 titleY /= position.scale
                 drawString(
                     builtTitle,
@@ -238,12 +238,12 @@ class ElementPotionHUD : BackgroundElement() {
                 if (durationUnderlined) durationSb.append(ChatColor.UNDERLINE)
                 if (effect.permanent) durationSb.append(permanentText) else durationSb.append(ticksToTime(effect.duration))
                 val builtDuration = durationSb.toString()
-                val durationWidth = FONT_RENDERER.width(builtDuration)
+                val durationWidth = fontRenderer.width(builtDuration)
                 w = w.coerceAtLeast(xOff / position.scale + durationWidth)
                 var timeX = x + xOff
                 timeX /= position.scale
-                var timeY: Float = y + yOff + FONT_RENDERER.fontHeight * position.scale + 1
-                if (!titleVisible) timeY -= FONT_RENDERER.fontHeight / 2f
+                var timeY: Float = y + yOff + fontRenderer.fontHeight * position.scale + 1
+                if (!titleVisible) timeY -= fontRenderer.fontHeight / 2f
                 timeY /= position.scale
                 if (effect.duration / 20f > blinkingTime || effect.duration % (50 - blinkingSpeed) <= (50 - blinkingSpeed) / 2f) {
                     drawString(
@@ -261,7 +261,7 @@ class ElementPotionHUD : BackgroundElement() {
             }
             yOff += yAmt * position.scale
         }
-        GL.pop()
+        gl.pop()
     }
 
     object AmplifierText : OptionContainer() {

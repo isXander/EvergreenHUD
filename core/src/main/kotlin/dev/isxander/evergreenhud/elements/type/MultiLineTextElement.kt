@@ -17,14 +17,13 @@
 
 package dev.isxander.evergreenhud.elements.type
 
-import dev.isxander.evergreenhud.compatibility.universal.FONT_RENDERER
-import dev.isxander.evergreenhud.compatibility.universal.GL
+import dev.isxander.evergreenhud.api.fontRenderer
+import dev.isxander.evergreenhud.api.gl
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.settings.impl.IntSetting
 import dev.isxander.evergreenhud.utils.drawString
 import gg.essential.universal.ChatColor
 import kotlin.math.max
-
 
 abstract class MultiLineTextElement : TextElement() {
 
@@ -50,11 +49,11 @@ abstract class MultiLineTextElement : TextElement() {
     override val hitboxWidth: Float
         get() {
             var width = 10
-            for (line in cachedDisplayString) width = max(width, FONT_RENDERER.width(line))
+            for (line in cachedDisplayString) width = max(width, fontRenderer.width(line))
             return width.toFloat()
         }
     override val hitboxHeight: Float
-        get() = max((FONT_RENDERER.fontHeight * cachedDisplayString.size) + (verticalSpacing * (cachedDisplayString.size - 1)), 10).toFloat()
+        get() = max((fontRenderer.fontHeight * cachedDisplayString.size) + (verticalSpacing * (cachedDisplayString.size - 1)), 10).toFloat()
 
     override fun render(deltaTicks: Float, renderOrigin: RenderOrigin) {
         if (renderCount == 0) cachedDisplayString = displayString
@@ -64,15 +63,15 @@ abstract class MultiLineTextElement : TextElement() {
 
         super.render(deltaTicks, renderOrigin)
 
-        GL.push()
-        GL.scale(position.scale, position.scale)
+        gl.push()
+        gl.scale(position.scale, position.scale)
 
         val x = position.rawX / position.scale
         val y = position.rawY / position.scale
 
         for ((i, line) in cachedDisplayString.withIndex()) {
-            val posX = x - (if (alignment == Alignment.RIGHT) FONT_RENDERER.width(line) else 0)
-            val posY = (y / position.scale) + (FONT_RENDERER.fontHeight * i) + (verticalSpacing * i)
+            val posX = x - (if (alignment == Alignment.RIGHT) fontRenderer.width(line) else 0)
+            val posY = (y / position.scale) + (fontRenderer.fontHeight * i) + (verticalSpacing * i)
 
             drawString(
                 line,
@@ -83,11 +82,8 @@ abstract class MultiLineTextElement : TextElement() {
                 bordered = textStyle == TextStyle.BORDER,
                 chroma = chroma, chromaSpeed = chromaSpeed.get().toFloat()
             )
-
         }
 
-
-        GL.pop()
+        gl.pop()
     }
-
 }

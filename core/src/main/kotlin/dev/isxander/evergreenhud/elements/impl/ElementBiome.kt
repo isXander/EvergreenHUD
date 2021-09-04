@@ -17,8 +17,8 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.MC
-import dev.isxander.evergreenhud.compatibility.universal.WORLD
+import dev.isxander.evergreenhud.api.mc
+import dev.isxander.evergreenhud.api.world
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 
@@ -28,9 +28,9 @@ class ElementBiome : SimpleTextElement() {
     override var title: String = "Biome"
 
     override fun calculateValue(): String {
-        val player = MC.player
+        val player = mc.player
         if (player.equals(null)) return "Unknown"
-        return WORLD.getBiomeAt(player.x.toInt(), player.y.toInt(), player.z.toInt())
+        return world.getBiomeAt(player.x.toInt(), player.y.toInt(), player.z.toInt())
     }
 
 }

@@ -19,8 +19,8 @@ package dev.isxander.evergreenhud.elements
 
 import com.uchuhimo.konf.Config
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.compatibility.universal.MC_VERSION
-import dev.isxander.evergreenhud.compatibility.universal.PROFILER
+import dev.isxander.evergreenhud.api.mcVersion
+import dev.isxander.evergreenhud.api.profiler
 import dev.isxander.evergreenhud.config.ConfigProcessor
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
@@ -68,7 +68,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     }
 
     fun addElement(element: Element) {
-        if (!element.metadata.allowedVersions.contains(MC_VERSION)) throw IllegalArgumentException("Element not compatible with this version.")
+        if (!element.metadata.allowedVersions.contains(mcVersion)) throw IllegalArgumentException("Element not compatible with this version.")
 
         element.preload()
         currentElements.add(element)
@@ -82,7 +82,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 
     @Suppress("UNCHECKED_CAST")
     private fun findAndRegisterElements() {
-        val reflections = Reflections("")
+        val reflections = Reflections("dev.isxander.evergreenhud.elements.impl")
         for (clazz in reflections.getTypesAnnotatedWith(ElementMeta::class.java)) {
             val annotation = clazz.getAnnotation(ElementMeta::class.java)
             availableElements[annotation.id] = clazz.kotlin as KClass<out Element>
@@ -126,11 +126,11 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 
     @Subscribe
     fun renderElements(event: RenderHUDEvent) {
-        PROFILER.push("EvergreenHUD Render")
+        profiler.push("EvergreenHUD Render")
         for (e in currentElements) {
             e.render(event.dt, RenderOrigin.HUD)
         }
-        PROFILER.pop()
+        profiler.pop()
 //        mc.mcProfiler.startSection("Element Render")
 //
 //        val inChat = mc.currentScreen is GuiChat

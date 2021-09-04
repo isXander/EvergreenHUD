@@ -19,7 +19,7 @@
     "client": [
       {
         "adapter": "kotlin",
-        "value": "dev.isxander.evergreenhud.compatibility.fabric11701.Main"
+        "value": "dev.isxander.evergreenhud.api.fabric11701.Main"
       }
     ]
   },
@@ -29,7 +29,7 @@
   "depends": {
     "fabricloader": ">=0.11.6",
     "fabric": "*",
-    "fabric-language-kotlin": ">=1.6.2+kotlin.1.5.20",
+    "fabric-language-kotlin": ">=1.6.4+kotlin.1.5.30",
     "minecraft": "1.17.x",
     "java": ">=8"
   }

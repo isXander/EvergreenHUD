@@ -18,7 +18,7 @@
 package dev.isxander.evergreenhud.config
 
 import com.uchuhimo.konf.Config
-import dev.isxander.evergreenhud.compatibility.universal.LOGGER
+import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.SettingAdapter
@@ -37,15 +37,15 @@ interface ConfigProcessor {
     var conf: Config
 
     fun addSettingToConfig(setting: Setting<*, *>, data: Config): Config {
-        var value: Config = data[setting.category]
-        if (setting.subcategory != "") value = value[setting.subcategory]
+        var value: Config = data.getOrAdd(setting.category, Config())
+        if (setting.subcategory != "") value = value.getOrAdd(setting.subcategory, Config())
 
-        value[setting.nameSerializedKey] = when (setting.dataType) {
+        value.setOrAdd(setting.nameSerializedKey, when (setting.dataType) {
             DataType.STRING -> setting.serializedValue as String
             DataType.BOOLEAN -> setting.serializedValue as Boolean
             DataType.FLOAT -> setting.serializedValue as Float
             DataType.INT -> setting.serializedValue as Int
-        }
+        })
 
         return data
     }
@@ -148,12 +148,12 @@ interface ConfigProcessor {
                             ))
                     }
                 } catch (e: ClassCastException) {
-                    LOGGER.err("---------------------------")
-                    LOGGER.err("FAILED TO COLLECT SETTING!")
-                    LOGGER.err("Setting is incorrect type!")
-                    LOGGER.err("Offender: ${property.name}")
-                    LOGGER.err("Class: ${declaredClass.qualifiedName ?: "UNKNOWN"}")
-                    LOGGER.err("---------------------------")
+                    logger.err("---------------------------")
+                    logger.err("FAILED TO COLLECT SETTING!")
+                    logger.err("Setting is incorrect type!")
+                    logger.err("Offender: ${property.name}")
+                    logger.err("Class: ${declaredClass.qualifiedName ?: "UNKNOWN"}")
+                    logger.err("---------------------------")
                 }
             }
         }

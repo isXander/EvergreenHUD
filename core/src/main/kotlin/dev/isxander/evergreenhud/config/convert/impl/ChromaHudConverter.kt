@@ -19,8 +19,8 @@ package dev.isxander.evergreenhud.config.convert.impl
 
 import com.uchuhimo.konf.Config
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.compatibility.universal.FONT_RENDERER
-import dev.isxander.evergreenhud.compatibility.universal.RESOLUTION
+import dev.isxander.evergreenhud.api.fontRenderer
+import dev.isxander.evergreenhud.api.resolution
 import dev.isxander.evergreenhud.config.convert.ConfigConverter
 import dev.isxander.evergreenhud.elements.impl.ElementCoordinates
 import dev.isxander.evergreenhud.elements.impl.ElementCps
@@ -32,7 +32,6 @@ import java.awt.Color
 import java.io.File
 
 object ChromaHudConverter : ConfigConverter {
-
     private val ids = mapOf(
         "CORDS" to "COORDS",
         "PING" to "PING",
@@ -71,7 +70,7 @@ object ChromaHudConverter : ConfigConverter {
             val useBg = elementJson.getOrNull("highlighted") ?: false
 
             var i = 0
-            val changeY = (FONT_RENDERER.fontHeight + 4) / RESOLUTION.scaledHeight
+            val changeY = (fontRenderer.fontHeight + 4) / resolution.scaledHeight
             for (item in elementJson.get<List<Config>>("items")) {
                 val id = ids[item.getOrNull("type") ?: ""] ?: continue
                 val element = EvergreenHUD.elementManager.getNewElementInstance(id) ?: continue

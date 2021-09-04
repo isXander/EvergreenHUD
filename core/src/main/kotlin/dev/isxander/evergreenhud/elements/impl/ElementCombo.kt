@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.MC
+import dev.isxander.evergreenhud.api.mc
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.ClientTickEvent
@@ -55,7 +55,7 @@ class ElementCombo : SimpleTextElement() {
 
     @Subscribe
     fun onServerAttackEntity(event: ServerDamageEntity) {
-        if (event.attacker.id == MC.player.id) {
+        if (event.attacker.id == mc.player.id) {
             if (event.victim.id == attackId) {
                 currentCombo++
             } else {

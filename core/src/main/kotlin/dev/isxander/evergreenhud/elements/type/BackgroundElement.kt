@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.elements.type
 
-import dev.isxander.evergreenhud.compatibility.universal.GL
+import dev.isxander.evergreenhud.api.gl
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.settings.SettingAdapter
@@ -93,10 +93,10 @@ abstract class BackgroundElement : Element() {
         val hitbox = calculateHitBox(1f, scale)
 
         if (backgroundEnabled.get()) {
-            GL.roundedRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol.rgb, cornerRadius)
+            gl.roundedRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol.rgb, cornerRadius)
         }
         if (outlineEnabled.get()) {
-            GL.borderRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height, outlineCol.rgb, outlineThickness)
+            gl.borderRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height, outlineCol.rgb, outlineThickness)
         }
     }
 

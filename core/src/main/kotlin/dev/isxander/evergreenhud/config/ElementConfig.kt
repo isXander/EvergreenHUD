@@ -21,7 +21,7 @@ import com.uchuhimo.konf.Config
 import com.uchuhimo.konf.source.toml
 import com.uchuhimo.konf.source.toml.toToml
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.compatibility.universal.LOGGER
+import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.elements.ElementManager
 import java.io.File
 
@@ -58,7 +58,7 @@ class ElementConfig(private val manager: ElementManager) {
             val element = manager.getNewElementInstance(id)
 
             if (element == null) {
-                LOGGER.err("Found unknown element id ($id) in json! This probably means someone tampered with the json!")
+                logger.err("Found unknown element id ($id) in json! This probably means someone tampered with the json!")
                 continue
             }
 
@@ -84,7 +84,7 @@ class ElementConfig(private val manager: ElementManager) {
         var convertedData = data
         var convertedSchema = currentSchema
         while (convertedSchema != SCHEMA) {
-            LOGGER.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
+            logger.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
             when (convertedSchema) {
 
             }

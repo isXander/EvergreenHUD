@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.compatibility.universal.MOUSE_HELPER
+import dev.isxander.evergreenhud.api.mouseHelper
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.RenderTickEvent
@@ -51,14 +51,14 @@ class ElementCps : SimpleTextElement() {
 
     @Subscribe
     fun onRenderTick(event: RenderTickEvent) {
-        var pressed = MOUSE_HELPER.isButtonDown(0)
+        var pressed = mouseHelper.isButtonDown(0)
 
         if (pressed != leftPressed) {
             leftPressed = pressed
             if (pressed) left.add(System.currentTimeMillis())
         }
 
-        pressed = MOUSE_HELPER.isButtonDown(1)
+        pressed = mouseHelper.isButtonDown(1)
 
         if (pressed != rightPressed) {
             rightPressed = pressed

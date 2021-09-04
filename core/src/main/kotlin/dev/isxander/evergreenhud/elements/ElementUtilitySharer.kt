@@ -18,19 +18,21 @@
 package dev.isxander.evergreenhud.elements
 
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.compatibility.universal.LOGGER
+import dev.isxander.evergreenhud.api.logger
 import java.util.concurrent.ConcurrentHashMap
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 @Suppress("UNCHECKED_CAST")
 class ElementUtilitySharer {
+    var dataManagers: ConcurrentHashMap<KClass<*>, Any> = ConcurrentHashMap()
+        private set
+    var managerUsers: ConcurrentHashMap<KClass<*>, HashSet<Any>> = ConcurrentHashMap()
+        private set
 
-    private var dataManagers: ConcurrentHashMap<KClass<*>, Any> = ConcurrentHashMap()
-    private var managerUsers: ConcurrentHashMap<KClass<*>, HashSet<Any>> = ConcurrentHashMap()
-
-    fun <T : Any> register(clazz: KClass<T>, o: Any): T? {
+    inline fun <reified T : Any> register(o: Any): T? {
         try {
+            val clazz = T::class
             if (managerUsers.containsKey(clazz)) {
                 managerUsers[clazz]!!.add(o)
             } else {
@@ -59,15 +61,15 @@ class ElementUtilitySharer {
             }
         }
         for (clazz in toRemove) {
-            LOGGER.info("Unregistered Utility Class: " + clazz.simpleName)
+            logger.info("Unregistered Utility Class: " + clazz.simpleName)
             EvergreenHUD.eventBus.unregister(dataManagers[clazz]!!)
             dataManagers.remove(clazz)
             managerUsers.remove(clazz)
         }
     }
 
-    fun <T : Any> getManager(clazz: KClass<T>): T {
-        return dataManagers[clazz] as T
+    inline fun <reified T : Any> get(): T {
+        return dataManagers[T::class] as T
     }
 
 }
