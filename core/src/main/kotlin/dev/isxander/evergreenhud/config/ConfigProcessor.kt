@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.config
 
-import com.uchuhimo.konf.Config
+import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.settings.DataType
 import dev.isxander.evergreenhud.settings.Setting
@@ -37,25 +37,28 @@ interface ConfigProcessor {
     var conf: Config
 
     fun addSettingToConfig(setting: Setting<*, *>, data: Config): Config {
-        var value: Config = data.getOrAdd(setting.category, Config())
-        if (setting.subcategory != "") value = value.getOrAdd(setting.subcategory, Config())
+        var key = "${setting.category}."
+        if (setting.subcategory != "") key += "${setting.subcategory}."
+        key += setting.nameSerializedKey
 
-        value.setOrAdd(setting.nameSerializedKey, when (setting.dataType) {
-            DataType.STRING -> setting.serializedValue as String
-            DataType.BOOLEAN -> setting.serializedValue as Boolean
-            DataType.FLOAT -> setting.serializedValue as Float
-            DataType.INT -> setting.serializedValue as Int
-        })
+        when (setting.dataType) {
+            DataType.STRING -> data.set<String>(key, setting.serializedValue as String)
+            DataType.BOOLEAN -> data.set<Boolean>(key, setting.serializedValue as Boolean)
+            DataType.FLOAT -> data.set<Float>(key, setting.serializedValue as Float)
+            DataType.INT -> data.set<Int>(key, setting.serializedValue as Int)
+        }
+
+
 
         return data
     }
 
     fun setSettingFromConfig(data: Config, setting: Setting<*, *>) {
         when (setting.dataType) {
-            DataType.BOOLEAN -> setting.serializedValue = data.getOrNull(setting.nameSerializedKey) ?: setting.defaultSerializedValue as Boolean
-            DataType.FLOAT -> setting.serializedValue = data.getOrNull(setting.nameSerializedKey) ?: setting.defaultSerializedValue as Float
-            DataType.INT -> setting.serializedValue = data.getOrNull(setting.nameSerializedKey) ?: setting.defaultSerializedValue as Int
-            DataType.STRING -> setting.serializedValue = data.getOrNull(setting.nameSerializedKey) ?: setting.defaultSerializedValue as String
+            DataType.BOOLEAN -> setting.serializedValue = data[setting.nameSerializedKey] ?: setting.defaultSerializedValue as Boolean
+            DataType.FLOAT -> setting.serializedValue = data[setting.nameSerializedKey] ?: setting.defaultSerializedValue as Float
+            DataType.INT -> setting.serializedValue = data[setting.nameSerializedKey] ?: setting.defaultSerializedValue as Int
+            DataType.STRING -> setting.serializedValue = data[setting.nameSerializedKey] ?: setting.defaultSerializedValue as String
         }
     }
 

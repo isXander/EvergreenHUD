@@ -18,17 +18,16 @@
 package dev.isxander.evergreenhud.repo
 
 import com.asarkar.semver.SemVer
-import com.uchuhimo.konf.Config
+import dev.isxander.evergreenhud.utils.jsonParser
+import java.net.URL
 
 object RepoManager {
-
-    private const val jsonUrl = "https://dl.isxander.dev/mods/evergreenhud/info.json"
+    private val jsonUrl = URL("https://dl.isxander.dev/mods/evergreenhud/info.json")
 
     fun getResponse(): RepoResponse {
-        val data = Config { addSpec(ResponseSpec) }
-            .from.json.url(jsonUrl)
+        val data = jsonParser.parse(jsonUrl)
 
-        return RepoResponse(SemVer.parse(data[ResponseSpec.latest]), data[ResponseSpec.blacklisted])
+        return RepoResponse(SemVer.parse(data["latest"]), data["blacklisted"])
     }
 
 }

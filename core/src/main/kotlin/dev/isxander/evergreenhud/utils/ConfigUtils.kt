@@ -1,25 +1,12 @@
 package dev.isxander.evergreenhud.utils
 
-import com.uchuhimo.konf.*
-import com.uchuhimo.konf.source.Writer
-import java.io.File
+import com.electronwill.nightconfig.hocon.HoconFormat
+import com.electronwill.nightconfig.json.JsonFormat
 
-fun <T> Config.setOrAdd(name: String, value: T) {
-    try {
-        this[name] = value
-    } catch (ignored: NoSuchItemException) {
-        this.addItem(OptionalItem(Spec.dummy, name, value))
-    }
-}
-fun <T> Config.getOrAdd(name: String, value: T): T {
-    return try {
-        this[name]
-    } catch (ignored: NoSuchItemException) {
-        this.addItem(OptionalItem(Spec.dummy, name, value))
-        this[name]
-    }
-}
-fun Writer.toFileMkdirs(file: File) {
-    file.parentFile.mkdirs()
-    this.toFile(file)
-}
+val hoconFormat = HoconFormat.instance()
+val hoconParser = hoconFormat.createParser()
+val hoconWriter = hoconFormat.createWriter()
+
+val jsonFormat = JsonFormat.fancyInstance()
+val jsonParser = jsonFormat.createParser()
+val jsonWriter = jsonFormat.createWriter()

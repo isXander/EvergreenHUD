@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.elements
 
-import com.uchuhimo.konf.Config
+import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.MCVersion
 import dev.isxander.evergreenhud.api.logger
@@ -29,7 +29,6 @@ import dev.isxander.evergreenhud.utils.*
 import kotlin.reflect.full.findAnnotation
 
 abstract class Element : ConfigProcessor {
-
     private var preloaded = false
     val settings: ArrayList<Setting<*, *>> = ArrayList()
     val metadata: ElementMeta = this::class.findAnnotation()!!
@@ -98,27 +97,27 @@ abstract class Element : ConfigProcessor {
 
     override var conf: Config
         get() {
-            val config = Config {
-                this["x"] = position.scaledX
-                this["y"] = position.scaledY
-                this["scale"] = position.scale
+            val config = Config.of(hoconFormat).apply {
+                set<Float>("x", position.scaledX)
+                set<Float>("y", position.scaledY)
+                set<Float>("scale", position.scale)
             }
 
-            var settingsData = Config()
+            var settingsData = Config.of(hoconFormat)
             for (setting in settings) {
                 if (!setting.shouldSave) continue
                 settingsData = addSettingToConfig(setting, settingsData)
             }
 
-            config["settings"] = settingsData
+            config.set<Config>("settings", settingsData)
             return config
         }
         set(value) {
-            position.scaledX = value.getOrNull("x") ?: position.scaledX
-            position.scaledY = value.getOrNull("y") ?: position.scaledY
-            position.scale = value.getOrNull("scale") ?: position.scale
+            position.scaledX = value["x"] ?: position.scaledX
+            position.scaledY = value["y"] ?: position.scaledY
+            position.scale = value["scale"] ?: position.scale
 
-            val settingsData = value.getOrNull("settings") ?: Config()
+            val settingsData = value["settings"] ?: Config.of(hoconFormat)
             for (setting in settings) {
                 var category: Config = settingsData[setting.category]
                 if (setting.subcategory != "") category = value[setting.subcategory]
@@ -127,7 +126,7 @@ abstract class Element : ConfigProcessor {
         }
 
     companion object {
-        val utilities = ElementUtilitySharer()
+        protected val utilities = ElementUtilitySharer()
     }
 
 }

@@ -23,6 +23,7 @@ dependencies {
 
     api 'com.electronwill.night-config:core:3.6.4'
     api 'com.electronwill.night-config:hocon:3.6.4'
+    api 'com.electronwill.night-config:json:3.6.4'
 
     api 'com.github.asarkar:jsemver:dba4b41b08'
 
@@ -31,7 +32,8 @@ dependencies {
         exclude module: 'kotlin-stdlib-jdk8'
     }
 
-    api 'org.reflections:reflections:0.9.12'
+    api 'io.github.classgraph:classgraph:4.8.115'
+
     api ('com.squareup.okhttp3:okhttp:4.9.1') {
         exclude module: 'kotlin-stdlib'
         exclude module: 'kotlin-stdlib-common'

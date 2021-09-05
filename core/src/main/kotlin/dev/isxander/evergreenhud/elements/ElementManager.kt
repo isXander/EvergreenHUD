@@ -17,8 +17,8 @@
 
 package dev.isxander.evergreenhud.elements
 
-import com.uchuhimo.konf.Config
-import dev.isxander.evergreenhud.EvergreenHUD
+import com.electronwill.nightconfig.core.Config
+import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.api.mcVersion
 import dev.isxander.evergreenhud.api.profiler
 import dev.isxander.evergreenhud.config.ConfigProcessor
@@ -28,13 +28,14 @@ import dev.isxander.evergreenhud.event.RenderHUDEvent
 import dev.isxander.evergreenhud.event.on
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.impl.*
-import me.kbrewster.eventbus.Subscribe
-import org.reflections.Reflections
+import dev.isxander.evergreenhud.utils.hoconFormat
+import io.github.classgraph.ClassGraph
 import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
+import kotlin.reflect.full.findAnnotation
 
 class ElementManager : ConfigProcessor, Iterable<Element> {
 
@@ -63,8 +64,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 
         on<RenderHUDEvent>()
             .filter { enabled }
-            .subscribe {  }
-        EvergreenHUD.eventBus.register(this)
+            .subscribe(this::renderElements)
     }
 
     fun addElement(element: Element) {
@@ -82,11 +82,24 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 
     @Suppress("UNCHECKED_CAST")
     private fun findAndRegisterElements() {
-        val reflections = Reflections("dev.isxander.evergreenhud.elements.impl")
-        for (clazz in reflections.getTypesAnnotatedWith(ElementMeta::class.java)) {
-            val annotation = clazz.getAnnotation(ElementMeta::class.java)
-            availableElements[annotation.id] = clazz.kotlin as KClass<out Element>
-        }
+        logger.info("Registering elements...")
+        ClassGraph()
+            .enableClassInfo()
+            .enableAnnotationInfo()
+            .acceptClasses(Element::class.qualifiedName)
+            .acceptPackages("dev.isxander.evergreenhud.elements.impl")
+            .scan()
+            .use { scanResult ->
+                for (routeClassInfo in scanResult.getClassesWithAnnotation(ElementMeta::class.java)) {
+                    val clazz = routeClassInfo.loadClass().kotlin
+                    if (!clazz.java.isAssignableFrom(Element::class.java)) continue
+
+                    val annotation = clazz.findAnnotation<ElementMeta>()!!
+                    availableElements[annotation.id] = clazz as KClass<out Element>
+
+                    logger.info("Registered ${annotation.name}")
+                }
+            }
     }
 
     fun getAvailableElements(): Map<String, KClass<out Element>> {
@@ -124,7 +137,6 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         currentElements.clear()
     }
 
-    @Subscribe
     fun renderElements(event: RenderHUDEvent) {
         profiler.push("EvergreenHUD Render")
         for (e in currentElements) {
@@ -147,7 +159,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 
     override var conf: Config
         get() {
-            var data = Config()
+            var data = Config.of(hoconFormat)
 
             for (setting in settings) {
                 if (!setting.shouldSave) continue
@@ -159,7 +171,13 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         set(value) {
             for (setting in settings) {
                 var category: Config = value[setting.category]
+                    ?: value.set(setting.category, Config.of(hoconFormat))
+                    ?: value[setting.category]
+
                 if (setting.subcategory != "") category = value[setting.subcategory]
+                    ?: value.set(setting.subcategory, Config.of(hoconFormat))
+                    ?: value[setting.subcategory]
+
                 setSettingFromConfig(category, setting)
             }
         }

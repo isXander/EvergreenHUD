@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.config.convert.impl
 
-import com.uchuhimo.konf.Config
+import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.fontRenderer
 import dev.isxander.evergreenhud.api.resolution
@@ -47,7 +47,7 @@ object ChromaHudConverter : ConfigConverter {
     override fun process(file: File): String? {
         if (!file.exists() || file.isDirectory) return "Invalid ChromaHUD config."
 
-        val config = Config()
+        val config = Config.of(jsonFormat)
         EvergreenHUD.elementManager.enabled = config["enabled"]
 
         for (elementJson in config.get<List<Config>>("elements")) {
@@ -58,21 +58,22 @@ object ChromaHudConverter : ConfigConverter {
             }
 
             var textColor = Color(elementJson["color"])
-            if (elementJson.getOrNull<Boolean>("rgb") == true)
+            if (elementJson.get<Boolean>("rgb") == true)
                 textColor = Color(
-                    elementJson.getOrNull("red") ?: 255,
-                    elementJson.getOrNull("green") ?: 255,
-                    elementJson.getOrNull("blue") ?: 255, 255
+                    elementJson["red"] ?: 255,
+                    elementJson["green"] ?: 255,
+                    elementJson["blue"] ?: 255,
+                    255
                 )
 
-            val chroma = elementJson.getOrNull("chroma") ?: false
-            val shadow = elementJson.getOrNull("shadow") ?: false
-            val useBg = elementJson.getOrNull("highlighted") ?: false
+            val chroma = elementJson["chroma"] ?: false
+            val shadow = elementJson["shadow"] ?: false
+            val useBg = elementJson["highlighted"] ?: false
 
             var i = 0
             val changeY = (fontRenderer.fontHeight + 4) / resolution.scaledHeight
             for (item in elementJson.get<List<Config>>("items")) {
-                val id = ids[item.getOrNull("type") ?: ""] ?: continue
+                val id = ids[item["type"] ?: ""] ?: continue
                 val element = EvergreenHUD.elementManager.getNewElementInstance(id) ?: continue
 
                 element.position = position
@@ -94,8 +95,8 @@ object ChromaHudConverter : ConfigConverter {
                 }
 
                 when (element) {
-                    is ElementCoordinates -> element.accuracy = item.getOrNull("precision") ?: 0
-                    is ElementText -> element.text = item.getOrNull("text") ?: "Sample Text"
+                    is ElementCoordinates -> element.accuracy = item["precision"] ?: 0
+                    is ElementText -> element.text = item["text"] ?: "Sample Text"
                     is ElementIRLTime -> element.seconds = true
                     is ElementCps -> element.button = ElementCps.MouseButton.LEFT
                 }

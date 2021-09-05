@@ -77,12 +77,7 @@ object EvergreenHUD {
         elementManager = ElementManager().apply {
             mainConfig.load()
             elementConfig.load()
-            addElement(ElementFps().preload().apply {
-                position = rawPosition {
-                    x = 20f
-                    y = 20f
-                }
-            })
+            addElement(ElementFps())
             elementConfig.save()
         }
 

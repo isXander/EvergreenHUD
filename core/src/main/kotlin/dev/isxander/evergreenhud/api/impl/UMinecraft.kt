@@ -20,11 +20,9 @@ package dev.isxander.evergreenhud.api.impl
 import java.io.File
 
 abstract class UMinecraft {
-
     abstract val player: UEntity
     abstract val dataDir: File
     abstract val fps: Int
     abstract val inGameHasFocus: Boolean
     abstract val devEnv: Boolean
-
 }

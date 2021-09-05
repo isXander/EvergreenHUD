@@ -20,10 +20,14 @@ package dev.isxander.evergreenhud.config.profile
 import dev.isxander.evergreenhud.EvergreenHUD
 import java.io.File
 
-data class Profile(
-    val id: String,
-    val name: String,
-    val description: String,
-    val icon: String = File(EvergreenHUD.resourceDir, "icon.png").path
-)
+class Profile(lambda: Profile.() -> Unit) {
+    init {
+        this.apply(lambda)
+    }
+
+    lateinit var id: String
+    lateinit var name: String
+    lateinit var description: String
+    var icon: String = File(EvergreenHUD.resourceDir, "icon.png").path
+}
 

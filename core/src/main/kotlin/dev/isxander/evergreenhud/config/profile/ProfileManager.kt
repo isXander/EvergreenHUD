@@ -17,11 +17,15 @@
 
 package dev.isxander.evergreenhud.config.profile
 
-import com.uchuhimo.konf.Config
-import com.uchuhimo.konf.source.toml
-import com.uchuhimo.konf.source.toml.toToml
+import com.electronwill.nightconfig.core.Config
+import com.electronwill.nightconfig.core.conversion.ObjectBinder
+import com.electronwill.nightconfig.core.conversion.ObjectConverter
+import com.electronwill.nightconfig.core.file.FileConfig
+import com.electronwill.nightconfig.core.io.WritingMode
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
+import dev.isxander.evergreenhud.utils.hoconFormat
+import dev.isxander.evergreenhud.utils.hoconWriter
 import java.io.File
 
 class ProfileManager {
@@ -33,11 +37,11 @@ class ProfileManager {
     fun load() {
         if (!PROFILES_DATA.exists()) save().also { return@load }
 
-        val data = attemptConversion(Config { addSpec(ProfileSpec) }.from.toml.file(PROFILES_DATA))
+        val data = attemptConversion(FileConfig.of(PROFILES_DATA).apply { load() })
         availableProfiles.clear()
-        data[ProfileSpec.profiles].forEach { availableProfiles[it.id] = it }
+        data.get<List<Config>>("profiles").map { ObjectConverter().toObject(it) { Profile {} } }.forEach { availableProfiles[it.id] = it }
 
-        val newCurrent = availableProfiles[data.getOrNull("current") ?: "default"]
+        val newCurrent = availableProfiles[data["current"] ?: "default"]
         if (newCurrent == null) {
             currentProfile = DEFAULT_PROFILE
             availableProfiles[currentProfile.id] = currentProfile
@@ -48,21 +52,23 @@ class ProfileManager {
 
     fun save() {
         PROFILES_DATA.parentFile.mkdirs()
-        Config {
-            addSpec(ProfileSpec)
-            this[ProfileSpec.schema] = SCHEMA
-            this[ProfileSpec.current] = currentProfile.id
-            this[ProfileSpec.profiles] = availableProfiles.values.toList()
-        }.toToml.toFile(PROFILES_DATA)
+
+        val config = Config.of(hoconFormat)
+
+        config.set<Int>("schema", SCHEMA)
+        config.set<String>("current", currentProfile.id)
+        config.set<List<Config>>("profiles", availableProfiles.values.toList().map { ObjectConverter().toConfig(it) { Config.of(hoconFormat) } })
+
+        hoconWriter.write(config, PROFILES_DATA, WritingMode.REPLACE)
     }
 
     @Suppress("UNUSED_EXPRESSION")
     private fun attemptConversion(data: Config): Config {
-        val currentSchema = data.getOrNull("schema") ?: 0
+        val currentSchema = data["schema"] ?: 0
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return Config()
+            return Config.of(hoconFormat)
         }
 
         // there is no point recoding every conversion
@@ -78,14 +84,17 @@ class ProfileManager {
             convertedSchema++
         }
 
-        convertedData.addSpec(ProfileSpec)
         return convertedData
     }
 
     companion object {
         const val SCHEMA = 1
-        val PROFILES_DATA = File(EvergreenHUD.dataDir, "profiles/profiles.toml")
-        val DEFAULT_PROFILE = Profile("default", "Default", "The default profile of EvergreenHUD")
+        val PROFILES_DATA = File(EvergreenHUD.dataDir, "profiles/profiles.conf")
+        val DEFAULT_PROFILE = Profile {
+            id = "default"
+            name = "Default"
+            description = "The default profile for EvergreenHUD"
+        }
     }
 
 }

@@ -27,7 +27,6 @@ import kotlin.reflect.jvm.isAccessible
 
 @Suppress("UNCHECKED_CAST")
 abstract class Setting<T, A>(val annotation: A, private val provider: IValueProvider<T>, val dataType: DataType, val hidden: Boolean = false) : IValueProvider<T> {
-
     abstract val name: String
     abstract val category: String
     abstract val subcategory: String
@@ -43,7 +42,10 @@ abstract class Setting<T, A>(val annotation: A, private val provider: IValueProv
     abstract var serializedValue: Any
     abstract val defaultSerializedValue: Any
     val nameSerializedKey: String
-        get() = name.lowercase().trim().replace(" ", "")
+        get() = name
+            .lowercase()
+            .replace(Regex("[^\\w]+"), "_")
+            .trim { it == '_' || it.isWhitespace() }
 
     fun reset() {
         value = default

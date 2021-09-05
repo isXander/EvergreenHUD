@@ -17,13 +17,13 @@
 
 package dev.isxander.evergreenhud.api.impl
 
-abstract class ULogManager {
+abstract class ULogManager : Logger {
     abstract operator fun get(name: String): Logger
 
     val default = get("EvergreenHUD")
-    fun info(msg: String) = default.info(msg)
-    fun warn(msg: String) = default.warn(msg)
-    fun err(msg: String) = default.err(msg)
+    override fun info(msg: String) = default.info(msg)
+    override fun warn(msg: String) = default.warn(msg)
+    override fun err(msg: String) = default.err(msg)
 }
 
 interface Logger {

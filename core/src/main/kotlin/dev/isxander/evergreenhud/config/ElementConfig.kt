@@ -17,12 +17,14 @@
 
 package dev.isxander.evergreenhud.config
 
-import com.uchuhimo.konf.Config
-import com.uchuhimo.konf.source.toml
-import com.uchuhimo.konf.source.toml.toToml
+import com.electronwill.nightconfig.core.Config
+import com.electronwill.nightconfig.core.file.FileConfig
+import com.electronwill.nightconfig.core.io.WritingMode
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.elements.ElementManager
+import dev.isxander.evergreenhud.utils.hoconFormat
+import dev.isxander.evergreenhud.utils.hoconWriter
 import java.io.File
 
 class ElementConfig(private val manager: ElementManager) {
@@ -30,31 +32,30 @@ class ElementConfig(private val manager: ElementManager) {
     private var shouldSave = false
 
     fun save() {
-        val data = Config {
-            this["schema"] = SCHEMA
-        }
+        val data = Config.of(hoconFormat)
+        data.set<Int>("schema", SCHEMA)
 
         val arr = mutableListOf<Config>()
         for (element in manager) {
-            arr.add(Config {
-                this["id"] = manager.getElementId(element)
-                this["data"] = element.conf
+            arr.add(Config.of(hoconFormat).apply {
+                set<String>("id", manager.getElementId(element))
+                set<Config>("data", element.conf)
             })
         }
-        data["elements"] = arr
+        data.set<List<Config>>("elements", arr)
 
         CONFIG_FILE.parentFile.mkdirs()
-        data.toToml.toFile(CONFIG_FILE)
+        hoconWriter.write(data, CONFIG_FILE, WritingMode.REPLACE)
         shouldSave = false
     }
 
     fun load() {
         if (!CONFIG_FILE.exists()) save().also { return@load }
-        val data = attemptConversion(Config().from.toml.file(CONFIG_FILE))
+        val data = attemptConversion(FileConfig.of(CONFIG_FILE).apply { load() })
 
         val arr: List<Config> = data["elements"]
         for (elementData in arr) {
-            val id = elementData.getOrNull("id") ?: "null"
+            val id = elementData["id"] ?: "null"
             val element = manager.getNewElementInstance(id)
 
             if (element == null) {
@@ -71,11 +72,11 @@ class ElementConfig(private val manager: ElementManager) {
 
     @Suppress("UNUSED_EXPRESSION")
     private fun attemptConversion(data: Config): Config {
-        val currentSchema = data.getOrNull("schema") ?: 0
+        val currentSchema = data["schema"] ?: 0
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return Config()
+            return Config.of(hoconFormat)
         }
 
         // there is no point recoding every conversion
@@ -97,7 +98,7 @@ class ElementConfig(private val manager: ElementManager) {
     companion object {
         const val SCHEMA = 4
         val CONFIG_FILE: File
-            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.toml")
+            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.conf")
     }
 
 }
