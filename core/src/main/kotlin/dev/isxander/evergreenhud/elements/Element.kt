@@ -23,7 +23,7 @@ import dev.isxander.evergreenhud.api.MCVersion
 import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.config.ConfigProcessor
 import dev.isxander.evergreenhud.settings.Setting
-import dev.isxander.evergreenhud.settings.settingAdapter
+import dev.isxander.evergreenhud.settings.SettingAdapter
 import dev.isxander.evergreenhud.settings.impl.*
 import dev.isxander.evergreenhud.utils.*
 import kotlin.reflect.full.findAnnotation
@@ -39,7 +39,7 @@ abstract class Element : ConfigProcessor {
         }
 
     @FloatSetting(name = "Scale", category = "Render", description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
-    val scale = settingAdapter(100f) {
+    val scale = SettingAdapter(100f) {
         set {
             position.scale = it / 100f
             it
@@ -62,7 +62,6 @@ abstract class Element : ConfigProcessor {
         preinit()
         collectSettings(this, settings::add)
         init()
-        for (setting in settings) logger.info(setting.name)
 
         preloaded = true
         return this
@@ -97,13 +96,13 @@ abstract class Element : ConfigProcessor {
 
     override var conf: Config
         get() {
-            val config = Config.of(hoconFormat).apply {
+            val config = Config.of(tomlFormat).apply {
                 set<Float>("x", position.scaledX)
                 set<Float>("y", position.scaledY)
                 set<Float>("scale", position.scale)
             }
 
-            var settingsData = Config.of(hoconFormat)
+            var settingsData = Config.of(tomlFormat)
             for (setting in settings) {
                 if (!setting.shouldSave) continue
                 settingsData = addSettingToConfig(setting, settingsData)
@@ -113,15 +112,13 @@ abstract class Element : ConfigProcessor {
             return config
         }
         set(value) {
-            position.scaledX = value["x"] ?: position.scaledX
-            position.scaledY = value["y"] ?: position.scaledY
-            position.scale = value["scale"] ?: position.scale
+            position.scaledX = value.get<Double>("x")?.toFloat() ?: position.scaledX
+            position.scaledY = value.get<Double>("y")?.toFloat() ?: position.scaledY
+            position.scale = value.get<Double>("scale")?.toFloat() ?: position.scale
 
-            val settingsData = value["settings"] ?: Config.of(hoconFormat)
+            val settingsData = value["settings"] ?: Config.of(tomlFormat)
             for (setting in settings) {
-                var category: Config = settingsData[setting.category]
-                if (setting.subcategory != "") category = value[setting.subcategory]
-                setSettingFromConfig(category, setting)
+                setSettingFromConfig(settingsData, setting)
             }
         }
 

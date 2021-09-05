@@ -54,11 +54,15 @@ interface ConfigProcessor {
     }
 
     fun setSettingFromConfig(data: Config, setting: Setting<*, *>) {
+        var key = "${setting.category}."
+        if (setting.subcategory != "") key += "${setting.subcategory}."
+        key += setting.nameSerializedKey
+
         when (setting.dataType) {
-            DataType.BOOLEAN -> setting.serializedValue = data[setting.nameSerializedKey] ?: setting.defaultSerializedValue as Boolean
-            DataType.FLOAT -> setting.serializedValue = data[setting.nameSerializedKey] ?: setting.defaultSerializedValue as Float
-            DataType.INT -> setting.serializedValue = data[setting.nameSerializedKey] ?: setting.defaultSerializedValue as Int
-            DataType.STRING -> setting.serializedValue = data[setting.nameSerializedKey] ?: setting.defaultSerializedValue as String
+            DataType.BOOLEAN -> setting.serializedValue = data[key] ?: setting.defaultSerializedValue as Boolean
+            DataType.FLOAT -> setting.serializedValue = data.get<Double>(key)?.toFloat() ?: setting.defaultSerializedValue as Float
+            DataType.INT -> setting.serializedValue = data[key] ?: setting.defaultSerializedValue as Int
+            DataType.STRING -> setting.serializedValue = data[key] ?: setting.defaultSerializedValue as String
         }
     }
 

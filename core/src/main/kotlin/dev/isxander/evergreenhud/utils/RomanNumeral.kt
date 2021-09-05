@@ -39,10 +39,8 @@ private val numerals = sortedMapOf(
 private val numeralCache = hashMapOf<Int, String>()
 
 fun getRoman(arabic: Int): String =
-    numeralCache.computeIfAbsent(arabic) { toRoman(it) }
-
-private fun toRoman(arabic: Int): String {
-    val l = numerals.floorKey(arabic)
-    if (arabic == l) return numerals[arabic]!!
-    return numerals[l]!! + toRoman(arabic - 1)
-}
+    numeralCache.computeIfAbsent(arabic) {
+        val l = numerals.floorKey(it)
+        if (arabic == l) return@computeIfAbsent numerals[it]!!
+        return@computeIfAbsent numerals[l]!! + getRoman(it - 1)
+    }

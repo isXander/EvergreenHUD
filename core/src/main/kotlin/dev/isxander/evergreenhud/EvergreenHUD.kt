@@ -24,7 +24,6 @@ import dev.isxander.evergreenhud.api.impl.registerKeybind
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.utils.Keyboard
 import dev.isxander.evergreenhud.config.profile.ProfileManager
-import dev.isxander.evergreenhud.elements.impl.ElementFps
 import dev.isxander.evergreenhud.gui.MainGui
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
@@ -77,8 +76,6 @@ object EvergreenHUD {
         elementManager = ElementManager().apply {
             mainConfig.load()
             elementConfig.load()
-            addElement(ElementFps())
-            elementConfig.save()
         }
 
         if (!mc.devEnv) {

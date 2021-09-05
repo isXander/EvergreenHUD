@@ -18,6 +18,7 @@
 package dev.isxander.evergreenhud.elements
 
 import com.electronwill.nightconfig.core.Config
+import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.api.mcVersion
 import dev.isxander.evergreenhud.api.profiler
@@ -28,8 +29,9 @@ import dev.isxander.evergreenhud.event.RenderHUDEvent
 import dev.isxander.evergreenhud.event.on
 import dev.isxander.evergreenhud.settings.Setting
 import dev.isxander.evergreenhud.settings.impl.*
-import dev.isxander.evergreenhud.utils.hoconFormat
+import dev.isxander.evergreenhud.utils.tomlFormat
 import io.github.classgraph.ClassGraph
+import me.kbrewster.eventbus.Subscribe
 import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -62,9 +64,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         collectSettings(this) { settings.add(it) }
         findAndRegisterElements()
 
-        on<RenderHUDEvent>()
-            .filter { enabled }
-            .subscribe(this::renderElements)
+        EvergreenHUD.eventBus.register(this)
     }
 
     fun addElement(element: Element) {
@@ -86,17 +86,15 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         ClassGraph()
             .enableClassInfo()
             .enableAnnotationInfo()
-            .acceptClasses(Element::class.qualifiedName)
+         //   .acceptClasses(Element::class.qualifiedName)
             .acceptPackages("dev.isxander.evergreenhud.elements.impl")
             .scan()
             .use { scanResult ->
                 for (routeClassInfo in scanResult.getClassesWithAnnotation(ElementMeta::class.java)) {
                     val clazz = routeClassInfo.loadClass().kotlin
-                    if (!clazz.java.isAssignableFrom(Element::class.java)) continue
-
                     val annotation = clazz.findAnnotation<ElementMeta>()!!
-                    availableElements[annotation.id] = clazz as KClass<out Element>
 
+                    availableElements[annotation.id] = clazz as KClass<out Element>
                     logger.info("Registered ${annotation.name}")
                 }
             }
@@ -122,7 +120,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
      */
     fun getElementId(element: Element): String? {
         for ((id, clazz) in availableElements) {
-            if (clazz == element.javaClass) {
+            if (clazz == element::class) {
                 return id
             }
         }
@@ -137,6 +135,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         currentElements.clear()
     }
 
+    @Subscribe
     fun renderElements(event: RenderHUDEvent) {
         profiler.push("EvergreenHUD Render")
         for (e in currentElements) {
@@ -159,7 +158,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 
     override var conf: Config
         get() {
-            var data = Config.of(hoconFormat)
+            var data = Config.of(tomlFormat)
 
             for (setting in settings) {
                 if (!setting.shouldSave) continue
@@ -170,15 +169,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         }
         set(value) {
             for (setting in settings) {
-                var category: Config = value[setting.category]
-                    ?: value.set(setting.category, Config.of(hoconFormat))
-                    ?: value[setting.category]
-
-                if (setting.subcategory != "") category = value[setting.subcategory]
-                    ?: value.set(setting.subcategory, Config.of(hoconFormat))
-                    ?: value[setting.subcategory]
-
-                setSettingFromConfig(category, setting)
+                setSettingFromConfig(value, setting)
             }
         }
 

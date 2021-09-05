@@ -21,7 +21,6 @@ import dev.isxander.evergreenhud.api.gl
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.settings.SettingAdapter
-import dev.isxander.evergreenhud.settings.settingAdapter
 import dev.isxander.evergreenhud.settings.impl.BooleanSetting
 import dev.isxander.evergreenhud.settings.impl.ColorSetting
 import dev.isxander.evergreenhud.settings.impl.FloatSetting
@@ -31,7 +30,7 @@ import java.awt.Color
 abstract class BackgroundElement : Element() {
 
     @BooleanSetting(name = "Enabled", category = "Background", description = "If the background is rendered.")
-    val backgroundEnabled = settingAdapter(true) {
+    val backgroundEnabled = SettingAdapter(true) {
         set { enabled ->
             val new = if (enabled) Color(backgroundColor.get().red, backgroundColor.get().green, backgroundColor.get().blue, 100)
             else Color(backgroundColor.get().red, backgroundColor.get().green, backgroundColor.get().blue, 0)
@@ -42,7 +41,7 @@ abstract class BackgroundElement : Element() {
     }
 
     @ColorSetting(name = "Color", category = "Background", description = "The color of the background.")
-    val backgroundColor: SettingAdapter<Color> = settingAdapter(Color(0, 0, 0, 100)) {
+    val backgroundColor: SettingAdapter<Color> = SettingAdapter(Color(0, 0, 0, 100)) {
         set {
             val enabled = it.alpha != 0
             if (backgroundEnabled.get() != enabled) backgroundEnabled.value = enabled
@@ -51,7 +50,7 @@ abstract class BackgroundElement : Element() {
     }
 
     @BooleanSetting(name = "Enabled", category = "Outline", description = "If the background is rendered.")
-    val outlineEnabled: SettingAdapter<Boolean> = settingAdapter(false) {
+    val outlineEnabled: SettingAdapter<Boolean> = SettingAdapter(false) {
         set { enabled ->
             val new = if (enabled) Color(outlineColor.get().red, outlineColor.get().green, outlineColor.get().blue, 255)
             else Color(outlineColor.get().red, outlineColor.get().green, outlineColor.get().blue, 0)
@@ -62,7 +61,7 @@ abstract class BackgroundElement : Element() {
     }
 
     @ColorSetting(name = "Color", category = "Outline", description = "The color of the outline.")
-    val outlineColor: SettingAdapter<Color> = settingAdapter(Color(0, 0, 0, 0)) {
+    val outlineColor: SettingAdapter<Color> = SettingAdapter(Color(0, 0, 0, 0)) {
         set {
             val enabled = it.alpha != 0
             if (outlineEnabled.get() != enabled) outlineEnabled.value = enabled

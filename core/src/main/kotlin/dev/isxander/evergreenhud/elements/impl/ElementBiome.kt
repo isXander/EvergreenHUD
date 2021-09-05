@@ -24,7 +24,6 @@ import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 
 @ElementMeta(id = "BIOME", name = "Biome Display", description = "Displays the current biome you are in.", category = "World")
 class ElementBiome : SimpleTextElement() {
-
     override var title: String = "Biome"
 
     override fun calculateValue(): String {

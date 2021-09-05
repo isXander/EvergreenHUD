@@ -23,10 +23,9 @@ import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement
-import dev.isxander.evergreenhud.settings.SettingAdapter
 import dev.isxander.evergreenhud.settings.impl.*
 import dev.isxander.evergreenhud.settings.providers.AdapterProvider
-import dev.isxander.evergreenhud.settings.settingAdapter
+import dev.isxander.evergreenhud.settings.SettingAdapter
 import dev.isxander.evergreenhud.utils.drawString
 import dev.isxander.evergreenhud.utils.getRoman
 import dev.isxander.evergreenhud.utils.ticksToTime
@@ -37,7 +36,6 @@ import kotlin.reflect.full.primaryConstructor
 
 @ElementMeta(id = "POTIONS", name = "PotionHUD", category = "Player", description = "Display potions.")
 class ElementPotionHUD : BackgroundElement() {
-
     @BooleanSetting(name = "Visible", category = "Title", description = "If the title should be rendered.")
     var titleVisible = true
 
@@ -51,7 +49,7 @@ class ElementPotionHUD : BackgroundElement() {
     var titleChroma = false
 
     @FloatSetting(name = "Chroma Speed", category = "Title", description = "How fast should the chroma wave be?", min = 500f, max = 10000f)
-    val titleChromaSpeed = settingAdapter(2000f) {
+    val titleChromaSpeed = SettingAdapter(2000f) {
         depends { titleChroma }
     }
 
@@ -87,7 +85,7 @@ class ElementPotionHUD : BackgroundElement() {
     var durationChroma = false
 
     @FloatSetting(name = "Chroma Speed", category = "Duration", description = "How fast should the chroma wave be?", min = 500f, max = 10000f)
-    val durationChromaSpeed = settingAdapter(2000f) {
+    val durationChromaSpeed = SettingAdapter(2000f) {
         depends { durationChroma }
     }
 
@@ -129,14 +127,14 @@ class ElementPotionHUD : BackgroundElement() {
             if (potion.instant) continue
 
             val name = translation[potion.translation]
-            val setting = settingAdapter(true) {}
-
+            val setting = SettingAdapter(true) {}
             settings.add(
                 BooleanSettingWrapped(
                     // you can only instantiate an annotation through reflection
                     BooleanSetting::class.primaryConstructor!!.call(
                         name,
-                        arrayOf("Toggles"),
+                        "Toggles",
+                        "",
                         "Display $name on the list.",
                         true
                     ),

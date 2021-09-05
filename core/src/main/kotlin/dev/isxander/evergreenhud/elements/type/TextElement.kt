@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.elements.type
 
-import dev.isxander.evergreenhud.settings.settingAdapter
+import dev.isxander.evergreenhud.settings.SettingAdapter
 import dev.isxander.evergreenhud.settings.impl.*
 import dev.isxander.evergreenhud.utils.HitBox2D
 import java.awt.Color
@@ -37,7 +37,7 @@ abstract class TextElement : BackgroundElement() {
     var chroma = false
 
     @IntSetting(name = "Chroma Speed", category = "Text", description = "How fast should the chroma wave be?", min = 500, max = 10000)
-    val chromaSpeed = settingAdapter(2000) {
+    val chromaSpeed = SettingAdapter(2000) {
         depends { chroma }
     }
 
@@ -48,7 +48,7 @@ abstract class TextElement : BackgroundElement() {
     var alignment = Alignment.LEFT
 
     @IntSetting(name = "Text Cache", category = "Text", description = "How many render ticks to wait before regenerating the text. (Can positively impact performance)", min = 0, max = 20)
-    open var cacheTime = 1
+    open var cacheTime = 5
     var renderCount = 0
 
     override fun calculateHitBox(glScale: Float, drawScale: Float): HitBox2D {

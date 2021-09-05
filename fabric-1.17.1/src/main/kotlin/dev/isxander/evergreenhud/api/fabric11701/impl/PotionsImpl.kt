@@ -43,7 +43,7 @@ class PotionsImpl : UPotions() {
         val effectManager = mc.statusEffectSpriteManager
         val sprite = effectManager.getSprite(UStatusEffects.values()[potion.id].effect)
         RenderSystem.setShaderTexture(0, sprite.atlas.id)
-        DrawableHelper.drawSprite(Main.matrices, x.toInt() + 6, y.toInt() + 7, 0, 18, 18, sprite)
+        DrawableHelper.drawSprite(Main.matrices, x.toInt(), y.toInt(), 0, 18, 18, sprite)
     }
 }
 

@@ -24,8 +24,7 @@ import me.kbrewster.eventbus.Subscribe
 
 @ElementMeta(id = "FPS", name = "FPS Display", category = "Simple", description = "Display how many times your screen is updating every second.")
 class ElementFps : SimpleTextElement() {
-
-    private var lastTime = System.currentTimeMillis()
+    private var lastTime = System.currentTimeMillis().toDouble()
     private val frameTimes = ArrayList<Double>()
 
     override var title: String = "FPS"
@@ -33,14 +32,15 @@ class ElementFps : SimpleTextElement() {
 
     override fun calculateValue(): String {
         // calculate mean of frame times and convert to FPS
-        val fps = (1 / (frameTimes.sum() / frameTimes.size)).toString()
+        val fps = (1000 / (frameTimes.sum() / frameTimes.size)).toInt().toString()
         frameTimes.clear()
         return fps
     }
 
     @Subscribe
     fun onRender(event: RenderTickEvent) {
-        frameTimes.add((System.currentTimeMillis() - lastTime) / 1000.0)
+        frameTimes.add(System.currentTimeMillis() - lastTime)
+        lastTime = System.currentTimeMillis().toDouble()
     }
 
 }

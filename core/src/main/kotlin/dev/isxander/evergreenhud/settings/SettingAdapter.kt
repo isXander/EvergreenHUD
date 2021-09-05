@@ -17,22 +17,22 @@
 
 package dev.isxander.evergreenhud.settings
 
-fun <T> settingAdapter(value: T, lambda: SettingAdapter<T>.() -> Unit): SettingAdapter<T> {
-    return SettingAdapter(value).apply(lambda)
-}
-
-class SettingAdapter<T> internal constructor(var value: T) {
+class SettingAdapter<T> (var value: T, lambda: SettingAdapter<T>.() -> Unit = {}) {
     private var getter: (T) -> T = { it }
     private var setter: (T) -> T = { it }
     private var depends: MutableList<(T) -> Boolean> = mutableListOf()
+
+    init {
+        this.apply(lambda)
+    }
 
     fun get(lambda: (T) -> T) { getter = lambda }
     fun set(lambda: (T) -> T) { setter = lambda }
     fun depends(lambda: (T) -> Boolean) = depends.add(lambda)
 
-    fun get(): T = getter.invoke(value)
+    fun get(): T = getter(value)
     fun set(new: T) {
-        value = setter.invoke(new)
+        value = setter(new)
     }
 
     val hidden: Boolean

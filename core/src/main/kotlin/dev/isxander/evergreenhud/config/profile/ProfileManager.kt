@@ -18,14 +18,13 @@
 package dev.isxander.evergreenhud.config.profile
 
 import com.electronwill.nightconfig.core.Config
-import com.electronwill.nightconfig.core.conversion.ObjectBinder
 import com.electronwill.nightconfig.core.conversion.ObjectConverter
 import com.electronwill.nightconfig.core.file.FileConfig
 import com.electronwill.nightconfig.core.io.WritingMode
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
-import dev.isxander.evergreenhud.utils.hoconFormat
-import dev.isxander.evergreenhud.utils.hoconWriter
+import dev.isxander.evergreenhud.utils.tomlFormat
+import dev.isxander.evergreenhud.utils.tomlWriter
 import java.io.File
 
 class ProfileManager {
@@ -53,13 +52,13 @@ class ProfileManager {
     fun save() {
         PROFILES_DATA.parentFile.mkdirs()
 
-        val config = Config.of(hoconFormat)
+        val config = Config.of(tomlFormat)
 
         config.set<Int>("schema", SCHEMA)
         config.set<String>("current", currentProfile.id)
-        config.set<List<Config>>("profiles", availableProfiles.values.toList().map { ObjectConverter().toConfig(it) { Config.of(hoconFormat) } })
+        config.set<List<Config>>("profiles", availableProfiles.values.toList().map { ObjectConverter().toConfig(it) { Config.of(tomlFormat) } })
 
-        hoconWriter.write(config, PROFILES_DATA, WritingMode.REPLACE)
+        tomlWriter.write(config, PROFILES_DATA, WritingMode.REPLACE)
     }
 
     @Suppress("UNUSED_EXPRESSION")
@@ -68,7 +67,7 @@ class ProfileManager {
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return Config.of(hoconFormat)
+            return Config.of(tomlFormat)
         }
 
         // there is no point recoding every conversion
@@ -89,7 +88,7 @@ class ProfileManager {
 
     companion object {
         const val SCHEMA = 1
-        val PROFILES_DATA = File(EvergreenHUD.dataDir, "profiles/profiles.conf")
+        val PROFILES_DATA = File(EvergreenHUD.dataDir, "profiles/profiles.toml")
         val DEFAULT_PROFILE = Profile {
             id = "default"
             name = "Default"

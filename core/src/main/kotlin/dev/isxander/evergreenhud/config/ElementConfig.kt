@@ -23,8 +23,8 @@ import com.electronwill.nightconfig.core.io.WritingMode
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.utils.hoconFormat
-import dev.isxander.evergreenhud.utils.hoconWriter
+import dev.isxander.evergreenhud.utils.tomlFormat
+import dev.isxander.evergreenhud.utils.tomlWriter
 import java.io.File
 
 class ElementConfig(private val manager: ElementManager) {
@@ -32,12 +32,12 @@ class ElementConfig(private val manager: ElementManager) {
     private var shouldSave = false
 
     fun save() {
-        val data = Config.of(hoconFormat)
+        val data = Config.of(tomlFormat)
         data.set<Int>("schema", SCHEMA)
 
         val arr = mutableListOf<Config>()
         for (element in manager) {
-            arr.add(Config.of(hoconFormat).apply {
+            arr.add(Config.of(tomlFormat).apply {
                 set<String>("id", manager.getElementId(element))
                 set<Config>("data", element.conf)
             })
@@ -45,7 +45,7 @@ class ElementConfig(private val manager: ElementManager) {
         data.set<List<Config>>("elements", arr)
 
         CONFIG_FILE.parentFile.mkdirs()
-        hoconWriter.write(data, CONFIG_FILE, WritingMode.REPLACE)
+        tomlWriter.write(data, CONFIG_FILE, WritingMode.REPLACE)
         shouldSave = false
     }
 
@@ -76,7 +76,7 @@ class ElementConfig(private val manager: ElementManager) {
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return Config.of(hoconFormat)
+            return Config.of(tomlFormat)
         }
 
         // there is no point recoding every conversion
@@ -98,7 +98,7 @@ class ElementConfig(private val manager: ElementManager) {
     companion object {
         const val SCHEMA = 4
         val CONFIG_FILE: File
-            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.conf")
+            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.toml")
     }
 
 }

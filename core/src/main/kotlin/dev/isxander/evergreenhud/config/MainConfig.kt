@@ -23,19 +23,19 @@ import com.electronwill.nightconfig.core.io.WritingMode
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.utils.hoconFormat
-import dev.isxander.evergreenhud.utils.hoconWriter
+import dev.isxander.evergreenhud.utils.tomlFormat
+import dev.isxander.evergreenhud.utils.tomlWriter
 import java.io.File
 
 class MainConfig(private val manager: ElementManager) {
 
     fun save() {
-        val data = Config.of(hoconFormat)
+        val data = Config.of(tomlFormat)
         data.set<Int>("schema", SCHEMA)
         data.set<Config>("data", manager.conf)
 
         CONFIG_FILE.parentFile.mkdirs()
-        hoconWriter.write(data, CONFIG_FILE, WritingMode.REPLACE)
+        tomlWriter.write(data, CONFIG_FILE, WritingMode.REPLACE)
     }
 
     fun load() {
@@ -51,7 +51,7 @@ class MainConfig(private val manager: ElementManager) {
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return Config.of(hoconFormat)
+            return Config.of(tomlFormat)
         }
 
         // there is no point recoding every conversion
@@ -73,7 +73,7 @@ class MainConfig(private val manager: ElementManager) {
     companion object {
         const val SCHEMA = 4
         val CONFIG_FILE: File
-            get() = File(EvergreenHUD.profileManager.profileDirectory, "global.conf")
+            get() = File(EvergreenHUD.profileManager.profileDirectory, "global.toml")
     }
 
 }
