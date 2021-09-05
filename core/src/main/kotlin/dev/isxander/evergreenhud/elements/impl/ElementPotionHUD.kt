@@ -23,9 +23,9 @@ import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement
-import dev.isxander.evergreenhud.settings.impl.*
-import dev.isxander.evergreenhud.settings.providers.AdapterProvider
-import dev.isxander.evergreenhud.settings.SettingAdapter
+import dev.isxander.settxi.impl.*
+import dev.isxander.settxi.providers.AdapterProvider
+import dev.isxander.settxi.SettingAdapter
 import dev.isxander.evergreenhud.utils.drawString
 import dev.isxander.evergreenhud.utils.getRoman
 import dev.isxander.evergreenhud.utils.ticksToTime
@@ -270,7 +270,7 @@ class ElementPotionHUD : BackgroundElement() {
     object PotionSorting : OptionContainer() {
         val ALPHABETICAL = option("Alphabetical", "Sort the potions by the alphabetical order of the name.")
         val DURATION = option("Duration", "Sort the potions by how long they have left.")
-        val VANILLA = option("Sort the potions in the way vanilla minecraft does.")
+        val VANILLA = option("Vanilla", "Sort the potions in the way vanilla minecraft does.")
     }
 
 }

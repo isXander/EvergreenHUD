@@ -20,8 +20,8 @@ package dev.isxander.evergreenhud.elements.type
 import dev.isxander.evergreenhud.api.fontRenderer
 import dev.isxander.evergreenhud.api.gl
 import dev.isxander.evergreenhud.elements.RenderOrigin
-import dev.isxander.evergreenhud.settings.impl.OptionContainer
-import dev.isxander.evergreenhud.settings.impl.OptionSetting
+import dev.isxander.settxi.impl.OptionContainer
+import dev.isxander.settxi.impl.OptionSetting
 import dev.isxander.evergreenhud.utils.drawString
 import java.lang.StringBuilder
 import kotlin.math.max

@@ -21,8 +21,8 @@ import dev.isxander.evergreenhud.api.mouseHelper
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.RenderTickEvent
-import dev.isxander.evergreenhud.settings.impl.OptionContainer
-import dev.isxander.evergreenhud.settings.impl.OptionSetting
+import dev.isxander.settxi.impl.OptionContainer
+import dev.isxander.settxi.impl.OptionSetting
 import me.kbrewster.eventbus.Subscribe
 import kotlin.collections.ArrayDeque
 

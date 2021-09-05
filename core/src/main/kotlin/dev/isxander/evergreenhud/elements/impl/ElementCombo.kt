@@ -22,8 +22,8 @@ import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.ServerDamageEntity
-import dev.isxander.evergreenhud.settings.impl.IntSetting
-import dev.isxander.evergreenhud.settings.impl.StringSetting
+import dev.isxander.settxi.impl.IntSetting
+import dev.isxander.settxi.impl.StringSetting
 import me.kbrewster.eventbus.Subscribe
 
 @ElementMeta(id = "COMBO_DISPLAY", name = "Combo Display", description = "Display how many hits you get on a player before they hit you.", category = "Combat")

@@ -20,10 +20,10 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.api.mc
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.MultiLineTextElement
-import dev.isxander.evergreenhud.settings.impl.BooleanSetting
-import dev.isxander.evergreenhud.settings.impl.IntSetting
-import dev.isxander.evergreenhud.settings.impl.OptionContainer
-import dev.isxander.evergreenhud.settings.impl.OptionSetting
+import dev.isxander.settxi.impl.BooleanSetting
+import dev.isxander.settxi.impl.IntSetting
+import dev.isxander.settxi.impl.OptionContainer
+import dev.isxander.settxi.impl.OptionSetting
 import dev.isxander.evergreenhud.utils.Facing
 import java.text.DecimalFormat
 

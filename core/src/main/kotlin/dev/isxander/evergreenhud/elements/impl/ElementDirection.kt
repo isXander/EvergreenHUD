@@ -20,7 +20,7 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.api.mc
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
-import dev.isxander.evergreenhud.settings.impl.BooleanSetting
+import dev.isxander.settxi.impl.BooleanSetting
 import dev.isxander.evergreenhud.utils.Facing
 
 @ElementMeta(id = "DIRECTION", name = "Direction", category = "Player", description = "Which way the player is facing.")

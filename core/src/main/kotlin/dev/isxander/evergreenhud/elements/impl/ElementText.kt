@@ -19,7 +19,7 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
-import dev.isxander.evergreenhud.settings.impl.StringSetting
+import dev.isxander.settxi.impl.StringSetting
 
 @ElementMeta(id = "TEXT", name = "Text Display", category = "Other", description = "Displays custom text of your choosing.")
 class ElementText : SimpleTextElement() {

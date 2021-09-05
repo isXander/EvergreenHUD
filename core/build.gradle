@@ -18,6 +18,8 @@ repositories {
 }
 
 dependencies {
+    api(project(":settxi"))
+
     api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30'
     api 'org.jetbrains.kotlin:kotlin-reflect:1.5.30'
 

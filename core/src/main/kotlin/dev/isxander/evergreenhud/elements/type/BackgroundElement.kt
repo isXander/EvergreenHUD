@@ -20,10 +20,10 @@ package dev.isxander.evergreenhud.elements.type
 import dev.isxander.evergreenhud.api.gl
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
-import dev.isxander.evergreenhud.settings.SettingAdapter
-import dev.isxander.evergreenhud.settings.impl.BooleanSetting
-import dev.isxander.evergreenhud.settings.impl.ColorSetting
-import dev.isxander.evergreenhud.settings.impl.FloatSetting
+import dev.isxander.settxi.SettingAdapter
+import dev.isxander.settxi.impl.BooleanSetting
+import dev.isxander.settxi.impl.ColorSetting
+import dev.isxander.settxi.impl.FloatSetting
 import dev.isxander.evergreenhud.utils.HitBox2D
 import java.awt.Color
 

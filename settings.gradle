@@ -16,6 +16,8 @@ rootProject.name = "EvergreenHUD"
 include(
         "core",
         "forge-1.8.9",
-        "fabric-1.17.1"
+        "fabric-1.17.1",
+
+        "settxi"
 )
 

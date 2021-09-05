@@ -17,8 +17,8 @@
 
 package dev.isxander.evergreenhud.elements.type
 
-import dev.isxander.evergreenhud.settings.SettingAdapter
-import dev.isxander.evergreenhud.settings.impl.*
+import dev.isxander.settxi.SettingAdapter
+import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.HitBox2D
 import java.awt.Color
 

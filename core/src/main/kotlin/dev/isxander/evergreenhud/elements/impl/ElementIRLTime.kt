@@ -19,7 +19,7 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
-import dev.isxander.evergreenhud.settings.impl.BooleanSetting
+import dev.isxander.settxi.impl.BooleanSetting
 import java.text.SimpleDateFormat
 import java.util.*
 

@@ -22,14 +22,13 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.api.mcVersion
 import dev.isxander.evergreenhud.api.profiler
-import dev.isxander.evergreenhud.config.ConfigProcessor
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
 import dev.isxander.evergreenhud.event.RenderHUDEvent
-import dev.isxander.evergreenhud.event.on
-import dev.isxander.evergreenhud.settings.Setting
-import dev.isxander.evergreenhud.settings.impl.*
+import dev.isxander.settxi.Setting
+import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.tomlFormat
+import dev.isxander.settxi.serialization.ConfigProcessor
 import io.github.classgraph.ClassGraph
 import me.kbrewster.eventbus.Subscribe
 import java.lang.IllegalArgumentException

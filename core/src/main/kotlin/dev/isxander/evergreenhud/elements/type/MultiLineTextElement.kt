@@ -20,7 +20,7 @@ package dev.isxander.evergreenhud.elements.type
 import dev.isxander.evergreenhud.api.fontRenderer
 import dev.isxander.evergreenhud.api.gl
 import dev.isxander.evergreenhud.elements.RenderOrigin
-import dev.isxander.evergreenhud.settings.impl.IntSetting
+import dev.isxander.settxi.impl.IntSetting
 import dev.isxander.evergreenhud.utils.drawString
 import gg.essential.universal.ChatColor
 import kotlin.math.max
