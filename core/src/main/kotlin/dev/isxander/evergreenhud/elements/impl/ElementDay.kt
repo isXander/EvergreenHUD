@@ -23,7 +23,6 @@ import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 
 @ElementMeta(id = "DAY_COUNTER", name = "Day Counter", description = "Displays the current day in the world.", category = "World")
 class ElementDay : SimpleTextElement() {
-
     override var title: String = "Day"
 
     override fun calculateValue(): String {

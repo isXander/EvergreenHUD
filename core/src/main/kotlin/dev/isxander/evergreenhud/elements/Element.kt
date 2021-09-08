@@ -23,13 +23,12 @@ import dev.isxander.evergreenhud.api.MCVersion
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.*
-import dev.isxander.settxi.SettingAdapter
 import dev.isxander.settxi.serialization.ConfigProcessor
 import kotlin.reflect.full.findAnnotation
 
 abstract class Element : ConfigProcessor {
     private var preloaded = false
-    val settings: ArrayList<Setting<*, *>> = ArrayList()
+    override val settings: MutableList<Setting<*>> = mutableListOf()
     val metadata: ElementMeta = this::class.findAnnotation()!!
     var position: Position2D =
         scaledPosition {
@@ -37,8 +36,19 @@ abstract class Element : ConfigProcessor {
             y = 0.5f
         }
 
-    @FloatSetting(name = "Scale", category = "Render", description = "How large the element is rendered.", min = 50f, max = 200f, suffix = "%", save = false)
-    val scale = SettingAdapter(100f) {
+    init {
+        init()
+    }
+
+    var scale by float(
+        default = 100f,
+        name = "Scale",
+        description = "How large the element appears on the screen.",
+        category = "Render",
+        min = 50f,
+        max = 500f,
+        shouldSave = false,
+    ) {
         set {
             position.scale = it / 100f
             it
@@ -46,29 +56,27 @@ abstract class Element : ConfigProcessor {
         get { position.scale * 100f }
     }
 
-    @BooleanSetting(name = "Show In Chat", category = "Visibility", description = "Whether or not element should be displayed in the chat menu. (Takes priority over show under gui)")
-    var showInChat: Boolean = false
+    var showInChat by boolean(
+        default = false,
+        name = "Show In Chat",
+        category = "Visibility",
+        description = "Render the element if you are in the chat. (Takes priority over show under gui)"
+    )
 
-    @BooleanSetting(name = "Show In F3", category = "Visibility", description = "Whether or not element should be displayed when you have the debug menu open.")
-    var showInDebug: Boolean = false
+    var showInDebug by boolean(
+        default = false,
+        name = "Show In F3",
+        category = "Visibility",
+        description = "Show the element if you have the debug screen (F3 menu) open.",
+    )
 
-    @BooleanSetting(name = "Show Under GUIs", category = "Visibility", description = "Whether or not element should be displayed when you have a gui open.")
-    var showUnderGui: Boolean = false
+    var showUnderGui by boolean(
+        default = true,
+        name = "Show Under GUIs",
+        category = "Visibility",
+        description = "Render the element even when you have a gui open."
+    )
 
-    fun preload(): Element {
-        if (preloaded) return this
-
-        preinit()
-        collectSettings(this, settings::add)
-        init()
-
-        preloaded = true
-        return this
-    }
-
-    /* called before settings have loaded */
-    open fun preinit() {}
-    /* called after settings have loaded */
     open fun init() {}
 
     /* called when element is added */
@@ -93,7 +101,7 @@ abstract class Element : ConfigProcessor {
         if (save) EvergreenHUD.elementManager.elementConfig.save()
     }
 
-    override var conf: Config
+    var conf: Config
         get() {
             val config = Config.of(tomlFormat).apply {
                 set<Float>("x", position.scaledX)

@@ -21,80 +21,138 @@ import dev.isxander.evergreenhud.api.gl
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.settxi.SettingAdapter
-import dev.isxander.settxi.impl.BooleanSetting
-import dev.isxander.settxi.impl.ColorSetting
-import dev.isxander.settxi.impl.FloatSetting
 import dev.isxander.evergreenhud.utils.HitBox2D
+import dev.isxander.settxi.impl.*
+import gg.essential.elementa.utils.withIndex
 import java.awt.Color
 
 abstract class BackgroundElement : Element() {
 
-    @BooleanSetting(name = "Enabled", category = "Background", description = "If the background is rendered.")
-    val backgroundEnabled = SettingAdapter(true) {
+    var backgroundEnabled by boolean(
+        default = true,
+        name = "Enabled",
+        category = "Background",
+        description = "If the background is rendered."
+    ) {
         set { enabled ->
-            val new = if (enabled) Color(backgroundColor.get().red, backgroundColor.get().green, backgroundColor.get().blue, 100)
-            else Color(backgroundColor.get().red, backgroundColor.get().green, backgroundColor.get().blue, 0)
-            if (backgroundColor.get() != new) backgroundColor.value = new
+            val new = if (enabled) Color(backgroundColor.red, backgroundColor.green, backgroundColor.blue, 100)
+            else Color(backgroundColor.red, backgroundColor.green, backgroundColor.blue, 0)
+            if (backgroundColor != new) backgroundColor = new
 
             return@set enabled
         }
     }
 
-    @ColorSetting(name = "Color", category = "Background", description = "The color of the background.")
-    val backgroundColor: SettingAdapter<Color> = SettingAdapter(Color(0, 0, 0, 100)) {
+    var backgroundColor: Color by color(
+        default = Color(0, 0, 0, 100),
+        name = "Color",
+        category = "Background",
+        description = "The color of the background."
+    ) {
         set {
             val enabled = it.alpha != 0
-            if (backgroundEnabled.get() != enabled) backgroundEnabled.value = enabled
+            if (backgroundEnabled != enabled) backgroundEnabled = enabled
             return@set it
         }
     }
 
-    @BooleanSetting(name = "Enabled", category = "Outline", description = "If the background is rendered.")
-    val outlineEnabled: SettingAdapter<Boolean> = SettingAdapter(false) {
+    var outlineEnabled by boolean(
+        default = false,
+        name = "Enabled",
+        category = "Outline",
+        description = "If the background is rendered."
+    ) {
         set { enabled ->
-            val new = if (enabled) Color(outlineColor.get().red, outlineColor.get().green, outlineColor.get().blue, 255)
-            else Color(outlineColor.get().red, outlineColor.get().green, outlineColor.get().blue, 0)
-            if (outlineColor.get() != new) outlineColor.value = new
+            val new = if (enabled) Color(outlineColor.red, outlineColor.green, outlineColor.blue, 255)
+            else Color(outlineColor.red, outlineColor.green, outlineColor.blue, 0)
+            if (outlineColor != new) outlineColor = new
 
             return@set enabled
         }
     }
 
-    @ColorSetting(name = "Color", category = "Outline", description = "The color of the outline.")
-    val outlineColor: SettingAdapter<Color> = SettingAdapter(Color(0, 0, 0, 0)) {
+    var outlineColor: Color by color(
+        default = Color(0, 0, 0, 0),
+        name = "Color",
+        category = "Outline",
+        description = "The color of the outline."
+    ) {
         set {
             val enabled = it.alpha != 0
-            if (outlineEnabled.get() != enabled) outlineEnabled.value = enabled
+            if (outlineEnabled != enabled) outlineEnabled = enabled
             return@set it
         }
     }
 
-    @FloatSetting(name = "Thickness", category = "Outline", description = "How thick the outline is.", min = 0.5f, max = 8f)
-    var outlineThickness = 1f
+    var outlineThickness by float(
+        default = 1f,
+        name = "Thickness",
+        category = "Outline",
+        description = "How thick the outline is.",
+        min = 0.5f,
+        max = 8f
+    )
 
-    @FloatSetting(name = "Padding (Left)", category = "Background", subcategory = "Padding", description = "How far the background extends to the left past the content.", min = 0f, max = 12f, suffix = " px")
-    var paddingLeft = 4f
-    @FloatSetting(name = "Padding (Right)", category = "Background", subcategory = "Padding", description = "How far the background extends to the right past the content.", min = 0f, max = 12f, suffix = " px")
-    var paddingRight = 4f
-    @FloatSetting(name = "Padding (Top)", category = "Background", subcategory = "Padding", description = "How far the background extends to the top past the content.", min = 0f, max = 12f, suffix = " px")
-    var paddingTop = 4f
-    @FloatSetting(name = "Padding (Bottom)", category = "Background", subcategory = "Padding", description = "How far the background extends to the bottom past the content.", min = 0f, max = 12f, suffix = " px")
-    var paddingBottom = 4f
+    var paddingLeft by float(
+        default = 4f,
+        name = "Padding (Left)",
+        category = "Background",
+        subcategory = "Padding",
+        description = "How far the background extends to the left.",
+        min = 0f,
+        max = 12f
+    )
 
-    @FloatSetting(name = "Corner Radius", category = "Background", description = "How curvy the edges of the background is.", min = 0f, max = 6f)
-    var cornerRadius = 0f
+    var paddingRight by float(
+        default = 4f,
+        name = "Padding (Right)",
+        category = "Background",
+        subcategory = "Padding",
+        description = "How far the background extends to the right.",
+        min = 0f,
+        max = 12f
+    )
+
+    var paddingTop by float(
+        default = 4f,
+        name = "Padding (Top)",
+        category = "Background",
+        subcategory = "Padding",
+        description = "How far the background extends to the top.",
+        min = 0f,
+        max = 12f
+    )
+
+    var paddingBottom by float(
+        default = 4f,
+        name = "Padding (Bottom)",
+        category = "Background",
+        subcategory = "Padding",
+        description = "How far the background extends to the bottom.",
+        min = 0f,
+        max = 12f
+    )
+
+    var cornerRadius by float(
+        default = 0f,
+        name = "Corner Radius",
+        category = "Background",
+        description = "How rounded the edges of the background are.",
+        min = 0f,
+        max = 6f
+    )
 
     override fun render(deltaTicks: Float, renderOrigin: RenderOrigin) {
-        val bgCol = backgroundColor.get()
-        val outlineCol = outlineColor.get()
+        val bgCol = backgroundColor
+        val outlineCol = outlineColor
 
         val scale = position.scale
         val hitbox = calculateHitBox(1f, scale)
 
-        if (backgroundEnabled.get()) {
+        if (backgroundEnabled) {
             gl.roundedRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol.rgb, cornerRadius)
         }
-        if (outlineEnabled.get()) {
+        if (outlineEnabled) {
             gl.borderRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height, outlineCol.rgb, outlineThickness)
         }
     }

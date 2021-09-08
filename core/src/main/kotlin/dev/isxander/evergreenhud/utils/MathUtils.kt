@@ -23,21 +23,6 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 /**
- * Clamps value between min & max
- *
- * @param _num value to clamp
- * @param min min value
- * @param max max value
- * @return clamped value
- * @author isXander
- */
-fun clamp(_num: Float, min: Float = 0f, max: Float = 1f): Float {
-    var num = _num
-    if (num > max) num = max else if (num < min) num = min
-    return num
-}
-
-/**
  * Linearly interpolates between a and b by t.
  *
  * @param start Start value
@@ -47,7 +32,7 @@ fun clamp(_num: Float, min: Float = 0f, max: Float = 1f): Float {
  * @author isXander
  */
 fun lerp(start: Float, end: Float, interpolation: Float): Float {
-    return start + (end - start) * clamp(interpolation)
+    return start + (end - start) * interpolation
 }
 
 /**
@@ -71,10 +56,10 @@ fun getPercent(num: Float, min: Float = 0f, max: Float = 100f): Float {
  * @return the percentile of the nums
  * @author isXander
  */
-fun percentile(nums: MutableList<Long>, percentile: Double): Long {
-    nums.sort()
-    val index = ceil(percentile / 100.0 * nums.size).toInt()
-    return nums[index - 1]
+fun List<Long>.percentile(percentile: Double): Long {
+    val sorted = this.sorted()
+    val index = ceil(percentile / 100.0 * sorted.size).toInt()
+    return sorted[index - 1]
 }
 
 /**

@@ -22,18 +22,27 @@ import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.ServerDamageEntity
-import dev.isxander.settxi.impl.IntSetting
-import dev.isxander.settxi.impl.StringSetting
+import dev.isxander.settxi.impl.int
+import dev.isxander.settxi.impl.string
 import me.kbrewster.eventbus.Subscribe
 
 @ElementMeta(id = "COMBO_DISPLAY", name = "Combo Display", description = "Display how many hits you get on a player before they hit you.", category = "Combat")
 class ElementCombo : SimpleTextElement() {
+    var discardTime by int(
+        default = 3,
+        name = "Discard Time",
+        category = "Combo",
+        description = "How many seconds until the combo is reset.",
+        min = 1,
+        max = 10
+    )
 
-    @IntSetting(name = "Discard Time", category = "Combo", description = "How many seconds until the combo is set to 0", min = 1, max = 10, suffix = " secs")
-    private var discardTime = 3
-
-    @StringSetting(name = "No Hit Message", category = "Combo", description = "What message is shown when no combo is in progress.")
-    private var noHitMessage = "0"
+    var noHitMessage by string(
+        default = "0",
+        name = "No Hit Message",
+        category = "Combo",
+        description = "What message is shown when no combo is in progress."
+    )
 
     private var hitTime = 0L
     private var attackId = 0

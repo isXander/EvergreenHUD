@@ -22,16 +22,18 @@ import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.RenderTickEvent
 import dev.isxander.settxi.impl.OptionContainer
-import dev.isxander.settxi.impl.OptionSetting
+import dev.isxander.settxi.impl.option
 import me.kbrewster.eventbus.Subscribe
 import kotlin.collections.ArrayDeque
 
-
 @ElementMeta(id = "CPS", name = "Cps Counter", category = "Combat", description = "How many times you click in a second.")
 class ElementCps : SimpleTextElement() {
-
-    @OptionSetting(name = "Button", category = "CPS", description = "Which button to track.")
-    var button = MouseButton.BOTH
+    var button by option(
+        default = MouseButton.BOTH,
+        name = "Button",
+        category = "CPS",
+        description = "Which button to track."
+    )
 
     private val left = ArrayDeque<Long>()
     private var leftPressed = false

@@ -22,13 +22,20 @@ import dev.isxander.evergreenhud.api.gl
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.settxi.impl.IntSetting
 import dev.isxander.evergreenhud.utils.drawString
+import dev.isxander.settxi.impl.int
 import gg.essential.universal.ChatColor
 import kotlin.math.max
 
 abstract class MultiLineTextElement : TextElement() {
 
-    @IntSetting(name = "Vertical Spacing", category = "Text", description = "How far apart each line of text is.", min = 0, max = 5)
-    var verticalSpacing = 2
+    var verticalSpacing by int(
+        default = 2,
+        name = "Vertical Spacing",
+        category = "Text",
+        description = "How far apart each line of text is from eachother.",
+        min = 0,
+        max = 5
+    )
 
     var cachedDisplayString: ArrayList<String> = arrayListOf("Calculating...")
         private set
@@ -80,7 +87,7 @@ abstract class MultiLineTextElement : TextElement() {
                 centered = alignment == Alignment.CENTER,
                 shadow = textStyle == TextStyle.SHADOW,
                 bordered = textStyle == TextStyle.BORDER,
-                chroma = chroma, chromaSpeed = chromaSpeed.get().toFloat()
+                chroma = chroma, chromaSpeed = chromaSpeed.toFloat()
             )
         }
 

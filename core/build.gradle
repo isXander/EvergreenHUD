@@ -15,10 +15,11 @@ blossom {
 repositories {
     mavenCentral()
     maven { url = 'https://libraries.minecraft.net' }
+    maven { url = 'https://jitpack.io' }
 }
 
 dependencies {
-    api(project(":settxi"))
+    api 'dev.isXander:Settxi:b82d0e30c1'
 
     api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30'
     api 'org.jetbrains.kotlin:kotlin-reflect:1.5.30'

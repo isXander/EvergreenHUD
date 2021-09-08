@@ -19,18 +19,25 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
-import dev.isxander.settxi.impl.BooleanSetting
+import dev.isxander.settxi.impl.boolean
 import java.text.SimpleDateFormat
 import java.util.*
 
 @ElementMeta(id = "IRL_TIME", name = "IRL Time", description = "Show the current time in real life.", category = "IRL")
 class ElementIRLTime : SimpleTextElement() {
+    var twelveHour by boolean(
+        default = false,
+        name = "Twelve Hour",
+        category = "Time",
+        description = "If the clock should display AM or PM or go into 13:00+"
+    )
 
-    @BooleanSetting(name = "Time", category = "Time", description = "If the clock will be 12 hour of 24 hour.")
-    var twelveHour = false
-
-    @BooleanSetting(name = "Seconds", category = "Time", description = "Show the seconds.")
-    var seconds = false
+    var seconds by boolean(
+        default = false,
+        name = "Seconds",
+        category = "Time",
+        description = "Show the seconds."
+    )
 
     override var title: String = "Time"
 

@@ -20,14 +20,17 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.api.mc
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
-import dev.isxander.settxi.impl.BooleanSetting
 import dev.isxander.evergreenhud.utils.Facing
+import dev.isxander.settxi.impl.boolean
 
 @ElementMeta(id = "DIRECTION", name = "Direction", category = "Player", description = "Which way the player is facing.")
 class ElementDirection : SimpleTextElement() {
-
-    @BooleanSetting(name = "Abbreviated", category = "Direction", description = "Make the name of the direction shorter.")
-    var abbreviated = false
+    var abbreviated by boolean(
+        default = false,
+        name = "Abbreviated",
+        category = "Direction",
+        description = "Make the name of the direction shorter."
+    )
 
     override var title = "Direction"
 

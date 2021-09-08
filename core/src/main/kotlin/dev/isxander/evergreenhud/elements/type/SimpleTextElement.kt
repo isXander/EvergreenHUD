@@ -23,13 +23,18 @@ import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.OptionSetting
 import dev.isxander.evergreenhud.utils.drawString
+import dev.isxander.settxi.impl.option
 import java.lang.StringBuilder
 import kotlin.math.max
 
 abstract class SimpleTextElement : TextElement() {
 
-    @OptionSetting(name = "Title Location", category = "Text", description = "Where to display the title.")
-    var titleLocation = TitleLocation.BEGINNING
+    var titleLocation by option(
+        default = TitleLocation.BEGINNING,
+        name = "Title Location",
+        category = "Text",
+        description = "Where to display the title."
+    )
 
     var cachedDisplayString: String = "Calculating..."
         private set
@@ -90,7 +95,7 @@ abstract class SimpleTextElement : TextElement() {
             centered = alignment == Alignment.CENTER,
             shadow = textStyle == TextStyle.SHADOW,
             bordered = textStyle == TextStyle.BORDER,
-            chroma = chroma, chromaSpeed = chromaSpeed.get().toFloat()
+            chroma = chroma, chromaSpeed = chromaSpeed.toFloat()
         )
 
         gl.pop()

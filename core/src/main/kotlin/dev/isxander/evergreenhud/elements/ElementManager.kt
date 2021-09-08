@@ -48,19 +48,30 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     val elementConfig: ElementConfig = ElementConfig(this)
 
     /* Settings */
-    val settings: MutableList<Setting<*, *>> = ArrayList()
+    override val settings: MutableList<Setting<*>> = mutableListOf()
 
-    @BooleanSetting(name = "Enabled", category = "General", description = "Display any elements you have created.")
-    var enabled = true
+    var enabled by boolean(
+        default = true,
+        name = "Enabled",
+        category = "General",
+        description = "Display any elements you have created."
+    )
 
-    @BooleanSetting(name = "Check For Updates", category = "Connectivity", description = "Should EvergreenHUD check for updates when you start up the game.")
-    var checkForUpdates = true
+    var checkForUpdate by boolean(
+        default = true,
+        name = "Check For Updates",
+        category = "Connectivity",
+        description = "Should EvergreenHUD check for updates when you start up the game."
+    )
 
-    @BooleanSetting(name = "Check For Safety", category = "Connectivity", description = "(HIGHLY RECOMMENDED) Should EvergreenHUD check if the current version of the mod you are playing on has been known to cause issues like an unfair advantage.")
-    var checkForSafety = true
+    var checkForSafety by boolean(
+        default = true,
+        name = "Check For Safety",
+        category = "Connectivity",
+        description = "Should EvergreenHUD check if the current version might have bannable features in them."
+    )
 
     init {
-        collectSettings(this) { settings.add(it) }
         findAndRegisterElements()
 
         EvergreenHUD.eventBus.register(this)
@@ -69,7 +80,6 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     fun addElement(element: Element) {
         if (!element.metadata.allowedVersions.contains(mcVersion)) throw IllegalArgumentException("Element not compatible with this version.")
 
-        element.preload()
         currentElements.add(element)
         element.onAdded()
     }
@@ -85,7 +95,6 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         ClassGraph()
             .enableClassInfo()
             .enableAnnotationInfo()
-         //   .acceptClasses(Element::class.qualifiedName)
             .acceptPackages("dev.isxander.evergreenhud.elements.impl")
             .scan()
             .use { scanResult ->
@@ -155,7 +164,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 //        mc.mcProfiler.endSection()
     }
 
-    override var conf: Config
+    var conf: Config
         get() {
             var data = Config.of(tomlFormat)
 

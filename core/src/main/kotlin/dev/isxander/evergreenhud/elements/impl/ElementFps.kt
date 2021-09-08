@@ -28,7 +28,10 @@ class ElementFps : SimpleTextElement() {
     private val frameTimes = ArrayList<Double>()
 
     override var title: String = "FPS"
-    override var cacheTime = 20
+
+    override fun init() {
+        cacheTime = 20
+    }
 
     override fun calculateValue(): String {
         // calculate mean of frame times and convert to FPS

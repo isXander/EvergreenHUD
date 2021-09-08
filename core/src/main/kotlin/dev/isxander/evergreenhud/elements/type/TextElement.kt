@@ -17,38 +17,73 @@
 
 package dev.isxander.evergreenhud.elements.type
 
-import dev.isxander.settxi.SettingAdapter
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.HitBox2D
 import java.awt.Color
 
 abstract class TextElement : BackgroundElement() {
 
-    @BooleanSetting(name = "Brackets", category = "Text", description = "Text is displayed within [square brackets.]")
-    var brackets = false
+    var brackets by boolean(
+        default = false,
+        name = "Brackets",
+        category = "Text",
+        description = "Text is displayed within [square brackets]"
+    )
 
-    @StringSetting(name = "Title", category = "Text", description = "What is displayed before or after the actual value.")
-    open var title: String = "UNKNOWN"
+    open var title by string(
+        default = "UNKNOWN",
+        name = "Title",
+        category = "Text",
+        description = "What is displayed before or after the actual value."
+    )
 
-    @ColorSetting(name = "Color", category = "Text", description = "The color of the text.")
-    var textColor = Color(255, 255, 255)
+    var textColor by color(
+        default = Color(255, 255, 255),
+        name = "Color",
+        category = "Text",
+        description = "The color of the text."
+    )
 
-    @BooleanSetting(name = "Chroma", category = "Text", description = "Makes the text rainbow barf.")
-    var chroma = false
+    var chroma by boolean(
+        default = false,
+        name = "Chroma",
+        category = "Text",
+        description = "Makes the text rainbow barf."
+    )
 
-    @IntSetting(name = "Chroma Speed", category = "Text", description = "How fast should the chroma wave be?", min = 500, max = 10000)
-    val chromaSpeed = SettingAdapter(2000) {
+    var chromaSpeed by int(
+        default = 2000,
+        name = "Chroma Speed",
+        category = "Text",
+        description = "How fast should the chroma wave be?",
+        min = 5000,
+        max = 10000
+    ) {
         depends { chroma }
     }
 
-    @OptionSetting(name = "Text Style", category = "Text", description = "What style the text is rendered in.")
-    var textStyle = TextStyle.SHADOW
+    var textStyle by option(
+        default = TextStyle.SHADOW,
+        name = "Text Style",
+        category = "Text",
+        description = "What style text is rendered in."
+    )
 
-    @OptionSetting(name = "Alignment", category = "Text", description = "How the text is aligned.")
-    var alignment = Alignment.LEFT
+    var alignment by option(
+        default = Alignment.LEFT,
+        name = "Alignment",
+        category = "Text",
+        description = "How the text is aligned."
+    )
 
-    @IntSetting(name = "Text Cache", category = "Text", description = "How many render ticks to wait before regenerating the text. (Can positively impact performance)", min = 0, max = 20)
-    open var cacheTime = 5
+    open var cacheTime by int(
+        default = 5,
+        name = "Text Cache",
+        category = "Text",
+        description = "How many render ticks to wait before re-calculating the value.",
+        min = 0,
+        max = 20
+    )
     var renderCount = 0
 
     override fun calculateHitBox(glScale: Float, drawScale: Float): HitBox2D {

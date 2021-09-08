@@ -90,7 +90,7 @@ object Notifications {
             .also { opacity += it }
 
         gl.push()
-        val clampedOpacity = clamp(opacity, 5f, 255f).toInt()
+        val clampedOpacity = opacity.coerceIn(5f..255f).toInt()
         notif.backColor = Color(notif.backColor.red, notif.backColor.green, notif.backColor.blue, clampedOpacity)
         notif.textColor = Color(notif.textColor.red, notif.textColor.green, notif.textColor.blue, clampedOpacity)
         gl.roundedRect(rectX, rectY, rectWidth, rectHeight, notif.backColor.rgb, 5f)

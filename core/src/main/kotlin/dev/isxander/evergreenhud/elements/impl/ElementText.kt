@@ -19,13 +19,16 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
-import dev.isxander.settxi.impl.StringSetting
+import dev.isxander.settxi.impl.string
 
 @ElementMeta(id = "TEXT", name = "Text Display", category = "Other", description = "Displays custom text of your choosing.")
 class ElementText : SimpleTextElement() {
-
-    @StringSetting(name = "Text", category = "Text", description = "The text to display.")
-    var text = "Sample Text"
+    var text by string(
+        default = "Sample Text",
+        name = "Text",
+        category = "Text",
+        description = "The text to display."
+    )
 
     override var title: String = ""
     override fun calculateValue(): String = text
