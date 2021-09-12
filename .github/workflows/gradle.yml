@@ -3,8 +3,22 @@ name: Java CI with Gradle
 on:
   push:
     branches: [ kotlin-rewrite ]
+    paths-ignore:
+      - "README.md"
+      - "LICENSE.md"
+      - ".gitignore"
+      - ".gitattributes"
+      - "/run"
+      - ".github/*.yml"
   pull_request:
     branches: [ kotlin-rewrite ]
+    paths-ignore:
+      - "README.md"
+      - "LICENSE.md"
+      - ".gitignore"
+      - ".gitattributes"
+      - "/run"
+      - ".github/*.yml"
 
 jobs:
   build:
@@ -25,10 +39,18 @@ jobs:
         distribution: 'adopt'
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
+    - uses: actions/cache@v2
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
     - name: Setup Mod Workspaces
-      run: ./gradlew setupCIWorkspace
+      run: ./gradlew setupCIWorkspace --no-daemon
     - name: Build with Gradle
-      run: ./gradlew build
+      run: ./gradlew build --no-daemon
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
