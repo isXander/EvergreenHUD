@@ -18,11 +18,14 @@
 package dev.isxander.evergreenhud.api.forge10809.impl
 
 import club.chachy.event.on
+import dev.isxander.evergreenhud.api.forge10809.mc
 import dev.isxander.evergreenhud.api.impl.CustomKeybind
 import dev.isxander.evergreenhud.api.impl.UKeybindManager
 import net.minecraft.client.settings.KeyBinding
 import net.minecraftforge.fml.client.registry.ClientRegistry
 import net.minecraftforge.fml.common.gameevent.TickEvent
+import org.apache.commons.lang3.ArrayUtils
+import java.util.*
 
 class KeybindManagerImpl : UKeybindManager() {
     override fun registerKeybind(keybind: CustomKeybind) {
@@ -37,12 +40,19 @@ class KeybindManagerImpl : UKeybindManager() {
         on<TickEvent.ClientTickEvent>()
             .filter { it.phase == TickEvent.Phase.END }
             .subscribe {
-                if (mcBind.isKeyDown && !pressed) keybind.onDown()
-                if (!mcBind.isKeyDown && pressed) keybind.onUp()
+                if (mcBind.isKeyDown && !pressed) keybind.onDown?.invoke()
+                if (!mcBind.isKeyDown && pressed) keybind.onUp?.invoke()
                 pressed = mcBind.isKeyDown
 
                 keybind.keyDown = mcBind.isKeyDown
                 keybind.pressed = mcBind.isPressed
             }
+    }
+
+    override fun unregsiterKeybind(keybind: CustomKeybind) {
+        mc.gameSettings.keyBindings =
+            mc.gameSettings.keyBindings.toMutableList().apply {
+                removeIf { it.keyCategory == keybind.category && it.keyDescription == keybind.name } }
+                .toTypedArray()
     }
 }

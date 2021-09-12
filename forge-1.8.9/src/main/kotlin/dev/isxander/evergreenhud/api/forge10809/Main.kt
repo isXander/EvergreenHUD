@@ -28,6 +28,7 @@ import dev.isxander.evergreenhud.api.impl.render.UGL
 import dev.isxander.evergreenhud.event.ClientDamageEntity
 import dev.isxander.evergreenhud.event.RenderHUDEvent
 import dev.isxander.evergreenhud.event.RenderTickEvent
+import dev.isxander.evergreenhud.utils.MCVersion
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraftforge.client.event.RenderGameOverlayEvent

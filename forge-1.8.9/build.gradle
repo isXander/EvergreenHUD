@@ -24,7 +24,7 @@ buildscript {
         maven { url = "https://repo.spongepowered.org/maven/" }
     }
     dependencies {
-        classpath 'com.github.ReplayMod:ForgeGradle:d1a7165:all'
+        classpath 'com.github.ReplayMod:ForgeGradle:aedf51d833:all'
         classpath 'dev.isXander:MixinGradle:0.6-SNAPSHOT'
     }
 }
@@ -53,10 +53,9 @@ repositories {
 
 dependencies {
     embed (project(":core")) {
-        exclude module: 'Elementa'
-        exclude module: 'UniversalCraft'
+        exclude module: 'elementa-1.8.9-forge'
     }
-    embed 'gg.essential:elementa-1.8.9-forge:359+next'
+    embed 'gg.essential:elementa-1.8.9-forge:376+next'
 
     // not sure why but gradle ass
     embed 'club.chachy.kotlin-forge-api:forge-event-dsl:0.3.1'

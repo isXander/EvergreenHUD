@@ -35,7 +35,6 @@ import net.minecraft.client.util.math.MatrixStack
 val mc: MinecraftClient = MinecraftClient.getInstance()
 
 object Main : ClientModInitializer {
-
     lateinit var matrices: MatrixStack
     var postInitialized = false
 

@@ -24,11 +24,10 @@ plugins {
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
 
 dependencies {
-    embed (project(":core")) {
+    include implementation (project(":core")) {
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'
-        exclude module: 'Elementa'
-        exclude module: 'UniversalCraft'
+        exclude module: 'elementa-1.8.9-forge'
         exclude module: 'minecraft'
         exclude module: 'yarn'
     }
@@ -61,17 +60,8 @@ processResources {
     }
 }
 
-shadowJar {
-    archiveClassifier.set 'shadow'
-}
-
 // use shadow as input jar for remap
 remapJar {
-    dependsOn shadowJar
-    input.fileValue shadowJar.outputs.files.singleFile
-
-    archiveBaseName.set shadowJar.archiveBaseName.get()
-    archiveVersion.set shadowJar.archiveVersion.get()
     archiveClassifier.set ''
 }
 

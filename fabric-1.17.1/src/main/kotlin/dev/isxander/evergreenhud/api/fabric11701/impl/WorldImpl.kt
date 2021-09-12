@@ -19,6 +19,8 @@ package dev.isxander.evergreenhud.api.fabric11701.impl
 
 import dev.isxander.evergreenhud.api.impl.UWorld
 import dev.isxander.evergreenhud.api.fabric11701.mc
+import net.minecraft.client.resource.language.I18n
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.math.BlockPos
 import net.minecraft.util.registry.Registry
 
@@ -26,8 +28,10 @@ class WorldImpl : UWorld() {
     override val isNull: Boolean
         get() = mc.world == null
 
-    override fun getBiomeAt(x: Int, y: Int, z: Int): String =
-        mc.world!!.registryManager!!.get(Registry.BIOME_KEY)!!.getId(mc.world?.getBiome(BlockPos(x, y, z))).toString()
+    override fun getBiomeAt(x: Int, y: Int, z: Int): String {
+        val id = mc.world!!.registryManager!!.get(Registry.BIOME_KEY)!!.getId(mc.world?.getBiome(BlockPos(x, y, z)))!!
+        return I18n.translate("biome.${id.namespace}.${id.path}")
+    }
 
     override val time: Long
         get() = mc.world!!.timeOfDay

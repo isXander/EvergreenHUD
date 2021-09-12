@@ -15,17 +15,19 @@
  * isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.api.impl.render
+package dev.isxander.evergreenhud.api.fabric11701.mixins;
 
-abstract class UBufferBuilder {
-    abstract fun vertex(x: Double, y: Double, z: Double): UBufferBuilder
-    abstract fun color(r: Float, g: Float, b: Float, a: Float): UBufferBuilder
-    abstract fun tex(u: Double, v: Double): UBufferBuilder
+import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl;
+import net.minecraft.client.option.KeyBinding;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.gen.Accessor;
 
-    abstract fun next(): UBufferBuilder
-    abstract fun end(): UBufferBuilder
+import java.util.List;
 
-    abstract fun begin(mode: DrawMode, format: VertexFormats): UBufferBuilder
-
-    abstract fun draw()
+@Mixin(value = KeyBindingRegistryImpl.class, remap = false)
+public interface AccessorKeyBindingRegistryImpl {
+    @Accessor("moddedKeyBindings")
+    static List<KeyBinding> getModdedKeyBindings() {
+        throw new AssertionError();
+    }
 }

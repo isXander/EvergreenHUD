@@ -22,6 +22,7 @@ import dev.isxander.evergreenhud.utils.Input
 
 abstract class UKeybindManager {
     abstract fun registerKeybind(keybind: CustomKeybind)
+    abstract fun unregisterKeybind(keybind: CustomKeybind)
 }
 
 class CustomKeybind {
@@ -32,9 +33,9 @@ class CustomKeybind {
     var keyDown = false
     var pressed = false
 
-    lateinit var onDown: () -> Unit
+    var onDown: (() -> Unit)? = null
         private set
-    lateinit var onUp: () -> Unit
+    var onUp: (() -> Unit)? = null
         private set
 
     fun onDown(lambda: () -> Unit) {

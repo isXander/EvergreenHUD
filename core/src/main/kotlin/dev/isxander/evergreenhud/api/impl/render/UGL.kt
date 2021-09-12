@@ -24,7 +24,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 abstract class UGL {
-
     /* ---------------------------------- */
     /* Render Stuff                 BEGIN */
     /* ---------------------------------- */

@@ -35,6 +35,7 @@ import me.kbrewster.eventbus.invokers.ReflectionInvoker
 import java.awt.Color
 import java.io.File
 import java.net.URI
+import kotlin.random.Random
 
 object EvergreenHUD {
     const val NAME = "__GRADLE_NAME__"
@@ -77,7 +78,10 @@ object EvergreenHUD {
             mainConfig.load()
             elementConfig.load()
             for ((id, _) in this.getAvailableElements()) {
-                addElement(this.getNewElementInstance(id)!!)
+                addElement(this.getNewElementInstance(id)!!.apply {
+                    position.scaledX = Random.nextFloat() * 0.8f
+                    position.scaledY = Random.nextFloat() * 0.8f
+                })
             }
             elementConfig.save()
         }
