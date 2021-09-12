@@ -1,18 +1,18 @@
 /*
- | EvergreenHUD - A mod to improve on your heads-up-display.
- | Copyright (C) isXander [2019 - 2021]
- |
- | This program comes with ABSOLUTELY NO WARRANTY
- | This is free software, and you are welcome to redistribute it
- | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/lgpl-3.0.en.html
- |
- | If you have any questions or concerns, please create
- | an issue on the github page that can be found here
- | https://github.com/isXander/EvergreenHUD
- |
- | If you have a private concern, please contact
- | isXander @ business.isxander@gmail.com
+ * EvergreenHUD - A mod to improve on your heads-up-display.
+ * Copyright (C) isXander [2019 - 2021]
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY
+ * This is free software, and you are welcome to redistribute it
+ * under the certain conditions that can be found here
+ * https://www.gnu.org/licenses/lgpl-2.1.en.html
+ *
+ * If you have any questions or concerns, please create
+ * an issue on the github page that can be found here
+ * https://github.com/isXander/EvergreenHUD
+ *
+ * If you have a private concern, please contact
+ * isXander @ business.isxander@gmail.com
  */
 
 package dev.isxander.evergreenhud.elements
@@ -24,6 +24,7 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.settxi.serialization.ConfigProcessor
+import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
 abstract class Element : ConfigProcessor {
@@ -35,10 +36,6 @@ abstract class Element : ConfigProcessor {
             x = 0.5f
             y = 0.5f
         }
-
-    init {
-        init()
-    }
 
     var scale by float(
         default = 100f,
@@ -77,15 +74,15 @@ abstract class Element : ConfigProcessor {
         description = "Render the element even when you have a gui open."
     )
 
-    open fun init() {}
-
     /* called when element is added */
     open fun onAdded() {
         EvergreenHUD.eventBus.register(this)
+
     }
     /* called when element is removed */
     open fun onRemoved() {
         EvergreenHUD.eventBus.unregister(this)
+        utilities.unregisterAllForObject(this)
     }
 
     abstract fun render(deltaTicks: Float, renderOrigin: RenderOrigin)

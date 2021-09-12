@@ -1,18 +1,18 @@
 /*
- | EvergreenHUD - A mod to improve on your heads-up-display.
- | Copyright (C) isXander [2019 - 2021]
- |
- | This program comes with ABSOLUTELY NO WARRANTY
- | This is free software, and you are welcome to redistribute it
- | under the certain conditions that can be found here
- | https://www.gnu.org/licenses/lgpl-3.0.en.html
- |
- | If you have any questions or concerns, please create
- | an issue on the github page that can be found here
- | https://github.com/isXander/EvergreenHUD
- |
- | If you have a private concern, please contact
- | isXander @ business.isxander@gmail.com
+ * EvergreenHUD - A mod to improve on your heads-up-display.
+ * Copyright (C) isXander [2019 - 2021]
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY
+ * This is free software, and you are welcome to redistribute it
+ * under the certain conditions that can be found here
+ * https://www.gnu.org/licenses/lgpl-2.1.en.html
+ *
+ * If you have any questions or concerns, please create
+ * an issue on the github page that can be found here
+ * https://github.com/isXander/EvergreenHUD
+ *
+ * If you have a private concern, please contact
+ * isXander @ business.isxander@gmail.com
  */
 
 package dev.isxander.evergreenhud
@@ -22,8 +22,9 @@ import dev.isxander.evergreenhud.api.*
 import dev.isxander.evergreenhud.api.impl.registerCommand
 import dev.isxander.evergreenhud.api.impl.registerKeybind
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.utils.Keyboard
+import dev.isxander.evergreenhud.utils.Input
 import dev.isxander.evergreenhud.config.profile.ProfileManager
+import dev.isxander.evergreenhud.elements.impl.ElementFrameConsistency
 import dev.isxander.evergreenhud.gui.MainGui
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
@@ -44,7 +45,7 @@ object EvergreenHUD {
     val VERSION = SemVer.parse(VERSION_STR)
     val RELEASE_CHANNEL: ReleaseChannel
         get() =
-            if (VERSION.hasPreReleaseVersion()) ReleaseChannel.RELEASE
+            if (!VERSION.hasPreReleaseVersion()) ReleaseChannel.RELEASE
             else ReleaseChannel.BETA
 
     val dataDir: File = File(mc.dataDir, "evergreenhud")
@@ -114,7 +115,7 @@ object EvergreenHUD {
         }
 
         registerKeybind {
-            key = Keyboard.KEY_HOME
+            key = Input.KEY_HOME
             name = "Open EvergreenHUD GUI"
             category = "EvergreenHUD"
 
@@ -123,7 +124,7 @@ object EvergreenHUD {
             }
         }
         registerKeybind {
-            key = Keyboard.KEY_NONE
+            key = Input.KEY_NONE
             name = "Toggle EvergreenHUD"
             category = "EvergreenHUD"
 
