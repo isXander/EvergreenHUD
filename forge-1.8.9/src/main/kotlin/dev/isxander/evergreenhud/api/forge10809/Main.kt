@@ -66,6 +66,7 @@ object Main {
         di.bind<UScreenHandler>(ScreenHandlerImpl())
         di.bind<UTranslation>(TranslationImpl())
         di.bind<UPotions>(PotionsImpl())
+        di.bind<UWorld>(WorldImpl())
 
         registerEvents()
 

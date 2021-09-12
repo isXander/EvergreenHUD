@@ -52,7 +52,7 @@ dependencies {
         exclude module: 'kotlin-stdlib-jdk8'
     }
 
-    api 'io.github.classgraph:classgraph:4.8.116'
+    api 'io.github.classgraph:classgraph:4.8.115'
 
     api ('com.squareup.okhttp3:okhttp:4.9.1') {
         exclude module: 'kotlin-stdlib'

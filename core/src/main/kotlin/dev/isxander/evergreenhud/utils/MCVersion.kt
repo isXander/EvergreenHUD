@@ -15,9 +15,14 @@
  * isXander @ business.isxander@gmail.com
  */
 
-package dev.isxander.evergreenhud.api
+package dev.isxander.evergreenhud.utils
+
+enum class MCVersion(val display: String, val number: Int, val platform: Platform) {
+    FORGE_1_8_9("Forge 1.8.9", 10809, Platform.Forge),
+    FABRIC_1_17_1("Fabric 1.17.1", 11701, Platform.Fabric),
+}
 
 enum class Platform {
     Forge,
-    Fabric
+    Fabric,
 }

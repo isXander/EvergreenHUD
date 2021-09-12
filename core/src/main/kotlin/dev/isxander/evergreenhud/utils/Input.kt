@@ -17,7 +17,6 @@
 
 package dev.isxander.evergreenhud.utils
 
-import dev.isxander.evergreenhud.api.MCVersion
 import dev.isxander.evergreenhud.api.mcVersion
 
 @Suppress("UNUSED")

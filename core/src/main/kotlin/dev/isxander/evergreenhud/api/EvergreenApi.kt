@@ -21,6 +21,7 @@ import dev.isxander.evergreenhud.api.impl.*
 import dev.isxander.evergreenhud.api.impl.render.UBufferBuilder
 import dev.isxander.evergreenhud.api.impl.render.UGL
 import dev.isxander.evergreenhud.utils.DI
+import dev.isxander.evergreenhud.utils.MCVersion
 
 val di = DI()
 

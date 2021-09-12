@@ -24,7 +24,6 @@ import dev.isxander.evergreenhud.api.impl.registerKeybind
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.utils.Input
 import dev.isxander.evergreenhud.config.profile.ProfileManager
-import dev.isxander.evergreenhud.elements.impl.ElementFrameConsistency
 import dev.isxander.evergreenhud.gui.MainGui
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
@@ -77,6 +76,10 @@ object EvergreenHUD {
         elementManager = ElementManager().apply {
             mainConfig.load()
             elementConfig.load()
+            for ((id, _) in this.getAvailableElements()) {
+                addElement(this.getNewElementInstance(id)!!)
+            }
+            elementConfig.save()
         }
 
         if (!mc.devEnv) {

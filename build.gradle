@@ -25,7 +25,6 @@ plugins {
     // Build
     id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'org.ajoberstar.grgit' version '4.1.0'
-    id 'com.github.gmazzo.buildconfig' version '3.0.1'
 
     // Publishing
     id "com.modrinth.minotaur" version "1.2.1"

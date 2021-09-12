@@ -18,8 +18,6 @@
 package dev.isxander.evergreenhud.api.fabric11701
 
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.api.MCVersion
-import dev.isxander.evergreenhud.api.Platform
 import dev.isxander.evergreenhud.api.di
 import dev.isxander.evergreenhud.api.impl.*
 import dev.isxander.evergreenhud.api.impl.render.UBufferBuilder
@@ -28,6 +26,7 @@ import dev.isxander.evergreenhud.api.fabric11701.events.ServerDamageEntityEventM
 import dev.isxander.evergreenhud.api.fabric11701.impl.*
 import dev.isxander.evergreenhud.api.fabric11701.impl.KeybindManagerImpl
 import dev.isxander.evergreenhud.event.ClientTickEvent
+import dev.isxander.evergreenhud.utils.MCVersion
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.minecraft.client.MinecraftClient
@@ -56,6 +55,7 @@ object Main : ClientModInitializer {
         di.bind<UScreenHandler>(ScreenHandlerImpl())
         di.bind<UTranslation>(TranslationImpl())
         di.bind<UPotions>(PotionsImpl())
+        di.bind<UWorld>(WorldImpl())
 
         registerEvents()
 

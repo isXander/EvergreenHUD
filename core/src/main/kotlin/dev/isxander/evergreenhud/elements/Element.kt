@@ -19,12 +19,10 @@ package dev.isxander.evergreenhud.elements
 
 import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.api.MCVersion
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.settxi.serialization.ConfigProcessor
-import kotlin.reflect.KClass
 import kotlin.reflect.full.findAnnotation
 
 abstract class Element : ConfigProcessor {
