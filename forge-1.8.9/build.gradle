@@ -61,7 +61,7 @@ dependencies {
     // not sure why but gradle ass
     embed 'club.chachy.kotlin-forge-api:forge-event-dsl:0.3.1'
 
-    implementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+    implementation 'org.spongepowered:mixin:0.8.4'
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
 }
 
