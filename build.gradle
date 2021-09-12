@@ -7,7 +7,7 @@ plugins {
     id 'org.spongepowered.mixin' version '0.6-SNAPSHOT'
 
     // Build
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
     id 'io.freefair.lombok' version '6.0.0-m2'
     id 'org.ajoberstar.grgit' version '4.1.0'
 }
