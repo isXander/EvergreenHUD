@@ -62,7 +62,6 @@ allprojects {
     apply plugin: 'org.jetbrains.kotlin.jvm'
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'org.ajoberstar.grgit'
-    apply plugin: 'com.github.gmazzo.buildconfig'
 
     version = versionStr
     group = 'dev.isxander'
