@@ -55,7 +55,7 @@ dependencies {
     embed (project(":core")) {
         exclude module: 'elementa-1.8.9-forge'
     }
-    embed 'gg.essential:elementa-1.8.9-forge:376+next'
+    embed 'gg.essential:elementa-1.8.9-forge:382+'
 
     // not sure why but gradle ass
     embed 'club.chachy.kotlin-forge-api:forge-event-dsl:0.3.1'
