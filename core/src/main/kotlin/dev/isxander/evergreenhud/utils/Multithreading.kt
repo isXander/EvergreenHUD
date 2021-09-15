@@ -21,10 +21,10 @@ import java.util.concurrent.*
 import java.util.concurrent.atomic.AtomicInteger
 
 private val counter = AtomicInteger(0)
-private val SCHEDULED_POOL = ScheduledThreadPoolExecutor(20) { r: Runnable? ->
+val SCHEDULED_POOL = ScheduledThreadPoolExecutor(20) { r: Runnable? ->
     Thread(r, "Scheduled EvergreenHUD Thread ${counter.incrementAndGet()}")
 }
-private val POOL = ThreadPoolExecutor(20, 20, 0L, TimeUnit.SECONDS, LinkedBlockingQueue()) { r: Runnable? ->
+val POOL = ThreadPoolExecutor(20, 20, 0L, TimeUnit.SECONDS, LinkedBlockingQueue()) { r: Runnable? ->
     Thread(r, "EvergreenHUD Thread ${counter.incrementAndGet()}")
 }
 

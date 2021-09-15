@@ -31,8 +31,7 @@ import net.minecraftforge.event.entity.player.AttackEntityEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 
-object ServerDamageEntityEventManager {
-
+class ServerDamageEntityEventManager {
     private var attacker: EntityPlayer? = null
     private var targetId = -1
 
@@ -76,5 +75,4 @@ object ServerDamageEntityEventManager {
             targetId = event.target.entityId
         }
     }
-
 }

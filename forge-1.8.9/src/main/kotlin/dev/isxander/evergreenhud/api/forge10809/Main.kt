@@ -75,7 +75,7 @@ object Main {
     }
 
     private fun registerEvents() {
-        MinecraftForge.EVENT_BUS.register(ServerDamageEntityEventManager)
+        MinecraftForge.EVENT_BUS.register(ServerDamageEntityEventManager())
 
         on<TickEvent.ClientTickEvent>()
             .filter { it.phase == TickEvent.Phase.END }
@@ -98,7 +98,6 @@ object Main {
         on<AttackEntityEvent>()
             .subscribe { EvergreenHUD.eventBus.post(ClientDamageEntity(EntityImpl(it.entityPlayer), EntityImpl(it.target))) }
     }
-
 }
 
 class KotlinLanguageAdapter : ILanguageAdapter {

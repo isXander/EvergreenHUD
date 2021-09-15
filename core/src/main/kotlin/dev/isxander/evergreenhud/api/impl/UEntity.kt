@@ -39,5 +39,4 @@ abstract class UEntity {
     abstract val pitch: Float
 
     abstract fun getReachDistFromEntity(entity: UEntity): Double
-
 }

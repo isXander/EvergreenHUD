@@ -31,5 +31,4 @@ class ElementDay : SimpleTextElement() {
         if (world.isNull) return "0"
         return (world.time / 24000L).toString()
     }
-
 }

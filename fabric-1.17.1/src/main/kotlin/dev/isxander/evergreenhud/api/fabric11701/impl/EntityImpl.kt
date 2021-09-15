@@ -21,7 +21,6 @@ import dev.isxander.evergreenhud.api.impl.UEntity
 import net.minecraft.entity.Entity
 
 class EntityImpl(val entity: Entity?) : UEntity() {
-
     override val isNull: Boolean = false
 
     override val x: Double = entity!!.x
@@ -40,5 +39,4 @@ class EntityImpl(val entity: Entity?) : UEntity() {
     override fun getReachDistFromEntity(entity: UEntity): Double {
         return -1.0
     }
-
 }

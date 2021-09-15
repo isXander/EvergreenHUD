@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(InGameHud.class)
 public class MixinInGameHud {
-
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountHealth(Lnet/minecraft/client/util/math/MatrixStack;)V", shift = At.Shift.AFTER))
     public void render(MatrixStack matrices, float deltaTicks, CallbackInfo ci) {
         Main.matrices = matrices;
@@ -37,5 +36,4 @@ public class MixinInGameHud {
         // prevent use of MatrixStack outside of a render context
         Main.matrices = null;
     }
-
 }

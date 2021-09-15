@@ -23,21 +23,27 @@ import dev.isxander.evergreenhud.api.impl.UKeybindManager
 import dev.isxander.evergreenhud.utils.Input
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
-import net.fabricmc.fabric.impl.client.keybinding.KeyBindingRegistryImpl
 import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 
 class KeybindManagerImpl : UKeybindManager() {
-    override fun registerKeybind(keybind: CustomKeybind) {
-        val mcBind = KeyBindingHelper.registerKeyBinding(KeyBinding(
-            keybind.name,
-            when (keybind.key.type) {
-                Input.Type.Keyboard -> InputUtil.Type.KEYSYM
-                Input.Type.Mouse -> InputUtil.Type.MOUSE
-            },
-            keybind.key.glfw,
-            keybind.category
-        ))
+    override fun registerKeybind(keybind: CustomKeybind): CustomKeybind {
+        val mcBind = getKeybind(keybind)
+        var result: KeyBinding = mcBind
+
+        try {
+            KeyBindingHelper.registerKeyBinding(mcBind)!!
+        } catch (e: RuntimeException) {
+            var tries = 1
+            while (true) {
+                keybind.name = "${mcBind.translationKey} (${tries++})"
+                try {
+                    result = KeyBindingHelper.registerKeyBinding(getKeybind(keybind))!!
+                    break
+                } catch (e: RuntimeException) {}
+            }
+
+        }
 
         var pressed = false
         ClientTickEvents.END_CLIENT_TICK.register {
@@ -48,6 +54,20 @@ class KeybindManagerImpl : UKeybindManager() {
             keybind.keyDown = mcBind.isPressed
             keybind.pressed = mcBind.wasPressed()
         }
+
+        return keybind
+    }
+
+    private fun getKeybind(keybind: CustomKeybind): KeyBinding {
+        return KeyBinding(
+            keybind.name,
+            when (keybind.key.type) {
+                Input.Type.Keyboard -> InputUtil.Type.KEYSYM
+                Input.Type.Mouse -> InputUtil.Type.MOUSE
+            },
+            keybind.key.glfw,
+            keybind.category,
+        )
     }
 
     override fun unregisterKeybind(keybind: CustomKeybind) {

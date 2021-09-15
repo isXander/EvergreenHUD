@@ -22,7 +22,6 @@ import dev.isxander.evergreenhud.event.on
 import gg.essential.elementa.UIComponent
 
 abstract class UScreenHandler {
-
     init {
         on<ClientTickEvent>()
             .filter { component != null }
@@ -38,5 +37,4 @@ abstract class UScreenHandler {
     }
 
     abstract fun displayComponent(component: UIComponent)
-
 }

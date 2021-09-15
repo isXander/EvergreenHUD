@@ -27,7 +27,6 @@ import gg.essential.universal.ChatColor
 import kotlin.math.max
 
 abstract class MultiLineTextElement : TextElement() {
-
     var verticalSpacing by int(
         default = 2,
         name = "Vertical Spacing",

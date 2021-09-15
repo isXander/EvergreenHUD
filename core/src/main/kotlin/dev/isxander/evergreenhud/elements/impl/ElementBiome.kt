@@ -33,5 +33,4 @@ class ElementBiome : SimpleTextElement() {
         if (player.equals(null)) return "Unknown"
         return world.getBiomeAt(player.x.toInt(), player.y.toInt(), player.z.toInt())
     }
-
 }

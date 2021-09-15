@@ -25,6 +25,7 @@ import dev.isxander.evergreenhud.api.profiler
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
 import dev.isxander.evergreenhud.event.RenderHUDEvent
+import dev.isxander.evergreenhud.utils.POOL
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.tomlFormat
@@ -33,13 +34,16 @@ import io.github.classgraph.ClassGraph
 import me.kbrewster.eventbus.Subscribe
 import java.lang.IllegalArgumentException
 import java.util.*
+import java.util.concurrent.LinkedBlockingQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
+import kotlin.math.log
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 import kotlin.reflect.full.findAnnotation
 
 class ElementManager : ConfigProcessor, Iterable<Element> {
-
     private val availableElements: MutableMap<String, KClass<out Element>> = HashMap()
     private val currentElements: ArrayList<Element> = ArrayList()
 
@@ -96,16 +100,16 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
             .enableClassInfo()
             .enableAnnotationInfo()
             .acceptPackages("dev.isxander.evergreenhud.elements.impl")
-            .scan()
+            .scanAsync(POOL, 8).get()
             .use { scanResult ->
                 for (routeClassInfo in scanResult.getClassesWithAnnotation(ElementMeta::class.java)) {
                     val clazz = routeClassInfo.loadClass().kotlin
                     val annotation = clazz.findAnnotation<ElementMeta>()!!
 
                     availableElements[annotation.id] = clazz as KClass<out Element>
-                    logger.info("Registered ${annotation.name}")
                 }
             }
+        logger.info("Registered ${availableElements.size} elements.")
     }
 
     fun getAvailableElements(): Map<String, KClass<out Element>> {

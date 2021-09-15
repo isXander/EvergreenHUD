@@ -28,7 +28,6 @@ import dev.isxander.evergreenhud.utils.tomlWriter
 import java.io.File
 
 class MainConfig(private val manager: ElementManager) {
-
     fun save() {
         val data = Config.of(tomlFormat)
         data.set<Int>("schema", SCHEMA)
@@ -75,5 +74,4 @@ class MainConfig(private val manager: ElementManager) {
         val CONFIG_FILE: File
             get() = File(EvergreenHUD.profileManager.profileDirectory, "global.toml")
     }
-
 }

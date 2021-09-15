@@ -33,5 +33,4 @@ class MinecraftImpl : UMinecraft() {
         val o = Launch.blackboard["fml.deobfuscatedEnvironment"]
         o != null && o as Boolean
     }
-
 }

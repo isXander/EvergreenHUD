@@ -45,5 +45,4 @@ class ElementFps : SimpleTextElement() {
         frameTimes.add(System.currentTimeMillis() - lastTime)
         lastTime = System.currentTimeMillis().toDouble()
     }
-
 }

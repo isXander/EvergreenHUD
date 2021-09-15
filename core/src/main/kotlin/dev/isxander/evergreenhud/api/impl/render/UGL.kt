@@ -24,9 +24,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 abstract class UGL {
-    /* ---------------------------------- */
-    /* Render Stuff                 BEGIN */
-    /* ---------------------------------- */
     abstract fun push()
     abstract fun pop()
 
@@ -65,9 +62,6 @@ abstract class UGL {
     abstract fun blendFuncSeparate(srcFactorRGB: Int, dstFactorRGB: Int, srcFactorAlpha: Int, dstFactorAlpha: Int)
     abstract fun blendFunc(srcFactor: Int, dstFactor: Int)
 
-    /* ---------------------------------- */
-    /* Utility Stuff                BEGIN */
-    /* ---------------------------------- */
     fun defaultBlendFunc() = blendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO)
 
     open fun rect(x: Float, y: Float, width: Float, height: Float, color: Int) {
@@ -729,5 +723,4 @@ abstract class UGL {
         const val GL_LOGIC_OP = 0xBF1
         const val GL_TEXTURE_COMPONENTS = 0x1003
     }
-
 }

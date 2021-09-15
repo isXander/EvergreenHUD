@@ -46,5 +46,4 @@ class ElementIRLTime : SimpleTextElement() {
     override fun calculateValue(): String =
         SimpleDateFormat(String.format(if (twelveHour) "hh:mm%s a" else "HH:mm%s", if (seconds) ":ss" else ""))
             .format(Calendar.getInstance().time).uppercase()
-
 }

@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.repo
 
-import com.asarkar.semver.SemVer
+import com.github.zafarkhaja.semver.Version
 import dev.isxander.evergreenhud.utils.jsonParser
 import java.net.URL
 
@@ -27,9 +27,9 @@ object RepoManager {
     fun getResponse(): RepoResponse {
         val data = jsonParser.parse(jsonUrl)
 
-        return RepoResponse(SemVer.parse(data["latest"]), data["blacklisted"])
+        return RepoResponse(Version.valueOf(data["latest"]), data["blacklisted"])
     }
 
 }
 
-data class RepoResponse(val latest: SemVer, val blacklisted: List<String>)
+data class RepoResponse(val latest: Version, val blacklisted: List<String>)

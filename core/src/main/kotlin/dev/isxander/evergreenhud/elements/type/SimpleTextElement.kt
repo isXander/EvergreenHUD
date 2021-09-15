@@ -28,7 +28,6 @@ import java.lang.StringBuilder
 import kotlin.math.max
 
 abstract class SimpleTextElement : TextElement() {
-
     var titleLocation by option(
         default = TitleLocation.BEGINNING,
         name = "Title Location",
@@ -105,5 +104,4 @@ abstract class SimpleTextElement : TextElement() {
         val BEGINNING = option("Beginning", "Show the title at the start of the text.")
         val END = option("End", "Show the title at the end of text.")
     }
-
 }

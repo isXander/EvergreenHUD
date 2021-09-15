@@ -24,9 +24,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
+/**
+ * Used for child class mixins
+ * @see MixinClientPlayerEntity
+ */
 @Mixin(PlayerEntity.class)
 public class MixinPlayerEntity {
-
     @Inject(method = "attack", at = @At("HEAD"))
     public void attack(Entity entity, CallbackInfo ci) {
     }

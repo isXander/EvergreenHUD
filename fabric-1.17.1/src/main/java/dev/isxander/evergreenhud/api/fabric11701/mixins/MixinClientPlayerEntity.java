@@ -27,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientPlayerEntity.class)
 public class MixinClientPlayerEntity extends MixinPlayerEntity {
-
     @Override
     public void attack(Entity entity, CallbackInfo ci) {
         EvergreenHUD.INSTANCE.getEventBus().post(new ClientDamageEntity(new EntityImpl((ClientPlayerEntity) (Object) this), new EntityImpl(entity)));

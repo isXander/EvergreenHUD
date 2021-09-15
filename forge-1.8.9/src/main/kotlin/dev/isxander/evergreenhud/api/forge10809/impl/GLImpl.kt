@@ -65,5 +65,4 @@ class GLImpl : UGL() {
 
     override fun bindTexture(location: UResourceLocation) =
         mc.textureManager.bindTexture(ResourceLocation(location.namespace, location.path))
-
 }

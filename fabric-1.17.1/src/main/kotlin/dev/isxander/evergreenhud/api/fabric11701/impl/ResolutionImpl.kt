@@ -21,7 +21,6 @@ import dev.isxander.evergreenhud.api.impl.UResolution
 import dev.isxander.evergreenhud.api.fabric11701.mc
 
 class ResolutionImpl : UResolution() {
-
     override val displayWidth: Int get() = mc.window.width
     override val displayHeight: Int get() = mc.window.height
 
@@ -29,5 +28,4 @@ class ResolutionImpl : UResolution() {
     override val scaledHeight: Int get() = mc.window.scaledHeight
 
     override val scaleFactor: Double get() = mc.window.scaleFactor
-
 }

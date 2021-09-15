@@ -30,7 +30,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(MinecraftClient.class)
 public class MixinMinecraftClient {
-
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;endWrite()V", shift = At.Shift.BEFORE))
     private void render(boolean tick, CallbackInfo ci) {
         if (Main.INSTANCE.getPostInitialized()) {
@@ -41,5 +40,4 @@ public class MixinMinecraftClient {
             Main.matrices = null;
         }
     }
-
 }

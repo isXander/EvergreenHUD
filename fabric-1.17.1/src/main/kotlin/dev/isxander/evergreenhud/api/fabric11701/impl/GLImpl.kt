@@ -86,5 +86,4 @@ class GLImpl : UGL() {
         RenderSystem.setShader { GameRenderer.getPositionColorShader() }
         super.partialCircle(x, y, radius, startAngle, endAngle, color)
     }
-
 }

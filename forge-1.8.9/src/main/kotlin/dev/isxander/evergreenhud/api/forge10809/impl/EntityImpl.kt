@@ -76,5 +76,4 @@ class EntityImpl(val entity: Entity) : UEntity() {
         profiler.pop()
         return dist
     }
-
 }

@@ -28,10 +28,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ClientConnection.class)
 public class MixinClientConnection {
-
     @Inject(method = "handlePacket", at = @At("HEAD"))
     private static <T extends PacketListener> void handlePacket(Packet<T> packet, PacketListener listener, CallbackInfo ci) {
-        PacketEvent.Companion.getEVENT().invoker().invoke(packet);
+        PacketEvent.getEVENT().invoker().invoke(packet);
     }
-
 }

@@ -25,7 +25,6 @@ import net.minecraft.client.renderer.WorldRenderer
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 
 class BufferBuilderImpl : UBufferBuilder() {
-
     private val tes = Tessellator.getInstance()
     private val buf: WorldRenderer = tes.worldRenderer
 
@@ -66,5 +65,4 @@ class BufferBuilderImpl : UBufferBuilder() {
     }
 
     override fun draw() = tes.draw()
-
 }

@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud
 
-import com.asarkar.semver.SemVer
+import com.github.zafarkhaja.semver.Version
 import dev.isxander.evergreenhud.api.*
 import dev.isxander.evergreenhud.api.impl.registerCommand
 import dev.isxander.evergreenhud.api.impl.registerKeybind
@@ -35,17 +35,16 @@ import me.kbrewster.eventbus.invokers.ReflectionInvoker
 import java.awt.Color
 import java.io.File
 import java.net.URI
-import kotlin.random.Random
 
 object EvergreenHUD {
     const val NAME = "__GRADLE_NAME__"
     const val ID = "__GRADLE_ID__"
     const val REVISION = "__GRADLE_REVISION__"
     const val VERSION_STR = "__GRADLE_VERSION__"
-    val VERSION = SemVer.parse(VERSION_STR)
+    val VERSION = Version.valueOf(VERSION_STR)
     val RELEASE_CHANNEL: ReleaseChannel
         get() =
-            if (!VERSION.hasPreReleaseVersion()) ReleaseChannel.RELEASE
+            if (VERSION.preReleaseVersion == null) ReleaseChannel.RELEASE
             else ReleaseChannel.BETA
 
     val dataDir: File = File(mc.dataDir, "evergreenhud")
@@ -71,19 +70,14 @@ object EvergreenHUD {
     fun init() {
         logger.info("Starting EvergreenHUD $VERSION_STR (${mcVersion.display})")
 
+        val startTime = System.currentTimeMillis()
+
         dataDir.mkdirs()
 
         profileManager = ProfileManager().apply { load() }
         elementManager = ElementManager().apply {
             mainConfig.load()
             elementConfig.load()
-            for ((id, _) in this.getAvailableElements()) {
-                addElement(this.getNewElementInstance(id)!!.apply {
-                    position.scaledX = Random.nextFloat() * 0.8f
-                    position.scaledY = Random.nextFloat() * 0.8f
-                })
-            }
-            elementConfig.save()
         }
 
         if (!mc.devEnv) {
@@ -140,5 +134,7 @@ object EvergreenHUD {
                 Notifications.push("EvergreenHUD", "Toggled mod.")
             }
         }
+
+        logger.info("Finished loading EvergreenHUD. Took ${System.currentTimeMillis() - startTime} ms.")
     }
 }

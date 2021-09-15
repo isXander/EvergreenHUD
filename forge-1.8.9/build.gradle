@@ -59,6 +59,9 @@ dependencies {
 
     // not sure why but gradle ass
     embed 'club.chachy.kotlin-forge-api:forge-event-dsl:0.3.1'
+    embed ('com.github.KevinPriv:KEventBus:86cf2e023e') {
+        exclude module: 'kotlin-stdlib-jdk8'
+    }
 
     implementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
     annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
@@ -74,6 +77,10 @@ jar {
             'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
             'MixinConfigs': 'evergreenhud.forge10809.mixins.json'
     )
+}
+
+shadowJar {
+    exclude '/META-INF/versions/9/**'
 }
 
 processResources {
@@ -120,5 +127,5 @@ compileKotlin {
 tasks.withType(TaskModrinthUpload) {
     addGameVersion('1.8.9')
     addLoader('forge')
-    uploadFile = shadowJar
+    uploadFile = reobfShadowJar
 }

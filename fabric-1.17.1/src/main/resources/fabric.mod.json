@@ -12,7 +12,7 @@
     "issues": "https://github.com/isXander/EvergreenHUD/issues",
     "sources": "https://github.com/isXander/EvergreenHUD"
   },
-  "license": "GNU General Public License version 3 (GPLv3)",
+  "license": "GNU General Lesser Public License version 2.1 (LGPLv2.1)",
   "icon": "evergreenhud/export/evergreenhud-transparent.png",
   "environment": "client",
   "entrypoints": {

@@ -21,10 +21,10 @@ import net.fabricmc.fabric.api.event.EventFactory
 import net.minecraft.network.Packet
 
 interface PacketEvent {
-
     fun invoke(packet: Packet<*>)
 
     companion object {
+        @JvmStatic
         val EVENT = EventFactory.createArrayBacked(PacketEvent::class.java
         ) { listeners ->
             object : PacketEvent {
@@ -34,5 +34,4 @@ interface PacketEvent {
             }
         }
     }
-
 }

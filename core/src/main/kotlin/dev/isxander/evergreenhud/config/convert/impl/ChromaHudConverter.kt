@@ -109,5 +109,4 @@ object ChromaHudConverter : ConfigConverter {
 
         return null
     }
-
 }

@@ -18,7 +18,6 @@
 package dev.isxander.evergreenhud.api.impl
 
 abstract class UMouseHelper {
-
     abstract val mouseX: Float
     abstract val mouseY: Float
 
@@ -26,5 +25,4 @@ abstract class UMouseHelper {
     abstract val wasRightMouseDown: Boolean
 
     abstract fun isButtonDown(button: Int): Boolean
-
 }

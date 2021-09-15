@@ -21,7 +21,7 @@ import dev.isxander.evergreenhud.api.keybindManager
 import dev.isxander.evergreenhud.utils.Input
 
 abstract class UKeybindManager {
-    abstract fun registerKeybind(keybind: CustomKeybind)
+    abstract fun registerKeybind(keybind: CustomKeybind): CustomKeybind
     abstract fun unregisterKeybind(keybind: CustomKeybind)
 }
 
@@ -47,7 +47,5 @@ class CustomKeybind {
 }
 
 fun registerKeybind(lambda: CustomKeybind.() -> Unit): CustomKeybind {
-    val keybind = CustomKeybind().apply(lambda)
-    keybindManager.registerKeybind(keybind)
-    return keybind
+    return keybindManager.registerKeybind(CustomKeybind().apply(lambda))
 }

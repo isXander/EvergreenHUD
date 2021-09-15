@@ -18,8 +18,6 @@
 package dev.isxander.evergreenhud.api.impl
 
 abstract class UProfiler {
-
     abstract fun push(name: String)
     abstract fun pop()
-
 }

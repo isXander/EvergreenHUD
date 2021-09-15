@@ -27,7 +27,6 @@ import gg.essential.elementa.utils.withIndex
 import java.awt.Color
 
 abstract class BackgroundElement : Element() {
-
     var backgroundEnabled by boolean(
         default = true,
         name = "Enabled",
@@ -171,5 +170,4 @@ abstract class BackgroundElement : Element() {
 
         return HitBox2D(x - left, y - top, width + left + right, height + top + bottom)
     }
-
 }

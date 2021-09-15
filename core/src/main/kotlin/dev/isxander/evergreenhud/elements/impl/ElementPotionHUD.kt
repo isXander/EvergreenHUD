@@ -30,6 +30,8 @@ import dev.isxander.evergreenhud.utils.resetGlColor
 import dev.isxander.evergreenhud.utils.ticksToTime
 import gg.essential.universal.ChatColor
 import java.awt.Color
+import kotlin.random.Random
+import kotlin.random.nextInt
 
 @ElementMeta(id = "POTIONS", name = "PotionHUD", category = "Player", description = "Display potions.")
 class ElementPotionHUD : BackgroundElement() {
@@ -267,6 +269,14 @@ class ElementPotionHUD : BackgroundElement() {
             effectToggles[it.id]?.get() ?: false
         })
 
+        if (potionEffects.isEmpty()) {
+            if (renderOrigin != RenderOrigin.GUI) return
+
+            repeat(3) {
+                potionEffects.add(potions.registeredPotions[it])
+            }
+        }
+
         when (sort) {
             PotionSorting.ALPHABETICAL -> potionEffects.sortBy { translation[it.translation] }
             PotionSorting.DURATION -> potionEffects.sortByDescending(UPotion::duration)
@@ -369,5 +379,4 @@ class ElementPotionHUD : BackgroundElement() {
         val DURATION = option("Duration", "Sort the potions by how long they have left.")
         val VANILLA = option("Vanilla", "Sort the potions in the way vanilla minecraft does.")
     }
-
 }

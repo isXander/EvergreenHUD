@@ -66,7 +66,6 @@ object Main : ClientModInitializer {
             EvergreenHUD.eventBus.post(ClientTickEvent())
         }
 
-        EvergreenHUD.eventBus.register(ServerDamageEntityEventManager)
+        EvergreenHUD.eventBus.register(ServerDamageEntityEventManager())
     }
-
 }

@@ -18,7 +18,6 @@
 package dev.isxander.evergreenhud.api.impl
 
 abstract class UWorld {
-
     abstract val isNull: Boolean
 
     override operator fun equals(other: Any?): Boolean {
@@ -28,5 +27,4 @@ abstract class UWorld {
     
     abstract fun getBiomeAt(x: Int, y: Int = 256, z: Int): String
     abstract val time: Long
-
 }

@@ -27,7 +27,6 @@ import net.minecraft.client.render.VertexFormat
 import net.minecraft.client.render.VertexFormats as MinecraftVertexFormats
 
 class BufferBuilderImpl : UBufferBuilder() {
-
     private val tes = Tessellator.getInstance()
     private val buf: BufferBuilder = tes.buffer
 
@@ -77,5 +76,4 @@ class BufferBuilderImpl : UBufferBuilder() {
     }
 
     override fun draw() = BufferRenderer.draw(buf)
-
 }

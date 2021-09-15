@@ -163,5 +163,4 @@ class ElementCoordinates : MultiLineTextElement() {
         val VERTICAL = option("Vertical", "Display each axis in a list.")
         val HORIZONTAL = option("Horizontal", "Display each axis in-line, seperated by a comma.")
     }
-
 }

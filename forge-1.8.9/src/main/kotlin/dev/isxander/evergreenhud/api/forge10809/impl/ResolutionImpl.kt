@@ -24,7 +24,6 @@ import net.minecraft.client.gui.ScaledResolution
 import net.minecraftforge.fml.common.gameevent.TickEvent
 
 class ResolutionImpl : UResolution() {
-
     private var resolution: ScaledResolution = ScaledResolution(mc)
 
     init {

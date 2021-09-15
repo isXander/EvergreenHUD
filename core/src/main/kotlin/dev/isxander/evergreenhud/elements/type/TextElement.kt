@@ -22,7 +22,6 @@ import dev.isxander.evergreenhud.utils.HitBox2D
 import java.awt.Color
 
 abstract class TextElement : BackgroundElement() {
-
     var brackets by boolean(
         default = false,
         name = "Brackets",
@@ -117,5 +116,4 @@ abstract class TextElement : BackgroundElement() {
         val RIGHT = option("Right", "When the length of text is increased, it expands to the left.")
         val CENTER = option("Center", "When the length of text is increased, it expands both left and right equally.")
     }
-
 }

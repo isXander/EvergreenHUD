@@ -95,7 +95,6 @@ class ProfileManager {
             description = "The default profile for EvergreenHUD"
         }
     }
-
 }
 
 

@@ -28,12 +28,23 @@ import org.apache.commons.lang3.ArrayUtils
 import java.util.*
 
 class KeybindManagerImpl : UKeybindManager() {
-    override fun registerKeybind(keybind: CustomKeybind) {
+    override fun registerKeybind(keybind: CustomKeybind): CustomKeybind {
         val mcBind = KeyBinding(
             keybind.name,
             keybind.key.lwjgl2,
             keybind.category
         )
+        var result = mcBind
+
+        if (mc.gameSettings.keyBindings.any { it.keyCategory == mcBind.keyCategory && it.keyDescription == mcBind.keyDescription }) {
+            var tries = 0
+            while (mc.gameSettings.keyBindings.any { it.keyCategory == mcBind.keyCategory && it.keyDescription == "${mcBind.keyDescription} (${tries++}" }) {}
+            result = KeyBinding(
+                "${mcBind.keyDescription} (${tries}",
+                keybind.key.lwjgl2,
+                keybind.category,
+            )
+        }
         ClientRegistry.registerKeyBinding(mcBind)
 
         var pressed = false
@@ -47,12 +58,16 @@ class KeybindManagerImpl : UKeybindManager() {
                 keybind.keyDown = mcBind.isKeyDown
                 keybind.pressed = mcBind.isPressed
             }
+
+        return keybind.apply {
+            name = result.keyDescription
+        }
     }
 
-    override fun unregsiterKeybind(keybind: CustomKeybind) {
+    override fun unregisterKeybind(keybind: CustomKeybind) {
         mc.gameSettings.keyBindings =
             mc.gameSettings.keyBindings.toMutableList().apply {
-                removeIf { it.keyCategory == keybind.category && it.keyDescription == keybind.name } }
-                .toTypedArray()
+                removeIf { it.keyCategory == keybind.category && it.keyDescription == keybind.name }
+            }.toTypedArray()
     }
 }

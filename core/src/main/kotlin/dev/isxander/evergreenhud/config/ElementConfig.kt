@@ -28,7 +28,6 @@ import dev.isxander.evergreenhud.utils.tomlWriter
 import java.io.File
 
 class ElementConfig(private val manager: ElementManager) {
-
     private var shouldSave = false
 
     fun save() {
@@ -100,5 +99,4 @@ class ElementConfig(private val manager: ElementManager) {
         val CONFIG_FILE: File
             get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.toml")
     }
-
 }

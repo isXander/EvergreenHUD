@@ -60,7 +60,7 @@ class ElementTimer : SimpleTextElement() {
 
         keybind = registerKeybind {
             key = Input.KEY_L
-            name = "Toggle ${metadata.name} timer."
+            name = "Toggle ${metadata.name}"
             category = "EvergreenHUD Timers"
 
             onDown {

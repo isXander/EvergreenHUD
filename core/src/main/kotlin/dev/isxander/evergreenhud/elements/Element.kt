@@ -120,6 +120,7 @@ abstract class Element : ConfigProcessor {
 
             val settingsData = value["settings"] ?: Config.of(tomlFormat)
             for (setting in settings) {
+                if (!setting.shouldSave) return
                 setSettingFromConfig(settingsData, setting)
             }
         }

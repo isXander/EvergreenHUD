@@ -53,5 +53,4 @@ class ElementWorldTime : SimpleTextElement() {
         return SimpleDateFormat(String.format(if (twelveHour) "hh:mm%s a" else "HH:mm%s", if (seconds) ":ss" else ""))
             .format(date).uppercase()
     }
-
 }

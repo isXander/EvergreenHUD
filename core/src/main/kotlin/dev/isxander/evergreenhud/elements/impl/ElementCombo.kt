@@ -77,5 +77,4 @@ class ElementCombo : SimpleTextElement() {
             attackId = event.victim.id
         }
     }
-
 }

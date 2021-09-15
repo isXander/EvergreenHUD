@@ -89,5 +89,4 @@ class ElementCps : SimpleTextElement() {
         val RIGHT = option("Right Click")
         val BOTH = option("Both Buttons")
     }
-
 }

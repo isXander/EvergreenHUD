@@ -18,10 +18,8 @@
 package dev.isxander.evergreenhud.api.impl
 
 abstract class UFontRenderer {
-
     abstract val fontHeight: Int
     abstract fun width(text: String): Int
 
     abstract fun draw(text: String, x: Float, y: Float, color: Int, shadow: Boolean = true): UFontRenderer
-
 }
