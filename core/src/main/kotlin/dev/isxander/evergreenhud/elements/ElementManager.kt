@@ -54,6 +54,8 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     /* Settings */
     override val settings: MutableList<Setting<*>> = mutableListOf()
 
+    val elementPackages = mutableListOf("dev.isxander.evergreenhud.elements.impl")
+
     var enabled by boolean(
         default = true,
         name = "Enabled",
@@ -99,7 +101,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         ClassGraph()
             .enableClassInfo()
             .enableAnnotationInfo()
-            .acceptPackages("dev.isxander.evergreenhud.elements.impl")
+            .acceptPackages(*elementPackages.toTypedArray())
             .scanAsync(POOL, 8).get()
             .use { scanResult ->
                 for (routeClassInfo in scanResult.getClassesWithAnnotation(ElementMeta::class.java)) {

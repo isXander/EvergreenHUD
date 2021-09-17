@@ -18,6 +18,7 @@
 package dev.isxander.evergreenhud
 
 import com.github.zafarkhaja.semver.Version
+import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.api.*
 import dev.isxander.evergreenhud.api.impl.registerCommand
 import dev.isxander.evergreenhud.api.impl.registerKeybind
@@ -35,6 +36,7 @@ import me.kbrewster.eventbus.invokers.ReflectionInvoker
 import java.awt.Color
 import java.io.File
 import java.net.URI
+import kotlin.math.log
 
 object EvergreenHUD {
     const val NAME = "__GRADLE_NAME__"
@@ -60,6 +62,7 @@ object EvergreenHUD {
 
     lateinit var profileManager: ProfileManager private set
     lateinit var elementManager: ElementManager private set
+    lateinit var addonLoader: AddonLoader private set
 
     /**
      * Initialises the whole mod
@@ -74,7 +77,12 @@ object EvergreenHUD {
 
         dataDir.mkdirs()
 
+        logger.info("Discovering addons...")
+        addonLoader = AddonLoader().apply { load() }
+
+        logger.info("Initialising profile manager...")
         profileManager = ProfileManager().apply { load() }
+        logger.info("Initialising element manager...")
         elementManager = ElementManager().apply {
             mainConfig.load()
             elementConfig.load()
@@ -107,6 +115,7 @@ object EvergreenHUD {
 
         eventBus.register(this)
 
+        logger.info("Registering hooks...")
         registerCommand {
             invoke = "evergreenhud"
 
@@ -134,6 +143,9 @@ object EvergreenHUD {
                 Notifications.push("EvergreenHUD", "Toggled mod.")
             }
         }
+
+        logger.info("Invoking addon entrypoints...")
+        addonLoader.invokeEntrypoints()
 
         logger.info("Finished loading EvergreenHUD. Took ${System.currentTimeMillis() - startTime} ms.")
     }

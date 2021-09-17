@@ -17,10 +17,15 @@
 
 package dev.isxander.evergreenhud.api.fabric11701.impl
 
+import com.chocohead.mm.api.ClassTinkerers
 import dev.isxander.evergreenhud.api.impl.ULoader
 import net.fabricmc.loader.api.FabricLoader
+import java.net.URL
 
 class LoaderImpl : ULoader() {
     override fun isModLoaded(id: String): Boolean =
         FabricLoader.getInstance().isModLoaded(id)
+
+    override fun addURL(url: URL): Boolean =
+        ClassTinkerers.addURL(url)
 }

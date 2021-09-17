@@ -17,8 +17,11 @@
 
 package dev.isxander.evergreenhud.api.impl
 
+import java.net.URL
+
 abstract class ULoader {
     abstract fun isModLoaded(id: String): Boolean
+    abstract fun addURL(url: URL): Boolean
 
     fun isAnyModLoaded(vararg ids: String): Boolean {
         for (id in ids) if (isModLoaded(id)) return true

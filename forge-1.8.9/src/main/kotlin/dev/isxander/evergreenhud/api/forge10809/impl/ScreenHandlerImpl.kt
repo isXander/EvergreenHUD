@@ -19,6 +19,7 @@ package dev.isxander.evergreenhud.api.forge10809.impl
 
 import dev.isxander.evergreenhud.api.forge10809.mc
 import dev.isxander.evergreenhud.api.impl.UScreenHandler
+import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.dsl.childOf
@@ -27,7 +28,7 @@ import gg.essential.elementa.dsl.percent
 
 class ScreenHandlerImpl : UScreenHandler() {
     override fun displayComponent(component: UIComponent) {
-        mc.displayGuiScreen(object : WindowScreen() {
+        mc.displayGuiScreen(object : WindowScreen(ElementaVersion.V1) {
             init {
                 component.constrain {
                     width = 100.percent()

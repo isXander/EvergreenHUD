@@ -17,9 +17,16 @@
 
 package dev.isxander.evergreenhud.utils
 
-enum class MCVersion(val display: String, val number: Int, val platform: Platform) {
-    FORGE_1_8_9("Forge 1.8.9", 10809, Platform.Forge),
-    FABRIC_1_17_1("Fabric 1.17.1", 11701, Platform.Fabric),
+enum class MCVersion(val version: String, val number: Int, val platform: Platform) {
+    FORGE_1_8_9("1.8.9", 10809, Platform.Forge),
+    FABRIC_1_17_1("1.17.1", 11701, Platform.Fabric);
+
+    val display = "${platform.name} $version"
+
+    override fun toString(): String {
+        return "$version.${platform.name.lowercase()}"
+    }
+
 }
 
 enum class Platform {

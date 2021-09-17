@@ -35,6 +35,7 @@ dependencies {
     include modImplementation ('gg.essential:elementa-1.17-fabric:359+next') {
         exclude module: 'fabric-loader'
     }
+    include implementation ('com.github.Chocohead:Fabric-ASM:v2.3')
 
     minecraft 'com.mojang:minecraft:1.17.1'
     mappings 'net.fabricmc:yarn:1.17.1+build.14:v2'

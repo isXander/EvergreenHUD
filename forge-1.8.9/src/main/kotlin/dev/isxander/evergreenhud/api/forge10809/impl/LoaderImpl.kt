@@ -19,7 +19,25 @@ package dev.isxander.evergreenhud.api.forge10809.impl
 
 import dev.isxander.evergreenhud.api.impl.ULoader
 import net.minecraftforge.fml.common.Loader
+import java.net.URL
+import java.net.URLClassLoader
 
 class LoaderImpl : ULoader() {
-    override fun isModLoaded(id: String): Boolean = Loader.isModLoaded(id)
+    override fun isModLoaded(id: String): Boolean =
+        Loader.isModLoaded(id)
+
+    override fun addURL(url: URL): Boolean {
+        try {
+            val classLoader = LoaderImpl::class.java.classLoader
+            if (classLoader is URLClassLoader) {
+                classLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
+                    .invoke(classLoader, url)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return false
+        }
+
+        return true
+    }
 }

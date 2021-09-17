@@ -106,7 +106,7 @@ abstract class Element : ConfigProcessor {
 
             var settingsData = Config.of(tomlFormat)
             for (setting in settings) {
-                if (!setting.shouldSave) continue
+                if (!setting.shouldSave || setting.get() == setting.default) continue
                 settingsData = addSettingToConfig(setting, settingsData)
             }
 
@@ -114,14 +114,14 @@ abstract class Element : ConfigProcessor {
             return config
         }
         set(value) {
-            position.scaledX = value.get<Double>("x")?.toFloat() ?: position.scaledX
-            position.scaledY = value.get<Double>("y")?.toFloat() ?: position.scaledY
-            position.scale = value.get<Double>("scale")?.toFloat() ?: position.scale
+            position.scaledX = value.get<Number>("x")?.toFloat() ?: position.scaledX
+            position.scaledY = value.get<Number>("y")?.toFloat() ?: position.scaledY
+            position.scale = value.get<Number>("scale")?.toFloat() ?: position.scale
 
             val settingsData = value["settings"] ?: Config.of(tomlFormat)
             for (setting in settings) {
                 if (!setting.shouldSave) return
-                setSettingFromConfig(settingsData, setting)
+                setting.serializedValue = settingsData.getOrElse(setting.nameSerializedCategoryAndKey, setting.defaultSerializedValue)
             }
         }
 
