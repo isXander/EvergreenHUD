@@ -18,7 +18,7 @@
 package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.api.mc
-import dev.isxander.evergreenhud.elements.ElementMeta
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.MultiLineTextElement
 import dev.isxander.evergreenhud.utils.Facing
 import dev.isxander.settxi.impl.*

@@ -19,7 +19,7 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.api.*
 import dev.isxander.evergreenhud.api.impl.UPotion
-import dev.isxander.evergreenhud.elements.ElementMeta
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement.*

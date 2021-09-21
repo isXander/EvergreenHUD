@@ -19,7 +19,7 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.api.mc
 import dev.isxander.evergreenhud.api.world
-import dev.isxander.evergreenhud.elements.ElementMeta
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 
 @ElementMeta(id = "BIOME", name = "Biome Display", description = "Displays the current biome you are in.", category = "World")

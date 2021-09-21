@@ -20,31 +20,24 @@ package dev.isxander.evergreenhud.elements
 import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
-import dev.isxander.evergreenhud.api.mcVersion
 import dev.isxander.evergreenhud.api.profiler
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
 import dev.isxander.evergreenhud.event.RenderHUDEvent
-import dev.isxander.evergreenhud.utils.POOL
+import dev.isxander.evergreenhud.utils.jsonParser
+import dev.isxander.evergreenhud.utils.subscribe
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.tomlFormat
 import dev.isxander.settxi.serialization.ConfigProcessor
-import io.github.classgraph.ClassGraph
-import me.kbrewster.eventbus.Subscribe
-import java.lang.IllegalArgumentException
+import java.io.InputStream
 import java.util.*
-import java.util.concurrent.LinkedBlockingQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
-import kotlin.math.log
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
-import kotlin.reflect.full.findAnnotation
 
 class ElementManager : ConfigProcessor, Iterable<Element> {
-    private val availableElements: MutableMap<String, KClass<out Element>> = HashMap()
+    private val availableElements: MutableMap<KClass<out Element>, Element.Metadata> = mutableMapOf()
     private val currentElements: ArrayList<Element> = ArrayList()
 
     /* Config */
@@ -53,8 +46,6 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 
     /* Settings */
     override val settings: MutableList<Setting<*>> = mutableListOf()
-
-    val elementPackages = mutableListOf("dev.isxander.evergreenhud.elements.impl")
 
     var enabled by boolean(
         default = true,
@@ -78,14 +69,11 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     )
 
     init {
-        findAndRegisterElements()
-
-        EvergreenHUD.eventBus.register(this)
+        addSource(this.javaClass.getResourceAsStream("/evergreenhud-elements.json")!!)
+        EvergreenHUD.eventBus.subscribe(this::renderElements)
     }
 
     fun addElement(element: Element) {
-        if (!element.metadata.allowedVersions.contains(mcVersion)) throw IllegalArgumentException("Element not compatible with this version.")
-
         currentElements.add(element)
         element.onAdded()
     }
@@ -95,27 +83,40 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         element.onRemoved()
     }
 
-    @Suppress("UNCHECKED_CAST")
-    private fun findAndRegisterElements() {
-        logger.info("Registering elements...")
-        ClassGraph()
-            .enableClassInfo()
-            .enableAnnotationInfo()
-            .acceptPackages(*elementPackages.toTypedArray())
-            .scanAsync(POOL, 8).get()
-            .use { scanResult ->
-                for (routeClassInfo in scanResult.getClassesWithAnnotation(ElementMeta::class.java)) {
-                    val clazz = routeClassInfo.loadClass().kotlin
-                    val annotation = clazz.findAnnotation<ElementMeta>()!!
+    /**
+     * Adds an element source to the available elements.
+     */
+    fun addSource(input: InputStream) {
+        val elements = jsonParser.parse(input).get<List<Config>>("elements")
 
-                    availableElements[annotation.id] = clazz as KClass<out Element>
-                }
-            }
-        logger.info("Registered ${availableElements.size} elements.")
+        var i = 0
+        for (element in elements) {
+            val meta = element.get<Config>("metadata")
+
+            availableElements[Class.forName(element.get("class")).kotlin as KClass<out Element>] =
+                Element.Metadata(
+                    meta["id"],
+                    meta["name"],
+                    meta["category"],
+                    meta["description"],
+                    meta["maxInstances"],
+                )
+
+            i++
+        }
+
+        logger.info("Registered $i elements from source.")
     }
 
-    fun getAvailableElements(): Map<String, KClass<out Element>> {
+    fun getAvailableElements(): Map<KClass<out Element>, Element.Metadata> {
         return Collections.unmodifiableMap(availableElements)
+    }
+
+    fun getElementClass(id: String): KClass<out Element>? {
+        for ((clazz, metadata) in availableElements) {
+            if (metadata.id == id) return clazz
+        }
+        return null
     }
 
     /**
@@ -125,21 +126,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
      * @param id the internal id of the element
      * @return element instance
      */
-    fun getNewElementInstance(id: String?): Element? {
-        return availableElements[id]?.createInstance()
-    }
-
-    /**
-     * @param element get the identifier of an instance of an element
-     */
-    fun getElementId(element: Element): String? {
-        for ((id, clazz) in availableElements) {
-            if (clazz == element::class) {
-                return id
-            }
-        }
-        return null
-    }
+    fun getNewElementInstance(id: String): Element? = getElementClass(id)?.createInstance()
 
     fun getCurrentElements(): List<Element> {
         return Collections.unmodifiableList(currentElements)
@@ -149,7 +136,6 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         currentElements.clear()
     }
 
-    @Subscribe
     fun renderElements(event: RenderHUDEvent) {
         profiler.push("EvergreenHUD Render")
         for (e in currentElements) {

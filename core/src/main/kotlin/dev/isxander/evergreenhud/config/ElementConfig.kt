@@ -37,7 +37,7 @@ class ElementConfig(private val manager: ElementManager) {
         val arr = mutableListOf<Config>()
         for (element in manager) {
             arr.add(Config.of(tomlFormat).apply {
-                set<String>("id", manager.getElementId(element))
+                set<String>("id", element.metadata.id)
                 set<Config>("data", element.conf)
             })
         }

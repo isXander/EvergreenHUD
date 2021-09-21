@@ -17,10 +17,10 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.elements.ElementMeta
+import dev.deamsy.eventbus.api.listener.EventListener
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.RenderTickEvent
-import me.kbrewster.eventbus.Subscribe
 import kotlin.math.roundToInt
 
 @ElementMeta(id = "FPS", name = "FPS Display", category = "Simple", description = "Display how many times your screen is updating every second.")
@@ -40,7 +40,7 @@ class ElementFps : SimpleTextElement() {
         return fps
     }
 
-    @Subscribe
+    @EventListener
     fun onRender(event: RenderTickEvent) {
         frameTimes.add(System.currentTimeMillis() - lastTime)
         lastTime = System.currentTimeMillis().toDouble()

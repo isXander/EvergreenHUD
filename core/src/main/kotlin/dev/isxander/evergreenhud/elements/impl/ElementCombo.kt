@@ -17,14 +17,14 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
+import dev.deamsy.eventbus.api.listener.EventListener
 import dev.isxander.evergreenhud.api.mc
-import dev.isxander.evergreenhud.elements.ElementMeta
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.ServerDamageEntity
 import dev.isxander.settxi.impl.int
 import dev.isxander.settxi.impl.string
-import me.kbrewster.eventbus.Subscribe
 
 @ElementMeta(id = "COMBO_DISPLAY", name = "Combo Display", description = "Display how many hits you get on a player before they hit you.", category = "Combat")
 class ElementCombo : SimpleTextElement() {
@@ -57,14 +57,14 @@ class ElementCombo : SimpleTextElement() {
         return currentCombo.toString()
     }
 
-    @Subscribe
+    @EventListener
     fun onClientTick(event: ClientTickEvent) {
         if (System.currentTimeMillis() - hitTime >= discardTime * 1000L) {
             currentCombo = 0
         }
     }
 
-    @Subscribe
+    @EventListener
     fun onServerAttackEntity(event: ServerDamageEntity) {
         if (event.attacker.id == mc.player.id) {
             if (event.victim.id == attackId) {

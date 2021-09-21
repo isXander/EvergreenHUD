@@ -24,7 +24,6 @@ import dev.isxander.evergreenhud.api.mouseHelper
 import dev.isxander.evergreenhud.api.resolution
 import dev.isxander.evergreenhud.event.RenderTickEvent
 import gg.essential.universal.ChatColor
-import me.kbrewster.eventbus.Subscribe
 import java.awt.Color
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.max
@@ -40,7 +39,7 @@ object Notifications {
     private val notifications = ConcurrentLinkedQueue<NotifData>()
 
     init {
-        EvergreenHUD.eventBus.register(this)
+        EvergreenHUD.eventBus.subscribe(this::onRender)
     }
 
     fun push(title: String, description: String, backColor: Color = Color(0, 0, 0), textColor: Color = Color(255, 255, 255), duration: Int = 20, consumer: () -> Unit = {}) =
@@ -49,7 +48,6 @@ object Notifications {
     fun push(data: NotifData) =
         notifications.add(data.copy())
 
-    @Subscribe
     fun onRender(event: RenderTickEvent) {
         if (notifications.isEmpty()) return
 

@@ -19,6 +19,7 @@ package dev.isxander.evergreenhud.elements
 
 import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.*
@@ -28,7 +29,7 @@ import kotlin.reflect.full.findAnnotation
 abstract class Element : ConfigProcessor {
     private var preloaded = false
     override val settings: MutableList<Setting<*>> = mutableListOf()
-    val metadata: ElementMeta = this::class.findAnnotation()!!
+    val metadata: Metadata = EvergreenHUD.elementManager.getAvailableElements()[this::class]!!
     var position: Position2D =
         scaledPosition {
             x = 0.5f
@@ -127,9 +128,15 @@ abstract class Element : ConfigProcessor {
 
     companion object {
         protected val utilities = ElementUtilitySharer()
+        protected val eventBus by EvergreenHUD::eventBus
     }
 
+    data class Metadata(
+        val id: String,
+        val name: String,
+        val category: String,
+        val description: String,
+        val maxInstances: Int,
+    )
 }
 
-@Target(AnnotationTarget.CLASS)
-annotation class ElementMeta(val id: String, val name: String, val category: String, val description: String, val allowedVersions: Array<MCVersion> = [MCVersion.FORGE_1_8_9, MCVersion.FABRIC_1_17_1], val maxInstances: Int = Int.MAX_VALUE)

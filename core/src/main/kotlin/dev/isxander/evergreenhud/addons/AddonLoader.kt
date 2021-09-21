@@ -16,9 +16,10 @@ class AddonLoader {
         for (file in ADDONS_FOLDER.walkTopDown()) {
             if (file.extension.lowercase() != "jar") continue
 
-            val addonInfo = JarFile(file).use { jar ->
-                jsonParser.parse(jar.getInputStream(jar.getJarEntry("evergreenhud.json")))
-            }
+            val jar = JarFile(file)
+            val addonInfo = jsonParser.parse(jar.getInputStream(jar.getJarEntry("evergreenhud.json")))
+            val elements = jar.getInputStream(jar.getJarEntry("evergreenhud_elements.json"))
+            jar.close()
 
             val id = addonInfo.get<String>("id")
             val supportedVersions = getList(addonInfo.get("minecraft_version")) ?: MCVersion.values().map { it.toString() }
@@ -28,23 +29,26 @@ class AddonLoader {
                 continue
             }
 
-            val elementPackages = getList<String>(addonInfo.get("element_package")) ?: listOf()
             val entrypoints = getList<String>(addonInfo.get("entrypoints")) ?: listOf()
 
             loader.addURL(file.toURI().toURL())
 
-            EvergreenHUD.elementManager.elementPackages.addAll(elementPackages)
+            EvergreenHUD.elementManager.addSource(elements)
 
             for (entrypoint in entrypoints) {
-                val split = entrypoint.split("::")
-                val className = split[0]
-                val methodName = split[1].substringBefore('(')
+                try {
+                    val split = entrypoint.split("::")
+                    val className = split[0]
+                    val methodName = split[1].substringBefore('(')
 
 
-                val method = Class.forName(className)
-                    .getDeclaredMethod(methodName)
+                    val method = Class.forName(className)
+                        .getDeclaredMethod(methodName)
 
-                this.entrypoints.add { method.invoke(null) }
+                    this.entrypoints.add { method.invoke(null) }
+                } catch (e: Exception) {
+                    AddonException("Failed to invoke entrypoint: $entrypoint in $id.", e).printStackTrace()
+                }
             }
         }
     }

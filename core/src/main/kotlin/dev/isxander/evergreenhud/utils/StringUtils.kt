@@ -224,21 +224,6 @@ fun firstUpper(original: String): String {
 }
 
 /**
- * Repeats text some amount of times
- * Backported from later Java versions
- *
- * @param text text to repeat
- * @param amount amount of times to repeat
- */
-fun repeat(text: String?, amount: Int): String {
-    val sb = StringBuilder()
-    for (i in 0..amount) {
-        sb.append(text)
-    }
-    return sb.toString()
-}
-
-/**
  * Converts 'SOME_ENUM' to 'Some Enum'
  */
 fun capitalizeEnum(`in`: String): String {

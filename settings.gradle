@@ -19,11 +19,12 @@ pluginManagement {
     repositories {
         mavenCentral()
         gradlePluginPortal()
+        google()
 
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven { url = 'https://jitpack.io' }
-        maven { url = 'https://repo.spongepowered.org/maven/' }
-        maven { url = 'https://maven.fabricmc.net' }
+        maven { url = "https://maven.minecraftforge.net" }
+        maven { url = "https://jitpack.io" }
+        maven { url = "https://repo.spongepowered.org/maven/" }
+        maven { url = "https://maven.fabricmc.net" }
     }
 
 }
@@ -31,8 +32,10 @@ pluginManagement {
 rootProject.name = "EvergreenHUD"
 
 include(
-        "core",
-        "forge-1.8.9",
-        "fabric-1.17.1"
-)
+    ":core",
+    ":processor",
+    ":annotations",
 
+    ":compat:fabric-1.17.1",
+    ":compat:forge-1.8.9",
+)

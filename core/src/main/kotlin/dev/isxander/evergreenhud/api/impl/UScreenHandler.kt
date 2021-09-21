@@ -17,18 +17,19 @@
 
 package dev.isxander.evergreenhud.api.impl
 
+import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.event.ClientTickEvent
-import dev.isxander.evergreenhud.event.on
+import dev.isxander.evergreenhud.utils.subscribe
 import gg.essential.elementa.UIComponent
 
 abstract class UScreenHandler {
     init {
-        on<ClientTickEvent>()
-            .filter { component != null }
-            .subscribe {
-                displayComponent(component!!)
-                component = null
-            }
+        EvergreenHUD.eventBus.subscribe<ClientTickEvent> {
+            if (component == null) return@subscribe
+
+            displayComponent(component!!)
+            component = null
+        }
     }
 
     private var component: UIComponent? = null

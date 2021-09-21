@@ -20,7 +20,7 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.api.impl.CustomKeybind
 import dev.isxander.evergreenhud.api.impl.registerKeybind
 import dev.isxander.evergreenhud.api.keybindManager
-import dev.isxander.evergreenhud.elements.ElementMeta
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.utils.Input
 import java.text.SimpleDateFormat

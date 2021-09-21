@@ -24,7 +24,9 @@ abstract class UWorld {
         if (other == null && isNull) return true
         return super.equals(other)
     }
-    
+
     abstract fun getBiomeAt(x: Int, y: Int = 256, z: Int): String
     abstract val time: Long
+
+    abstract val isReplayViewer: Boolean
 }

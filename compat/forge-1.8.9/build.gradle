@@ -1,0 +1,158 @@
+/*
+ * EvergreenHUD - A mod to improve on your heads-up-display.
+ * Copyright (C) isXander [2019 - 2021]
+ *
+ * This program comes with ABSOLUTELY NO WARRANTY
+ * This is free software, and you are welcome to redistribute it
+ * under the certain conditions that can be found here
+ * https://www.gnu.org/licenses/lgpl-2.1.en.html
+ *
+ * If you have any questions or concerns, please create
+ * an issue on the github page that can be found here
+ * https://github.com/isXander/EvergreenHUD
+ *
+ * If you have a private concern, please contact
+ * isXander @ business.isxander@gmail.com
+ */
+
+import com.modrinth.minotaur.TaskModrinthUpload
+
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        maven { url = "https://jitpack.io" }
+        maven { url = "https://repo.spongepowered.org/maven/" }
+    }
+    dependencies {
+        classpath 'com.github.ReplayMod:ForgeGradle:aedf51d833:all'
+        classpath 'dev.isXander:MixinGradle:0.6-SNAPSHOT'
+    }
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
+
+sourceCompatibility = targetCompatibility = JavaVersion.VERSION_1_8
+
+minecraft {
+    version = '1.8.9-11.15.1.2318-1.8.9'
+    runDir = 'run'
+    mappings = 'stable_22'
+    makeObfSourceJar = false
+
+    clientRunArgs += '--tweakClass org.spongepowered.asm.launch.MixinTweaker'
+    clientRunArgs += '--mixin evergreenhud.forge10809.mixins.json'
+}
+
+repositories {
+    maven {
+        name = 'SpongePowered'
+        url = 'https://repo.spongepowered.org/maven/'
+    }
+}
+
+dependencies {
+    embed (project(":core")) {
+        exclude module: 'elementa-1.8.9-forge'
+    }
+    implementation 'dev.isXander:Settxi:d9a66172a0'
+
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.5.30'
+
+    implementation 'com.electronwill.night-config:core:3.6.4'
+    implementation 'com.electronwill.night-config:toml:3.6.4'
+    implementation 'com.electronwill.night-config:json:3.6.4'
+
+    implementation 'com.github.zafarkhaja:java-semver:0.9.0'
+
+    implementation 'club.chachy.kotlin-forge-api:forge-event-dsl:0.3.1'
+    implementation 'com.github.ChachyDev:EventBus:1.1'
+
+    implementation 'io.github.classgraph:classgraph:4.8.116'
+
+    implementation ('com.squareup.okhttp3:okhttp:4.9.1') {
+        exclude module: 'kotlin-stdlib'
+        exclude module: 'kotlin-stdlib-common'
+    }
+
+    // there is no api jar for Elementa or UniversalCraft so
+    // depend on whatever version and exclude all dependencies
+    // then in the other modules depend on them properly.
+    // gross but I don't see any other way
+    implementation ('gg.essential:elementa-1.8.9-forge:376+next') {
+        exclude module: 'kotlin-stdlib-jdk8'
+        exclude module: 'kotlin-reflect'
+        exclude module: 'minecraft'
+        exclude module: 'yarn'
+        exclude module: 'fabric-loader'
+        exclude module: 'fabric-api'
+        exclude module: 'forge'
+    }
+
+    implementation 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+    annotationProcessor 'org.spongepowered:mixin:0.7.11-SNAPSHOT'
+}
+
+mixin {
+    disableRefMapWarning = true
+    add sourceSets.main, 'evergreenhud.forge10809.mixins.refmap.json'
+}
+
+jar {
+    manifest.attributes (
+            'TweakClass': 'org.spongepowered.asm.launch.MixinTweaker',
+            'MixinConfigs': 'evergreenhud.forge10809.mixins.json'
+    )
+}
+
+shadowJar {
+    exclude '/META-INF/versions/9/**'
+}
+
+processResources {
+    inputs.property 'mod_id', mod_id
+    inputs.property 'mod_version', project.version
+    inputs.property 'mod_name', mod_name
+    inputs.property 'mod_description', mod_description
+
+    filesMatching(['mcmod.info', 'bundle.project.json']) {
+        expand(
+                'mod_id': mod_id,
+                'mod_version': project.version,
+                'mod_name': mod_name,
+                'mod_description': mod_description
+        )
+    }
+}
+
+//// Forge does not import resources properly.
+//task moveResources {
+//    doLast {
+//        ant.move file: "${project(":core").buildDir}/resources/main",
+//                todir: "${project(":core").buildDir}/classes/java"
+//    }
+//}
+//
+//tasks.moveResources.dependsOn processResources
+//tasks.classes.dependsOn moveResources
+
+reobf {
+    shadowJar {
+        mappingType = 'SEARGE'
+    }
+}
+
+reobfJar.dependsOn tasks.shadowJar
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+tasks.withType(TaskModrinthUpload) {
+    addGameVersion('1.8.9')
+    addLoader('forge')
+    uploadFile = reobfShadowJar
+}

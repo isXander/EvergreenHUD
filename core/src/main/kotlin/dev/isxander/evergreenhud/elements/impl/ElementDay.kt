@@ -18,7 +18,7 @@
 package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.api.world
-import dev.isxander.evergreenhud.elements.ElementMeta
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 
 @ElementMeta(id = "DAY_COUNTER", name = "Day Counter", description = "Displays the current day in the world.", category = "World")

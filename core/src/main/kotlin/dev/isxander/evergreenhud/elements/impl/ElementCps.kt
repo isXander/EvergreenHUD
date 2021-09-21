@@ -17,13 +17,13 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
+import dev.deamsy.eventbus.api.listener.EventListener
 import dev.isxander.evergreenhud.api.mouseHelper
-import dev.isxander.evergreenhud.elements.ElementMeta
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.RenderTickEvent
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.option
-import me.kbrewster.eventbus.Subscribe
 import kotlin.collections.ArrayDeque
 
 @ElementMeta(id = "CPS", name = "Cps Counter", category = "Combat", description = "How many times you click in a second.")
@@ -53,7 +53,7 @@ class ElementCps : SimpleTextElement() {
         }
     }
 
-    @Subscribe
+    @EventListener
     fun onRenderTick(event: RenderTickEvent) {
         var pressed = mouseHelper.isButtonDown(0)
 

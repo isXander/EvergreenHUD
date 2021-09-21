@@ -18,6 +18,8 @@
 package dev.isxander.evergreenhud
 
 import com.github.zafarkhaja.semver.Version
+import dev.deamsy.eventbus.api.EventBus
+import dev.deamsy.eventbus.impl.asm.ASMEventBus
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.api.*
 import dev.isxander.evergreenhud.api.impl.registerCommand
@@ -30,13 +32,9 @@ import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
 import gg.essential.universal.UDesktop
-import me.kbrewster.eventbus.EventBus
-import me.kbrewster.eventbus.eventbus
-import me.kbrewster.eventbus.invokers.ReflectionInvoker
 import java.awt.Color
 import java.io.File
 import java.net.URI
-import kotlin.math.log
 
 object EvergreenHUD {
     const val NAME = "__GRADLE_NAME__"
@@ -51,14 +49,7 @@ object EvergreenHUD {
 
     val dataDir: File = File(mc.dataDir, "evergreenhud")
     val resourceDir: File = File(dataDir, "resources/default")
-    val eventBus: EventBus = eventbus {
-        invoker { ReflectionInvoker() }
-        threadSaftey { true }
-        exceptionHandler {
-            logger.err("Error occurred in method while posting event")
-            it.printStackTrace()
-        }
-    }
+    val eventBus: EventBus = ASMEventBus()
 
     lateinit var profileManager: ProfileManager private set
     lateinit var elementManager: ElementManager private set
@@ -77,13 +68,15 @@ object EvergreenHUD {
 
         dataDir.mkdirs()
 
+        logger.info("Initialising element manager...")
+        elementManager = ElementManager()
+
         logger.info("Discovering addons...")
         addonLoader = AddonLoader().apply { load() }
 
-        logger.info("Initialising profile manager...")
+        logger.info("Loading configs...")
         profileManager = ProfileManager().apply { load() }
-        logger.info("Initialising element manager...")
-        elementManager = ElementManager().apply {
+        elementManager.apply {
             mainConfig.load()
             elementConfig.load()
         }
@@ -112,8 +105,6 @@ object EvergreenHUD {
         } else {
             logger.info("Skipping update and blacklisting check due to being in a development environment.")
         }
-
-        eventBus.register(this)
 
         logger.info("Registering hooks...")
         registerCommand {
