@@ -58,7 +58,7 @@ dependencies {
     implementation 'dev.isXander:Settxi:d9a66172a0'
 
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30'
-    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.5.30'
+    implementation 'org.jetbrains.kotlin:kotlin-reflect:1.5.31'
 
     implementation 'com.electronwill.night-config:core:3.6.4'
     implementation 'com.electronwill.night-config:toml:3.6.4'
