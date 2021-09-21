@@ -42,7 +42,7 @@ dependencies {
 
     api 'dev.isXander:Settxi:d9a66172a0'
 
-    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.30'
+    api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31'
     api 'org.jetbrains.kotlin:kotlin-reflect:1.5.30'
 
     api 'com.electronwill.night-config:core:3.6.4'
