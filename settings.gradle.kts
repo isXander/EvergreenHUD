@@ -21,10 +21,10 @@ pluginManagement {
         gradlePluginPortal()
         google()
 
-        maven { url = "https://maven.minecraftforge.net" }
-        maven { url = "https://jitpack.io" }
-        maven { url = "https://repo.spongepowered.org/maven/" }
-        maven { url = "https://maven.fabricmc.net" }
+        maven(url = "https://maven.minecraftforge.net")
+        maven(url = "https://jitpack.io")
+        maven(url = "https://repo.spongepowered.org/maven/")
+        maven(url = "https://maven.fabricmc.net")
     }
 
 }
@@ -35,7 +35,14 @@ include(
     ":core",
     ":processor",
     ":annotations",
-
-    ":compat:fabric-1.17.1",
-    ":compat:forge-1.8.9",
 )
+
+listOf(
+    "fabric-1.17.1",
+    "forge-1.8.9",
+).forEach {
+    include(":$it")
+    project(":$it").apply {
+        projectDir = file("compat/$it")
+    }
+}

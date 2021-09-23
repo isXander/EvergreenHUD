@@ -24,7 +24,7 @@ plugins {
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
 
 dependencies {
-    embed (modImplementation (project(":core"))) {
+    embed (project(":core")) {
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'
         exclude module: 'elementa-1.8.9-forge'

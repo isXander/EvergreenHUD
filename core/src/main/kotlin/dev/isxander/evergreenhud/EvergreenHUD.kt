@@ -20,6 +20,7 @@ package dev.isxander.evergreenhud
 import com.github.zafarkhaja.semver.Version
 import dev.deamsy.eventbus.api.EventBus
 import dev.deamsy.eventbus.impl.asm.ASMEventBus
+import dev.deamsy.eventbus.impl.reflection.ReflectionEventBus
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.api.*
 import dev.isxander.evergreenhud.api.impl.registerCommand
@@ -49,7 +50,7 @@ object EvergreenHUD {
 
     val dataDir: File = File(mc.dataDir, "evergreenhud")
     val resourceDir: File = File(dataDir, "resources/default")
-    val eventBus: EventBus = ASMEventBus()
+    val eventBus: EventBus = ReflectionEventBus()
 
     lateinit var profileManager: ProfileManager private set
     lateinit var elementManager: ElementManager private set
