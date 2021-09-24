@@ -65,9 +65,13 @@ jar {
     archiveClassifier.set 'dev'
 }
 
+shadowJar {
+    archiveClassifier.set("shadow")
+}
+
 remapJar {
     dependsOn shadowJar
-    input.fileValue shadowJar.outputs.files.singleFile
+    input = shadowJar.archivePath
 
     archiveBaseName.set(shadowJar.archiveBaseName.get())
     archiveVersion.set(shadowJar.archiveVersion.get())
