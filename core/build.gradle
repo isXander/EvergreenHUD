@@ -55,7 +55,7 @@ dependencies {
 
     api 'io.github.classgraph:classgraph:4.8.116'
 
-    api ('com.squareup.okhttp3:okhttp:4.9.1') {
+    api ('com.squareup.okhttp3:okhttp:4.9.2') {
         exclude module: 'kotlin-stdlib'
         exclude module: 'kotlin-stdlib-common'
     }
