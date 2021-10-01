@@ -53,5 +53,5 @@ jobs:
       uses: actions/upload-artifact@v2.2.4
       with:
         path: |
-          ./forge-1.8.9/build/libs
-          ./fabric-1.17.1/build/libs
+          ./compat/forge-1.8.9/build/libs
+          ./compat/fabric-1.17.1/build/libs
