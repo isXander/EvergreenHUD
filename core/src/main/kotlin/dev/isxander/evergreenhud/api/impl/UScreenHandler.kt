@@ -25,17 +25,17 @@ import gg.essential.elementa.UIComponent
 abstract class UScreenHandler {
     init {
         EvergreenHUD.eventBus.subscribe<ClientTickEvent> {
-            if (component == null) return@subscribe
+            if (screen == null) return@subscribe
 
-            displayComponent(component!!)
-            component = null
+            displayScreen(screen!!)
+            screen = null
         }
     }
 
-    private var component: UIComponent? = null
-    fun displayComponentNextTick(component: UIComponent) {
-        this.component = component
+    private var screen: ElementaScreen? = null
+    fun displayScreenNextTick(screen: ElementaScreen) {
+        this.screen = screen
     }
 
-    abstract fun displayComponent(component: UIComponent)
+    abstract fun displayScreen(screen: ElementaScreen)
 }

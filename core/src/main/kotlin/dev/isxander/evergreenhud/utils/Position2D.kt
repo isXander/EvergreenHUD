@@ -34,7 +34,6 @@ class Position2D private constructor(var scaledX: Float, var scaledY: Float, var
         fun scaledPositioning(x: Float, y: Float, scale: Float = 1f): Position2D =
             Position2D(x, y, scale)
     }
-
 }
 
 fun rawPosition(lambda: PositionBuilder.() -> Unit): Position2D =

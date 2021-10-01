@@ -62,6 +62,8 @@ class ElementComponent(private val element: Element) : UIComponent() {
 
                 element.position.rawX = posX - paddingLeft
                 element.position.rawY = posY - paddingTop
+                println("X: ${element.position.rawX}")
+                println("Y: ${element.position.rawY}")
 
                 this@ElementComponent.constrain {
                     x = posX.pixels()
@@ -70,17 +72,16 @@ class ElementComponent(private val element: Element) : UIComponent() {
             }
         }
 
-        val settingsButton = UIImage.ofFile(File(EvergreenHUD.resourceDir, "settings.png")).constrain {
-            height = 50.percent()
-            SiblingConstraint()
-            width = (self.getHeight() / 2f).pixels()
-            x = 2.pixels()
-            y = 50.percent() - 2.pixels()
-        }.onMouseClick {
-            if (it.mouseButton != 0) return@onMouseClick
-
-            Notifications.push("EvergreenHUD", "This feature is yet to be added.")
-        } childOf this effect InvertedEffect()
+//        val settingsButton = UIImage.ofFile(File(EvergreenHUD.resourceDir, "settings.png")).constrain {
+//            height = 50.percent()
+//            //width = (self.getHeight() / 2f).pixels()
+//            x = 2.pixels()
+//            y = 50.percent() - 2.pixels()
+//        }.onMouseClick {
+//            if (it.mouseButton != 0) return@onMouseClick
+//
+//            Notifications.push("EvergreenHUD", "This feature is yet to be added.")
+//        } childOf this effect InvertedEffect()
     }
 
     override fun draw(matrixStack: UMatrixStack) {

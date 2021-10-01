@@ -29,7 +29,7 @@ import kotlin.reflect.full.findAnnotation
 abstract class Element : ConfigProcessor {
     private var preloaded = false
     override val settings: MutableList<Setting<*>> = mutableListOf()
-    val metadata: Metadata = EvergreenHUD.elementManager.getAvailableElements()[this::class]!!
+    val metadata: Metadata = EvergreenHUD.elementManager.availableElements[this::class]!!
     var position: Position2D =
         scaledPosition {
             x = 0.5f

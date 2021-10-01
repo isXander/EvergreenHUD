@@ -56,7 +56,7 @@ class ElementProcessor(
         }
 
         val file = codeGenerator.createNewFile(
-            dependencies = Dependencies(false),
+            dependencies = Dependencies(true),
             packageName = "",
             fileName = "evergreenhud-elements",
             extensionName = "json",

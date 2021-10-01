@@ -19,7 +19,6 @@ package dev.isxander.evergreenhud
 
 import com.github.zafarkhaja.semver.Version
 import dev.deamsy.eventbus.api.EventBus
-import dev.deamsy.eventbus.impl.asm.ASMEventBus
 import dev.deamsy.eventbus.impl.reflection.ReflectionEventBus
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.api.*
@@ -112,7 +111,7 @@ object EvergreenHUD {
             invoke = "evergreenhud"
 
             execute {
-                screenHandler.displayComponentNextTick(MainGui())
+                screenHandler.displayScreenNextTick(MainGui())
             }
         }
 
@@ -122,7 +121,7 @@ object EvergreenHUD {
             category = "EvergreenHUD"
 
             onDown {
-                screenHandler.displayComponent(MainGui())
+                screenHandler.displayScreen(MainGui())
             }
         }
         registerKeybind {

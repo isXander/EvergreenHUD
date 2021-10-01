@@ -18,16 +18,11 @@
 package dev.isxander.evergreenhud.gui
 
 import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.api.impl.ElementaScreen
 import dev.isxander.evergreenhud.gui.components.ElementComponent
-import gg.essential.elementa.UIComponent
-import gg.essential.elementa.components.*
-import gg.essential.elementa.constraints.*
 import gg.essential.elementa.dsl.*
-import gg.essential.elementa.font.DefaultFonts
-import java.awt.Color
-import java.io.File
 
-class MainGui : UIComponent() {
+class MainGui : ElementaScreen() {
 
     init {
         for (element in EvergreenHUD.elementManager) {

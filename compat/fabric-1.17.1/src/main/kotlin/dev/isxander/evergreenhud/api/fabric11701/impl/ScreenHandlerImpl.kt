@@ -19,15 +19,21 @@ package dev.isxander.evergreenhud.api.fabric11701.impl
 
 import dev.isxander.evergreenhud.api.impl.UScreenHandler
 import dev.isxander.evergreenhud.api.fabric11701.mc
+import dev.isxander.evergreenhud.api.impl.ElementaScreen
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.dsl.*
 
 class ScreenHandlerImpl : UScreenHandler() {
-    override fun displayComponent(component: UIComponent) {
-        mc.setScreen(object : WindowScreen() {
+    override fun displayScreen(screen: ElementaScreen) {
+        mc.setScreen(object : WindowScreen(
+            screen.enableRepeatKeys,
+            screen.drawDefaultBackground,
+            screen.restoreCurrentGuiOnClose,
+            screen.newGuiScale,
+        ) {
             init {
-                component.constrain {
+                screen.constrain {
                     width = 100.percent()
                     height = 100.percent()
                 } childOf window

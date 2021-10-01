@@ -33,14 +33,13 @@ class AddonLoader {
 
             loader.addURL(file.toURI().toURL())
 
-            EvergreenHUD.elementManager.addSource(elements)
+            EvergreenHUD.elementManager.addSource(elements, "Addon: $id")
 
             for (entrypoint in entrypoints) {
                 try {
                     val split = entrypoint.split("::")
                     val className = split[0]
                     val methodName = split[1].substringBefore('(')
-
 
                     val method = Class.forName(className)
                         .getDeclaredMethod(methodName)
@@ -69,5 +68,9 @@ class AddonLoader {
 
     companion object {
         val ADDONS_FOLDER = File(EvergreenHUD.dataDir, "addons")
+
+        init {
+            ADDONS_FOLDER.mkdirs()
+        }
     }
 }

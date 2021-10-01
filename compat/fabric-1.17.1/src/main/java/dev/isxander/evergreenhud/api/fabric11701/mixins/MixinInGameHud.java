@@ -33,7 +33,5 @@ public class MixinInGameHud {
     public void render(MatrixStack matrices, float deltaTicks, CallbackInfo ci) {
         Main.matrices = matrices;
         EvergreenHUD.INSTANCE.getEventBus().post(new RenderHUDEvent(deltaTicks));
-        // prevent use of MatrixStack outside of a render context
-        Main.matrices = null;
     }
 }

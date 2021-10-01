@@ -37,8 +37,8 @@ import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class ElementManager : ConfigProcessor, Iterable<Element> {
-    private val availableElements: MutableMap<KClass<out Element>, Element.Metadata> = mutableMapOf()
-    private val currentElements: ArrayList<Element> = ArrayList()
+    val availableElements: MutableMap<KClass<out Element>, Element.Metadata> = mutableMapOf()
+    val currentElements: ArrayList<Element> = ArrayList()
 
     /* Config */
     val mainConfig: MainConfig = MainConfig(this)
@@ -86,7 +86,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     /**
      * Adds an element source to the available elements.
      */
-    fun addSource(input: InputStream) {
+    fun addSource(input: InputStream, name: String = "Core") {
         val elements = jsonParser.parse(input).get<List<Config>>("elements")
 
         var i = 0
@@ -105,11 +105,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
             i++
         }
 
-        logger.info("Registered $i elements from source.")
-    }
-
-    fun getAvailableElements(): Map<KClass<out Element>, Element.Metadata> {
-        return Collections.unmodifiableMap(availableElements)
+        logger.info("Registered $i elements from source: $name.")
     }
 
     fun getElementClass(id: String): KClass<out Element>? {
