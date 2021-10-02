@@ -23,6 +23,10 @@ plugins {
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
 
+repositories {
+    maven { url = "https://maven.fabricmc.net" }
+}
+
 dependencies {
     embed (project(":core")) {
         exclude module: 'kotlin-stdlib-jdk8'
@@ -32,7 +36,7 @@ dependencies {
         exclude module: 'yarn'
     }
 
-    include modImplementation ('gg.essential:elementa-1.17-fabric:359+next') {
+    include modImplementation ('gg.essential:elementa-1.17.1-fabric:385') {
         exclude module: 'fabric-loader'
     }
     include implementation ('com.github.Chocohead:Fabric-ASM:v2.3')
@@ -41,8 +45,8 @@ dependencies {
     mappings 'net.fabricmc:yarn:1.17.1+build.14:v2'
 
     modImplementation 'net.fabricmc:fabric-loader:0.11.6'
-    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.37.0+1.17'
-    modImplementation 'net.fabricmc:fabric-language-kotlin:1.6.4+kotlin.1.5.30'
+    modImplementation 'net.fabricmc.fabric-api:fabric-api:0.40.5+'
+    modImplementation 'net.fabricmc:fabric-language-kotlin:1.6.5+kotlin.1.5.31'
 }
 
 processResources {
@@ -56,7 +60,7 @@ processResources {
                 'mod_id': mod_id,
                 'mod_version': project.version,
                 'mod_name': mod_name,
-                'mod_description': mod_description
+                'mod_description': mod_description,
         )
     }
 }
