@@ -31,7 +31,6 @@ import dev.isxander.evergreenhud.event.RenderTickEvent
 import dev.isxander.evergreenhud.utils.MCVersion
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
-import net.minecraft.init.Blocks
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.event.entity.player.AttackEntityEvent

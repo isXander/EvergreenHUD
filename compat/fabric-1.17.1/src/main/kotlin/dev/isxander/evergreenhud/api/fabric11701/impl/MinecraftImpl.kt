@@ -21,13 +21,27 @@ import dev.isxander.evergreenhud.api.impl.UEntity
 import dev.isxander.evergreenhud.api.impl.UMinecraft
 import dev.isxander.evergreenhud.api.fabric11701.mc
 import dev.isxander.evergreenhud.api.fabric11701.mixins.AccessorMinecraftClient
+import dev.isxander.evergreenhud.api.impl.UMinecraftResource
 import net.fabricmc.loader.api.FabricLoader
+import net.minecraft.client.gui.screen.ChatScreen
+import net.minecraft.util.Identifier
 import java.io.File
+import java.io.InputStream
 
 class MinecraftImpl : UMinecraft() {
     override val player: UEntity get() = EntityImpl(mc.player)
     override val dataDir: File = mc.runDirectory
     override val fps: Int get() = AccessorMinecraftClient.getFps()
-    override val inGameHasFocus: Boolean get() = mc.currentScreen != null
+    override val inGameHasFocus: Boolean
+        get() = mc.mouse.isCursorLocked
     override val devEnv: Boolean = FabricLoader.getInstance().isDevelopmentEnvironment
+    override val inChatMenu: Boolean
+        get() = mc.currentScreen is ChatScreen
+    override val inDebugMenu: Boolean
+        get() = mc.options.debugEnabled
+
+    override fun getResource(resource: UMinecraftResource): InputStream =
+        mc.resourceManager
+            .getResource(Identifier(resource.domain, resource.path))
+            .inputStream
 }

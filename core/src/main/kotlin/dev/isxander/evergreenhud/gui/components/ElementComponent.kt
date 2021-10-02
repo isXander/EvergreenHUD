@@ -23,9 +23,19 @@ import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.gui.effects.InvertedEffect
 import dev.isxander.evergreenhud.utils.Notifications
+import dev.isxander.evergreenhud.utils.color
+import dev.isxander.evergreenhud.utils.ofMinecraftResource
+import dev.isxander.evergreenhud.utils.resource
 import gg.essential.elementa.UIComponent
+import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIImage
+import gg.essential.elementa.components.UIPoint
+import gg.essential.elementa.components.UIRoundedRectangle
+import gg.essential.elementa.constraints.ColorConstraint
+import gg.essential.elementa.constraints.RelativeConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
+import gg.essential.elementa.constraints.animation.AnimationStrategy
+import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
 import gg.essential.universal.UMatrixStack
@@ -72,16 +82,36 @@ class ElementComponent(private val element: Element) : UIComponent() {
             }
         }
 
-//        val settingsButton = UIImage.ofFile(File(EvergreenHUD.resourceDir, "settings.png")).constrain {
-//            height = 50.percent()
-//            //width = (self.getHeight() / 2f).pixels()
-//            x = 2.pixels()
-//            y = 50.percent() - 2.pixels()
-//        }.onMouseClick {
-//            if (it.mouseButton != 0) return@onMouseClick
-//
-//            Notifications.push("EvergreenHUD", "This feature is yet to be added.")
-//        } childOf this effect InvertedEffect()
+        val hoverable = UIContainer().constrain {
+            width = 100.percent()
+            height = 100.percent()
+            color = color(255, 255, 255, 255)
+        }.onMouseLeave {
+            hide()
+        }.onMouseEnter {
+            unhide()
+        }.animateBeforeHide {
+            this.setColorAnimation(Animations.OUT_EXP, 0.25f, color(255, 255, 255, 0))
+        }.animateAfterUnhide {
+            this.setColorAnimation(Animations.IN_EXP, 0.25f, color(255, 255, 255, 255))
+        }
+
+        val overlay = UIRoundedRectangle(if (element is BackgroundElement) element.cornerRadius else 0f).constrain {
+            width = 100.percent()
+            height = 100.percent()
+            color = color(255, 255, 255, 100)
+        } childOf hoverable
+
+        val settingsButton = UIImage.ofMinecraftResource(resource("settings.png")).constrain {
+            height = 50.percent()
+            width = height as RelativeConstraint
+            x = 2.pixels()
+            y = 50.percent() - 2.pixels()
+        }.onMouseClick {
+            if (it.mouseButton != 0) return@onMouseClick
+
+            Notifications.push("EvergreenHUD", "This feature is yet to be added.")
+        } childOf hoverable effect InvertedEffect()
     }
 
     override fun draw(matrixStack: UMatrixStack) {

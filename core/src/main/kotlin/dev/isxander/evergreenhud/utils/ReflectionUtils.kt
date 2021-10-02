@@ -34,3 +34,13 @@ fun getCallerClass(thread: Thread = Thread.currentThread(), depth: Int = 0, igno
     throw IllegalStateException("Could not find non-internal call within stacktrace!")
 }
 
+var vmVersion: Int = -1
+    get() {
+        if (field < 0) {
+            field = System.getProperty("java.class.version")?.let { (it.toFloat() - 44).toInt() }
+                ?: System.getProperty("java.vm.specification.version")?.substringAfterLast('.')?.toInt()
+                ?: 8
+        }
+        return field
+    }
+    private set

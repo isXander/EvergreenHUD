@@ -29,7 +29,7 @@
   "depends": {
     "fabricloader": ">=0.11.6",
     "fabric": "*",
-    "fabric-language-kotlin": ">=1.6.4+kotlin.1.5.30",
+    "fabric-language-kotlin": ">=1.6.5+kotlin.1.5.31",
     "minecraft": "1.17.x",
     "java": ">=8"
   }

@@ -1,4 +1,5 @@
 /*
+ *
  * EvergreenHUD - A mod to improve on your heads-up-display.
  * Copyright (C) isXander [2019 - 2021]
  *
@@ -13,21 +14,16 @@
  *
  * If you have a private concern, please contact
  * isXander @ business.isxander@gmail.com
+ *
  */
 
-package dev.isxander.evergreenhud.gui
+package dev.isxander.evergreenhud.api.impl
 
-import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.api.impl.ElementaScreen
-import dev.isxander.evergreenhud.gui.components.ElementComponent
-import gg.essential.elementa.dsl.*
+import dev.isxander.evergreenhud.api.mc
 
-class MainGui : ElementaScreen() {
-
-    init {
-        for (element in EvergreenHUD.elementManager) {
-            ElementComponent(element) childOf this
-        }
-    }
-
+data class UMinecraftResource(
+    val domain: String,
+    val path: String,
+) {
+    val inputStream = mc.getResource(this)
 }

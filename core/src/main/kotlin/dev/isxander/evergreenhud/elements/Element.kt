@@ -19,12 +19,11 @@ package dev.isxander.evergreenhud.elements
 
 import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.annotations.ElementMeta
+import dev.isxander.evergreenhud.api.loader
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.settxi.serialization.ConfigProcessor
-import kotlin.reflect.full.findAnnotation
 
 abstract class Element : ConfigProcessor {
     private var preloaded = false
@@ -63,7 +62,7 @@ abstract class Element : ConfigProcessor {
         default = false,
         name = "Show In F3",
         category = "Visibility",
-        description = "Show the element if you have the debug screen (F3 menu) open.",
+        description = "Render the element if you have the debug screen (F3 menu) open.",
     )
 
     var showUnderGui by boolean(
@@ -72,6 +71,15 @@ abstract class Element : ConfigProcessor {
         category = "Visibility",
         description = "Render the element even when you have a gui open."
     )
+
+    var showInReplayViewer by boolean(
+        default = false,
+        name = "Show In Replay Viewer",
+        category = "Visibility",
+        description = "Render the element if you are in the replay viewer."
+    ) {
+        depends { loader.isModLoaded("replaymod") }
+    }
 
     /* called when element is added */
     open fun onAdded() {
@@ -99,13 +107,16 @@ abstract class Element : ConfigProcessor {
 
     var conf: Config
         get() {
-            val config = Config.of(tomlFormat).apply {
-                set<Float>("x", position.scaledX)
-                set<Float>("y", position.scaledY)
-                set<Float>("scale", position.scale)
-            }
+            val config = Config.of(jsonFormat)
 
-            var settingsData = Config.of(tomlFormat)
+            config.add("position", config.createSubConfig().apply {
+                add("x", position.scaledX)
+                add("y", position.scaledY)
+                add("scale", position.scale)
+                add("origin", position.origin.name)
+            })
+
+            var settingsData = config.createSubConfig()
             for (setting in settings) {
                 if (!setting.shouldSave || setting.get() == setting.default) continue
                 settingsData = addSettingToConfig(setting, settingsData)
@@ -115,11 +126,14 @@ abstract class Element : ConfigProcessor {
             return config
         }
         set(value) {
-            position.scaledX = value.get<Number>("x")?.toFloat() ?: position.scaledX
-            position.scaledY = value.get<Number>("y")?.toFloat() ?: position.scaledY
-            position.scale = value.get<Number>("scale")?.toFloat() ?: position.scale
+            value.get<Config>("position").apply {
+                position.scaledX = get<Number>("x")?.toFloat() ?: position.scaledX
+                position.scaledY = get<Number>("y")?.toFloat() ?: position.scaledY
+                position.scale = get<Number>("scale")?.toFloat() ?: position.scale
+                position.origin = Position2D.Origin.valueOf(get("origin"))
+            }
 
-            val settingsData = value["settings"] ?: Config.of(tomlFormat)
+            val settingsData = value["settings"] ?: value.createSubConfig()
             for (setting in settings) {
                 if (!setting.shouldSave) return
                 setting.serializedValue = settingsData.getOrElse(setting.nameSerializedCategoryAndKey, setting.defaultSerializedValue)

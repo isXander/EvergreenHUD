@@ -98,9 +98,9 @@ abstract class TextElement : BackgroundElement() {
         val y = position.rawY / glScale
 
         return when (alignment) {
+            Alignment.LEFT -> HitBox2D(x - left, y - top, width + left + right, height + top + bottom)
             Alignment.RIGHT -> HitBox2D(x - (width / drawScale) - left, y - top, width + left + right, height + top + bottom)
             Alignment.CENTER -> HitBox2D(x - (width / 2f) - left, y - top, width + left + right, height + top + bottom)
-            Alignment.LEFT -> HitBox2D(x - left, y - top, width + left + right, height + top + bottom)
             else -> throw IllegalStateException("Failed to parse alignment.")
         }
     }

@@ -1,4 +1,5 @@
 /*
+ *
  * EvergreenHUD - A mod to improve on your heads-up-display.
  * Copyright (C) isXander [2019 - 2021]
  *
@@ -13,11 +14,17 @@
  *
  * If you have a private concern, please contact
  * isXander @ business.isxander@gmail.com
+ *
  */
 
-package dev.isxander.evergreenhud.api.impl
+package dev.isxander.evergreenhud.utils
 
-abstract class UProfiler {
-    abstract fun push(name: String)
-    abstract fun pop()
-}
+import gg.essential.elementa.constraints.ConstantColorConstraint
+import gg.essential.elementa.dsl.toConstraint
+import java.awt.Color
+
+fun color(r: Int, g: Int, b: Int, a: Int = 255): ConstantColorConstraint =
+    Color(r, g, b, a).toConstraint()
+
+fun color(rgba: Int): ConstantColorConstraint =
+    Color(rgba).toConstraint()

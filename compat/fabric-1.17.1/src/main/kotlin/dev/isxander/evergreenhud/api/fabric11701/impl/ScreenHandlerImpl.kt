@@ -25,19 +25,27 @@ import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.dsl.*
 
 class ScreenHandlerImpl : UScreenHandler() {
+    override val inGui: Boolean
+        get() = mc.currentScreen != null
+    override val currentElementaGui: ElementaScreen?
+        get() = (mc.currentScreen as? ElementaScreenContainer)?.screen
+
+
     override fun displayScreen(screen: ElementaScreen) {
-        mc.setScreen(object : WindowScreen(
-            screen.enableRepeatKeys,
-            screen.drawDefaultBackground,
-            screen.restoreCurrentGuiOnClose,
-            screen.newGuiScale,
-        ) {
-            init {
-                screen.constrain {
-                    width = 100.percent()
-                    height = 100.percent()
-                } childOf window
-            }
-        })
+        mc.setScreen(ElementaScreenContainer(screen))
+    }
+
+    private class ElementaScreenContainer(val screen: ElementaScreen) : WindowScreen(
+        screen.enableRepeatKeys,
+        screen.drawDefaultBackground,
+        screen.restoreCurrentGuiOnClose,
+        screen.newGuiScale
+    ) {
+        init {
+            screen.constrain {
+                width = 100.percent()
+                height = 100.percent()
+            } childOf window
+        }
     }
 }

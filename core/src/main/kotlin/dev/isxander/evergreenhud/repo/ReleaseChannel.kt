@@ -17,7 +17,7 @@
 
 package dev.isxander.evergreenhud.repo
 
-enum class ReleaseChannel(jsonKey: String) {
+enum class ReleaseChannel(val id: String) {
     RELEASE("release"),
     BETA("prerelease")
 }

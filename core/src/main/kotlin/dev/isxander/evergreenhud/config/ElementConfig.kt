@@ -23,20 +23,20 @@ import com.electronwill.nightconfig.core.io.WritingMode
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
 import dev.isxander.evergreenhud.elements.ElementManager
-import dev.isxander.evergreenhud.utils.tomlFormat
-import dev.isxander.evergreenhud.utils.tomlWriter
+import dev.isxander.evergreenhud.utils.jsonFormat
+import dev.isxander.evergreenhud.utils.jsonWriter
 import java.io.File
 
 class ElementConfig(private val manager: ElementManager) {
     private var shouldSave = false
 
     fun save() {
-        val data = Config.of(tomlFormat)
+        val data = Config.of(jsonFormat)
         data.set<Int>("schema", SCHEMA)
 
         val arr = mutableListOf<Config>()
         for (element in manager) {
-            arr.add(Config.of(tomlFormat).apply {
+            arr.add(Config.of(jsonFormat).apply {
                 set<String>("id", element.metadata.id)
                 set<Config>("data", element.conf)
             })
@@ -44,7 +44,7 @@ class ElementConfig(private val manager: ElementManager) {
         data.set<List<Config>>("elements", arr)
 
         CONFIG_FILE.parentFile.mkdirs()
-        tomlWriter.write(data, CONFIG_FILE, WritingMode.REPLACE)
+        jsonWriter.write(data, CONFIG_FILE, WritingMode.REPLACE)
         shouldSave = false
     }
 
@@ -75,7 +75,7 @@ class ElementConfig(private val manager: ElementManager) {
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return Config.of(tomlFormat)
+            return Config.of(jsonFormat)
         }
 
         // there is no point recoding every conversion
@@ -97,6 +97,6 @@ class ElementConfig(private val manager: ElementManager) {
     companion object {
         const val SCHEMA = 4
         val CONFIG_FILE: File
-            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.toml")
+            get() = File(EvergreenHUD.profileManager.profileDirectory, "elements.json")
     }
 }

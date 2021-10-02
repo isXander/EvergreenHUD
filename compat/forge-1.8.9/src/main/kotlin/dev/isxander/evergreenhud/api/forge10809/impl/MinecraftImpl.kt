@@ -20,9 +20,13 @@ package dev.isxander.evergreenhud.api.forge10809.impl
 import dev.isxander.evergreenhud.api.forge10809.mc
 import dev.isxander.evergreenhud.api.impl.UEntity
 import dev.isxander.evergreenhud.api.impl.UMinecraft
+import dev.isxander.evergreenhud.api.impl.UMinecraftResource
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.GuiChat
 import net.minecraft.launchwrapper.Launch
+import net.minecraft.util.ResourceLocation
 import java.io.File
+import java.io.InputStream
 
 class MinecraftImpl : UMinecraft() {
     override val player: UEntity get() = EntityImpl(mc.thePlayer)
@@ -33,4 +37,14 @@ class MinecraftImpl : UMinecraft() {
         val o = Launch.blackboard["fml.deobfuscatedEnvironment"]
         o != null && o as Boolean
     }
+    override val inChatMenu: Boolean
+        get() = mc.currentScreen is GuiChat
+    override val inDebugMenu: Boolean
+        get() = mc.gameSettings.showDebugInfo
+
+    override fun getResource(resource: UMinecraftResource): InputStream =
+        mc.resourceManager
+            .getResource(ResourceLocation(resource.domain, resource.path))
+            .inputStream
+
 }

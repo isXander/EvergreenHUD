@@ -25,6 +25,4 @@ abstract class ElementaScreen(
     val drawDefaultBackground: Boolean = true,
     val restoreCurrentGuiOnClose: Boolean = false,
     val newGuiScale: Int = -1
-) : UIComponent() {
-
-}
+) : UIComponent()

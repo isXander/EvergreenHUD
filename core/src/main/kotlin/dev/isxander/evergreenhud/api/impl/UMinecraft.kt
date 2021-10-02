@@ -18,6 +18,7 @@
 package dev.isxander.evergreenhud.api.impl
 
 import java.io.File
+import java.io.InputStream
 
 abstract class UMinecraft {
     abstract val player: UEntity
@@ -25,4 +26,8 @@ abstract class UMinecraft {
     abstract val fps: Int
     abstract val inGameHasFocus: Boolean
     abstract val devEnv: Boolean
+    abstract val inChatMenu: Boolean
+    abstract val inDebugMenu: Boolean
+
+    abstract fun getResource(resource: UMinecraftResource): InputStream
 }

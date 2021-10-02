@@ -19,16 +19,16 @@ package dev.isxander.evergreenhud.elements
 
 import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.api.logger
-import dev.isxander.evergreenhud.api.profiler
+import dev.isxander.evergreenhud.api.*
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
 import dev.isxander.evergreenhud.event.RenderHUDEvent
+import dev.isxander.evergreenhud.gui.screens.ElementDisplay
 import dev.isxander.evergreenhud.utils.jsonParser
 import dev.isxander.evergreenhud.utils.subscribe
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
-import dev.isxander.evergreenhud.utils.tomlFormat
+import dev.isxander.evergreenhud.utils.jsonFormat
 import dev.isxander.settxi.serialization.ConfigProcessor
 import java.io.InputStream
 import java.util.*
@@ -84,7 +84,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     }
 
     /**
-     * Adds an element source to the available elements.
+     * Adds a JSON source to the list of available elements found in the jar
      */
     fun addSource(input: InputStream, name: String = "Core") {
         val elements = jsonParser.parse(input).get<List<Config>>("elements")
@@ -93,6 +93,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         for (element in elements) {
             val meta = element.get<Config>("metadata")
 
+            @Suppress("UNCHECKED_CAST")
             availableElements[Class.forName(element.get("class")).kotlin as KClass<out Element>] =
                 Element.Metadata(
                     meta["id"],
@@ -134,27 +135,29 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
 
     fun renderElements(event: RenderHUDEvent) {
         profiler.push("EvergreenHUD Render")
+
+        val inChat = mc.inChatMenu
+        val inDebug = mc.inDebugMenu
+        val inGui = screenHandler.inGui && screenHandler.currentElementaGui !is ElementDisplay && !inChat
+        val inReplayViewer = world.isReplayViewer
+
         for (e in currentElements) {
-            e.render(event.dt, RenderOrigin.HUD)
+            if (
+                (mc.inGameHasFocus && !inDebug)
+                || (e.showInChat && inChat)
+                || (e.showInDebug && inDebug && !(!e.showInChat && inChat))
+                || (e.showUnderGui && inGui)
+                || (e.showInReplayViewer && inReplayViewer)
+            ) {
+                e.render(event.dt, RenderOrigin.HUD)
+            }
         }
         profiler.pop()
-//        mc.mcProfiler.startSection("Element Render")
-//
-//        val inChat = mc.currentScreen is GuiChat
-//        val inDebug = mc.gameSettings.showDebugInfo
-//        val inGui = mc.currentScreen != null && mc.currentScreen !is GuiScreenElements && mc.currentScreen !is GuiChat
-//
-//        for (e in currentElements) {
-//            if (mc.inGameHasFocus && !inDebug || e.showInChat && inChat || e.showInDebug && inDebug && !(!e.showInChat && inChat) || e.showUnderGui && inGui) {
-//                e.render(partialTicks, RenderOrigin.HUD)
-//            }
-//        }
-//        mc.mcProfiler.endSection()
     }
 
     var conf: Config
         get() {
-            var data = Config.of(tomlFormat)
+            var data = Config.of(jsonFormat)
 
             for (setting in settings) {
                 if (!setting.shouldSave) continue
@@ -165,6 +168,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         }
         set(value) {
             for (setting in settings) {
+                if (!setting.shouldSave) continue
                 setSettingFromConfig(value, setting)
             }
         }

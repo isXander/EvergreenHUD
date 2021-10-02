@@ -23,7 +23,6 @@ import gg.essential.elementa.effects.Effect
 import gg.essential.universal.UMatrixStack
 
 class InvertedEffect : Effect() {
-
     override fun beforeDraw(matrixStack: UMatrixStack) {
         gl.blendFuncSeparate(UGL.GL_ONE_MINUS_DST_COLOR, UGL.GL_ONE_MINUS_SRC_COLOR, 1, 0)
     }
@@ -31,5 +30,4 @@ class InvertedEffect : Effect() {
     override fun beforeChildrenDraw(matrixStack: UMatrixStack) {
         gl.defaultBlendFunc()
     }
-
 }

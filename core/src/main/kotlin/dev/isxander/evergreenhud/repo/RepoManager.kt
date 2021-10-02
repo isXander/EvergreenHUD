@@ -17,7 +17,9 @@
 
 package dev.isxander.evergreenhud.repo
 
+import com.electronwill.nightconfig.core.Config
 import com.github.zafarkhaja.semver.Version
+import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.utils.jsonParser
 import java.net.URL
 
@@ -26,8 +28,12 @@ object RepoManager {
 
     fun getResponse(): RepoResponse {
         val data = jsonParser.parse(jsonUrl)
+        val latest = data.get<Config>("latest")
 
-        return RepoResponse(Version.valueOf(data["latest"]), data["blacklisted"])
+        return RepoResponse(
+            Version.valueOf(latest[EvergreenHUD.RELEASE_CHANNEL.id]),
+            data["blacklisted"],
+        )
     }
 
 }

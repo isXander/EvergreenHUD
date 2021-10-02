@@ -27,7 +27,7 @@ import dev.isxander.evergreenhud.api.impl.registerKeybind
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.utils.Input
 import dev.isxander.evergreenhud.config.profile.ProfileManager
-import dev.isxander.evergreenhud.gui.MainGui
+import dev.isxander.evergreenhud.gui.screens.ElementDisplay
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
@@ -35,6 +35,8 @@ import gg.essential.universal.UDesktop
 import java.awt.Color
 import java.io.File
 import java.net.URI
+import kotlin.random.Random
+import kotlin.reflect.full.createInstance
 
 object EvergreenHUD {
     const val NAME = "__GRADLE_NAME__"
@@ -48,7 +50,6 @@ object EvergreenHUD {
             else ReleaseChannel.BETA
 
     val dataDir: File = File(mc.dataDir, "evergreenhud")
-    val resourceDir: File = File(dataDir, "resources/default")
     val eventBus: EventBus = ReflectionEventBus()
 
     lateinit var profileManager: ProfileManager private set
@@ -77,8 +78,17 @@ object EvergreenHUD {
         logger.info("Loading configs...")
         profileManager = ProfileManager().apply { load() }
         elementManager.apply {
+            availableElements.forEach { (clazz, _) ->
+                addElement(clazz.createInstance().apply {
+                    position.scaledX = Random.nextFloat()
+                    position.scaledY = Random.nextFloat()
+                    position.origin = Position2D.Origin.values()[Random.nextInt(0, Position2D.Origin.values().size)]
+                })
+            }
+            elementConfig.save()
+
             mainConfig.load()
-            elementConfig.load()
+//            elementConfig.load()
         }
 
         if (!mc.devEnv) {
@@ -111,7 +121,7 @@ object EvergreenHUD {
             invoke = "evergreenhud"
 
             execute {
-                screenHandler.displayScreenNextTick(MainGui())
+                screenHandler.displayScreenNextTick(ElementDisplay())
             }
         }
 
@@ -121,7 +131,7 @@ object EvergreenHUD {
             category = "EvergreenHUD"
 
             onDown {
-                screenHandler.displayScreen(MainGui())
+                screenHandler.displayScreen(ElementDisplay())
             }
         }
         registerKeybind {

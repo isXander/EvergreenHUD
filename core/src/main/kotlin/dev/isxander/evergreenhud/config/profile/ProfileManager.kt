@@ -23,8 +23,8 @@ import com.electronwill.nightconfig.core.file.FileConfig
 import com.electronwill.nightconfig.core.io.WritingMode
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
-import dev.isxander.evergreenhud.utils.tomlFormat
-import dev.isxander.evergreenhud.utils.tomlWriter
+import dev.isxander.evergreenhud.utils.jsonFormat
+import dev.isxander.evergreenhud.utils.jsonWriter
 import java.io.File
 
 class ProfileManager {
@@ -52,13 +52,13 @@ class ProfileManager {
     fun save() {
         PROFILES_DATA.parentFile.mkdirs()
 
-        val config = Config.of(tomlFormat)
+        val config = Config.of(jsonFormat)
 
         config.set<Int>("schema", SCHEMA)
         config.set<String>("current", currentProfile.id)
-        config.set<List<Config>>("profiles", availableProfiles.values.toList().map { ObjectConverter().toConfig(it) { Config.of(tomlFormat) } })
+        config.set<List<Config>>("profiles", availableProfiles.values.toList().map { ObjectConverter().toConfig(it) { Config.of(jsonFormat) } })
 
-        tomlWriter.write(config, PROFILES_DATA, WritingMode.REPLACE)
+        jsonWriter.write(config, PROFILES_DATA, WritingMode.REPLACE)
     }
 
     @Suppress("UNUSED_EXPRESSION")
@@ -67,7 +67,7 @@ class ProfileManager {
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return Config.of(tomlFormat)
+            return Config.of(jsonFormat)
         }
 
         // there is no point recoding every conversion
@@ -88,7 +88,7 @@ class ProfileManager {
 
     companion object {
         const val SCHEMA = 1
-        val PROFILES_DATA = File(EvergreenHUD.dataDir, "profiles/profiles.toml")
+        val PROFILES_DATA = File(EvergreenHUD.dataDir, "profiles/profiles.json")
         val DEFAULT_PROFILE = Profile {
             id = "default"
             name = "Default"
@@ -96,6 +96,3 @@ class ProfileManager {
         }
     }
 }
-
-
-

@@ -1,5 +1,5 @@
 dependencies {
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.5.30-1.0.0")
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.5.31-1.0.0")
     implementation(kotlin("stdlib"))
     implementation(project(":annotations"))
     implementation("com.electronwill.night-config:core:3.6.4")

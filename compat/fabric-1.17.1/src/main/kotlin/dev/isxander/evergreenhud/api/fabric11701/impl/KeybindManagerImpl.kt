@@ -47,12 +47,12 @@ class KeybindManagerImpl : UKeybindManager() {
 
         var pressed = false
         ClientTickEvents.END_CLIENT_TICK.register {
-            if (mcBind.isPressed && !pressed) keybind.onDown?.invoke()
-            if (!mcBind.isPressed && pressed) keybind.onUp?.invoke()
-            pressed = mcBind.isPressed
+            if (result.isPressed && !pressed) keybind.onDown?.invoke()
+            if (!result.isPressed && pressed) keybind.onUp?.invoke()
+            pressed = result.isPressed
 
-            keybind.keyDown = mcBind.isPressed
-            keybind.pressed = mcBind.wasPressed()
+            keybind.keyDown = result.isPressed
+            keybind.pressed = result.wasPressed()
         }
 
         return keybind

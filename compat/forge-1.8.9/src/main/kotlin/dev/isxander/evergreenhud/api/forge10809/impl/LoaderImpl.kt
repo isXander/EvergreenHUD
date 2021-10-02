@@ -28,17 +28,14 @@ class LoaderImpl : ULoader() {
         Loader.isModLoaded(id)
 
     override fun addURL(url: URL): Boolean {
-        try {
-            val classLoader = getCallerClass().classLoader
-            if (classLoader is URLClassLoader) {
-                classLoader::class.java.getDeclaredMethod("addURL", URL::class.java)
-                    .invoke(classLoader, url)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            return false
+        val loader = getCallerClass().classLoader
+
+        if (loader is URLClassLoader) {
+            loader::class.java.getDeclaredMethod("addURL", URL::class.java)
+                .invoke(loader, url)
+            return true
         }
 
-        return true
+        return false
     }
 }

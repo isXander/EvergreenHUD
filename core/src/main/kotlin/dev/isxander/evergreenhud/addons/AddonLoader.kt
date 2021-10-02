@@ -60,6 +60,7 @@ class AddonLoader {
         }
     }
 
+    @Suppress("UNCHECKED_CAST")
     private inline fun <reified T> getList(potentialList: Any): List<T>? {
         if (potentialList is List<*>) return potentialList as List<T>
         if (potentialList is T) return listOf(potentialList as T)

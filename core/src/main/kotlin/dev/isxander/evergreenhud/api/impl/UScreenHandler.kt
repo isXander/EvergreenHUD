@@ -20,9 +20,12 @@ package dev.isxander.evergreenhud.api.impl
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.utils.subscribe
-import gg.essential.elementa.UIComponent
 
 abstract class UScreenHandler {
+    private var screen: ElementaScreen? = null
+    abstract val inGui: Boolean
+    abstract val currentElementaGui: ElementaScreen?
+
     init {
         EvergreenHUD.eventBus.subscribe<ClientTickEvent> {
             if (screen == null) return@subscribe
@@ -32,7 +35,6 @@ abstract class UScreenHandler {
         }
     }
 
-    private var screen: ElementaScreen? = null
     fun displayScreenNextTick(screen: ElementaScreen) {
         this.screen = screen
     }

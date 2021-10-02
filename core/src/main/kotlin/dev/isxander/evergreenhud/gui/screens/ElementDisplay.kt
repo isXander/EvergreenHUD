@@ -1,4 +1,5 @@
 /*
+ *
  * EvergreenHUD - A mod to improve on your heads-up-display.
  * Copyright (C) isXander [2019 - 2021]
  *
@@ -13,21 +14,22 @@
  *
  * If you have a private concern, please contact
  * isXander @ business.isxander@gmail.com
+ *
  */
 
-package dev.isxander.evergreenhud.api.fabric11701.impl
+package dev.isxander.evergreenhud.gui.screens
 
-import dev.isxander.evergreenhud.api.impl.Logger as ULogger
-import dev.isxander.evergreenhud.api.impl.ULogManager
-import org.apache.logging.log4j.LogManager
-import org.apache.logging.log4j.Logger
+import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.api.impl.ElementaScreen
+import dev.isxander.evergreenhud.gui.components.ElementComponent
+import gg.essential.elementa.dsl.*
 
-class LogManagerImpl : ULogManager() {
-    override fun get(name: String): ULogger = object : ULogger {
-        private val logger: Logger = LogManager.getLogger(name)
+class ElementDisplay : ElementaScreen() {
 
-        override fun info(msg: String) = logger.info(msg)
-        override fun warn(msg: String) = logger.warn(msg)
-        override fun err(msg: String) = logger.error(msg)
+    init {
+        for (element in EvergreenHUD.elementManager) {
+            ElementComponent(element) childOf this
+        }
     }
+
 }
