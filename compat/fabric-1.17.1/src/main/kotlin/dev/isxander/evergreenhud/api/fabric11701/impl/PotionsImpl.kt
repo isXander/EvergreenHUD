@@ -22,6 +22,7 @@ import dev.isxander.evergreenhud.api.impl.UEntity
 import dev.isxander.evergreenhud.api.impl.UPotion
 import dev.isxander.evergreenhud.api.impl.UPotions
 import dev.isxander.evergreenhud.api.fabric11701.Main
+import dev.isxander.evergreenhud.api.fabric11701.matrices
 import dev.isxander.evergreenhud.api.fabric11701.mc
 import dev.isxander.evergreenhud.api.fabric11701.utils.getEntity
 import net.minecraft.client.gui.DrawableHelper
@@ -54,6 +55,6 @@ class PotionsImpl : UPotions() {
         val effectManager = mc.statusEffectSpriteManager
         val sprite = effectManager.getSprite(Registry.STATUS_EFFECT.find { Registry.STATUS_EFFECT.getRawId(it) == potion.id })
         RenderSystem.setShaderTexture(0, sprite.atlas.id)
-        DrawableHelper.drawSprite(Main.matrices, x.toInt(), y.toInt(), 0, 18, 18, sprite)
+        DrawableHelper.drawSprite(matrices, x.toInt(), y.toInt(), 0, 18, 18, sprite)
     }
 }

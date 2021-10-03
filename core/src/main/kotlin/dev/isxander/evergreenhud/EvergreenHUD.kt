@@ -27,6 +27,7 @@ import dev.isxander.evergreenhud.api.impl.registerKeybind
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.utils.Input
 import dev.isxander.evergreenhud.config.profile.ProfileManager
+import dev.isxander.evergreenhud.elements.impl.ElementImage
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
@@ -78,13 +79,20 @@ object EvergreenHUD {
         logger.info("Loading configs...")
         profileManager = ProfileManager().apply { load() }
         elementManager.apply {
-            availableElements.forEach { (clazz, _) ->
-                addElement(clazz.createInstance().apply {
-                    position.scaledX = Random.nextFloat()
-                    position.scaledY = Random.nextFloat()
-                    position.origin = Position2D.Origin.values()[Random.nextInt(0, Position2D.Origin.values().size)]
-                })
-            }
+//            availableElements.forEach { (clazz, _) ->
+//                addElement(clazz.createInstance().apply {
+//                    position.scaledX = Random.nextFloat()
+//                    position.scaledY = Random.nextFloat()
+//                    position.origin = Position2D.Origin.values()[Random.nextInt(0, Position2D.Origin.values().size)]
+//                })
+//            }
+//            elementConfig.save()
+
+            addElement(getNewElementInstance<ElementImage>("IMAGE")!!.apply {
+                file = File("/home/xander/Code/EvergreenHUD/core/src/main/resources/assets/evergreenhud/evergreenhud-transparent.png")
+                mirror = true
+                rotation = 220f
+            })
             elementConfig.save()
 
             mainConfig.load()

@@ -41,3 +41,4 @@ val commandHandler: UCommandHandler by lazy { di.get() }
 val screenHandler: UScreenHandler by lazy { di.get() }
 val potions: UPotions by lazy { di.get() }
 val translation: UTranslation by lazy { di.get() }
+val textureManager: UTextureManager by lazy { di.get() }

@@ -19,11 +19,13 @@
 
 package dev.isxander.evergreenhud.api.impl
 
-import dev.isxander.evergreenhud.api.mc
+import dev.isxander.evergreenhud.api.textureManager
+import java.io.InputStream
 
 data class UMinecraftResource(
     val domain: String,
     val path: String,
 ) {
-    val inputStream = mc.getResource(this)
+    val inputStream: InputStream
+        get() = textureManager.getResource(this)
 }

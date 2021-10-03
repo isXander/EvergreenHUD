@@ -62,7 +62,4 @@ class GLImpl : UGL() {
     override fun blendFuncSeparate(srcFactorRGB: Int, dstFactorRGB: Int, srcFactorAlpha: Int, dstFactorAlpha: Int) =
         GlStateManager.tryBlendFuncSeparate(srcFactorRGB, dstFactorRGB, srcFactorAlpha, dstFactorAlpha)
     override fun blendFunc(srcFactor: Int, dstFactor: Int) = GlStateManager.blendFunc(srcFactor, dstFactor)
-
-    override fun bindTexture(location: UResourceLocation) =
-        mc.textureManager.bindTexture(ResourceLocation(location.namespace, location.path))
 }

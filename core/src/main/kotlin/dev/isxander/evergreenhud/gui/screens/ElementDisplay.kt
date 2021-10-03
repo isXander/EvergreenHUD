@@ -22,13 +22,27 @@ package dev.isxander.evergreenhud.gui.screens
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.impl.ElementaScreen
 import dev.isxander.evergreenhud.gui.components.ElementComponent
+import dev.isxander.evergreenhud.gui.components.SettxiWindow
+import gg.essential.elementa.components.UIContainer
+import gg.essential.elementa.constraints.CramSiblingConstraint
 import gg.essential.elementa.dsl.*
 
 class ElementDisplay : ElementaScreen() {
 
     init {
+        val container = UIContainer().constrain {
+            width = 100.percent()
+            height = 100.percent()
+        } childOf this
+
         for (element in EvergreenHUD.elementManager) {
-            ElementComponent(element) childOf this
+//            ElementComponent(element) childOf this
+            SettxiWindow(element).constrain {
+                x = CramSiblingConstraint(5f)
+                y = CramSiblingConstraint(5f)
+                width = 400.pixels()
+                height = 100.pixels()
+            } childOf container
         }
     }
 

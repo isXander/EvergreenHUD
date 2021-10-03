@@ -83,12 +83,12 @@ abstract class Element : ConfigProcessor {
 
     /* called when element is added */
     open fun onAdded() {
-        EvergreenHUD.eventBus.register(this)
+        eventBus.register(this)
 
     }
     /* called when element is removed */
     open fun onRemoved() {
-        EvergreenHUD.eventBus.unregister(this)
+        eventBus.unregister(this)
         utilities.unregisterAllForObject(this)
     }
 
@@ -118,7 +118,7 @@ abstract class Element : ConfigProcessor {
 
             var settingsData = config.createSubConfig()
             for (setting in settings) {
-                if (!setting.shouldSave || setting.get() == setting.default) continue
+                if (!setting.shouldSave) continue
                 settingsData = addSettingToConfig(setting, settingsData)
             }
 
@@ -150,6 +150,7 @@ abstract class Element : ConfigProcessor {
         val name: String,
         val category: String,
         val description: String,
+        val credits: String?,
         val maxInstances: Int,
     )
 }

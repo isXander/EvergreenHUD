@@ -24,6 +24,7 @@ annotation class ElementMeta(
     val name: String,
     val category: String,
     val description: String,
+    val credits: String = "",
     val maxInstances: Int = Int.MAX_VALUE
 )
 

@@ -20,6 +20,7 @@ package dev.isxander.evergreenhud.api.fabric11701.mixins;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.isxander.evergreenhud.EvergreenHUD;
 import dev.isxander.evergreenhud.api.fabric11701.Main;
+import dev.isxander.evergreenhud.api.fabric11701.MainKt;
 import dev.isxander.evergreenhud.event.RenderTickEvent;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.util.math.MatrixStack;
@@ -33,11 +34,10 @@ public class MixinMinecraftClient {
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gl/Framebuffer;endWrite()V", shift = At.Shift.BEFORE))
     private void render(boolean tick, CallbackInfo ci) {
         if (Main.INSTANCE.getPostInitialized()) {
-            Main.matrices = new MatrixStack();
+            MainKt.setMatrices(new MatrixStack());
             RenderSystem.enableTexture();
             RenderSystem.enableCull();
             EvergreenHUD.INSTANCE.getEventBus().post(new RenderTickEvent(MinecraftClient.getInstance().getTickDelta()));
-            Main.matrices = null;
         }
     }
 }

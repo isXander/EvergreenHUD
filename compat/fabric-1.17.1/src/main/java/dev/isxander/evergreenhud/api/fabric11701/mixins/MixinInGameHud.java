@@ -1,4 +1,5 @@
 /*
+ *
  * EvergreenHUD - A mod to improve on your heads-up-display.
  * Copyright (C) isXander [2019 - 2021]
  *
@@ -13,12 +14,14 @@
  *
  * If you have a private concern, please contact
  * isXander @ business.isxander@gmail.com
+ *
  */
 
 package dev.isxander.evergreenhud.api.fabric11701.mixins;
 
 import dev.isxander.evergreenhud.EvergreenHUD;
 import dev.isxander.evergreenhud.api.fabric11701.Main;
+import dev.isxander.evergreenhud.api.fabric11701.MainKt;
 import dev.isxander.evergreenhud.event.RenderHUDEvent;
 import net.minecraft.client.gui.hud.InGameHud;
 import net.minecraft.client.util.math.MatrixStack;
@@ -31,7 +34,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinInGameHud {
     @Inject(method = "render", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/hud/InGameHud;renderMountHealth(Lnet/minecraft/client/util/math/MatrixStack;)V", shift = At.Shift.AFTER))
     public void render(MatrixStack matrices, float deltaTicks, CallbackInfo ci) {
-        Main.matrices = matrices;
+        MainKt.matrices = new MatrixStack();
         EvergreenHUD.INSTANCE.getEventBus().post(new RenderHUDEvent(deltaTicks));
     }
 }

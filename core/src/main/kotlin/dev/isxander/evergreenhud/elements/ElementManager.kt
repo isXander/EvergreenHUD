@@ -100,6 +100,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
                     meta["name"],
                     meta["category"],
                     meta["description"],
+                    meta.get<String>("credits").let { it.ifEmpty { null } },
                     meta["maxInstances"],
                 )
 
@@ -123,7 +124,8 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
      * @param id the internal id of the element
      * @return element instance
      */
-    fun getNewElementInstance(id: String): Element? = getElementClass(id)?.createInstance()
+    @Suppress("UNCHECKED_CAST")
+    fun <T : Element> getNewElementInstance(id: String): T? = getElementClass(id)?.createInstance() as T?
 
     fun getCurrentElements(): List<Element> {
         return Collections.unmodifiableList(currentElements)

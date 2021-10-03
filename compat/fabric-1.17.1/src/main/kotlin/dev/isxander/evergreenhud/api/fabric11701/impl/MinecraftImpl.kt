@@ -24,9 +24,14 @@ import dev.isxander.evergreenhud.api.fabric11701.mixins.AccessorMinecraftClient
 import dev.isxander.evergreenhud.api.impl.UMinecraftResource
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.gui.screen.ChatScreen
+import net.minecraft.client.texture.NativeImage
+import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.util.Identifier
+import java.awt.image.BufferedImage
 import java.io.File
 import java.io.InputStream
+import javax.imageio.ImageIO
+import javax.imageio.stream.ImageInputStream
 
 class MinecraftImpl : UMinecraft() {
     override val player: UEntity get() = EntityImpl(mc.player)
@@ -39,9 +44,4 @@ class MinecraftImpl : UMinecraft() {
         get() = mc.currentScreen is ChatScreen
     override val inDebugMenu: Boolean
         get() = mc.options.debugEnabled
-
-    override fun getResource(resource: UMinecraftResource): InputStream =
-        mc.resourceManager
-            .getResource(Identifier(resource.domain, resource.path))
-            .inputStream
 }

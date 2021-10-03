@@ -20,9 +20,10 @@ package dev.isxander.evergreenhud.api.fabric11701.impl
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.api.impl.render.UGL
-import dev.isxander.evergreenhud.api.impl.render.UResourceLocation
 import dev.isxander.evergreenhud.api.fabric11701.Main
+import dev.isxander.evergreenhud.api.fabric11701.matrices
 import dev.isxander.evergreenhud.api.fabric11701.mc
+import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.render.GameRenderer
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Quaternion
@@ -30,11 +31,11 @@ import net.minecraft.util.math.Vec3f
 import org.lwjgl.opengl.GL20
 
 class GLImpl : UGL() {
-    override fun push() = Main.matrices.push()
-    override fun pop() = Main.matrices.pop()
-    override fun scale(x: Float, y: Float, z: Float) = Main.matrices.scale(x, y, z)
-    override fun translate(x: Float, y: Float, z: Float) = Main.matrices.translate(x.toDouble(), y.toDouble(), z.toDouble())
-    override fun rotate(angle: Float, x: Float, y: Float, z: Float) = Main.matrices.multiply(Quaternion(Vec3f(x, y, z), angle, true))
+    override fun push() = matrices.push()
+    override fun pop() = matrices.pop()
+    override fun scale(x: Float, y: Float, z: Float) = matrices.scale(x, y, z)
+    override fun translate(x: Float, y: Float, z: Float) = matrices.translate(x.toDouble(), y.toDouble(), z.toDouble())
+    override fun rotate(angle: Float, x: Float, y: Float, z: Float) = matrices.multiply(Quaternion(Vec3f(x, y, z), angle, true))
 
     override fun color(r: Float, g: Float, b: Float, a: Float) = RenderSystem.clearColor(r, g, b, a)
 
@@ -68,17 +69,13 @@ class GLImpl : UGL() {
         RenderSystem.blendFuncSeparate(srcFactorRGB, dstFactorRGB, srcFactorAlpha, dstFactorAlpha)
     override fun blendFunc(srcFactor: Int, dstFactor: Int) = RenderSystem.blendFunc(srcFactor, dstFactor)
 
-    override fun bindTexture(location: UResourceLocation) {
-        mc.textureManager.bindTexture(Identifier(location.namespace, location.path))
-    }
-
     override fun rect(x: Float, y: Float, width: Float, height: Float, color: Int) {
         RenderSystem.setShader { GameRenderer.getPositionColorShader() }
         super.rect(x, y, width, height, color)
     }
 
     override fun modalRect(x: Float, y: Float, u: Float, v: Float, uWidth: Float, vHeight: Float, width: Float, height: Float, tileWidth: Float, tileHeight: Float) {
-        RenderSystem.setShader { GameRenderer.getPositionColorShader() }
+        RenderSystem.setShader { GameRenderer.getPositionTexShader() }
         super.modalRect(x, y, u, v, uWidth, vHeight, width, height, tileWidth, tileHeight)
     }
 

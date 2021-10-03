@@ -32,7 +32,6 @@ abstract class UGL {
     abstract fun rotate(angle: Float, x: Float, y: Float, z: Float)
     abstract fun color(r: Float, g: Float, b: Float, a: Float = 1f)
 
-    abstract fun bindTexture(location: UResourceLocation)
     abstract fun bindTexture(texture: Int)
 
     abstract fun scissor(x: Int, y: Int, width: Int, height: Int)

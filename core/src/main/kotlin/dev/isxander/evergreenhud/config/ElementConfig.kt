@@ -22,6 +22,7 @@ import com.electronwill.nightconfig.core.file.FileConfig
 import com.electronwill.nightconfig.core.io.WritingMode
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.logger
+import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.utils.jsonFormat
 import dev.isxander.evergreenhud.utils.jsonWriter
@@ -55,7 +56,7 @@ class ElementConfig(private val manager: ElementManager) {
         val arr: List<Config> = data["elements"]
         for (elementData in arr) {
             val id = elementData["id"] ?: "null"
-            val element = manager.getNewElementInstance(id)
+            val element = manager.getNewElementInstance<Element>(id)
 
             if (element == null) {
                 logger.err("Found unknown element id ($id) in json! This probably means someone tampered with the json!")

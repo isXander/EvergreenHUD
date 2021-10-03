@@ -33,9 +33,9 @@ import net.minecraft.client.MinecraftClient
 import net.minecraft.client.util.math.MatrixStack
 
 val mc: MinecraftClient = MinecraftClient.getInstance()
+lateinit var matrices: MatrixStack
 
 object Main : ClientModInitializer {
-    lateinit var matrices: MatrixStack
     var postInitialized = false
 
     override fun onInitializeClient() {
@@ -52,6 +52,7 @@ object Main : ClientModInitializer {
         di.bind<UMouseHelper>(MouseHelperImpl())
         di.bind<UCommandHandler>(CommandHandlerImpl())
         di.bind<UScreenHandler>(ScreenHandlerImpl())
+        di.bind<UTextureManager>(TextureManagerImpl())
         di.bind<UTranslation>(TranslationImpl())
         di.bind<UPotions>(PotionsImpl())
         di.bind<UWorld>(WorldImpl())

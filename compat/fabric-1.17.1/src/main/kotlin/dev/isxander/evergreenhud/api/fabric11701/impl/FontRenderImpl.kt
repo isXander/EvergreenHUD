@@ -18,13 +18,14 @@
 package dev.isxander.evergreenhud.api.fabric11701.impl
 
 import dev.isxander.evergreenhud.api.fabric11701.Main
+import dev.isxander.evergreenhud.api.fabric11701.matrices
 import dev.isxander.evergreenhud.api.fabric11701.mc
 import dev.isxander.evergreenhud.api.impl.UFontRenderer
 
 class FontRenderImpl : UFontRenderer() {
     override fun draw(text: String, x: Float, y: Float, color: Int, shadow: Boolean): UFontRenderer {
-        if (shadow) mc.textRenderer.drawWithShadow(Main.matrices, text, x, y, color)
-        else mc.textRenderer.draw(Main.matrices, text, x, y, color)
+        if (shadow) mc.textRenderer.drawWithShadow(matrices, text, x, y, color)
+        else mc.textRenderer.draw(matrices, text, x, y, color)
 
         return this
     }

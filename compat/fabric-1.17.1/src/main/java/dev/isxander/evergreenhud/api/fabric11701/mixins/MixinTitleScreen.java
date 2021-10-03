@@ -29,7 +29,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class MixinTitleScreen {
     @Inject(method = "render", at = @At("TAIL"))
     public void init(MatrixStack matrices, int mouseX, int mouseY, float delta, CallbackInfo ci) {
-        Main.matrices = matrices;
         Main.INSTANCE.setPostInitialized(true);
     }
 }

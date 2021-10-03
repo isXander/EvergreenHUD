@@ -65,6 +65,7 @@ object Main {
         di.bind<UMouseHelper>(MouseHelperImpl())
         di.bind<UCommandHandler>(CommandHandlerImpl())
         di.bind<UScreenHandler>(ScreenHandlerImpl())
+        di.bind<UTextureManager>(TextureManagerImpl())
         di.bind<UTranslation>(TranslationImpl())
         di.bind<UPotions>(PotionsImpl())
         di.bind<UWorld>(WorldImpl())
@@ -100,6 +101,7 @@ object Main {
     }
 }
 
+@Suppress("UNUSED")
 class KotlinLanguageAdapter : ILanguageAdapter {
     override fun supportsStatics() = false
 

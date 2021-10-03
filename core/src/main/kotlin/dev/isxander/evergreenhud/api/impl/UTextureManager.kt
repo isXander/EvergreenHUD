@@ -1,4 +1,5 @@
 /*
+ *
  * EvergreenHUD - A mod to improve on your heads-up-display.
  * Copyright (C) isXander [2019 - 2021]
  *
@@ -13,8 +14,17 @@
  *
  * If you have a private concern, please contact
  * isXander @ business.isxander@gmail.com
+ *
  */
 
-package dev.isxander.evergreenhud.api.impl.render
+package dev.isxander.evergreenhud.api.impl
 
-data class UResourceLocation(val namespace: String = "minecraft", val path: String)
+import java.awt.image.BufferedImage
+import java.io.InputStream
+
+abstract class UTextureManager {
+    abstract fun bindTexture(resource: UMinecraftResource)
+    abstract fun getResource(resource: UMinecraftResource): InputStream
+    abstract fun registerDynamicTextureLocation(name: String, image: BufferedImage): UMinecraftResource
+    abstract fun deleteTexture(resource: UMinecraftResource)
+}

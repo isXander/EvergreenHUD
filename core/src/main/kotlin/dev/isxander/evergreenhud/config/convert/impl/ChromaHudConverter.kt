@@ -22,6 +22,7 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.fontRenderer
 import dev.isxander.evergreenhud.api.resolution
 import dev.isxander.evergreenhud.config.convert.ConfigConverter
+import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.impl.ElementCoordinates
 import dev.isxander.evergreenhud.elements.impl.ElementCps
 import dev.isxander.evergreenhud.elements.impl.ElementIRLTime
@@ -74,7 +75,7 @@ object ChromaHudConverter : ConfigConverter {
             val changeY = (fontRenderer.fontHeight + 4) / resolution.scaledHeight
             for (item in elementJson.get<List<Config>>("items")) {
                 val id = ids[item["type"] ?: ""] ?: continue
-                val element = EvergreenHUD.elementManager.getNewElementInstance(id) ?: continue
+                val element = EvergreenHUD.elementManager.getNewElementInstance<Element>(id) ?: continue
 
                 element.position = position
                 element.position.scaledY = element.position.scaledY + (i * changeY)

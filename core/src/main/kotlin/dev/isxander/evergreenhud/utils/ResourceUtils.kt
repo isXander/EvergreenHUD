@@ -21,7 +21,7 @@ package dev.isxander.evergreenhud.utils
 
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.api.impl.UMinecraftResource
-import dev.isxander.evergreenhud.api.mc
+import dev.isxander.evergreenhud.api.textureManager
 import gg.essential.elementa.components.UIImage
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -38,7 +38,7 @@ fun fromBase64(string: String): InputStream =
     ByteArrayInputStream(Base64.getDecoder().decode(string))
 
 fun UIImage.Companion.ofMinecraftResource(resource: UMinecraftResource): UIImage {
-    return UIImage(CompletableFuture.supplyAsync { ImageIO.read(mc.getResource(resource)) })
+    return UIImage(CompletableFuture.supplyAsync { ImageIO.read(textureManager.getResource(resource)) })
 }
 
 fun UIImage.Companion.ofMinecraftResource(domain: String = "evergreenhud", path: String): UIImage =

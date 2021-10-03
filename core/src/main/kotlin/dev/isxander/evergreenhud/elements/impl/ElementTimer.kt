@@ -28,7 +28,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timer
 
-@ElementMeta(id = "TIMER", name = "Timer", category = "Simple", description = "Set a timer.")
+@ElementMeta(id = "TIMER", name = "Timer", category = "Miscallaneous", description = "Set a timer.", credits = "Wyvest")
 class ElementTimer : SimpleTextElement() {
     var keybind: CustomKeybind? = null
 
