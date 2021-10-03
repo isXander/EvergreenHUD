@@ -20,7 +20,7 @@ package dev.isxander.evergreenhud.api.fabric11701.impl
 import dev.isxander.evergreenhud.api.impl.UScreenHandler
 import dev.isxander.evergreenhud.api.fabric11701.mc
 import dev.isxander.evergreenhud.api.impl.ElementaScreen
-import gg.essential.elementa.UIComponent
+import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
 import gg.essential.elementa.dsl.*
 
@@ -36,6 +36,7 @@ class ScreenHandlerImpl : UScreenHandler() {
     }
 
     private class ElementaScreenContainer(val screen: ElementaScreen) : WindowScreen(
+        ElementaVersion.V1,
         screen.enableRepeatKeys,
         screen.drawDefaultBackground,
         screen.restoreCurrentGuiOnClose,
