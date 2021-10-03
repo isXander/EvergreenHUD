@@ -41,10 +41,4 @@ class MinecraftImpl : UMinecraft() {
         get() = mc.currentScreen is GuiChat
     override val inDebugMenu: Boolean
         get() = mc.gameSettings.showDebugInfo
-
-    override fun getResource(resource: UMinecraftResource): InputStream =
-        mc.resourceManager
-            .getResource(ResourceLocation(resource.domain, resource.path))
-            .inputStream
-
 }

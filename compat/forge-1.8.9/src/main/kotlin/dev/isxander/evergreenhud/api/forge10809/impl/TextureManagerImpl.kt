@@ -30,7 +30,7 @@ import javax.imageio.ImageIO
 
 class TextureManagerImpl : UTextureManager() {
     override fun bindTexture(resource: UMinecraftResource) =
-        mc.textureManager.bindTexture(ResourceLocation(location.domain, location.path))
+        mc.textureManager.bindTexture(ResourceLocation(resource.domain, resource.path))
 
     override fun getResource(resource: UMinecraftResource): InputStream =
         mc.resourceManager

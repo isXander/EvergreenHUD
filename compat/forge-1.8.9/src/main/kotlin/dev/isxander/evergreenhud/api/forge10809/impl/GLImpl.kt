@@ -17,11 +17,8 @@
 
 package dev.isxander.evergreenhud.api.forge10809.impl
 
-import dev.isxander.evergreenhud.api.forge10809.mc
 import dev.isxander.evergreenhud.api.impl.render.UGL
-import dev.isxander.evergreenhud.api.impl.render.UResourceLocation
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11
 
 class GLImpl : UGL() {
