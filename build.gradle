@@ -23,7 +23,7 @@ plugins {
     id 'org.jetbrains.kotlin.jvm' version '1.5.31'
 
     // Build
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
     id 'org.ajoberstar.grgit' version '4.1.0'
 
     // Publishing
