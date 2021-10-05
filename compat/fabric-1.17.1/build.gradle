@@ -18,7 +18,7 @@
 import com.modrinth.minotaur.TaskModrinthUpload
 
 plugins {
-    id 'fabric-loom' version '0.9-SNAPSHOT'
+    id 'fabric-loom' version '0.10.26'
 }
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_16
