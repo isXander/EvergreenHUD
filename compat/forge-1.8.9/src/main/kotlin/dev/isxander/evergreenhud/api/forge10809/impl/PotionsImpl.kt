@@ -34,8 +34,8 @@ class PotionsImpl : UPotions() {
     override val registeredPotions: List<UPotion> =
         GameData.getPotionRegistry().map { UPotion(it.id, 0, 0, false, it.name, it.isInstant) }
 
-    override fun getEffectsForEntity(entity: UEntity): List<UPotion> {
-        val entity = getEntity(entity) as? EntityLivingBase ?: throw IllegalArgumentException("Entity is not living!")
+    override fun getEffectsForEntity(_entity: UEntity): List<UPotion> {
+        val entity = getEntity(_entity) as? EntityLivingBase ?: throw IllegalArgumentException("Entity is not living!")
         return entity.activePotionEffects.map { UPotion(it.potionID, it.duration, it.amplifier, it.isPotionDurationMax, it.effectName, false) }
     }
 

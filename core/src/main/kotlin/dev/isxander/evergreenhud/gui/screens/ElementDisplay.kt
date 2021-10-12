@@ -38,10 +38,10 @@ class ElementDisplay : ElementaScreen() {
         for (element in EvergreenHUD.elementManager) {
 //            ElementComponent(element) childOf this
             SettxiWindow(element).constrain {
-                x = CramSiblingConstraint(5f)
-                y = CramSiblingConstraint(5f)
-                width = 400.pixels()
-                height = 100.pixels()
+                x = element.position.rawX.pixels()
+                y = element.position.rawY.pixels()
+                width = 350.pixels()
+                height = 200.pixels()
             } childOf container
         }
     }

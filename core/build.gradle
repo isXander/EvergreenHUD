@@ -40,7 +40,7 @@ dependencies {
     api project(":annotations")
     ksp project(":processor")
 
-    api 'dev.isXander:Settxi:d9a66172a0'
+    api 'dev.isXander:Settxi:2b6bef2ded'
 
     api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31'
     api 'org.jetbrains.kotlin:kotlin-reflect:1.5.31'

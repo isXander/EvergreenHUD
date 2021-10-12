@@ -22,38 +22,18 @@ import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.settxi.SettingAdapter
 import dev.isxander.evergreenhud.utils.HitBox2D
+import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import gg.essential.elementa.utils.withIndex
 import java.awt.Color
 
 abstract class BackgroundElement : Element() {
-    var backgroundEnabled by boolean(
-        default = true,
-        name = "Enabled",
-        category = "Background",
-        description = "If the background is rendered."
-    ) {
-        set { enabled ->
-            val new = if (enabled) Color(backgroundColor.red, backgroundColor.green, backgroundColor.blue, 100)
-            else Color(backgroundColor.red, backgroundColor.green, backgroundColor.blue, 0)
-            if (backgroundColor != new) backgroundColor = new
-
-            return@set enabled
-        }
-    }
-
     var backgroundColor: Color by color(
         default = Color(0, 0, 0, 100),
         name = "Color",
         category = "Background",
         description = "The color of the background."
-    ) {
-        set {
-            val enabled = it.alpha != 0
-            if (backgroundEnabled != enabled) backgroundEnabled = enabled
-            return@set it
-        }
-    }
+    )
 
     var outlineEnabled by boolean(
         default = false,
@@ -148,7 +128,7 @@ abstract class BackgroundElement : Element() {
         val scale = position.scale
         val hitbox = calculateHitBox(1f, scale)
 
-        if (backgroundEnabled) {
+        if (backgroundColor.alpha > 0) {
             gl.roundedRect(hitbox.x, hitbox.y, hitbox.width, hitbox.height, bgCol.rgb, cornerRadius)
         }
         if (outlineEnabled) {

@@ -23,31 +23,50 @@ import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.settxi.impl.BooleanSetting
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.ScrollComponent
+import gg.essential.elementa.components.UIBlock
+import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
-import gg.essential.elementa.constraints.ChildBasedMaxSizeConstraint
-import gg.essential.elementa.constraints.ScaledTextConstraint
-import gg.essential.elementa.constraints.SiblingConstraint
-import gg.essential.elementa.dsl.childOf
-import gg.essential.elementa.dsl.constrain
-import gg.essential.elementa.dsl.effect
-import gg.essential.elementa.dsl.percent
+import gg.essential.elementa.constraints.*
+import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.ScissorEffect
+import java.awt.Color
 
 class SettxiWindow(val element: Element) : UIComponent() {
-    val content = ScrollComponent(innerPadding = 1f).apply {
+    val background by UIBlock(Color(0x373737)).apply {
         constrain {
             width = 100.percent()
             height = 100.percent()
         }
 
-        this childOf this@SettxiWindow
+        childOf(this@SettxiWindow)
+    }
+
+    val scrollContainer by UIContainer().apply {
+        constrain {
+            x = 5.pixels()
+            y = SiblingConstraint() + 7.pixels()
+            width = RelativeConstraint(1f) - 10.pixels()
+            height = FillConstraint()
+        }
+
+        childOf(background)
+    }
+
+    val categoryScroller by ScrollComponent().apply {
+        constrain {
+            width = 100.percent()
+            height = 100.percent()
+        }
+
+        childOf(scrollContainer)
     }
 
     val categories = mutableMapOf<String, CategoryContainer>()
 
     init {
+
         for (setting in element.settings) {
-            categories.computeIfAbsent(setting.category) { CategoryContainer(setting.category) childOf content }
+            categories.computeIfAbsent(setting.category) { CategoryContainer(setting.category) childOf categoryScroller }
 
             categories[setting.category]!!.addComponent(
                 setting.nameSerializedKey,
