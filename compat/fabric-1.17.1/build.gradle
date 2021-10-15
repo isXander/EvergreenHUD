@@ -36,7 +36,7 @@ dependencies {
         exclude module: 'yarn'
     }
 
-    include modImplementation ('gg.essential:elementa-1.17.1-fabric:385') {
+    include modImplementation ('gg.essential:elementa-1.17.1-fabric:390') {
         exclude module: 'fabric-loader'
     }
     include implementation ('com.github.Chocohead:Fabric-ASM:v2.3')
