@@ -62,7 +62,7 @@ dependencies {
     // depend on whatever version and exclude all dependencies
     // then in the other modules depend on them properly.
     // gross but I don't see any other way
-    api ('gg.essential:elementa-1.8.9-forge:385') {
+    api ('gg.essential:elementa-1.8.9-forge:390') {
         exclude module: 'kotlin-stdlib-jdk8'
         exclude module: 'kotlin-reflect'
         exclude module: 'minecraft'
