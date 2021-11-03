@@ -45,7 +45,7 @@ dependencies {
     api 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31'
     api 'org.jetbrains.kotlin:kotlin-reflect:1.5.31'
 
-    api 'com.electronwill.night-config:core:3.6.4'
+    api 'com.electronwill.night-config:core:3.6.5'
     api 'com.electronwill.night-config:toml:3.6.4'
     api 'com.electronwill.night-config:json:3.6.4'
 
