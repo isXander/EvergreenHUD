@@ -5,5 +5,5 @@ dependencies {
     implementation(kotlin("stdlib-jdk8"))
     implementation(project(":annotations"))
     implementation("com.electronwill.night-config:core:3.6.4")
-    implementation("com.electronwill.night-config:json:3.6.4")
+    implementation("com.electronwill.night-config:json:3.6.5")
 }
