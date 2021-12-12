@@ -37,6 +37,8 @@ import org.lwjgl.glfw.GLFW
 import java.awt.Color
 import java.io.File
 import java.net.URI
+import kotlin.random.Random
+import kotlin.reflect.full.createInstance
 
 object EvergreenHUD : ClientModInitializer {
     const val NAME = "__GRADLE_NAME__"
@@ -57,7 +59,7 @@ object EvergreenHUD : ClientModInitializer {
     lateinit var addonLoader: AddonLoader private set
 
     var postInitialized = false
-        set(value) { if (field) error("Can't unset post initialized!") else field = value }
+        set(value) { if (!field)  field = value }
 
     /**
      * Initialises the whole mod
@@ -90,15 +92,8 @@ object EvergreenHUD : ClientModInitializer {
 //            }
 //            elementConfig.save()
 
-            addElement(getNewElementInstance<ElementImage>("IMAGE")!!.apply {
-                file = File("/home/xander/Code/EvergreenHUD/core/src/main/resources/assets/evergreenhud/evergreenhud-transparent.png")
-                mirror = true
-                rotation = 220f
-            })
-            elementConfig.save()
-
             mainConfig.load()
-//            elementConfig.load()
+            elementConfig.load()
         }
 
         if (!FabricLoader.getInstance().isDevelopmentEnvironment) {

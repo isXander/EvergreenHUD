@@ -1,3 +1,6 @@
+apply(plugin = "org.jetbrains.kotlin.jvm")
+apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+
 val implementation by configurations
 
 dependencies {

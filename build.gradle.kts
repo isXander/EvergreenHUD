@@ -7,8 +7,8 @@
  */
 
 plugins {
-    kotlin("jvm") version kotlinVersion apply false
-    kotlin("plugin.serialization") version kotlinVersion apply false
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.serialization") version kotlinVersion
     id("fabric-loom") version "0.10.+"
     id("com.google.devtools.ksp") version "1.6.0-1.0.1"
     id("net.kyori.blossom") version "1.3.0"
@@ -79,24 +79,23 @@ tasks {
             )
         }
     }
-
-    withType<JavaCompile> {
-        options.release.set(17)
-    }
-
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
-            jvmTarget = "17"
-        }
-    }
 }
 
 allprojects {
-    apply(plugin = "org.jetbrains.kotlin.jvm")
-    apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
-
     repositories {
         mavenCentral()
         maven(url = "https://jitpack.io")
+    }
+
+    tasks {
+        withType<JavaCompile> {
+            options.release.set(17)
+        }
+
+        withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+            kotlinOptions {
+                jvmTarget = "17"
+            }
+        }
     }
 }
