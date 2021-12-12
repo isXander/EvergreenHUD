@@ -5,17 +5,10 @@ updates:
     schedule:
       interval: "daily"
   - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "/core" # Location of package manifests
+    directory: "/annotations" # Location of package manifests
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 10
   - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "/forge-1.8.9" # Location of package manifests
+    directory: "/processor" # Location of package manifests
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 10
-  - package-ecosystem: "gradle" # See documentation for possible values
-    directory: "/fabric-1.17.1" # Location of package manifests
-    schedule:
-      interval: "daily"
-    open-pull-requests-limit: 10
