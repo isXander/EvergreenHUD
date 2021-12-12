@@ -42,7 +42,7 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-
     - name: Setup and Build with Gradle
-      run: ./gradlew setupCIWorkspace build --no-daemon
+      run: ./gradlew build --no-daemon
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
