@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "package": "dev.isxander.evergreenhud.mixins",
+  "compatibilityLevel": "JAVA_17",
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "client": [
+    "AccessorKeyBindingRegistryImpl",
+    "MixinClientConnection",
+    "MixinClientPlayerEntity",
+    "MixinInGameHud",
+    "MixinMinecraftClient",
+    "MixinPlayerEntity",
+    "MixinTitleScreen"
+  ]
+}

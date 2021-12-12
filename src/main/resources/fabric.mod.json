@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${mod_version}",
+  "name": "${mod_name}",
+  "description": "One of the most loved HUD mods for Minecraft.",
+  "authors": [
+    "isXander"
+  ],
+  "contact": {
+    "homepage": "https://www.isxander.dev/",
+    "issues": "https://github.com/isXander/EvergreenHUD/issues",
+    "sources": "https://github.com/isXander/EvergreenHUD"
+  },
+  "license": "CC BY-NC-SA 4.0",
+  "icon": "assets/evergreenhud/evergreenhud-transparent.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.isxander.evergreenhud.EvergreenHUD"
+      }
+    ]
+  },
+  "mixins": [
+    "evergreenhud.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.12",
+    "fabric": "*",
+    "fabric-language-kotlin": ">=1.7.0+kotlin.1.6.0",
+    "minecraft": "1.18.x",
+    "java": "17",
+    "kambrik": "*"
+  }
+}
