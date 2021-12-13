@@ -52,9 +52,9 @@ class Position2D private constructor(
         }
 
         fun calculateScaledX(rawX: Float, origin: Origin): Float =
-            rawX * (mc.window.scaledWidth / 2) - origin.x
+            rawX / (mc.window.scaledWidth / 2) - origin.x
         fun calculateScaledY(rawY: Float, origin: Origin): Float =
-            rawY * (mc.window.scaledHeight / 2) - origin.y
+            rawY / (mc.window.scaledHeight / 2) - origin.y
     }
 
     enum class Origin(val x: Float, val y: Float) {

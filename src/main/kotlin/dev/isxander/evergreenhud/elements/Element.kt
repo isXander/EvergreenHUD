@@ -108,6 +108,10 @@ abstract class Element : EventListener, Drawable, ConfigProcessor {
         if (save) EvergreenHUD.elementManager.elementConfig.save()
     }
 
+    fun renderGuiOverlay(matrices: MatrixStack, highlight: Boolean) {
+
+    }
+
     var conf: Config
         get() {
             val config = Config.of(jsonFormat)

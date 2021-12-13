@@ -20,10 +20,10 @@ package dev.isxander.evergreenhud
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.config.profile.ProfileManager
-import dev.isxander.evergreenhud.elements.impl.ElementImage
 import dev.isxander.evergreenhud.event.EventBus
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
+import dev.isxander.evergreenhud.gui.screens.PositionTest
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
@@ -37,8 +37,6 @@ import org.lwjgl.glfw.GLFW
 import java.awt.Color
 import java.io.File
 import java.net.URI
-import kotlin.random.Random
-import kotlin.reflect.full.createInstance
 
 object EvergreenHUD : ClientModInitializer {
     const val NAME = "__GRADLE_NAME__"
@@ -125,7 +123,15 @@ object EvergreenHUD : ClientModInitializer {
 
         Kambrik.Command.addClientCommand("evergreenhud") {
             runs {
-//                mc.setScreen(ElementDisplay())
+                GuiHandler.displayGui(ElementDisplay())
+            }
+
+            "test" {
+                "position" {
+                    runs {
+                        GuiHandler.displayGui(PositionTest())
+                    }
+                }
             }
         }
 
@@ -135,7 +141,7 @@ object EvergreenHUD : ClientModInitializer {
             keyCategory = "evergreenhud.keycategory"
         ) {
             onDown {
-//                mc.setScreen(ElementDisplay())
+                mc.setScreen(ElementDisplay())
             }
         }
 

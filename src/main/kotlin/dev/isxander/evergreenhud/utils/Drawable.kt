@@ -31,8 +31,8 @@ interface Drawable {
     fun MatrixStack.drawBorderLines(x0: Float, y0: Float, x1: Float, y1: Float, width: Float, color: Int) {
         drawHorizontalLine(x0, x1, y0, width, color)
         drawVerticalLine(x1, y0, y1, width, color)
-        drawHorizontalLine(x1, x0, y1, width, color)
-        drawVerticalLine(x0, y1, y0, width, color)
+        drawHorizontalLine(x0, x1, y1, width, color)
+        drawVerticalLine(x0, y0, y1, width, color)
     }
 
     fun MatrixStack.fill(x1: Float, y1: Float, x2: Float, y2: Float, color: Int) {

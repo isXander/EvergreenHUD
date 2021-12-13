@@ -130,12 +130,8 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
     @Suppress("UNCHECKED_CAST")
     fun <T : Element> getNewElementInstance(id: String): T? = getElementClass(id)?.createInstance() as T?
 
-    fun getCurrentElements(): List<Element> {
-        return Collections.unmodifiableList(currentElements)
-    }
-
-    fun clearElements() {
-        currentElements.clear()
+    inline fun <reified T : Element> getDummyElement(): T {
+        return T::class.createInstance()
     }
 
     override fun onRenderHud(matrices: MatrixStack, tickDelta: Float) {

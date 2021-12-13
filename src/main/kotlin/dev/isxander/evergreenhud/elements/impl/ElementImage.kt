@@ -19,7 +19,6 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.annotations.ElementMeta
