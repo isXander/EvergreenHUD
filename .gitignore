@@ -11,9 +11,9 @@ out
 *.ipr
 *.iws
 *.iml
-.idea/**
-!.idea/scopes/**
-!.idea/copyright/**
+!.idea/
+.idea/*
+!.idea/copyright/
 
 # gradle
 build
@@ -22,6 +22,4 @@ build
 # other
 eclipse
 run/**
-forge-1.8.9/run/**
-fabric-1.17.1/run/**
 !**/*.gitkeep
