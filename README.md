@@ -9,14 +9,14 @@
 [![Donate](https://img.shields.io/badge/donate-patreon-ff6666.svg?style=flat)](https://paypal.me/isxander)
 [![Discord Chat](https://img.shields.io/discord/780023008668287017.svg)](https://short.isxander.dev/discord)
 
-EvergreenHUD is a forge mod to improve and add upon your heads up display.
+EvergreenHUD is a 1.18.1 fabric and 1.8.9 forge mod to improve and add upon your heads up display.
 Used and loved by over a thousand people, with the most customizable HUD
 system ever created for Minecraft.
 
 #### Links
 [Latest Stable Release](https://github.com/isXander/EvergreenHUD/releases/latest)  
 [Hypixel Thread](https://hypixel.net/threads/v2-beta-out-now-dev.isxander.evergreenhud-1-3-1.3787277/)  
-[Discord invite (click to get support)](https://inv.wtf/qalcyo)
+[Discord invite (click to get support)](https://discord.gg/AJv5ZnNT8q)
 
 ## Summary
 
@@ -90,5 +90,5 @@ YourKit is the creator of
 [YourKit .NET Profiler](https://www.yourkit.com/.net/profiler/),
 [YourKit YouMonitor](https://www.yourkit.com/youmonitor).
 ---
-Copyright (C) 2021 Qalcyo with love <3
+Copyright (C) 2021 isXander with love <3
 </div>
