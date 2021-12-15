@@ -10,7 +10,7 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
     id("fabric-loom") version "0.10.+"
-    id("com.google.devtools.ksp") version "1.6.0-1.0.2"
+    id("com.google.devtools.ksp") version "1.6.10-1.0.2"
     id("net.kyori.blossom") version "1.3.0"
     `java-library`
     java
