@@ -52,7 +52,7 @@ dependencies {
     minecraft("com.mojang:minecraft:1.18.1")
     mappings("net.fabricmc:yarn:1.18.1+build.2:v2")
     modImplementation("net.fabricmc:fabric-loader:0.12.+")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.44.0+1.18")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.45.0+")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.0+kotlin.$kotlinVersion")
     modImplementation("io.ejekta:kambrik:3.0.0-1.18")
 }
