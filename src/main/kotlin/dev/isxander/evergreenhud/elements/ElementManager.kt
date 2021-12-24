@@ -10,6 +10,7 @@ package dev.isxander.evergreenhud.elements
 
 import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.config.ElementConfig
 import dev.isxander.evergreenhud.config.MainConfig
 import dev.isxander.evergreenhud.event.EventListener
@@ -21,17 +22,15 @@ import dev.isxander.evergreenhud.utils.jsonFormat
 import dev.isxander.evergreenhud.utils.logger
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.serialization.ConfigProcessor
-import net.minecraft.client.gui.hud.ChatHud
 import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.util.math.MatrixStack
 import java.io.InputStream
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.full.createInstance
 
 class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
-    val availableElements: MutableMap<KClass<out Element>, Element.Metadata> = mutableMapOf()
+    val availableElements: MutableMap<KClass<out Element>, ElementMeta> = mutableMapOf()
     val currentElements: ArrayList<Element> = ArrayList()
 
     /* Config */
@@ -63,8 +62,21 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
     )
 
     init {
-        addSource(this.javaClass.getResourceAsStream("/evergreenhud-elements.json")!!)
-        EvergreenHUD.eventBus.subscribe(this)
+        val coreElementSrc = this.javaClass.getResourceAsStream("/evergreenhud-elements.json")
+        if (coreElementSrc == null) {
+            logger.error("")
+            logger.error("")
+            logger.error("<----------------------------------------------->")
+            logger.error("Core EvergreenHUD elements are unavailable!")
+            logger.error("Please report this issue immediately!")
+            logger.error("<----------------------------------------------->")
+            logger.error("")
+            logger.error("")
+        } else {
+            addSource(coreElementSrc, "core")
+        }
+
+        EvergreenHUD.eventBus.register(this)
     }
 
     fun addElement(element: Element) {
@@ -80,7 +92,7 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
     /**
      * Adds a JSON source to the list of available elements found in the jar
      */
-    fun addSource(input: InputStream, name: String = "Core") {
+    fun addSource(input: InputStream, name: String) {
         val elements = jsonParser.parse(input).get<List<Config>>("elements")
 
         var i = 0
@@ -89,12 +101,12 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
 
             @Suppress("UNCHECKED_CAST")
             availableElements[Class.forName(element.get("class")).kotlin as KClass<out Element>] =
-                Element.Metadata(
+                ElementMeta(
                     meta["id"],
                     meta["name"],
                     meta["category"],
                     meta["description"],
-                    meta.get<String>("credits").let { it.ifEmpty { null } },
+                    meta["credits"],
                     meta["maxInstances"],
                 )
 
@@ -122,7 +134,9 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
     fun <T : Element> getNewElementInstance(id: String): T? = getElementClass(id)?.createInstance() as T?
 
     inline fun <reified T : Element> getDummyElement(): T {
-        return T::class.createInstance()
+        return T::class.createInstance().apply {
+
+        }
     }
 
     override fun onRenderHud(matrices: MatrixStack, tickDelta: Float) {

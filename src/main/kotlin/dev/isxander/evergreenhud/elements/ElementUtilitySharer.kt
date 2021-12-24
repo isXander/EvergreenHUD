@@ -55,7 +55,7 @@ class ElementUtilitySharer {
         for (clazz in toRemove) {
             logger.info("Unregistered Utility Class: " + clazz.simpleName)
             val dataManager = dataManagers[clazz]!!
-            if (dataManager is EventListener) EvergreenHUD.eventBus.unsubscribe(dataManager)
+            if (dataManager is EventListener) EvergreenHUD.eventBus.unregister(dataManager)
             dataManagers.remove(clazz)
             managerUsers.remove(clazz)
         }

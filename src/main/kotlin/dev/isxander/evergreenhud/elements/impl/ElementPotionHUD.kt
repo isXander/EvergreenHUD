@@ -13,14 +13,10 @@ import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement.*
+import dev.isxander.evergreenhud.utils.*
 import dev.isxander.settxi.impl.*
-import dev.isxander.evergreenhud.utils.drawString
-import dev.isxander.evergreenhud.utils.getRoman
-import dev.isxander.evergreenhud.utils.mc
-import dev.isxander.evergreenhud.utils.ticksToTime
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.effect.StatusEffect
 import net.minecraft.entity.effect.StatusEffectInstance
 import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.util.Formatting

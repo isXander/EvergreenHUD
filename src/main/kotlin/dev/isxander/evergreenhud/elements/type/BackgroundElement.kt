@@ -11,6 +11,8 @@ package dev.isxander.evergreenhud.elements.type
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.utils.HitBox2D
+import dev.isxander.evergreenhud.utils.drawBorderLines
+import dev.isxander.evergreenhud.utils.fill
 import dev.isxander.settxi.impl.*
 import net.minecraft.client.util.math.MatrixStack
 import java.awt.Color

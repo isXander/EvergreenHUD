@@ -10,24 +10,28 @@ package dev.isxander.evergreenhud.elements
 
 import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.event.EventListener
+import dev.isxander.evergreenhud.gui.components.Positionable
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.settxi.serialization.ConfigProcessor
 import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.gui.DrawableHelper
 import net.minecraft.client.util.math.MatrixStack
 
-abstract class Element : EventListener, Drawable, ConfigProcessor {
+abstract class Element : EventListener, ConfigProcessor, Positionable<Float> {
     private var preloaded = false
     override val settings: MutableList<Setting<*>> = mutableListOf()
-    val metadata: Metadata = EvergreenHUD.elementManager.availableElements[this::class]!!
+    val metadata: ElementMeta = EvergreenHUD.elementManager.availableElements[this::class]!!
     var position: Position2D =
         scaledPosition {
             x = 0.5f
             y = 0.5f
         }
+
+    override var x by position::rawX
+    override var y by position::rawY
 
     var scale by float(
         default = 100f,
@@ -77,12 +81,11 @@ abstract class Element : EventListener, Drawable, ConfigProcessor {
 
     /* called when element is added */
     open fun onAdded() {
-        eventBus.subscribe(this)
-
+        eventBus.register(this)
     }
     /* called when element is removed */
     open fun onRemoved() {
-        eventBus.unsubscribe(this)
+        eventBus.unregister(this)
         utilities.unregisterAllForObject(this)
     }
 
@@ -97,10 +100,6 @@ abstract class Element : EventListener, Drawable, ConfigProcessor {
 
         for (s in settings) s.reset()
         if (save) EvergreenHUD.elementManager.elementConfig.save()
-    }
-
-    fun renderGuiOverlay(matrices: MatrixStack, highlight: Boolean) {
-
     }
 
     var conf: Config
@@ -142,14 +141,5 @@ abstract class Element : EventListener, Drawable, ConfigProcessor {
         protected val utilities = ElementUtilitySharer()
         protected val eventBus by EvergreenHUD::eventBus
     }
-
-    data class Metadata(
-        val id: String,
-        val name: String,
-        val category: String,
-        val description: String,
-        val credits: String?,
-        val maxInstances: Int,
-    )
 }
 

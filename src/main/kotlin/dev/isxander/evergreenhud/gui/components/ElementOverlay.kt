@@ -12,16 +12,21 @@ import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
-import dev.isxander.evergreenhud.utils.Drawable
-import net.minecraft.client.gui.AbstractParentElement
+import dev.isxander.evergreenhud.utils.drawBorderLines
+import dev.isxander.evergreenhud.utils.resource
 import net.minecraft.client.gui.Selectable
 import net.minecraft.client.gui.screen.narration.NarrationMessageBuilder
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.gui.Drawable as GuiDrawable
 import net.minecraft.client.gui.Element as GuiElement
 
-class ElementOverlay(private val element: Element, private val screen: ElementDisplay) : AbstractParentElement(), GuiDrawable, Selectable, Drawable {
-    val children = mutableListOf<GuiElement>()
+class ElementOverlay(private val element: Element, private val screen: ElementDisplay) : GuiElement, GuiDrawable, Selectable {
+    val children = mutableListOf<GuiElement>(
+        ChildTexturedButtonWidget(element, 0f, 0f, 10f, 10f, 0f, 0f, resource("settings.png"), 384f, 384f) {
+            println("Settings")
+            true
+        }
+    )
 
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         val hitbox = element.calculateHitBox(1f, element.position.scale)
@@ -44,7 +49,14 @@ class ElementOverlay(private val element: Element, private val screen: ElementDi
         }
     }
 
-    override fun children(): MutableList<out GuiElement> = children
+    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+        for (child in children) {
+            if (child.mouseClicked(mouseX, mouseY, button)) {
+                return true
+            }
+        }
+        return false
+    }
 
     override fun appendNarrations(builder: NarrationMessageBuilder?) {}
     override fun getType(): Selectable.SelectionType = Selectable.SelectionType.NONE

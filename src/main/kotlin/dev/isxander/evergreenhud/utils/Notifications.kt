@@ -18,7 +18,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.math.max
 import kotlin.math.min
 
-object Notifications : Drawable, EventListener {
+object Notifications : EventListener {
     var WIDTH = 200
     var PADDING_WIDTH = 5
     var PADDING_HEIGHT = 3
@@ -27,7 +27,7 @@ object Notifications : Drawable, EventListener {
     private val notifications = ConcurrentLinkedQueue<NotifData>()
 
     init {
-        EvergreenHUD.eventBus.subscribe(this)
+        EvergreenHUD.eventBus.register(this)
     }
 
     fun push(title: String, description: String, backColor: Color = Color(0, 0, 0), textColor: Color = Color(255, 255, 255), duration: Int = 20, consumer: () -> Unit = {}) =

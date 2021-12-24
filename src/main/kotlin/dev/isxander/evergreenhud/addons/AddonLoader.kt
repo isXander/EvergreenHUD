@@ -8,69 +8,59 @@
 
 package dev.isxander.evergreenhud.addons
 
-import com.chocohead.mm.api.ClassTinkerers
-import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.utils.jsonParser
-import java.io.File
-import java.util.jar.JarFile
+import dev.isxander.evergreenhud.elements.ElementManager
+import dev.isxander.evergreenhud.utils.logger
+import net.fabricmc.loader.api.FabricLoader
+import java.io.PrintStream
+import kotlin.io.path.inputStream
 
 class AddonLoader {
-    private val entrypoints = mutableListOf<() -> Unit>()
+    val addons = FabricLoader.getInstance().allMods
+        .filter { EvergreenAddonInfo.isAddon(it.metadata) }
+        .associateWith { EvergreenAddonInfo.of(it) }
 
-    fun load() {
-        for (file in ADDONS_FOLDER.walkTopDown()) {
-            if (file.extension.lowercase() != "jar") continue
+    fun addSources(elementManager: ElementManager) {
+        for ((mod, addon) in addons) {
+            val elements = mod.getPath("evergreenhud-elements.json")
+            elementManager.addSource(elements.inputStream(), addon.id)
+        }
+    }
 
-            val jar = JarFile(file)
-            val addonInfo = jsonParser.parse(jar.getInputStream(jar.getJarEntry("evergreenhud.json")))
-            val elements = jar.getInputStream(jar.getJarEntry("evergreenhud_elements.json"))
-            jar.close()
-
-            val id = addonInfo.get<String>("id")
-
-            val entrypoints = getList<String>(addonInfo.get("entrypoints")) ?: listOf()
-
-            ClassTinkerers.addURL(file.toURI().toURL())
-
-            EvergreenHUD.elementManager.addSource(elements, "Addon: $id")
-
-            for (entrypoint in entrypoints) {
+    fun invokePreinitEntrypoints() {
+        for (addon in addons.values) {
+            for (entrypoint in addon.entrypoints) {
                 try {
-                    val split = entrypoint.split("::")
-                    val className = split[0]
-                    val methodName = split[1].substringBefore('(')
-
-                    val method = Class.forName(className)
-                        .getDeclaredMethod(methodName)
-
-                    this.entrypoints.add { method.invoke(null) }
+                    entrypoint.onPreInitialize()
                 } catch (e: Exception) {
-                    AddonException("Failed to invoke entrypoint: $entrypoint in $id.", e).printStackTrace()
+                    logger.error('\n')
+                    logger.error("<------------------------------------------------------------------->")
+                    logger.error("Exception occurred in addon pre-init entrypoint: ${addon.name}")
+                    e.printStackTrace()
+                    logger.error("Please report this issue to ${addon.author}, not the")
+                    logger.error("EvergreenHUD developer.")
+                    logger.error("<------------------------------------------------------------------->")
+                    logger.error('\n')
                 }
             }
         }
     }
 
-    fun invokeEntrypoints() = entrypoints.forEach {
-        try {
-            it()
-        } catch (e: Exception) {
-            AddonException("Failed to invoke addon's entrypoint!", e).printStackTrace()
-        }
-    }
-
-    @Suppress("UNCHECKED_CAST")
-    private inline fun <reified T> getList(potentialList: Any): List<T>? {
-        if (potentialList is List<*>) return potentialList as List<T>
-        if (potentialList is T) return listOf(potentialList as T)
-        return null
-    }
-
-    companion object {
-        val ADDONS_FOLDER = File(EvergreenHUD.dataDir, "addons")
-
-        init {
-            ADDONS_FOLDER.mkdirs()
+    fun invokeInitEntrypoints() {
+        for (addon in addons.values) {
+            for (entrypoint in addon.entrypoints) {
+                try {
+                    entrypoint.onInitialize()
+                } catch (e: Exception) {
+                    logger.error('\n')
+                    logger.error("<------------------------------------------------------------------->")
+                    logger.error("Exception occurred in addon init entrypoint: ${addon.name}")
+                    e.printStackTrace()
+                    logger.error("Please report this issue to ${addon.author}, not the")
+                    logger.error("EvergreenHUD developer.")
+                    logger.error("<------------------------------------------------------------------->")
+                    logger.error('\n')
+                }
+            }
         }
     }
 }

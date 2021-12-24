@@ -16,7 +16,7 @@ object GuiHandler : EventListener {
     private var gui: Screen? = null
 
     init {
-        EvergreenHUD.eventBus.subscribe(this)
+        EvergreenHUD.eventBus.register(this)
     }
 
     fun displayGui(gui: Screen) {

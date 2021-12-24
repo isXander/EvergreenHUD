@@ -6,6 +6,9 @@
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
  */
 
-package dev.isxander.evergreenhud.addons
+package dev.isxander.evergreenhud.gui.components
 
-class AddonException(message: String, cause: Throwable) : RuntimeException(message, cause)
+interface Positionable<T : Number> {
+    var x: T
+    var y: T
+}

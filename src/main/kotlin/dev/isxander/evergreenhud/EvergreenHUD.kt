@@ -12,6 +12,7 @@ import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.config.profile.ProfileManager
 import dev.isxander.evergreenhud.event.EventBus
+import dev.isxander.evergreenhud.event.EventListener
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
 import dev.isxander.evergreenhud.gui.screens.PositionTest
@@ -35,20 +36,21 @@ object EvergreenHUD : ClientModInitializer {
     const val REVISION = "__GRADLE_REVISION__"
     const val VERSION_STR = "__GRADLE_VERSION__"
     val VERSION = Version.of(VERSION_STR)
+
     val RELEASE_CHANNEL: ReleaseChannel
         get() =
             if (VERSION.prerelease == null) ReleaseChannel.RELEASE
             else ReleaseChannel.BETA
 
     val dataDir: File = File(mc.runDirectory, "evergreenhud")
-    val eventBus = EventBus()
+    val eventBus = EventBus<EventListener>()
 
     lateinit var profileManager: ProfileManager private set
     lateinit var elementManager: ElementManager private set
     lateinit var addonLoader: AddonLoader private set
 
     var postInitialized = false
-        set(value) { if (!field)  field = value }
+        set(value) { if (!field) field = value }
 
     /**
      * Initialises the whole mod
@@ -67,7 +69,11 @@ object EvergreenHUD : ClientModInitializer {
         elementManager = ElementManager()
 
         logger.info("Discovering addons...")
-        addonLoader = AddonLoader().apply { load() }
+        addonLoader = AddonLoader()
+        logger.info("Adding addon element sources...")
+        addonLoader.addSources(elementManager)
+        logger.info("Invoking pre-initialization addon entrypoints...")
+        addonLoader.invokePreinitEntrypoints()
 
         logger.info("Loading configs...")
         profileManager = ProfileManager().apply { load() }
@@ -145,11 +151,11 @@ object EvergreenHUD : ClientModInitializer {
             Notifications.push("EvergreenHUD", "Toggled mod.")
         }
 
-        logger.info("Invoking addon entrypoints...")
-        addonLoader.invokeEntrypoints()
-
         logger.info("Registering events...")
         registerEvents()
+
+        logger.info("Invoking addon entrypoints...")
+        addonLoader.invokeInitEntrypoints()
 
         logger.info("Finished loading EvergreenHUD. Took ${System.currentTimeMillis() - startTime} ms.")
     }
@@ -159,6 +165,6 @@ object EvergreenHUD : ClientModInitializer {
             eventBus.post { onClientTick() }
         }
 
-        eventBus.subscribe(ServerDamageEntityEventManager())
+        eventBus.register(ServerDamageEntityEventManager())
     }
 }

@@ -10,22 +10,22 @@ package dev.isxander.evergreenhud.event
 
 import java.util.function.Consumer
 
-class EventBus {
-    val listeners = mutableListOf<EventListener>()
+class EventBus<T> {
+    private val listeners = mutableListOf<T>()
 
-    fun subscribe(listener: EventListener) {
+    fun register(listener: T) {
         listeners.add(listener)
     }
 
-    fun unsubscribe(listener: EventListener) {
+    fun unregister(listener: T) {
         listeners.remove(listener)
     }
 
-    fun post(executor: EventListener.() -> Unit) {
+    fun post(executor: T.() -> Unit) {
         for (listener in listeners) listener.apply(executor)
     }
 
-    fun postConsumer(consumer: Consumer<EventListener>) {
+    fun postConsumer(consumer: Consumer<T>) {
         for (listener in listeners) consumer.accept(listener)
     }
 }
