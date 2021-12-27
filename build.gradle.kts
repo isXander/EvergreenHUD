@@ -53,7 +53,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
 
     includeApi("org.bundleproject:libversion:0.0.2")
-    includeApi("dev.isxander:settxi:local")
+    includeApi("dev.isxander:settxi:2.0.0")
 
     minecraft("com.mojang:minecraft:1.18.1")
     mappings("net.fabricmc:yarn:1.18.1+build.2:v2")
