@@ -8,8 +8,8 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.boolean
@@ -21,55 +21,48 @@ import kotlin.math.sqrt
 
 @ElementMeta(id = "SPEED", name = "Speed", category = "Player", description = "Display how fast you are moving.")
 class ElementSpeed : SimpleTextElement() {
-    var useX by boolean(
-        default = true,
-        name = "Use X",
-        category = "Speed",
-        description = "If the X coordinate is accounted for in the speed calculation.",
-    )
+    var useX by boolean(true) {
+        name = "Use X"
+        category = "Speed"
+        description = "If the X coordinate is accounted for in the speed calculation."
+    }
 
-    var useY by boolean(
-        default = true,
-        name = "Use Y",
-        category = "Speed",
-        description = "If the Y coordinate is accounted for in the speed calculation.",
-    )
+    var useY by boolean(true) {
+        name = "Use Y"
+        category = "Speed"
+        description = "If the Y coordinate is accounted for in the speed calculation."
+    }
 
-    var useZ by boolean(
-        default = true,
-        name = "Use Z",
-        category = "Speed",
-        description = "If the Z coordinate is accounted for in the speed calculation.",
-    )
+    var useZ by boolean(true) {
+        name = "Use Z"
+        category = "Speed"
+        description = "If the Z coordinate is accounted for in the speed calculation."
+    }
 
-    var speedUnit by option(
-        default = SpeedUnit.METERS_PER_SEC,
-        name = "Speed Unit",
-        category = "Speed",
-        description = "In what unit should the speed be displayed in.",
-    )
+    var speedUnit by option(SpeedUnit.METERS_PER_SEC) {
+        name = "Speed Unit"
+        category = "Speed"
+        description = "In what unit should the speed be displayed in."
+    }
 
-    var accuracy by int(
-        default = 2,
-        min = 0, max = 8,
-        name = "Accuracy",
-        category = "Speed",
-        description = "How many decimal places to show the speed to.",
-    )
+    var accuracy by int(2) {
+        range = 0..8
+        name = "Accuracy"
+        category = "Speed"
+        description = "How many decimal places to show the speed to."
+    }
 
-    var trailingZeros by boolean(
-        default = true,
-        name = "Trailing Zeros",
-        category = "Speed",
-        description = "Show zeros to match the accuracy.",
-    )
+    var trailingZeros by boolean(true) {
+        name = "Trailing Zeros"
+        category = "Speed"
+        description = "Show zeros to match the accuracy."
+    }
 
-    var suffix by boolean(
-        default = true,
-        name = "Suffix",
-        category = "Speed",
-        description = "If the speed value is to be suffixed by your unit (e.g. m/s)",
-    )
+    var suffix by boolean(true) {
+        name = "Suffix"
+        category = "Speed"
+        description = "If the speed value is to be suffixed by your unit (e.g. m/s)"
+    }
 
     init {
         title = "Speed"

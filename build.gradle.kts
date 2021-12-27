@@ -12,16 +12,22 @@ plugins {
     id("fabric-loom") version "0.10.+"
     id("com.google.devtools.ksp") version "1.6.0-1.0.2"
     id("net.kyori.blossom") version "1.3.0"
+    id("org.ajoberstar.grgit") version "4.1.0"
     `java-library`
     java
 }
 
 group = "dev.isxander"
+
+val revision: String? = grgit.head()?.abbreviatedId
 version = "2.0.0-pre13"
 
 repositories {
+    mavenCentral()
+    mavenLocal()
     maven(url = "https://maven.fabricmc.net")
     maven(url = "https://repo.sk1er.club/repository/maven-public")
+    maven(url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
 }
 
 fun DependencyHandlerScope.includeApi(dep: Any) {
@@ -35,19 +41,19 @@ fun DependencyHandlerScope.includeModApi(dep: Any) {
 }
 
 dependencies {
-    includeApi(project(":annotations"))
+    includeApi(project(":utils"))
     ksp(project(":processor"))
 
+    includeApi("io.ktor:ktor-client-core:$ktorVersion")
+    includeApi("io.ktor:ktor-client-apache:$ktorVersion")
+    includeApi("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    includeApi("io.ktor:ktor-serialization:$ktorVersion")
+    includeApi("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
+
     includeApi("org.bundleproject:libversion:0.0.2")
-    includeApi("dev.isxander:settxi:2b6bef2ded")
-    includeModApi("com.github.Chocohead:Fabric-ASM:v2.3")
-
-    includeApi("com.electronwill.night-config:core:3.6.5")
-    includeApi("com.electronwill.night-config:json:3.6.5")
-
-    includeApi("io.ktor:ktor-client-gson:1.6.7")
-    includeApi("io.ktor:ktor-client-core:1.6.7")
-    includeApi("io.ktor:ktor-client-apache:1.6.7")
+    includeApi("dev.isxander:settxi:local")
 
     minecraft("com.mojang:minecraft:1.18.1")
     mappings("net.fabricmc:yarn:1.18.1+build.2:v2")
@@ -63,6 +69,7 @@ blossom {
     replaceToken("__GRADLE_NAME__", modName, evergreenClass)
     replaceToken("__GRADLE_ID__", modId, evergreenClass)
     replaceToken("__GRADLE_VERSION__", project.version, evergreenClass)
+    replaceToken("__GRADLE_REVISION__", revision ?: "unknown", evergreenClass)
 }
 
 tasks {

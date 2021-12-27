@@ -14,21 +14,22 @@ import dev.isxander.evergreenhud.config.profile.ProfileManager
 import dev.isxander.evergreenhud.event.EventBus
 import dev.isxander.evergreenhud.event.EventListener
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
+import dev.isxander.evergreenhud.gui.screens.BlacklistedScreen
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
 import dev.isxander.evergreenhud.gui.screens.PositionTest
+import dev.isxander.evergreenhud.gui.screens.UpdateScreen
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
 import io.ejekta.kambrik.Kambrik
+import io.ejekta.kambrik.text.textLiteral
 import kotlinx.coroutines.runBlocking
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.loader.api.FabricLoader
 import org.bundleproject.libversion.Version
 import org.lwjgl.glfw.GLFW
-import java.awt.Color
 import java.io.File
-import java.net.URI
 
 object EvergreenHUD : ClientModInitializer {
     const val NAME = "__GRADLE_NAME__"
@@ -50,7 +51,7 @@ object EvergreenHUD : ClientModInitializer {
     lateinit var addonLoader: AddonLoader private set
 
     var postInitialized = false
-        set(value) { if (!field) field = value }
+        private set
 
     /**
      * Initialises the whole mod
@@ -78,42 +79,8 @@ object EvergreenHUD : ClientModInitializer {
         logger.info("Loading configs...")
         profileManager = ProfileManager().apply { load() }
         elementManager.apply {
-//            availableElements.forEach { (clazz, _) ->
-//                addElement(clazz.createInstance().apply {
-//                    position.scaledX = Random.nextFloat()
-//                    position.scaledY = Random.nextFloat()
-//                    position.origin = Position2D.Origin.values()[Random.nextInt(0, Position2D.Origin.values().size)]
-//                })
-//            }
-//            elementConfig.save()
-
-            mainConfig.load()
+            globalConfig.load()
             elementConfig.load()
-        }
-
-        if (!FabricLoader.getInstance().isDevelopmentEnvironment) {
-            if (elementManager.checkForUpdates || elementManager.checkForSafety) {
-                logger.info("Getting information from API...")
-                runAsync {
-                    val response = runBlocking { RepoManager.getResponse() }
-
-                    if (elementManager.checkForUpdates && response.latest[RELEASE_CHANNEL.id]!! < VERSION) {
-                        logger.info("Found update. Pushing notification to user.")
-                        Notifications.push("EvergreenHUD", "EvergreenHUD is out of date. Click here to download the new update.") {
-                            UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
-                        }
-                    }
-
-                    if (elementManager.checkForSafety && REVISION in response.blacklisted) {
-                        logger.info("Mod version has been marked as dangerous. Pushing notification to user.")
-                        Notifications.push("EvergreenHUD", "This version has been remotely marked as dangerous. Please update here.", textColor = Color.red) {
-                            UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
-                        }
-                    }
-                }
-            }
-        } else {
-            logger.info("Skipping update and blacklisting check due to being in a development environment.")
         }
 
         logger.info("Registering hooks...")
@@ -123,10 +90,12 @@ object EvergreenHUD : ClientModInitializer {
                 GuiHandler.displayGui(ElementDisplay())
             }
 
-            "test" {
-                "position" {
-                    runs {
-                        GuiHandler.displayGui(PositionTest())
+            if (FabricLoader.getInstance().isDevelopmentEnvironment) {
+                "test" {
+                    "position" {
+                        runs {
+                            GuiHandler.displayGui(PositionTest())
+                        }
                     }
                 }
             }
@@ -147,8 +116,10 @@ object EvergreenHUD : ClientModInitializer {
             keyTranslation = "evergreenhud.key.toggle",
             keyCategory = "evergreenhud.keycategory"
         ) {
-            elementManager.enabled = !elementManager.enabled
-            Notifications.push("EvergreenHUD", "Toggled mod.")
+            onDown {
+                elementManager.enabled = !elementManager.enabled
+                mc.inGameHud?.chatHud?.addMessage(evergreenHudPrefix + textLiteral("Toggled mod."))
+            }
         }
 
         logger.info("Registering events...")
@@ -158,6 +129,34 @@ object EvergreenHUD : ClientModInitializer {
         addonLoader.invokeInitEntrypoints()
 
         logger.info("Finished loading EvergreenHUD. Took ${System.currentTimeMillis() - startTime} ms.")
+    }
+
+    fun onPostInitialize() {
+        if (!postInitialized) {
+            if (!FabricLoader.getInstance().isDevelopmentEnvironment) {
+                if (elementManager.checkForUpdates || elementManager.checkForSafety) {
+                    logger.info("Getting information from API...")
+                    runAsync {
+                        val response = runBlocking { RepoManager.getResponse() }
+
+                        val latest = response.latest[RELEASE_CHANNEL.id]!!
+                        if (elementManager.checkForUpdates && latest < VERSION) {
+                            logger.info("Found update.")
+                            mc.setScreen(UpdateScreen(latest.toString(), mc.currentScreen))
+                        }
+
+                        if (elementManager.checkForSafety && REVISION in response.blacklisted) {
+                            logger.info("Mod version has been marked as dangerous.")
+                            mc.setScreen(BlacklistedScreen(mc.currentScreen))
+                        }
+                    }
+                }
+            } else {
+                logger.info("Skipping update and blacklisting check due to being in a development environment.")
+            }
+        }
+
+        postInitialized = true
     }
 
     private fun registerEvents() {

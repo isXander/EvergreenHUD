@@ -8,10 +8,11 @@
 
 package dev.isxander.evergreenhud.event
 
+import io.ktor.util.collections.*
 import java.util.function.Consumer
 
-class EventBus<T> {
-    private val listeners = mutableListOf<T>()
+class EventBus<T : Any> {
+    private val listeners = ConcurrentSet<T>()
 
     fun register(listener: T) {
         listeners.add(listener)

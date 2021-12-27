@@ -8,8 +8,8 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.int
 import dev.isxander.settxi.impl.string
@@ -17,21 +17,18 @@ import net.minecraft.entity.Entity
 
 @ElementMeta(id = "COMBO_DISPLAY", name = "Combo Display", description = "Display how many hits you get on a player before they hit you.", category = "Combat")
 class ElementCombo : SimpleTextElement() {
-    var discardTime by int(
-        default = 3,
-        name = "Discard Time",
-        category = "Combo",
-        description = "How many seconds until the combo is reset.",
-        min = 1,
-        max = 10
-    )
+    var discardTime by int(3) {
+        name = "Discard Time"
+        category = "Combo"
+        description = "How many seconds until the combo is reset."
+        range = 0..10
+    }
 
-    var noHitMessage by string(
-        default = "0",
-        name = "No Hit Message",
-        category = "Combo",
+    var noHitMessage by string("0") {
+        name = "No Hit Message"
+        category = "Combo"
         description = "What message is shown when no combo is in progress."
-    )
+    }
 
     private var hitTime = 0L
     private var attackId = 0

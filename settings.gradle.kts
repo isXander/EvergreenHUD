@@ -21,4 +21,4 @@ pluginManagement {
 rootProject.name = "EvergreenHUD"
 
 include("processor")
-include("annotations")
+include("utils")

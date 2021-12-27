@@ -11,7 +11,6 @@ package dev.isxander.evergreenhud.addons
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.utils.logger
 import net.fabricmc.loader.api.FabricLoader
-import java.io.PrintStream
 import kotlin.io.path.inputStream
 
 class AddonLoader {

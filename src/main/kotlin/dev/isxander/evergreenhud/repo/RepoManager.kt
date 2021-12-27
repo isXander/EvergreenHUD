@@ -9,14 +9,15 @@
 package dev.isxander.evergreenhud.repo
 
 import dev.isxander.evergreenhud.utils.http
+import io.ktor.client.call.*
 import io.ktor.client.request.*
 import org.bundleproject.libversion.Version
 
 object RepoManager {
-    private val jsonUrl = "https://dl.isxander.dev/mods/evergreenhud/info.json"
+    private const val jsonUrl = "https://dl.isxander.dev/mods/evergreenhud/info.json"
 
     suspend fun getResponse(): RepoResponse {
-        return http.get(jsonUrl)
+        return http.get(jsonUrl).body()
     }
 
 }

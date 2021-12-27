@@ -8,8 +8,8 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import net.minecraft.client.util.math.MatrixStack
 import kotlin.math.roundToInt
 
@@ -20,18 +20,17 @@ class ElementFps : SimpleTextElement() {
 
     init {
         title = "FPS"
-        cacheTime = 20
     }
 
     override fun calculateValue(): String {
         // calculate mean of frame times and convert to FPS
-        val fps = (1000 / frameTimes.average()).roundToInt().toString()
+        val fps = (1000 / (frameTimes.average().takeUnless { it.isNaN() } ?: 1.0)).roundToInt().toString()
         frameTimes.clear()
         return fps
     }
 
     override fun onRenderTick(matrices: MatrixStack, tickDelta: Float) {
-        frameTimes.add(System.currentTimeMillis() - lastTime)
+        frameTimes += System.currentTimeMillis() - lastTime
         lastTime = System.currentTimeMillis().toDouble()
     }
 }

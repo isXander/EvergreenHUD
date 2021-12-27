@@ -8,8 +8,8 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.option
@@ -19,12 +19,11 @@ import kotlin.collections.ArrayDeque
 
 @ElementMeta(id = "CPS", name = "Cps Counter", category = "Combat", description = "How many times you click in a second.")
 class ElementCps : SimpleTextElement() {
-    var button by option(
-        default = MouseButton.BOTH,
-        name = "Button",
-        category = "CPS",
+    var button by option(MouseButton.BOTH) {
+        name = "Button"
+        category = "CPS"
         description = "Which button to track."
-    )
+    }
 
     private val left = ArrayDeque<Long>()
     private var leftPressed = false

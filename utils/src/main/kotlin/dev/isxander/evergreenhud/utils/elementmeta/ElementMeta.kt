@@ -6,10 +6,13 @@
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
  */
 
-package dev.isxander.evergreenhud.annotations
+package dev.isxander.evergreenhud.utils.elementmeta
+
+import kotlinx.serialization.Serializable
 
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
+@Serializable(ElementMetaSerializer::class)
 annotation class ElementMeta(
     val id: String,
     val name: String,
@@ -18,4 +21,3 @@ annotation class ElementMeta(
     val credits: String = "",
     val maxInstances: Int = Int.MAX_VALUE
 )
-

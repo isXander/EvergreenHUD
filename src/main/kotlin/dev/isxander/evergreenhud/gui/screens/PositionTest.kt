@@ -9,6 +9,7 @@
 package dev.isxander.evergreenhud.gui.screens
 
 import dev.isxander.evergreenhud.utils.*
+import dev.isxander.evergreenhud.utils.position.Position2D
 import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.math.MatrixStack

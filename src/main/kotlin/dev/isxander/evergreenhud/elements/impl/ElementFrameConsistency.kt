@@ -8,8 +8,8 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import net.minecraft.client.util.math.MatrixStack
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -21,7 +21,6 @@ class ElementFrameConsistency : SimpleTextElement() {
 
     init {
         title = "Consistency"
-        cacheTime = 20
     }
 
     override fun calculateValue(): String {

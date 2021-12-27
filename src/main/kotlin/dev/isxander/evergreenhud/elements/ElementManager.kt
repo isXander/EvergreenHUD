@@ -8,22 +8,23 @@
 
 package dev.isxander.evergreenhud.elements
 
-import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.annotations.ElementMeta
-import dev.isxander.evergreenhud.config.ElementConfig
-import dev.isxander.evergreenhud.config.MainConfig
+import dev.isxander.evergreenhud.config.global.GlobalConfig
+import dev.isxander.evergreenhud.config.element.ElementConfig
 import dev.isxander.evergreenhud.event.EventListener
-import dev.isxander.evergreenhud.gui.screens.ElementDisplay
-import dev.isxander.evergreenhud.utils.jsonParser
+import dev.isxander.evergreenhud.utils.elementmeta.ElementListJson
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
+import dev.isxander.evergreenhud.utils.json
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
-import dev.isxander.evergreenhud.utils.jsonFormat
 import dev.isxander.evergreenhud.utils.logger
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.serialization.ConfigProcessor
-import net.minecraft.client.gui.screen.ChatScreen
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonPrimitive
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.world.ClientWorld
 import java.io.InputStream
 import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
@@ -34,32 +35,29 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
     val currentElements: ArrayList<Element> = ArrayList()
 
     /* Config */
-    val mainConfig: MainConfig = MainConfig(this)
+    val globalConfig: GlobalConfig = GlobalConfig(this)
     val elementConfig: ElementConfig = ElementConfig(this)
 
     /* Settings */
     override val settings: MutableList<Setting<*>> = mutableListOf()
 
-    var enabled by boolean(
-        default = true,
-        name = "Enabled",
-        category = "General",
+    var enabled by boolean(true) {
+        name = "Enabled"
+        category = "General"
         description = "Display any elements you have created."
-    )
+    }
 
-    var checkForUpdates by boolean(
-        default = true,
-        name = "Check For Updates",
-        category = "Connectivity",
+    var checkForUpdates by boolean(true) {
+        name = "Check For Updates"
+        category = "Connectivity"
         description = "Should EvergreenHUD check for updates when you start up the game."
-    )
+    }
 
-    var checkForSafety by boolean(
-        default = true,
-        name = "Check For Safety",
-        category = "Connectivity",
+    var checkForSafety by boolean(true) {
+        name = "Check For Safety"
+        category = "Connectivity"
         description = "Should EvergreenHUD check if the current version might have bannable features in them."
-    )
+    }
 
     init {
         val coreElementSrc = this.javaClass.getResourceAsStream("/evergreenhud-elements.json")
@@ -67,8 +65,8 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
             logger.error("")
             logger.error("")
             logger.error("<----------------------------------------------->")
-            logger.error("Core EvergreenHUD elements are unavailable!")
-            logger.error("Please report this issue immediately!")
+            logger.error("   Core EvergreenHUD elements are unavailable!   ")
+            logger.error("      Please report this issue immediately!      ")
             logger.error("<----------------------------------------------->")
             logger.error("")
             logger.error("")
@@ -81,7 +79,7 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
 
     fun addElement(element: Element) {
         currentElements.add(element)
-        element.onAdded()
+        if (inGame) element.onAdded()
     }
 
     fun removeElement(element: Element) {
@@ -93,21 +91,21 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
      * Adds a JSON source to the list of available elements found in the jar
      */
     fun addSource(input: InputStream, name: String) {
-        val elements = jsonParser.parse(input).get<List<Config>>("elements")
+        val elements = json.decodeFromString<List<ElementListJson>>(input.readBytes().decodeToString())
 
         var i = 0
         for (element in elements) {
-            val meta = element.get<Config>("metadata")
+            val meta = element.metadata
 
             @Suppress("UNCHECKED_CAST")
-            availableElements[Class.forName(element.get("class")).kotlin as KClass<out Element>] =
+            availableElements[Class.forName(element.`class`).kotlin as KClass<out Element>] =
                 ElementMeta(
-                    meta["id"],
-                    meta["name"],
-                    meta["category"],
-                    meta["description"],
-                    meta["credits"],
-                    meta["maxInstances"],
+                    meta["id"]!!.jsonPrimitive.content,
+                    meta["name"]!!.jsonPrimitive.content,
+                    meta["category"]!!.jsonPrimitive.content,
+                    meta["description"]!!.jsonPrimitive.content,
+                    meta["credits"]!!.jsonPrimitive.content,
+                    meta["maxInstances"]!!.jsonPrimitive.int,
                 )
 
             i++
@@ -130,31 +128,15 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
      * @param id the internal id of the element
      * @return element instance
      */
-    @Suppress("UNCHECKED_CAST")
-    fun <T : Element> getNewElementInstance(id: String): T? = getElementClass(id)?.createInstance() as T?
-
-    inline fun <reified T : Element> getDummyElement(): T {
-        return T::class.createInstance().apply {
-
-        }
-    }
+    inline fun <reified T : Element> getNewElementInstance(id: String): T? = getElementClass(id)?.createInstance() as? T
 
     override fun onRenderHud(matrices: MatrixStack, tickDelta: Float) {
+        if (!enabled) return
+
         mc.profiler.push("EvergreenHUD Render")
 
-        val inChat = mc.currentScreen is ChatScreen
-        val inDebug = mc.options.debugEnabled
-        val inGui = mc.currentScreen != null && mc.currentScreen !is ElementDisplay && !inChat
-        val inReplayViewer = mc.world != null && !mc.isInSingleplayer && mc.currentServerEntry == null && !mc.isConnectedToRealms
-
         for (e in currentElements) {
-            if (
-                (mc.mouse.isCursorLocked && !inDebug)
-                || (e.showInChat && inChat)
-                || (e.showInDebug && inDebug && !(!e.showInChat && inChat))
-                || (e.showUnderGui && inGui)
-                || (e.showInReplayViewer && inReplayViewer)
-            ) {
+            if (e.canRenderInHUD()) {
                 e.render(matrices, RenderOrigin.HUD)
             }
         }
@@ -162,23 +144,16 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
         mc.profiler.pop()
     }
 
-    var conf: Config
-        get() {
-            var data = Config.of(jsonFormat)
+    override fun onClientJoinWorld(world: ClientWorld) {
+        currentElements.forEach(Element::onAdded)
+    }
 
-            for (setting in settings) {
-                if (!setting.shouldSave) continue
-                data = addSettingToConfig(setting, data)
-            }
+    override fun onClientDisconnect() {
+        currentElements.forEach(Element::onRemoved)
+    }
 
-            return data
-        }
-        set(value) {
-            for (setting in settings) {
-                if (!setting.shouldSave) continue
-                setSettingFromConfig(value, setting)
-            }
-        }
+    private val inGame: Boolean
+        get() = mc.world != null
 
     override fun iterator(): Iterator<Element> = currentElements.iterator()
 

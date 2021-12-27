@@ -8,13 +8,17 @@
 
 package dev.isxander.evergreenhud.processor
 
-import com.electronwill.nightconfig.core.Config
-import com.electronwill.nightconfig.json.JsonFormat
 import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
-import dev.isxander.evergreenhud.annotations.ElementMeta
+import dev.isxander.evergreenhud.utils.elementmeta.ElementListJson
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNull
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.JsonPrimitive
 
 class ElementProcessor(
     private val codeGenerator: CodeGenerator,
@@ -28,22 +32,17 @@ class ElementProcessor(
 
         if (!symbols.iterator().hasNext()) return emptyList()
 
-        val elements = mutableListOf<Config>()
+        val elements = mutableListOf<ElementListJson>()
         for (classDeclaration in symbols) {
             val annotation = classDeclaration.annotations.first {
                 it.shortName.asString() == ElementMeta::class.simpleName
             }
 
-            val json = JsonFormat.newConfig()
+            val meta = annotation.arguments
+                .associate { it.name!!.asString() to (it.value?.let(this::getPrimitive) ?: JsonNull) }
+                .let(::JsonObject)
 
-            val meta = json.createSubConfig()
-            annotation.arguments.forEach {
-                meta.add(it.name?.asString(), it.value)
-            }
-            json.add("metadata", meta)
-            json.add("class", classDeclaration.qualifiedName?.asString())
-
-            elements.add(json)
+            elements.add(ElementListJson(classDeclaration.qualifiedName!!.asString(), meta))
         }
 
         val file = codeGenerator.createNewFile(
@@ -53,12 +52,18 @@ class ElementProcessor(
             extensionName = "json",
         )
 
-        val config = JsonFormat.newConfig().apply { add("elements", elements) }
-        JsonFormat.fancyInstance().createWriter().write(config, file)
-
-        file.close()
+        file.use { it.write(Json.encodeToString(elements).toByteArray()) }
 
         return symbols.filterNot { it.validate() }.toList()
+    }
+
+    private fun getPrimitive(any: Any): JsonPrimitive {
+        return when (any) {
+            is String -> JsonPrimitive(any)
+            is Number -> JsonPrimitive(any)
+            is Boolean -> JsonPrimitive(any)
+            else -> error("Not json primitive!")
+        }
     }
 
 }

@@ -14,45 +14,40 @@ import dev.isxander.evergreenhud.utils.drawString
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.option
 import net.minecraft.client.util.math.MatrixStack
-import java.lang.StringBuilder
 import kotlin.math.max
 
 abstract class SimpleTextElement : TextElement() {
-    var titleLocation by option(
-        default = TitleLocation.BEGINNING,
-        name = "Title Location",
-        category = "Text",
+    var titleLocation by option(TitleLocation.BEGINNING) {
+        name = "Title Location"
+        category = "Text"
         description = "Where to display the title."
-    )
+    }
 
     var cachedDisplayString: String = "Calculating..."
         private set
 
-    // not sure whether to make this a kotlin property or not
-    // I find get() {} very ugly and if I want to add any arguments
-    // it is super easy
     protected abstract fun calculateValue(): String
 
     private val displayString: String
         get() {
             val showTitle = title.trim().isNotEmpty()
-            val builder = StringBuilder()
+            var builder = ""
 
             if (brackets)
-                builder.append("[")
+                builder += "["
 
             if (showTitle && titleLocation == TitleLocation.BEGINNING)
-                builder.append("${title}: ")
+                builder += "${title}: "
 
-            builder.append(calculateValue())
+            builder += calculateValue()
 
             if (showTitle && titleLocation == TitleLocation.END)
-                builder.append(" $title")
+                builder += " $title"
 
             if (brackets)
-                builder.append("]")
+                builder += "]"
 
-            return builder.toString()
+            return builder
         }
 
     override val hitboxWidth: Float
@@ -61,11 +56,6 @@ abstract class SimpleTextElement : TextElement() {
         get() = max(mc.textRenderer.fontHeight, 10).toFloat()
 
     override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
-        if (renderCount == 0) cachedDisplayString = displayString
-        renderCount++
-        if (renderCount > cacheTime)
-            renderCount = 0
-
         super.render(matrices, renderOrigin)
 
         matrices.push()
@@ -89,6 +79,12 @@ abstract class SimpleTextElement : TextElement() {
         )
 
         matrices.pop()
+    }
+
+    override fun onClientTick() {
+        if (clientTicks == 0) cachedDisplayString = displayString
+
+        super.onClientTick()
     }
 
     object TitleLocation : OptionContainer() {

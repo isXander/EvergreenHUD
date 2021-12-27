@@ -7,3 +7,5 @@
  */
 
 const val kotlinVersion = "1.6.0"
+const val ktorVersion = "2.0-eap-289"
+const val kotlinxSerializationVersion = "1.3.1"

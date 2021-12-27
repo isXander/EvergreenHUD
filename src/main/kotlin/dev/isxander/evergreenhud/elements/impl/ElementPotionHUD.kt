@@ -9,11 +9,11 @@
 package dev.isxander.evergreenhud.elements.impl
 
 import com.mojang.blaze3d.systems.RenderSystem
-import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement.*
 import dev.isxander.evergreenhud.utils.*
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.settxi.impl.*
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.math.MatrixStack
@@ -26,202 +26,171 @@ import java.awt.Color
 
 @ElementMeta(id = "POTIONS", name = "PotionHUD", category = "Player", description = "Display potions.")
 class ElementPotionHUD : BackgroundElement() {
-    var titleVisible by boolean(
-        default = true,
-        name = "Visible",
-        category = "Title",
+    var titleVisible by boolean(true) {
+        name = "Visible"
+        category = "Title"
         description = "If the title should be rendered."
-    )
+    }
 
-    var titleColor by color(
-        default = Color(255, 255, 255, 255),
-        name = "Color",
-        category = "Title",
+    var titleColor by color(Color.white) {
+        name = "Color"
+        category = "Title"
         description = "Color of the name of the potion effect."
-    )
+    }
 
-    var titleStyle by option(
-        default = TextStyle.SHADOW,
-        name = "Style",
-        category = "Title",
+    var titleStyle by option(TextStyle.SHADOW) {
+        name = "Style"
+        category = "Title"
         description = "In what style should the text be rendered."
-    )
+    }
 
-    var titleChroma by boolean(
-        default = false,
-        name = "Chroma",
-        category = "Title",
+    var titleChroma by boolean(false) {
+        name = "Chroma"
+        category = "Title"
         description = "Makes the text rainbow barf."
-    )
+    }
 
-    var titleChromaSpeed by float(
-        default = 2000f,
-        name = "Chroma Speed",
-        category = "Title",
-        description = "How fast should the chroma wave be?",
-        min = 500f,
-        max = 10000f
-    ) {
+    var titleChromaSpeed by float(2000f) {
+        name = "Chroma Speed"
+        category = "Title"
+        description = "How fast should the chroma wave be?"
+        range = 500f..10_000f
+
         depends { titleChroma }
     }
 
-    var titleBold by boolean(
-        default = true,
-        name = "Bold",
-        category = "Title",
+    var titleBold by boolean(true) {
+        name = "Bold"
+        category = "Title"
         description = "If the title should be bold."
-    )
+    }
 
-    var titleUnderlined by boolean(
-        default = false,
-        name = "Underlined",
-        category = "Title",
+    var titleUnderlined by boolean(false) {
+        name = "Underlined"
+        category = "Title"
         description = "If the title should be underlined."
-    )
+    }
 
-    var titleItalic by boolean(
-        default = false,
-        name = "Italic",
-        category = "Title",
+    var titleItalic by boolean(false) {
+        name = "Italic"
+        category = "Title"
         description = "If the title should be slanted."
-    )
+    }
 
-    var amplifier by boolean(
-        default = true,
-        name = "Show Amplifier",
-        category = "Title",
+    var amplifier by boolean(true) {
+        name = "Show Amplifier"
+        category = "Title"
         description = "Show the amplified of the potion effect."
-    )
+    }
 
-    var amplifierStyle by option(
-        default = AmplifierText.ARABIC,
-        name = "Amplifier Style",
-        category = "Title",
+    var amplifierStyle by option(AmplifierText.ARABIC) {
+        name = "Amplifier Style"
+        category = "Title"
         description = "The style of the amplifier to use."
-    )
+    }
 
-    var showLvl1 by boolean(
-        default = true,
-        name = "Show LVL 1",
-        category = "Title",
+    var showLvl1 by boolean(true) {
+        name = "Show LVL 1"
+        category = "Title"
         description = "Show the amplifier if it's level is 1."
-    )
+    }
 
 
-    var durationVisible by boolean(
-        default = true,
-        name = "Visible",
-        category = "Duration",
+    var durationVisible by boolean(true) {
+        name = "Visible"
+        category = "Duration"
         description = "If the duration should be rendered."
-    )
+    }
 
-    var durationColor by color(
-        default = Color(255, 255, 255, 255),
-        name = "Color",
-        category = "Duration",
+    var durationColor by color(Color.white) {
+        name = "Color"
+        category = "Duration"
         description = "Color of the name of the duration."
-    )
+    }
 
-    var durationStyle by option(
-        default = TextStyle.SHADOW,
-        name = "Style",
-        category = "Duration",
+    var durationStyle by option(TextStyle.SHADOW) {
+        name = "Style"
+        category = "Duration"
         description = "In what style should the text be rendered."
-    )
+    }
 
-    var durationChroma by boolean(
-        default = false,
-        name = "Chroma",
-        category = "Duration",
+    var durationChroma by boolean(false) {
+        name = "Chroma"
+        category = "Duration"
         description = "Makes the text rainbow barf."
-    )
+    }
 
-    var durationChromaSpeed by float(
-        default = 2000f,
-        name = "Chroma Speed",
-        category = "Duration",
-        description = "How fast should the chroma wave be?",
-        min = 500f,
-        max = 10000f
-    ) {
+    var durationChromaSpeed by float(2000f) {
+        name = "Chroma Speed"
+        category = "Duration"
+        description = "How fast should the chroma wave be?"
+        range = 500f..10_000f
+
         depends { durationChroma }
     }
 
-    var durationBold by boolean(
-        default = true,
-        name = "Bold",
-        category = "Duration",
+    var durationBold by boolean(true) {
+        name = "Bold"
+        category = "Duration"
         description = "If the duration should be bold."
-    )
+    }
 
-    var durationUnderlined by boolean(
-        default = false,
-        name = "Underlined",
-        category = "Duration",
+    var durationUnderlined by boolean(false) {
+        name = "Underlined"
+        category = "Duration"
         description = "If the duration should be underlined."
-    )
+    }
 
-    var durationItalic by boolean(
-        default = false,
-        name = "Italic",
-        category = "Duration",
+    var durationItalic by boolean(false) {
+        name = "Italic"
+        category = "Duration"
         description = "If the duration should be slanted."
-    )
+    }
 
-    var permanentText by string(
-        default = "**:**",
-        name = "Permanent Text",
-        category = "Duration",
+    var permanentText by string("**:**") {
+        name = "Permanent Text"
+        category = "Duration"
         description = "The text to display when the effect is permanent."
-    )
+    }
 
-    var blinkingTime by int(
-        default = 5,
-        name = "Blinking Time",
-        category = "Duration",
-        description = "How many seconds have to remain before the duration starts to flash.",
-        min = 0,
-        max = 30
-    )
+    var blinkingTime by int(5) {
+        name = "Blinking Time"
+        category = "Duration"
+        description = "How many seconds have to remain before the duration starts to flash."
+        range = 0..30
+    }
 
-    var blinkingSpeed by int(
-        default = 30,
-        name = "Blinking Speed",
-        category = "Duration",
-        description = "How fast the duration blinks.",
-        min = 10,
-        max = 45
-    )
+    var blinkingSpeed by int(30) {
+        name = "Blinking Speed"
+        category = "Duration"
+        description = "How fast the duration blinks."
+        range = 10..45
+    }
 
-    var showIcon by boolean(
-        default = true,
-        name = "Show Icon",
-        category = "Miscellaneous",
+    var showIcon by boolean(true) {
+        name = "Show Icon"
+        category = "Miscellaneous"
         description = "Show the potion icon."
-    )
+    }
 
-    var sort by option(
-        default = PotionSorting.DURATION,
-        name = "Sort",
-        category = "Miscellaneous",
+    var sort by option(PotionSorting.DURATION) {
+        name = "Sort"
+        category = "Miscellaneous"
         description = "How the potion effects should be sorted."
-    )
+    }
 
-    var invertSort by boolean(
-        default = false,
-        name = "Invert Sort",
-        category = "Miscellaneous",
-        description = "Inverts the sorting method.",
-    )
+    var invertSort by boolean(false) {
+        name = "Invert Sort"
+        category = "Miscellaneous"
+        description = "Inverts the sorting method."
+    }
 
-    var verticalSpacing by int(
-        default = 2,
-        name = "Vertical Spacing",
-        category = "Miscellaneous",
-        description = "How far apart each potion is.",
-        min = 1,
-        max = 9
-    )
+    var verticalSpacing by int(2) {
+        name = "Vertical Spacing"
+        category = "Miscellaneous"
+        description = "How far apart each potion is."
+        range = 1..9
+    }
 
     val effectToggles = hashMapOf<Identifier, BooleanSetting>()
 
@@ -230,12 +199,11 @@ class ElementPotionHUD : BackgroundElement() {
             if (potion.isInstant) continue
 
             val name = I18n.translate(potion.translationKey)
-            effectToggles[Registry.STATUS_EFFECT.getId(potion)!!] = boolean(
-                default = true,
-                name = name,
-                category = "Toggles",
-                description = "Display $name on the list when effected.",
-            )
+            effectToggles[Registry.STATUS_EFFECT.getId(potion)!!] = boolean(true) {
+                this.name = name
+                category = "Toggles"
+                description = "Display $name on the list when effected."
+            }
         }
     }
 

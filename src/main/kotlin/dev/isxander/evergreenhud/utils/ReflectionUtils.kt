@@ -9,9 +9,9 @@
 package dev.isxander.evergreenhud.utils
 
 fun getCallerClass(thread: Thread = Thread.currentThread(), depth: Int = 0, ignoreInternalCalls: Boolean = false): Class<*> {
-    if (!ignoreInternalCalls) return Class.forName(thread.stackTrace[3 + depth].className)
+    check(!ignoreInternalCalls || depth - 3 >= thread.stackTrace.size ) { "Depth exceeds stack trace size!" }
 
-    if (depth - 3 >= thread.stackTrace.size) throw IllegalArgumentException("Depth exceeds stack trace size!")
+    if (!ignoreInternalCalls) return Class.forName(thread.stackTrace[3 + depth].className)
 
     val internal = thread.stackTrace[2].className
     for (i in 3 + depth until thread.stackTrace.size) {
@@ -22,7 +22,7 @@ fun getCallerClass(thread: Thread = Thread.currentThread(), depth: Int = 0, igno
     }
 
 
-    throw IllegalStateException("Could not find non-internal call within stacktrace!")
+    error("Could not find non-internal call within stacktrace!")
 }
 
 var vmVersion: Int = -1

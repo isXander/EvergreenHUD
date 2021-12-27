@@ -8,13 +8,11 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.mixins.AccessorKeyBindingRegistryImpl
-import io.ejekta.kambrik.Kambrik
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import io.ejekta.kambrik.input.KambrikKeybind
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
-import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import org.lwjgl.glfw.GLFW
 import java.text.SimpleDateFormat
@@ -29,7 +27,7 @@ class ElementTimer : SimpleTextElement() {
     var elapsed = 0L
     var stopped = true
     val timer = timer(period = 1) {
-        if (!stopped) elapsed++
+        if (!stopped && isAdded) elapsed++
     }
 
     init {

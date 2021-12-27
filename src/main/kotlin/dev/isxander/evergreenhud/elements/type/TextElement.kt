@@ -13,68 +13,58 @@ import dev.isxander.evergreenhud.utils.HitBox2D
 import java.awt.Color
 
 abstract class TextElement : BackgroundElement() {
-    var brackets by boolean(
-        default = false,
-        name = "Brackets",
-        category = "Text",
+    var brackets by boolean(false) {
+        name = "Brackets"
+        category = "Text"
         description = "Text is displayed within [square brackets]"
-    )
+    }
 
-    open var title by string(
-        default = "UNKNOWN",
-        name = "Title",
-        category = "Text",
+    open var title by string("UNKNOWN") {
+        name = "Title"
+        category = "Text"
         description = "What is displayed before or after the actual value."
-    )
+    }
 
-    var textColor by color(
-        default = Color(255, 255, 255),
-        name = "Color",
-        category = "Text",
+    var textColor by color(Color.white) {
+        name = "Color"
+        category = "Text"
         description = "The color of the text."
-    )
+    }
 
-    var chroma by boolean(
-        default = false,
-        name = "Chroma",
-        category = "Text",
+    var chroma by boolean(false) {
+        name = "Chroma"
+        category = "Text"
         description = "Makes the text rainbow barf."
-    )
+    }
 
-    var chromaSpeed by int(
-        default = 2000,
-        name = "Chroma Speed",
-        category = "Text",
-        description = "How fast should the chroma wave be?",
-        min = 5000,
-        max = 10000
-    ) {
+    var chromaSpeed by int(2000) {
+        name = "Chroma Speed"
+        category = "Text"
+        description = "How fast should the chroma wave be?"
+        range = 500..10_000
+
         depends { chroma }
     }
 
-    var textStyle by option(
-        default = TextStyle.SHADOW,
-        name = "Text Style",
-        category = "Text",
+    var textStyle by option(TextStyle.SHADOW) {
+        name = "Text Style"
+        category = "Text"
         description = "What style text is rendered in."
-    )
+    }
 
-    var alignment by option(
-        default = Alignment.LEFT,
-        name = "Alignment",
-        category = "Text",
+    var alignment by option(Alignment.LEFT) {
+        name = "Alignment"
+        category = "Text"
         description = "How the text is aligned."
-    )
+    }
 
-    open var cacheTime by int(
-        default = 5,
-        name = "Text Cache",
-        category = "Text",
-        description = "How many render ticks to wait before re-calculating the value.",
-        min = 0,
-        max = 20
-    )
-    var renderCount = 0
+    open var cacheTime by int(5) {
+        name = "Text Cache"
+        category = "Text"
+        description = "How many client ticks to wait before re-calculating the value. (20 ticks = 1 second)"
+        range = 0..20
+    }
+    var clientTicks = 0
 
     override fun calculateHitBox(glScale: Float, drawScale: Float): HitBox2D {
         val width = hitboxWidth * drawScale
@@ -94,6 +84,12 @@ abstract class TextElement : BackgroundElement() {
             Alignment.CENTER -> HitBox2D(x - (width / 2f) - left, y - top, width + left + right, height + top + bottom)
             else -> throw IllegalStateException("Failed to parse alignment.")
         }
+    }
+
+    override fun onClientTick() {
+        clientTicks++
+        if (clientTicks > cacheTime)
+            clientTicks = 0
     }
 
     object TextStyle : OptionContainer() {

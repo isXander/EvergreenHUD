@@ -12,12 +12,17 @@ import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.*
+import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.OrderedText
 import net.minecraft.text.Text
 import net.minecraft.util.math.Matrix4f
+import java.awt.image.BufferedImage
 import java.util.function.BiConsumer
+
+fun MatrixStack.translate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) =
+    translate(x.toDouble(), y.toDouble(), z.toDouble())
 
 fun MatrixStack.drawHorizontalLine(x1: Float, x2: Float, y: Float, width: Float, color: Int) {
     fill(x1, y, x2 + width, y + width, color)
@@ -357,4 +362,15 @@ fun <T> scissor(x: Int, y: Int, width: Int, height: Int, block: () -> T) {
     RenderSystem.enableScissor(x, y, width, height)
     block()
     RenderSystem.disableScissor()
+}
+
+fun BufferedImage.toNativeImage(): NativeImage {
+    val nativeImage = NativeImage(width, height, false)
+    for (x in 0 until nativeImage.width) {
+        for (y in 0 until nativeImage.height) {
+            nativeImage.setColor(x, y, getRGB(x, y))
+        }
+    }
+
+    return nativeImage
 }

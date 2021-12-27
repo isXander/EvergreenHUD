@@ -8,7 +8,6 @@
 
 package dev.isxander.evergreenhud.config.convert.impl
 
-import com.electronwill.nightconfig.core.Config
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.config.convert.ConfigConverter
 import dev.isxander.evergreenhud.elements.Element
@@ -18,6 +17,9 @@ import dev.isxander.evergreenhud.elements.impl.ElementIRLTime
 import dev.isxander.evergreenhud.elements.impl.ElementText
 import dev.isxander.evergreenhud.elements.type.TextElement
 import dev.isxander.evergreenhud.utils.*
+import dev.isxander.evergreenhud.utils.position.scaledPosition
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.*
 import java.awt.Color
 import java.io.File
 
@@ -37,33 +39,33 @@ object ChromaHudConverter : ConfigConverter {
     override fun process(file: File): String? {
         if (!file.exists() || file.isDirectory) return "Invalid ChromaHUD config."
 
-        val config = Config.of(jsonFormat)
-        EvergreenHUD.elementManager.enabled = config["enabled"]
+        val config = json.decodeFromString<JsonObject>(file.readText())
+        EvergreenHUD.elementManager.enabled = config.decode("enabled")!!
 
-        for (elementJson in config.get<List<Config>>("elements")) {
+        for (elementJson in config.decode<List<JsonObject>>("elements")!!) {
             val position = scaledPosition {
-                x = elementJson["x"]
-                y = elementJson["y"]
-                scale = elementJson["scale"]
+                x = elementJson.decode("x")!!
+                y = elementJson.decode("y")!!
+                scale = elementJson.decode("scale")!!
             }
 
-            var textColor = Color(elementJson["color"])
-            if (elementJson.get<Boolean>("rgb") == true)
+            var textColor = Color(elementJson.decode("color")!!)
+            if (elementJson.decode<Boolean>("rgb") == true)
                 textColor = Color(
-                    elementJson["red"] ?: 255,
-                    elementJson["green"] ?: 255,
-                    elementJson["blue"] ?: 255,
+                    elementJson.decode("red") ?: 255,
+                    elementJson.decode("green") ?: 255,
+                    elementJson.decode("blue") ?: 255,
                     255
                 )
 
-            val chroma = elementJson["chroma"] ?: false
-            val shadow = elementJson["shadow"] ?: false
-            val useBg = elementJson["highlighted"] ?: false
+            val chroma = elementJson.decode("chroma") ?: false
+            val shadow = elementJson.decode("shadow") ?: false
+            val useBg = elementJson.decode("highlighted") ?: false
 
             var i = 0
             val changeY = (mc.textRenderer.fontHeight + 4) / mc.window.scaledHeight
-            for (item in elementJson.get<List<Config>>("items")) {
-                val id = ids[item["type"] ?: ""] ?: continue
+            for (item in elementJson.decode<List<JsonObject>>("items") ?: emptyList()) {
+                val id = ids[item.decode("type") ?: ""] ?: continue
                 val element = EvergreenHUD.elementManager.getNewElementInstance<Element>(id) ?: continue
 
                 element.position = position
@@ -85,8 +87,8 @@ object ChromaHudConverter : ConfigConverter {
                 }
 
                 when (element) {
-                    is ElementCoordinates -> element.accuracy = item["precision"] ?: 0
-                    is ElementText -> element.text = item["text"] ?: "Sample Text"
+                    is ElementCoordinates -> element.accuracy = item.decode("precision") ?: 0
+                    is ElementText -> element.text = item.decode("text") ?: "Sample Text"
                     is ElementIRLTime -> element.seconds = true
                     is ElementCps -> element.button = ElementCps.MouseButton.LEFT
                 }

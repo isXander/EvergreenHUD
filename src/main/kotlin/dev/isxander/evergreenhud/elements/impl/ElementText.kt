@@ -8,18 +8,17 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.settxi.impl.string
 
 @ElementMeta(id = "TEXT", name = "Text Display", category = "Other", description = "Displays custom text of your choosing.")
 class ElementText : SimpleTextElement() {
-    var text by string(
-        default = "Sample Text",
-        name = "Text",
-        category = "Text",
+    var text by string("Sample Text") {
+        name = "Text"
+        category = "Text"
         description = "The text to display."
-    )
+    }
 
     init {
         title = ""

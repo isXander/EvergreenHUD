@@ -17,14 +17,12 @@ import net.minecraft.util.Formatting
 import kotlin.math.max
 
 abstract class MultiLineTextElement : TextElement() {
-    var verticalSpacing by int(
-        default = 2,
-        name = "Vertical Spacing",
-        category = "Text",
-        description = "How far apart each line of text is from eachother.",
-        min = 0,
-        max = 5
-    )
+    var verticalSpacing by int(2) {
+        name = "Vertical Spacing"
+        category = "Text"
+        description = "How far apart each line of text is from eachother."
+        range = 0..5
+    }
 
     var cachedDisplayString: ArrayList<String> = arrayListOf("Calculating...")
         private set
@@ -52,11 +50,6 @@ abstract class MultiLineTextElement : TextElement() {
         get() = max((mc.textRenderer.fontHeight * cachedDisplayString.size) + (verticalSpacing * (cachedDisplayString.size - 1)), 10).toFloat()
 
     override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
-        if (renderCount == 0) cachedDisplayString = displayString
-        renderCount++
-        if (renderCount > cacheTime)
-            renderCount = 0
-
         super.render(matrices, renderOrigin)
 
         matrices.push()
@@ -82,5 +75,10 @@ abstract class MultiLineTextElement : TextElement() {
         }
 
         matrices.pop()
+    }
+
+    override fun onClientTick() {
+        if (clientTicks == 0) cachedDisplayString = displayString
+        super.onClientTick()
     }
 }

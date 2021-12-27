@@ -8,8 +8,8 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
 import java.text.SimpleDateFormat
@@ -18,19 +18,17 @@ import java.util.concurrent.TimeUnit
 
 @ElementMeta(id = "WORLD_TIME", name = "World Time", description = "Show the current time in-game.", category = "World")
 class ElementWorldTime : SimpleTextElement() {
-    var twelveHour by boolean(
-        default = false,
-        name = "Twelve Hour",
-        category = "Time",
+    var twelveHour by boolean(false) {
+        name = "Twelve Hour"
+        category = "Time"
         description = "If the clock should display AM or PM or go into 13:00+"
-    )
+    }
 
-    var seconds by boolean(
-        default = false,
-        name = "Seconds",
-        category = "Time",
+    var seconds by boolean(false) {
+        name = "Seconds"
+        category = "Time"
         description = "Show the seconds."
-    )
+    }
 
     init {
         title = "Time"

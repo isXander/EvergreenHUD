@@ -6,5 +6,10 @@
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
  */
 
-apply(plugin = "org.jetbrains.kotlin.jvm")
-apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
+package dev.isxander.evergreenhud.utils.elementmeta
+
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+
+@Serializable
+data class ElementListJson(val `class`: String, val metadata: JsonObject)

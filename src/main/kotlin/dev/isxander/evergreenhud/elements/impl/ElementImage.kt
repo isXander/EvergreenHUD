@@ -10,12 +10,12 @@ package dev.isxander.evergreenhud.elements.impl
 
 import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.annotations.ElementMeta
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
-import dev.isxander.evergreenhud.settings.file
 import dev.isxander.evergreenhud.utils.*
+import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.settxi.impl.boolean
+import dev.isxander.settxi.impl.file
 import dev.isxander.settxi.impl.float
 import net.minecraft.client.texture.NativeImageBackedTexture
 import net.minecraft.client.util.math.MatrixStack
@@ -29,39 +29,35 @@ import kotlin.math.min
 
 @ElementMeta(id = "IMAGE", name = "Image", category = "Miscallaneous", description = "Display an image file.")
 class ElementImage : BackgroundElement() {
-    var file by file(
-        default = EvergreenHUD.dataDir,
-        name = "File",
-        category = "Image",
+    var file by file(EvergreenHUD.dataDir) {
+        name = "File"
+        category = "Image"
         description = "The file of the image."
-    ) {
+
         set {
             changed = true
             it
         }
     }
 
-    var autoScale by boolean(
-        default = true,
-        name = "Auto Scale",
-        category = "Image",
+    var autoScale by boolean(true) {
+        name = "Auto Scale"
+        category = "Image"
         description = "Scale your image so it is the same size, no matter the resolution."
-    )
+    }
 
-    var rotation by float(
-        default = 0f,
-        min = 0f, max = 360f,
-        name = "Rotation",
-        category = "Image",
+    var rotation by float(0f) {
+        range = 0f..360f
+        name = "Rotation"
+        category = "Image"
         description = "Rotate the image x amount of degrees."
-    )
+    }
 
-    var mirror by boolean(
-        default = false,
-        name = "Mirror",
-        category = "Image",
+    var mirror by boolean(false) {
+        name = "Mirror"
+        category = "Image"
         description = "Makes your image look as if you viewed it through a mirror."
-    ) {
+
         set {
             changed = true
             it

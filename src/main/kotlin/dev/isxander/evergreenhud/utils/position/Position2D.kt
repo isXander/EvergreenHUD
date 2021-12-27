@@ -6,12 +6,15 @@
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
  */
 
-package dev.isxander.evergreenhud.utils
+package dev.isxander.evergreenhud.utils.position
 
+import dev.isxander.evergreenhud.utils.mc
+import kotlinx.serialization.Serializable
 import kotlin.math.abs
 import kotlin.math.pow
 import kotlin.math.sqrt
 
+@Serializable(PositionSerializer::class)
 class Position2D private constructor(
     var scaledX: Float,
     var scaledY: Float,
@@ -61,18 +64,3 @@ class Position2D private constructor(
     }
 }
 
-fun rawPosition(lambda: PositionBuilder.() -> Unit): Position2D =
-    with(PositionBuilder().apply(lambda)) {
-        Position2D.rawPositioning(x, y, scale)
-    }
-
-fun scaledPosition(lambda: PositionBuilder.() -> Unit): Position2D =
-    with(PositionBuilder().apply(lambda)) {
-        Position2D.scaledPositioning(x, y, scale)
-    }
-
-class PositionBuilder {
-    var x: Float = 0f
-    var y: Float = 0f
-    var scale: Float = 1f
-}

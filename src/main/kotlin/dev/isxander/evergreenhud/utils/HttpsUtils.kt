@@ -8,32 +8,15 @@
 
 package dev.isxander.evergreenhud.utils
 
-import com.google.gson.TypeAdapter
-import com.google.gson.stream.JsonReader
-import com.google.gson.stream.JsonWriter
 import io.ktor.client.*
 import io.ktor.client.engine.apache.*
-import io.ktor.client.features.json.*
-import org.bundleproject.libversion.Version
+import io.ktor.client.plugins.*
+import io.ktor.serialization.kotlinx.json.*
 
 val http = HttpClient(Apache) {
-    install(JsonFeature) {
-        serializer = GsonSerializer {
-            registerTypeAdapter(Version::class.java, VersionTypeAdapter)
-        }
+    install(ContentNegotiation) {
+        json(json)
     }
 }
 
-object VersionTypeAdapter : TypeAdapter<Version>() {
-    override fun write(out: JsonWriter?, value: Version?) {
-        out?.let {
-            value?.let { out.value(it.toString()) } ?: out.nullValue()
-        }
-    }
 
-    override fun read(`in`: JsonReader?): Version {
-        `in`?.let {
-            return Version.of(it.nextString())
-        } ?: error("The JsonReader given to the VersionTypeAdapter was null")
-    }
-}

@@ -8,11 +8,36 @@
 
 package dev.isxander.evergreenhud.utils
 
-import com.electronwill.nightconfig.core.Config
-import com.electronwill.nightconfig.core.io.ConfigParser
-import com.electronwill.nightconfig.json.FancyJsonWriter
-import com.electronwill.nightconfig.json.JsonFormat
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.json.*
+import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.contextual
+import org.bundleproject.libversion.Version
 
-val jsonFormat: JsonFormat<FancyJsonWriter> = JsonFormat.fancyInstance()
-val jsonParser: ConfigParser<Config> = jsonFormat.createParser()
-val jsonWriter: FancyJsonWriter = jsonFormat.createWriter()
+val json = Json {
+    prettyPrint = true
+    serializersModule = SerializersModule {
+        contextual(VersionContentConverter)
+    }
+}
+
+object VersionContentConverter : KSerializer<Version> {
+    override val descriptor: SerialDescriptor = PrimitiveSerialDescriptor("version", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): Version {
+        return Version.of(decoder.decodeString())
+    }
+
+    override fun serialize(encoder: Encoder, value: Version) {
+        encoder.encodeString(value.toString())
+    }
+}
+
+inline fun <reified T> JsonObject.decode(key: String): T? {
+    return this[key]?.let { json.decodeFromJsonElement(it) }
+}

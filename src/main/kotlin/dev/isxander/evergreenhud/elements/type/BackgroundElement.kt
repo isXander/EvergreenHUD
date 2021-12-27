@@ -18,19 +18,17 @@ import net.minecraft.client.util.math.MatrixStack
 import java.awt.Color
 
 abstract class BackgroundElement : Element() {
-    var backgroundColor: Color by color(
-        default = Color(0, 0, 0, 100),
-        name = "Color",
-        category = "Background",
+    var backgroundColor: Color by color(Color(0, 0, 0, 100)) {
+        name = "Color"
+        category = "Background"
         description = "The color of the background."
-    )
+    }
 
-    var outlineEnabled by boolean(
-        default = false,
-        name = "Enabled",
-        category = "Outline",
+    var outlineEnabled by boolean(false) {
+        name = "Enabled"
+        category = "Outline"
         description = "If the background is rendered."
-    ) {
+
         set { enabled ->
             val new = if (enabled) Color(outlineColor.red, outlineColor.green, outlineColor.blue, 255)
             else Color(outlineColor.red, outlineColor.green, outlineColor.blue, 0)
@@ -40,12 +38,11 @@ abstract class BackgroundElement : Element() {
         }
     }
 
-    var outlineColor: Color by color(
-        default = Color(0, 0, 0, 0),
-        name = "Color",
-        category = "Outline",
+    var outlineColor: Color by color(Color(0, 0, 0, 0)) {
+        name = "Color"
+        category = "Outline"
         description = "The color of the outline."
-    ) {
+
         set {
             val enabled = it.alpha != 0
             if (outlineEnabled != enabled) outlineEnabled = enabled
@@ -53,63 +50,47 @@ abstract class BackgroundElement : Element() {
         }
     }
 
-    var outlineThickness by float(
-        default = 1f,
-        name = "Thickness",
-        category = "Outline",
-        description = "How thick the outline is.",
-        min = 0.5f,
-        max = 8f
-    )
+    var outlineThickness by float(1f) {
+        name = "Thickness"
+        category = "Outline"
+        description = "How thick the outline is."
+        range = 0.5f..8f
+    }
 
-    var paddingLeft by float(
-        default = 4f,
-        name = "Padding (Left)",
-        category = "Background",
-        subcategory = "Padding",
-        description = "How far the background extends to the left.",
-        min = 0f,
-        max = 12f
-    )
+    var paddingLeft by float(4f) {
+        name = "Padding (Left)"
+        category = "Background"
+        description = "How far the background extends to the left."
+        range = 0f..12f
+    }
 
-    var paddingRight by float(
-        default = 4f,
-        name = "Padding (Right)",
-        category = "Background",
-        subcategory = "Padding",
-        description = "How far the background extends to the right.",
-        min = 0f,
-        max = 12f
-    )
+    var paddingRight by float(4f) {
+        name = "Padding (Right)"
+        category = "Background"
+        description = "How far the background extends to the right."
+        range = 0f..12f
+    }
 
-    var paddingTop by float(
-        default = 4f,
-        name = "Padding (Top)",
-        category = "Background",
-        subcategory = "Padding",
-        description = "How far the background extends to the top.",
-        min = 0f,
-        max = 12f
-    )
+    var paddingTop by float(4f) {
+        name = "Padding (Top)"
+        category = "Background"
+        description = "How far the background extends to the top."
+        range = 0f..12f
+    }
 
-    var paddingBottom by float(
-        default = 4f,
-        name = "Padding (Bottom)",
-        category = "Background",
-        subcategory = "Padding",
-        description = "How far the background extends to the bottom.",
-        min = 0f,
-        max = 12f
-    )
+    var paddingBottom by float(4f) {
+        name = "Padding (Bottom)"
+        category = "Background"
+        description = "How far the background extends to the bottom."
+        range = 0f..12f
+    }
 
-    var cornerRadius by float(
-        default = 0f,
-        name = "Corner Radius",
-        category = "Background",
-        description = "How rounded the edges of the background are.",
-        min = 0f,
-        max = 6f
-    )
+    var cornerRadius by float(0f) {
+        name = "Corner Radius"
+        category = "Background"
+        description = "How rounded the edges of the background are."
+        range = 0f..6f
+    }
 
     override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
         val bgCol = backgroundColor

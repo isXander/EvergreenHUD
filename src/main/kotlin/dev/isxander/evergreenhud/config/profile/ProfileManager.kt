@@ -8,68 +8,77 @@
 
 package dev.isxander.evergreenhud.config.profile
 
-import com.electronwill.nightconfig.core.Config
-import com.electronwill.nightconfig.core.conversion.ObjectConverter
-import com.electronwill.nightconfig.core.file.FileConfig
-import com.electronwill.nightconfig.core.io.WritingMode
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.utils.jsonFormat
-import dev.isxander.evergreenhud.utils.jsonWriter
+import dev.isxander.evergreenhud.utils.decode
+import dev.isxander.evergreenhud.utils.json
 import dev.isxander.evergreenhud.utils.logger
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.JsonObject
+import kotlinx.serialization.json.decodeFromJsonElement
+import kotlinx.serialization.json.int
+import kotlinx.serialization.json.jsonPrimitive
 import java.io.File
 
 class ProfileManager {
     var currentProfile = DEFAULT_PROFILE
-    val availableProfiles = hashMapOf(currentProfile.id to currentProfile)
+
+    var availableProfiles = mutableMapOf(currentProfile.id to currentProfile)
+        private set
+
     val profileDirectory: File
         get() = File(EvergreenHUD.dataDir, "profiles/${currentProfile.id}")
-
-    fun load() {
-        if (!PROFILES_DATA.exists()) save().also { return@load }
-
-        val data = attemptConversion(FileConfig.of(PROFILES_DATA).apply { load() })
-        availableProfiles.clear()
-        data.get<List<Config>>("profiles").map { ObjectConverter().toObject(it) { Profile {} } }.forEach { availableProfiles[it.id] = it }
-
-        val newCurrent = availableProfiles[data["current"] ?: "default"]
-        if (newCurrent == null) {
-            currentProfile = DEFAULT_PROFILE
-            availableProfiles[currentProfile.id] = currentProfile
-        } else {
-            currentProfile = newCurrent
-        }
-    }
 
     fun save() {
         PROFILES_DATA.parentFile.mkdirs()
 
-        val config = Config.of(jsonFormat)
+        val profilesJson = ProfilesJson(SCHEMA, currentProfile.id, availableProfiles.values.toList())
 
-        config.set<Int>("schema", SCHEMA)
-        config.set<String>("current", currentProfile.id)
-        config.set<List<Config>>("profiles", availableProfiles.values.toList().map { ObjectConverter().toConfig(it) { Config.of(jsonFormat) } })
-
-        jsonWriter.write(config, PROFILES_DATA, WritingMode.REPLACE)
+        PROFILES_DATA.writeText(json.encodeToString(profilesJson))
     }
 
-    @Suppress("UNUSED_EXPRESSION")
-    private fun attemptConversion(data: Config): Config {
-        val currentSchema = data["schema"] ?: 0
+    fun load() {
+        if (!PROFILES_DATA.exists()) save().also { return@load }
+        val text = PROFILES_DATA.readText()
+        val schema = json.decodeFromString<JsonObject>(text).decode<Int>("schema")
+
+        val data: ProfilesJson
+        if (schema != SCHEMA) {
+            logger.warn("Schema $schema does not match current schema ${SCHEMA}. Attempting conversion.")
+            data = json.decodeFromJsonElement(attemptConversion(json.decodeFromString(text)) ?: run { save(); return })
+
+            logger.warn("Saving due to conversion.")
+            save()
+        } else {
+            data = json.decodeFromString(text)
+        }
+
+        availableProfiles = data.profiles.associateBy { it.id }.toMutableMap()
+
+        currentProfile = availableProfiles[data.current] ?: run {
+            availableProfiles[DEFAULT_PROFILE.id] = DEFAULT_PROFILE
+            DEFAULT_PROFILE
+        }
+    }
+
+    @Suppress("UNUSED_EXPRESSION", "UNREACHABLE_CODE")
+    private fun attemptConversion(data: JsonObject): JsonObject? {
+        val currentSchema = data["schema"]?.jsonPrimitive?.int ?: 0
 
         // corrupt config. Reset
         if (currentSchema == 0 || currentSchema > SCHEMA) {
-            return Config.of(jsonFormat)
+            return null
         }
 
-        // there is no point recoding every conversion
-        // when a new schema comes to be
-        // so just convert the old conversions until done
         var convertedData = data
         var convertedSchema = currentSchema
         while (convertedSchema != SCHEMA) {
             logger.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
-            when (convertedSchema) {
-
+            convertedData = when (convertedSchema) {
+                else -> {
+                    logger.error("Unknown schema conversion tactic v$convertedSchema -> v${convertedSchema + 1}")
+                    break
+                }
             }
             convertedSchema++
         }
@@ -80,10 +89,10 @@ class ProfileManager {
     companion object {
         const val SCHEMA = 1
         val PROFILES_DATA = File(EvergreenHUD.dataDir, "profiles/profiles.json")
-        val DEFAULT_PROFILE = Profile {
-            id = "default"
-            name = "Default"
-            description = "The default profile for EvergreenHUD"
-        }
+        val DEFAULT_PROFILE = Profile(
+            id = "default",
+            name = "Default",
+            description = "The default profile for EvergreenHUD",
+        )
     }
 }
