@@ -11,6 +11,7 @@ package dev.isxander.evergreenhud.repo
 import dev.isxander.evergreenhud.utils.http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
+import kotlinx.serialization.Serializable
 import org.bundleproject.libversion.Version
 
 object RepoManager {
@@ -19,7 +20,7 @@ object RepoManager {
     suspend fun getResponse(): RepoResponse {
         return http.get(jsonUrl).body()
     }
-
 }
 
+@Serializable
 data class RepoResponse(val latest: Map<String, Version>, val blacklisted: List<String>)
