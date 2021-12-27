@@ -12,6 +12,7 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.encoding.decodeStructure
@@ -39,16 +40,27 @@ class ElementMetaSerializer : KSerializer<ElementMeta> {
         }
     }
 
-    override fun deserialize(decoder: Decoder): ElementMeta {
-        return decoder.decodeStructure(descriptor) {
-            ElementMeta(
-                decodeStringElement(descriptor, 0),
-                decodeStringElement(descriptor, 1),
-                decodeStringElement(descriptor, 2),
-                decodeStringElement(descriptor, 3),
-                decodeStringElement(descriptor, 4),
-                decodeIntElement(descriptor, 5)
-            )
+    override fun deserialize(decoder: Decoder) = decoder.decodeStructure(descriptor) {
+        lateinit var id: String
+        lateinit var name: String
+        lateinit var category: String
+        lateinit var description: String
+        lateinit var credits: String
+        var maxInstances = 0
+
+        while (true) {
+            when (val index = decodeElementIndex(descriptor)) {
+                0 -> id = decodeStringElement(descriptor, index)
+                1 -> name = decodeStringElement(descriptor, index)
+                2 -> category = decodeStringElement(descriptor, index)
+                3 -> description = decodeStringElement(descriptor, index)
+                4 -> credits = decodeStringElement(descriptor, index)
+                5 -> maxInstances = decodeIntElement(descriptor, index)
+                DECODE_DONE -> break
+                else -> error("Unknown index: $index")
+            }
         }
+
+        ElementMeta(id, name, category, description, credits, maxInstances)
     }
 }

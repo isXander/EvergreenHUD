@@ -19,5 +19,5 @@ annotation class ElementMeta(
     val category: String,
     val description: String,
     val credits: String = "",
-    val maxInstances: Int = Int.MAX_VALUE
+    val maxInstances: Int = Int.MAX_VALUE,
 )
