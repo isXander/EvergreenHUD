@@ -16,7 +16,7 @@ import dev.isxander.settxi.impl.*
 import java.text.DecimalFormat
 
 @ElementMeta(id = "COORDINATES", name = "Coordinates", description = "Show your current coordinates in the world.", category = "World")
-class ElementCoordinates : MultiLineTextElement() {
+class ElementCoordinates : MultiLineTextElement("Coords") {
     var displayMode by option(DisplayMode.VERTICAL) {
         name = "Mode"
         category = "Coordinates"
@@ -64,10 +64,6 @@ class ElementCoordinates : MultiLineTextElement() {
         name = "Trailing Zeros"
         category = "Coordinates"
         description = "Match the accuracy using zeros."
-    }
-
-    init {
-        title = "Coords"
     }
 
     override fun calculateValue(): ArrayList<String> {

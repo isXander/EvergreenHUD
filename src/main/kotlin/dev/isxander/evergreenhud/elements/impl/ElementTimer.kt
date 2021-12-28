@@ -21,17 +21,13 @@ import java.util.concurrent.TimeUnit
 import kotlin.concurrent.timer
 
 @ElementMeta(id = "TIMER", name = "Timer", category = "Miscallaneous", description = "Set a timer.", credits = "Wyvest")
-class ElementTimer : SimpleTextElement() {
+class ElementTimer : SimpleTextElement("Timer") {
     var keybind: KambrikKeybind? = null
 
     var elapsed = 0L
     var stopped = true
     val timer = timer(period = 1) {
         if (!stopped && isAdded) elapsed++
-    }
-
-    init {
-        title = "Timer"
     }
 
     override fun calculateValue(): String {

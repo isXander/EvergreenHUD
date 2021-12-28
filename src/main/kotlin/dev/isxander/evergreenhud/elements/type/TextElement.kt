@@ -12,14 +12,15 @@ import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.HitBox2D
 import java.awt.Color
 
-abstract class TextElement : BackgroundElement() {
+abstract class TextElement
+@JvmOverloads constructor(title: String, cacheTime: Int = 5) : BackgroundElement() {
     var brackets by boolean(false) {
         name = "Brackets"
         category = "Text"
         description = "Text is displayed within [square brackets]"
     }
 
-    open var title by string("UNKNOWN") {
+    var title by string(title) {
         name = "Title"
         category = "Text"
         description = "What is displayed before or after the actual value."
@@ -58,7 +59,7 @@ abstract class TextElement : BackgroundElement() {
         description = "How the text is aligned."
     }
 
-    open var cacheTime by int(5) {
+    var cacheTime by int(cacheTime) {
         name = "Text Cache"
         category = "Text"
         description = "How many client ticks to wait before re-calculating the value. (20 ticks = 1 second)"

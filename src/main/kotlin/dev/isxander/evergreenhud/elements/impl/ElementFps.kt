@@ -14,13 +14,9 @@ import net.minecraft.client.util.math.MatrixStack
 import kotlin.math.roundToInt
 
 @ElementMeta(id = "FPS", name = "FPS Display", category = "Simple", description = "Display how many times your screen is updating every second.")
-class ElementFps : SimpleTextElement() {
+class ElementFps : SimpleTextElement("FPS") {
     private var lastTime = System.currentTimeMillis().toDouble()
     private val frameTimes = ArrayList<Double>()
-
-    init {
-        title = "FPS"
-    }
 
     override fun calculateValue(): String {
         // calculate mean of frame times and convert to FPS

@@ -17,7 +17,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 @ElementMeta(id = "WORLD_TIME", name = "World Time", description = "Show the current time in-game.", category = "World")
-class ElementWorldTime : SimpleTextElement() {
+class ElementWorldTime : SimpleTextElement("Time") {
     var twelveHour by boolean(false) {
         name = "Twelve Hour"
         category = "Time"
@@ -28,10 +28,6 @@ class ElementWorldTime : SimpleTextElement() {
         name = "Seconds"
         category = "Time"
         description = "Show the seconds."
-    }
-
-    init {
-        title = "Time"
     }
 
     override fun calculateValue(): String {

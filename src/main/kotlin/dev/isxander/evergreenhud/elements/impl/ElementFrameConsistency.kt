@@ -15,13 +15,9 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 @ElementMeta(id = "FRAME_CONSISTENCY", name = "Frame Consistency", category = "Simple", description = "Displays how consistent your frame times are.")
-class ElementFrameConsistency : SimpleTextElement() {
+class ElementFrameConsistency : SimpleTextElement("Consistency") {
     private var lastTime = System.currentTimeMillis().toDouble()
     private val frameTimes = ArrayList<Double>()
-
-    init {
-        title = "Consistency"
-    }
 
     override fun calculateValue(): String {
         val consistency = ((1 - frameTimes.consinstency()) * 100).roundToInt()

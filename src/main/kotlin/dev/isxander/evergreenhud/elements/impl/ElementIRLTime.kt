@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @ElementMeta(id = "IRL_TIME", name = "IRL Time", description = "Show the current time in real life.", category = "Miscallaneous")
-class ElementIRLTime : SimpleTextElement() {
+class ElementIRLTime : SimpleTextElement("Time") {
     var twelveHour by boolean(false) {
         name = "Twelve Hour"
         category = "Time"
@@ -26,10 +26,6 @@ class ElementIRLTime : SimpleTextElement() {
         name = "Seconds"
         category = "Time"
         description = "Show the seconds."
-    }
-
-    init {
-        title = "Time"
     }
 
     override fun calculateValue(): String =

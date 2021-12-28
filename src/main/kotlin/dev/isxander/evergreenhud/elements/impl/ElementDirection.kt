@@ -15,15 +15,11 @@ import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
 
 @ElementMeta(id = "DIRECTION", name = "Direction", category = "Player", description = "Which way the player is facing.")
-class ElementDirection : SimpleTextElement() {
+class ElementDirection : SimpleTextElement("Direction") {
     var abbreviated by boolean(false) {
         name = "Abbreviated"
         category = "Direction"
         description = "Make the name of the direction shorter."
-    }
-
-    init {
-        title = "Direction"
     }
 
     override fun calculateValue(): String {

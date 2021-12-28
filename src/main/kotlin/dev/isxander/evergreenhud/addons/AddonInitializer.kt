@@ -12,7 +12,7 @@ interface AddonInitializer {
     /**
      * Called right after all addons have loaded.
      */
-    fun onPreInitialize()
+    fun onPreInitialize() {}
 
     /**
      * Called once EvergreenHUD has fully loaded.

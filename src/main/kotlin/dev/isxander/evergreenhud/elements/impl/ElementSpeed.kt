@@ -20,7 +20,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 @ElementMeta(id = "SPEED", name = "Speed", category = "Player", description = "Display how fast you are moving.")
-class ElementSpeed : SimpleTextElement() {
+class ElementSpeed : SimpleTextElement("Speed") {
     var useX by boolean(true) {
         name = "Use X"
         category = "Speed"
@@ -62,10 +62,6 @@ class ElementSpeed : SimpleTextElement() {
         name = "Suffix"
         category = "Speed"
         description = "If the speed value is to be suffixed by your unit (e.g. m/s)"
-    }
-
-    init {
-        title = "Speed"
     }
 
     override fun calculateValue(): String {

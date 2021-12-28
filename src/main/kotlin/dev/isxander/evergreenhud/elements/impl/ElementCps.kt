@@ -18,7 +18,7 @@ import org.lwjgl.glfw.GLFW
 import kotlin.collections.ArrayDeque
 
 @ElementMeta(id = "CPS", name = "Cps Counter", category = "Combat", description = "How many times you click in a second.")
-class ElementCps : SimpleTextElement() {
+class ElementCps : SimpleTextElement("CPS") {
     var button by option(MouseButton.BOTH) {
         name = "Button"
         category = "CPS"
@@ -29,10 +29,6 @@ class ElementCps : SimpleTextElement() {
     private var leftPressed = false
     private val right = ArrayDeque<Long>()
     private var rightPressed = false
-
-    init {
-        title = "CPS"
-    }
 
     override fun calculateValue(): String {
         return when (button) {

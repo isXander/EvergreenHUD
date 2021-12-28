@@ -16,7 +16,8 @@ import dev.isxander.settxi.impl.option
 import net.minecraft.client.util.math.MatrixStack
 import kotlin.math.max
 
-abstract class SimpleTextElement : TextElement() {
+abstract class SimpleTextElement
+@JvmOverloads constructor(title: String, cacheTime: Int = 5) : TextElement(title, cacheTime) {
     var titleLocation by option(TitleLocation.BEGINNING) {
         name = "Title Location"
         category = "Text"

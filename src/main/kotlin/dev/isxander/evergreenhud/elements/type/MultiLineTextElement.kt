@@ -16,7 +16,8 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Formatting
 import kotlin.math.max
 
-abstract class MultiLineTextElement : TextElement() {
+abstract class MultiLineTextElement
+@JvmOverloads constructor(title: String, cacheTime: Int = 5) : TextElement(title, cacheTime) {
     var verticalSpacing by int(2) {
         name = "Vertical Spacing"
         category = "Text"

@@ -29,12 +29,15 @@
   "depends": {
     "fabricloader": ">=0.12",
     "fabric": "*",
-    "fabric-language-kotlin": ">=1.7.0+kotlin.1.6.0",
+    "fabric-language-kotlin": ">=1.7.1+kotlin.1.6.10",
     "minecraft": "1.18.x",
     "java": "17",
     "kambrik": "*"
   },
   "suggests": {
-    "modmenu": "*"
+    "modmenu": ">=3.0.0"
+  },
+  "modmenu": {
+    "badges": ["client"]
   }
 }

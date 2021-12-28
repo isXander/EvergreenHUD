@@ -16,7 +16,7 @@ import dev.isxander.settxi.impl.string
 import net.minecraft.entity.Entity
 
 @ElementMeta(id = "COMBO_DISPLAY", name = "Combo Display", description = "Display how many hits you get on a player before they hit you.", category = "Combat")
-class ElementCombo : SimpleTextElement() {
+class ElementCombo : SimpleTextElement("Combo") {
     var discardTime by int(3) {
         name = "Discard Time"
         category = "Combo"
@@ -33,10 +33,6 @@ class ElementCombo : SimpleTextElement() {
     private var hitTime = 0L
     private var attackId = 0
     private var currentCombo = 0
-
-    init {
-        title = "Combo"
-    }
 
     override fun calculateValue(): String {
         if (currentCombo == 0) return noHitMessage
