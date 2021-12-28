@@ -2,14 +2,6 @@
 EvergreenHUD addons are a unique feature to HUD mods. It allows
 users to add extra elements that may not fit in the base mod.
 
-## Addons for Users
-You may be wondering how you can use an already-made addon. It is super
-easy! Just add the .jar to your usual fabric mods folder
-(usually located at `.minecraft/mods`)
-
-On startup, EvergreenHUD will automatically detect and load the addon
-and your elements will be available to use.
-
 ## Addons for Developers
 If you are looking to create an addon yourself, you have come to the
 right place. It's super easy!
@@ -33,6 +25,7 @@ repositories {
     maven { url = 'https://jitpack.io' }
 }
 ```
+
 Next, you need Kotlin + KSP gradle plugins
 **(this is still required if you are using Java)**
 
@@ -40,15 +33,15 @@ _Gradle Kotlin DS (build.gradle.kts)_
 ```kotlin
 plugins {
     kotlin("jvm") version "1.6.10" // use latest
-    id("com.google.devtools.ksp") version "1.6.10-1.0.2" // use latest matching kotlin version
+    id("com.google.devtools.ksp") version "1.6.10-1.0.+" // use latest matching kotlin version
 }
 ```
 
 _Gradle Groovy (build.gradle)_
 ```groovy
 plugins {
-    id 'org.jetbrains.kotlin.jvm' version "1.6.10" // use latest kotlin version
-    id 'com.google.devtools.ksp' version "1.6.10-1.0.2" // use latest matching kotlin version
+    id 'org.jetbrains.kotlin.jvm' version '1.6.10' // use latest kotlin version
+    id 'com.google.devtools.ksp' version '1.6.10-1.0.+' // use latest matching kotlin version
 }
 ```
 
@@ -59,7 +52,7 @@ Now we need a few dependencies
 
 _Gradle Kotlin DSL (build.gradle.kts)_
 ```kotlin
-val evergreenVersion = "2.0.0" // you can store this however you want
+val evergreenVersion = "2.0.+" // you can store this however you want
 
 ksp("dev.isxander.evergreenhud:processor:$evergreenVersion")
 modImplementation("dev.isxander:evergreenhud:$evergreenVersion")
@@ -67,7 +60,7 @@ modImplementation("dev.isxander:evergreenhud:$evergreenVersion")
 
 _Gradle Groovy (build.gradle)_
 ```groovy
-def evergreenVersion = '2.0.0' // you can store this however you want
+def evergreenVersion = '2.0.+' // you can store this however you want
 
 ksp "dev.isxander.evergreenhud:processor:$evergreenVersion"
 modImplementation "dev.isxander:evergreenhud:$evergreenVersion"
@@ -78,11 +71,9 @@ Now we need to let the Fabric Loader know that we require
 EvergreenHUD as a dependency.
 
 _(fabric.mod.json)_
-```json5
-{
-  "depends": {
-    "evergreenhud": "2.0.x"
-  }
+```json
+"depends": {
+  "evergreenhud": "2.0.x"
 }
 ```
 
@@ -211,7 +202,7 @@ Settxi is a delegate orientated settings library. Delegates are a kotlin feature
 meaning that it's about to get a bit rough for Java users.
 
 We want the user to be able to decide what is displayed rather than our `"Sample Text"`,
-so lets add a setting!
+so let's add a setting!
 
 _Kotlin_
 ```kotlin

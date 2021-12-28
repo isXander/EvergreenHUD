@@ -12,6 +12,7 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.config.global.GlobalConfig
 import dev.isxander.evergreenhud.config.element.ElementConfig
 import dev.isxander.evergreenhud.event.EventListener
+import dev.isxander.evergreenhud.utils.decode
 import dev.isxander.evergreenhud.utils.elementmeta.ElementListJson
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.json
@@ -28,6 +29,7 @@ import net.minecraft.client.world.ClientWorld
 import java.io.InputStream
 import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
+import kotlin.reflect.KParameter
 import kotlin.reflect.full.createInstance
 
 class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
@@ -96,16 +98,29 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
         var i = 0
         for (element in elements) {
             val meta = element.metadata
-
             @Suppress("UNCHECKED_CAST")
-            availableElements[Class.forName(element.`class`).kotlin as KClass<out Element>] =
+            val elementClass = Class.forName(element.`class`).kotlin as KClass<out Element>
+
+            // TODO: make this not a runtime check if possible
+            if (elementClass.constructors.none { it.parameters.all(KParameter::isOptional) }) {
+                logger.warn("$name: ${elementClass.qualifiedName!!} does not have a constructor with no arguments. Cannot register!")
+                continue
+            }
+
+            if (availableElements.containsKey(elementClass)) {
+                val existing = availableElements[elementClass]!!
+                logger.warn("Identical element ID ${existing.id} was attempted to be registered on classes ${elementClass.qualifiedName} and ${getElementClass(existing.id)?.qualifiedName}. Cannot register!")
+                continue
+            }
+
+            availableElements[elementClass] =
                 ElementMeta(
-                    meta["id"]!!.jsonPrimitive.content,
-                    meta["name"]!!.jsonPrimitive.content,
-                    meta["category"]!!.jsonPrimitive.content,
-                    meta["description"]!!.jsonPrimitive.content,
-                    meta["credits"]!!.jsonPrimitive.content,
-                    meta["maxInstances"]!!.jsonPrimitive.int,
+                    meta.decode<String>("id")!!,
+                    meta.decode<String>("name")!!,
+                    meta.decode<String>("category")!!,
+                    meta.decode<String>("description")!!,
+                    meta.decode<String>("credits")!!,
+                    meta.decode<Int>("maxInstances")!!,
                 )
 
             i++
@@ -115,10 +130,7 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
     }
 
     fun getElementClass(id: String): KClass<out Element>? {
-        for ((clazz, metadata) in availableElements) {
-            if (metadata.id == id) return clazz
-        }
-        return null
+        return availableElements.entries.find { (_, metadata) -> metadata.id == id }?.key
     }
 
     /**
