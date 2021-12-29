@@ -12,7 +12,7 @@ apply(plugin = "org.jetbrains.kotlin.plugin.serialization")
 val implementation by configurations
 
 dependencies {
-    implementation("com.google.devtools.ksp:symbol-processing-api:1.6.0-1.0.2")
+    implementation("com.google.devtools.ksp:symbol-processing-api:1.6.10-1.0.2")
     implementation(kotlin("stdlib-jdk8"))
     implementation(project(":utils"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
