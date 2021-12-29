@@ -21,6 +21,12 @@
         "adapter": "kotlin",
         "value": "dev.isxander.evergreenhud.EvergreenHUD"
       }
+    ],
+    "modmenu": [
+      {
+        "adapter": "kotlin",
+        "value": "dev.isxander.evergreenhud.integrations.ModMenuEntrypoint"
+      }
     ]
   },
   "mixins": [
@@ -36,8 +42,5 @@
   },
   "suggests": {
     "modmenu": ">=3.0.0"
-  },
-  "modmenu": {
-    "badges": ["client"]
   }
 }

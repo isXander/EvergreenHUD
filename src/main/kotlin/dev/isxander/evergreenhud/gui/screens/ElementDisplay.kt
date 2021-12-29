@@ -17,7 +17,7 @@ import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.math.MatrixStack
 
-open class ElementDisplay : Screen(textLiteral("EvergreenHUD")) {
+open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Screen(textLiteral("EvergreenHUD")) {
     protected var renderElements = true
 
     protected var dragging: Element? = null
@@ -44,6 +44,7 @@ open class ElementDisplay : Screen(textLiteral("EvergreenHUD")) {
     }
 
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
+        renderBackground(matrices)
         renderElements(matrices, mouseX, mouseY, delta)
         super.render(matrices, mouseX, mouseY, delta)
     }
@@ -105,5 +106,9 @@ open class ElementDisplay : Screen(textLiteral("EvergreenHUD")) {
         offY = 0f
 
         return super.mouseReleased(mouseX, mouseY, button)
+    }
+
+    override fun onClose() {
+        client?.setScreen(parent)
     }
 }

@@ -28,6 +28,7 @@ repositories {
     maven(url = "https://maven.fabricmc.net")
     maven(url = "https://repo.sk1er.club/repository/maven-public")
     maven(url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
+    maven(url = "https://maven.terraformersmc.com/releases")
 }
 
 fun DependencyHandlerScope.includeApi(dep: Any) {
@@ -60,7 +61,9 @@ dependencies {
     modImplementation("net.fabricmc:fabric-loader:0.12.+")
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.45.0+1.18")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
+
     modImplementation("io.ejekta:kambrik:3.0.0-1.18")
+    modImplementation("com.terraformersmc:modmenu:3.0.1")
 }
 
 blossom {
