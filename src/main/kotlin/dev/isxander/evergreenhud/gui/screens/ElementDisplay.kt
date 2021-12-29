@@ -11,9 +11,8 @@ package dev.isxander.evergreenhud.gui.screens
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
-import dev.isxander.evergreenhud.gui.components.ElementOverlay
-import dev.isxander.evergreenhud.utils.scaledX
-import dev.isxander.evergreenhud.utils.scaledY
+import dev.isxander.evergreenhud.gui.components.PrecisionTexturedButtonWidget
+import dev.isxander.evergreenhud.utils.*
 import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.util.math.MatrixStack
@@ -26,17 +25,27 @@ open class ElementDisplay : Screen(textLiteral("EvergreenHUD")) {
     protected var offX = 0f
     protected var offY = 0f
 
-    private val overlays = EvergreenHUD.elementManager.currentElements.associateWith { ElementOverlay(it, this) }.toMutableMap()
-
     override fun init() {
-        for ((_, overlay) in overlays) {
-            addDrawableChild(overlay)
+        for (element in EvergreenHUD.elementManager) {
+            addDrawableChild(
+                PrecisionTexturedButtonWidget(
+                    { element.position.rawX },
+                    { element.position.rawY },
+                    18f, 18f,
+                    0f, 0f,
+                    resource("settings.png"),
+                    384f, 384f,
+                ) {
+                    logger.info("what is up guys")
+                    true
+                }
+            )
         }
     }
 
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
-        super.render(matrices, mouseX, mouseY, delta)
         renderElements(matrices, mouseX, mouseY, delta)
+        super.render(matrices, mouseX, mouseY, delta)
     }
 
     open fun renderElements(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
@@ -47,6 +56,11 @@ open class ElementDisplay : Screen(textLiteral("EvergreenHUD")) {
 
         for (element in EvergreenHUD.elementManager.currentElements) {
             element.render(matrices, RenderOrigin.GUI)
+
+            val hitbox = element.calculateHitBox(1f, element.position.scale)
+            val width = 0.5f
+
+            matrices.drawBorderLines(hitbox.x - width, hitbox.y - width, hitbox.x + hitbox.width, hitbox.y + hitbox.height, width, -1)
         }
 
         if (dragging != null) {

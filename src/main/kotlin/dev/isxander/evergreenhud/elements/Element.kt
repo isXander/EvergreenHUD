@@ -11,7 +11,6 @@ package dev.isxander.evergreenhud.elements
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.config.element.ElementSerializer
 import dev.isxander.evergreenhud.event.EventListener
-import dev.isxander.evergreenhud.gui.components.Positionable
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
@@ -26,7 +25,7 @@ import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.util.math.MatrixStack
 
 @Serializable(ElementSerializer::class)
-abstract class Element : EventListener, ConfigProcessor, Positionable<Float> {
+abstract class Element : EventListener, ConfigProcessor {
     var isAdded = false
         private set
 
@@ -37,9 +36,6 @@ abstract class Element : EventListener, ConfigProcessor, Positionable<Float> {
             x = 0.5f
             y = 0.5f
         }
-
-    override var x by position::rawX
-    override var y by position::rawY
 
     var scale by float(100f) {
         name = "Scale"
