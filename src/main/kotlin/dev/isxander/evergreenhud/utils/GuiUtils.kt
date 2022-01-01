@@ -26,7 +26,7 @@ fun drawString(matrices: MatrixStack, text: String, x: Float, y: Float, color: I
 }
 
 private fun drawCenteredString(matrices: MatrixStack, text: String, x: Float, y: Float, color: Int, shadow: Boolean, bordered: Boolean, chroma: Boolean, chromaSpeed: Float) {
-    drawString(matrices, text, x - (mc.textRenderer.getWidth(text) / 2f), y, color, shadow = shadow, bordered = bordered, chroma = chroma, chromaSpeed = chromaSpeed)
+    drawString(matrices, text, x - (mc.textRenderer.getWidth(text) / 2f), y, color, shadow = shadow, centered = false, bordered = bordered, chroma = chroma, chromaSpeed = chromaSpeed)
 }
 
 private fun drawBorderedString(matrices: MatrixStack, text: String, x: Float, y: Float, color: Int, chroma: Boolean, chromaSpeed: Float) {

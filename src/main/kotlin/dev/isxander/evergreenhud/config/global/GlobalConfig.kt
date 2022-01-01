@@ -48,6 +48,7 @@ class GlobalConfig(private val manager: ElementManager) {
         manager.settings.populateFromJson(data.settings)
     }
 
+    @Suppress("UNUSED_EXPRESSION", "UNREACHABLE_CODE")
     private fun attemptConversion(data: JsonObject): JsonObject? {
         val currentSchema = data.decode<Int>("schema") ?: 0
 
@@ -61,14 +62,6 @@ class GlobalConfig(private val manager: ElementManager) {
         while (convertedSchema != SCHEMA) {
             logger.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
             convertedData = when (convertedSchema) {
-                4 -> {
-                    JsonObject(
-                        mapOf(
-                            "schema" to JsonPrimitive(5),
-                            "settings" to convertedData["data"]!!,
-                        )
-                    )
-                }
                 else -> {
                     logger.error("Unknown schema conversion tactic v$convertedSchema -> v${convertedSchema + 1}")
                     break

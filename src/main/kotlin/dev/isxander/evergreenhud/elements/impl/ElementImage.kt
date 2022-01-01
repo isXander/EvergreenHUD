@@ -99,8 +99,8 @@ class ElementImage : BackgroundElement() {
 
         matrices.push()
         matrices.push()
-        val bgPivotX = hitbox.x + (hitbox.width / 2)
-        val bgPivotY = hitbox.y + (hitbox.height / 2)
+        val bgPivotX = hitbox.x1 + (hitbox.width / 2)
+        val bgPivotY = hitbox.y1 + (hitbox.height / 2)
         matrices.translate(bgPivotX, bgPivotY)
         matrices.multiply(Quaternion(Vec3f(0f, 0f, 1f), rotation, true))
         matrices.translate(-bgPivotX, -bgPivotY)

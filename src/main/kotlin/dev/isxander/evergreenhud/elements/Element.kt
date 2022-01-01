@@ -16,8 +16,7 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
-import dev.isxander.evergreenhud.utils.position.Position2D
-import dev.isxander.evergreenhud.utils.position.scaledPosition
+import dev.isxander.evergreenhud.utils.position.ZonedPosition
 import dev.isxander.settxi.serialization.ConfigProcessor
 import kotlinx.serialization.Serializable
 import net.fabricmc.loader.api.FabricLoader
@@ -31,11 +30,7 @@ abstract class Element : EventListener, ConfigProcessor {
 
     override val settings: MutableList<Setting<*>> = mutableListOf()
     val metadata: ElementMeta = EvergreenHUD.elementManager.availableElements[this::class]!!
-    var position: Position2D =
-        scaledPosition {
-            x = 0.5f
-            y = 0.5f
-        }
+    var position = ZonedPosition.scaledPositioning(0.5f, 0.5f)
 
     var scale by float(100f) {
         name = "Scale"
@@ -109,7 +104,7 @@ abstract class Element : EventListener, ConfigProcessor {
     }
 
     fun resetSettings(save: Boolean = false) {
-        position = Position2D.scaledPositioning(0.5f, 0.5f, 1f)
+        position = ZonedPosition.scaledPositioning(0.5f, 0.5f, 1f)
 
         for (s in settings) s.reset()
         if (save) EvergreenHUD.elementManager.elementConfig.save()

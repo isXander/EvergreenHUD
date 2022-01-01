@@ -8,13 +8,10 @@
 
 package dev.isxander.evergreenhud.utils
 
-data class HitBox2D(
-    val x: Float, val y: Float,
+class HitBox2D(
+    override val x1: Float, override val y1: Float,
     val width: Float, val height: Float
-) {
-    fun doesPositionOverlap(x: Float, y: Float): Boolean {
-        return x >= this.x && x <= this.x + width && y >= y && y <= y + height
-    }
-
-    fun doesPositionOverlap(hitbox: HitBox2D): Boolean = doesPositionOverlap(hitbox.x, hitbox.y)
+) : Rectangle {
+    override val x2 = x1 + width
+    override val y2 = y1 + height
 }

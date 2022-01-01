@@ -11,7 +11,9 @@ package dev.isxander.evergreenhud.utils
 import java.math.BigDecimal
 import java.math.RoundingMode
 import kotlin.math.ceil
+import kotlin.math.pow
 import kotlin.math.roundToInt
+import kotlin.math.sqrt
 
 /**
  * Linearly interpolates between a and b by t.
@@ -94,3 +96,6 @@ fun wrapAngleTo180(_value: Float): Float {
     }
     return value
 }
+
+fun dist(x1: Float, y1: Float, x2: Float, y2: Float): Float =
+    sqrt((x2 - x1).pow(2) + (y2 - y1).pow(2))

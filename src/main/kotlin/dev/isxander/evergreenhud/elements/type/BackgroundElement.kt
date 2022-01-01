@@ -100,10 +100,10 @@ abstract class BackgroundElement : Element() {
         val hitbox = calculateHitBox(1f, scale)
 
         if (backgroundColor.alpha > 0) {
-            matrices.fill(hitbox.x, hitbox.y, hitbox.x + hitbox.width, hitbox.y + hitbox.height, bgCol.rgb)
+            matrices.fill(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, bgCol.rgb)
         }
         if (outlineEnabled) {
-            matrices.drawBorderLines(hitbox.x, hitbox.y, hitbox.x + hitbox.width, hitbox.height, outlineThickness, outlineCol.rgb)
+            matrices.drawBorderLines(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.height, outlineThickness, outlineCol.rgb)
         }
     }
 

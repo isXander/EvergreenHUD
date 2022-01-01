@@ -11,13 +11,15 @@ package dev.isxander.evergreenhud
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.config.profile.ProfileManager
+import dev.isxander.evergreenhud.elements.impl.ElementCoordinates
+import dev.isxander.evergreenhud.elements.impl.ElementFps
 import dev.isxander.evergreenhud.event.EventBus
 import dev.isxander.evergreenhud.event.EventListener
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
 import dev.isxander.evergreenhud.gui.screens.BlacklistedScreen
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
-import dev.isxander.evergreenhud.gui.screens.PositionTest
 import dev.isxander.evergreenhud.gui.screens.UpdateScreen
+import dev.isxander.evergreenhud.gui.screens.test.PositionTest
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
@@ -80,7 +82,10 @@ object EvergreenHUD : ClientModInitializer {
         profileManager = ProfileManager().apply { load() }
         elementManager.apply {
             globalConfig.load()
-            elementConfig.load()
+
+            addElement(ElementFps())
+            addElement(ElementCoordinates().apply { position.scaledX = 0f })
+            elementConfig.save()
         }
 
         logger.info("Registering hooks...")
@@ -92,10 +97,8 @@ object EvergreenHUD : ClientModInitializer {
 
             if (FabricLoader.getInstance().isDevelopmentEnvironment) {
                 "test" {
-                    "position" {
-                        runs {
-                            GuiHandler.displayGui(PositionTest())
-                        }
+                    "position" runs {
+                        GuiHandler.displayGui(PositionTest())
                     }
                 }
             }

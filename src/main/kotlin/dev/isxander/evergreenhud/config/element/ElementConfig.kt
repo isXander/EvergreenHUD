@@ -47,6 +47,7 @@ class ElementConfig(private val manager: ElementManager) {
         manager.currentElements.addAll(data.elements)
     }
 
+    @Suppress("UNUSED_EXPRESSION", "UNREACHABLE_CODE")
     private fun attemptConversion(data: JsonObject): JsonObject? {
         val currentSchema = data.decode<Int>("schema") ?: 0
 
@@ -63,17 +64,6 @@ class ElementConfig(private val manager: ElementManager) {
         while (convertedSchema != SCHEMA) {
             logger.info("Converting element configuration v$convertedSchema -> v${convertedSchema + 1}")
             convertedData = when (convertedSchema) {
-                4 -> {
-                    val dataWrapper = convertedData.decode<JsonObject>("data")!!
-
-                    JsonObject(
-                        mapOf(
-                            "schema" to JsonPrimitive(5),
-                            "position" to dataWrapper["position"]!!,
-                            "settings" to dataWrapper["settings"]!!,
-                        )
-                    )
-                }
                 else -> {
                     logger.error("Unknown schema conversion tactic v$convertedSchema -> v${convertedSchema + 1}")
                     break

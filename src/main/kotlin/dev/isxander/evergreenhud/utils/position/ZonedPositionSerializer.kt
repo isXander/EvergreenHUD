@@ -12,28 +12,25 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
+import kotlinx.serialization.encoding.*
 import kotlinx.serialization.encoding.CompositeDecoder.Companion.DECODE_DONE
-import kotlinx.serialization.encoding.Decoder
-import kotlinx.serialization.encoding.Encoder
-import kotlinx.serialization.encoding.decodeStructure
-import kotlinx.serialization.encoding.encodeStructure
-import org.lwjgl.system.CallbackI
+import kotlinx.serialization.serializer
 
-class PositionSerializer : KSerializer<Position2D> {
+class ZonedPositionSerializer : KSerializer<ZonedPosition> {
     override val descriptor: SerialDescriptor =
         buildClassSerialDescriptor("position") {
             element<Float>("x")
             element<Float>("y")
             element<Float>("scale")
-            element<String>("origin")
+            element<ZonedPosition.Zone>("origin")
         }
 
-    override fun serialize(encoder: Encoder, value: Position2D) {
+    override fun serialize(encoder: Encoder, value: ZonedPosition) {
         encoder.encodeStructure(descriptor) {
             encodeFloatElement(descriptor, 0, value.scaledX)
             encodeFloatElement(descriptor, 1, value.scaledY)
             encodeFloatElement(descriptor, 2, value.scale)
-            encodeStringElement(descriptor, 3, value.origin.name)
+            encodeSerializableElement(descriptor, 3, serializer(), value.zone)
         }
     }
 
@@ -41,19 +38,19 @@ class PositionSerializer : KSerializer<Position2D> {
         var x = 0f
         var y = 0f
         var scale = 0f
-        lateinit var origin: Position2D.Origin
+        lateinit var zone: ZonedPosition.Zone
 
         while (true) {
             when (val index = decodeElementIndex(descriptor)) {
                 0 -> x = decodeFloatElement(descriptor, index)
                 1 -> y = decodeFloatElement(descriptor, index)
                 2 -> scale = decodeFloatElement(descriptor, index)
-                3 -> origin = decodeStringElement(descriptor, index).let { Position2D.Origin.valueOf(it) }
+                3 -> zone = decodeSerializableElement(descriptor, index, serializer())
                 DECODE_DONE -> break
                 else -> error("Unknown index: $index")
             }
         }
 
-        Position2D.scaledPositioning(x, y, scale, origin)
+        ZonedPosition.scaledPositioning(x, y, scale, zone)
     }
 }

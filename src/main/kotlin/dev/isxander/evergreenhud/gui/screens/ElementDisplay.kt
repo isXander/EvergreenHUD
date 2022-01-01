@@ -56,12 +56,13 @@ open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Scre
         val scaledMouseY = client!!.mouse.scaledY
 
         for (element in EvergreenHUD.elementManager.currentElements) {
+
             element.render(matrices, RenderOrigin.GUI)
 
             val hitbox = element.calculateHitBox(1f, element.position.scale)
             val width = 0.5f
 
-            matrices.drawBorderLines(hitbox.x - width, hitbox.y - width, hitbox.x + hitbox.width, hitbox.y + hitbox.height, width, -1)
+            matrices.drawBorderLines(hitbox.x1 - width, hitbox.y1 - width, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, width, -1)
         }
 
         if (dragging != null) {
@@ -78,7 +79,7 @@ open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Scre
 
         for (e in EvergreenHUD.elementManager.currentElements.reversed()) {
             // e.onMouseClicked()
-            if (e.calculateHitBox(1f, e.scale).doesPositionOverlap(mouseX.toFloat(), mouseY.toFloat())) {
+            if (e.calculateHitBox(1f, e.position.scale).overlaps(mouseX.toFloat(), mouseY.toFloat())) {
                 lastClicked = e
                 dragging = e
 
@@ -96,6 +97,7 @@ open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Scre
 
         if (clickedElement) return true
 
+        dragging = null
         lastClicked = null
         return super.mouseClicked(mouseX, mouseY, button)
     }
