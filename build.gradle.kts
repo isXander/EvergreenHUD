@@ -62,7 +62,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.45.0+1.18")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
 
-    modImplementation("io.ejekta:kambrik:3.0.0-1.18")
+    modImplementation("io.ejekta:kambrik:3.1.0-1.18")
     modImplementation("com.terraformersmc:modmenu:3.0.1")
 }
 
