@@ -1,14 +1,16 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.event.ClientTickEvent
+import dev.isxander.evergreenhud.event.ServerDamageEntityEvent
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.int
@@ -34,27 +36,23 @@ class ElementCombo : SimpleTextElement("Combo") {
     private var attackId = 0
     private var currentCombo = 0
 
+    val clientTickEvent by event<ClientTickEvent>({ System.currentTimeMillis() - hitTime >= discardTime * 1000L }) {
+        currentCombo = 0
+    }
+
+    val serverDamageEntityEvent by event<ServerDamageEntityEvent>({ it.attacker.id == mc.player?.id }) {
+        if (it.victim.id == attackId) {
+            currentCombo++
+        } else {
+            currentCombo = 1
+        }
+
+        hitTime = System.currentTimeMillis()
+        attackId = it.victim.id
+    }
+
     override fun calculateValue(): String {
         if (currentCombo == 0) return noHitMessage
         return currentCombo.toString()
-    }
-
-    override fun onClientTick() {
-        if (System.currentTimeMillis() - hitTime >= discardTime * 1000L) {
-            currentCombo = 0
-        }
-    }
-
-    override fun onServerDamageEntity(attacker: Entity, victim: Entity) {
-        if (attacker.id == mc.player?.id) {
-            if (victim.id == attackId) {
-                currentCombo++
-            } else {
-                currentCombo = 1
-            }
-
-            hitTime = System.currentTimeMillis()
-            attackId = victim.id
-        }
     }
 }

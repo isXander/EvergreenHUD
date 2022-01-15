@@ -1,9 +1,9 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.elements
@@ -11,7 +11,9 @@ package dev.isxander.evergreenhud.elements
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.config.global.GlobalConfig
 import dev.isxander.evergreenhud.config.element.ElementConfig
-import dev.isxander.evergreenhud.event.EventListener
+import dev.isxander.evergreenhud.event.ClientDisconnectEvent
+import dev.isxander.evergreenhud.event.ClientJoinWorldEvent
+import dev.isxander.evergreenhud.event.RenderHudEvent
 import dev.isxander.evergreenhud.utils.decode
 import dev.isxander.evergreenhud.utils.elementmeta.ElementListJson
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
@@ -22,8 +24,6 @@ import dev.isxander.evergreenhud.utils.logger
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.serialization.ConfigProcessor
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.int
-import kotlinx.serialization.json.jsonPrimitive
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
 import java.io.InputStream
@@ -32,7 +32,7 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.createInstance
 
-class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
+class ElementManager : ConfigProcessor, Iterable<Element> {
     val availableElements: MutableMap<KClass<out Element>, ElementMeta> = mutableMapOf()
     val currentElements: ArrayList<Element> = ArrayList()
 
@@ -75,8 +75,6 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
         } else {
             addSource(coreElementSrc, "core")
         }
-
-        EvergreenHUD.eventBus.register(this)
     }
 
     fun addElement(element: Element) {
@@ -142,25 +140,23 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
      */
     inline fun <reified T : Element> getNewElementInstance(id: String): T? = getElementClass(id)?.createInstance() as? T
 
-    override fun onRenderHud(matrices: MatrixStack, tickDelta: Float) {
-        if (!enabled) return
-
+    val renderHudEvent by EvergreenHUD.eventBus.register<RenderHudEvent>({ enabled }) {
         mc.profiler.push("EvergreenHUD Render")
 
         for (e in currentElements) {
             if (e.canRenderInHUD()) {
-                e.render(matrices, RenderOrigin.HUD)
+                e.render(it.matrices, RenderOrigin.HUD)
             }
         }
 
         mc.profiler.pop()
     }
 
-    override fun onClientJoinWorld(world: ClientWorld) {
+    val clientJoinWorldEvent by EvergreenHUD.eventBus.register<ClientJoinWorldEvent> {
         currentElements.forEach(Element::onAdded)
     }
 
-    override fun onClientDisconnect() {
+    val clientDisconnectEvent by EvergreenHUD.eventBus.register<ClientDisconnectEvent> {
         currentElements.forEach(Element::onRemoved)
     }
 
@@ -168,5 +164,4 @@ class ElementManager : ConfigProcessor, EventListener, Iterable<Element> {
         get() = mc.world != null
 
     override fun iterator(): Iterator<Element> = currentElements.iterator()
-
 }

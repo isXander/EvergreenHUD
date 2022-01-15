@@ -1,9 +1,9 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.elements.impl
@@ -68,11 +68,12 @@ class ElementSpeed : SimpleTextElement("Speed") {
         var speed = 0.0
 
         if (mc.player != null) {
-            val distTraveledLastTickX = if (useX) mc.player!!.x - mc.player!!.prevX else 0.0
-            val distTraveledLastTickY = if (useY) mc.player!!.y - mc.player!!.prevY else 0.0
-            val distTraveledLastTickZ = if (useZ) mc.player!!.z - mc.player!!.prevZ else 0.0
+            val dx = if (useX) mc.player!!.x - mc.player!!.prevX else 0.0
+            val dy = if (useY) mc.player!!.y - mc.player!!.prevY else 0.0
+            val dz = if (useZ) mc.player!!.z - mc.player!!.prevZ else 0.0
 
-            speed = convertSpeed(sqrt(distTraveledLastTickX.pow(2) + distTraveledLastTickY.pow(2) + distTraveledLastTickZ.pow(2)))
+            // I usually don't leave out whitespaces, but in this case it greatly improved readability
+            speed = convertSpeed(sqrt(dx*dx + dy*dy + dz*dz))
         }
 
         val format = if (trailingZeros) "0" else "#"

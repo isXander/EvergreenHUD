@@ -1,9 +1,9 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 plugins {
@@ -59,10 +59,12 @@ dependencies {
     minecraft("com.mojang:minecraft:1.18.1")
     mappings("net.fabricmc:yarn:1.18.1+build.+:v2")
     modImplementation("net.fabricmc:fabric-loader:0.12.+")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.45.0+1.18")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.46.0+1.18")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
 
-    modImplementation("io.ejekta:kambrik:3.0.0-1.18")
+    modImplementation("io.ejekta:kambrik:3.1.0-1.18")
+    includeModApi("gg.essential:elementa-1.18-fabric:414")
+
     modImplementation("com.terraformersmc:modmenu:3.0.1")
 }
 

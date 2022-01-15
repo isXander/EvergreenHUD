@@ -1,9 +1,9 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.gui.screens
@@ -11,7 +11,6 @@ package dev.isxander.evergreenhud.gui.screens
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
-import dev.isxander.evergreenhud.gui.components.PrecisionTexturedButtonWidget
 import dev.isxander.evergreenhud.utils.*
 import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.gui.screen.Screen
@@ -24,24 +23,6 @@ open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Scre
     protected var lastClicked: Element? = null
     protected var offX = 0f
     protected var offY = 0f
-
-    override fun init() {
-        for (element in EvergreenHUD.elementManager) {
-            addDrawableChild(
-                PrecisionTexturedButtonWidget(
-                    { element.position.rawX },
-                    { element.position.rawY },
-                    18f, 18f,
-                    0f, 0f,
-                    resource("settings.png"),
-                    384f, 384f,
-                ) {
-                    logger.info("what is up guys")
-                    true
-                }
-            )
-        }
-    }
 
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         renderBackground(matrices)

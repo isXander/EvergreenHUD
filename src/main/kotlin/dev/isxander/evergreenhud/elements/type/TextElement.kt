@@ -1,14 +1,15 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.elements.type
 
 import dev.isxander.settxi.impl.*
+import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.utils.HitBox2D
 import java.awt.Color
 
@@ -65,11 +66,17 @@ abstract class TextElement
         description = "How many client ticks to wait before re-calculating the value. (20 ticks = 1 second)"
         range = 0..20
     }
+
+    private val clientTickEvent by event<ClientTickEvent> {
+        clientTicks++
+        if (clientTicks > cacheTime)
+            clientTicks = 0
+    }
     var clientTicks = 0
 
     override fun calculateHitBox(glScale: Float, drawScale: Float): HitBox2D {
-        val width = hitboxWidth * drawScale
-        val height = hitboxHeight * drawScale
+        val width = hitboxWidth.coerceAtLeast(minWidth) * drawScale
+        val height = hitboxHeight.coerceAtLeast(minHeight) * drawScale
 
         val top = paddingTop * drawScale
         val bottom = paddingBottom * drawScale
@@ -85,12 +92,6 @@ abstract class TextElement
             Alignment.CENTER -> HitBox2D(x - (width / 2f) - left, y - top, width + left + right, height + top + bottom)
             else -> throw IllegalStateException("Failed to parse alignment.")
         }
-    }
-
-    override fun onClientTick() {
-        clientTicks++
-        if (clientTicks > cacheTime)
-            clientTicks = 0
     }
 
     object TextStyle : OptionContainer() {

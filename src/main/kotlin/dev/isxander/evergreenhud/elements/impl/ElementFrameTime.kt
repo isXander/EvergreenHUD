@@ -16,8 +16,8 @@ import dev.isxander.settxi.impl.option
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-@ElementMeta(id = "FPS", name = "FPS Display", category = "Simple", description = "Display how many times your screen is updating every second.")
-class ElementFps : SimpleTextElement("FPS") {
+@ElementMeta(id = "FRAME_TIME", name = "Frame Time", category = "Simple", description = "Display how long it took to render the current frame.")
+class ElementFrameTime : SimpleTextElement("Frame Time") {
     var averageMethod by option(AverageMethod.Mean) {
         name = "Average Method"
         description = "Method in which to calculate the average FPS."
@@ -28,9 +28,9 @@ class ElementFps : SimpleTextElement("FPS") {
 
     override fun calculateValue(): String {
         // converts average to FPS
-        val fps = (1000 / (average(frameTimes).takeUnless { it.isNaN() } ?: 1.0)).roundToInt().toString()
+        val frameTime = (average(frameTimes).takeUnless { it.isNaN() } ?: 1.0).roundToInt()
         frameTimes.clear()
-        return fps
+        return frameTime.toString() + "ms"
     }
 
     private fun average(list: List<Double>): Double = when (averageMethod) {

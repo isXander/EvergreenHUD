@@ -1,9 +1,9 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.elements.impl
@@ -66,8 +66,8 @@ class ElementCoordinates : MultiLineTextElement("Coords") {
         description = "Match the accuracy using zeros."
     }
 
-    override fun calculateValue(): ArrayList<String> {
-        val lines = arrayListOf<String>()
+    override fun calculateValue(): MutableList<String> {
+        val lines = mutableListOf<String>()
         if (mc.player == null) {
             lines.add("Unknown")
             return lines

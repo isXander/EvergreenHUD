@@ -1,14 +1,15 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.event.RenderTickEvent
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
@@ -30,16 +31,7 @@ class ElementCps : SimpleTextElement("CPS") {
     private val right = ArrayDeque<Long>()
     private var rightPressed = false
 
-    override fun calculateValue(): String {
-        return when (button) {
-            MouseButton.LEFT -> left.size.toString()
-            MouseButton.RIGHT -> right.size.toString()
-            MouseButton.BOTH -> "${left.size} | ${right.size}"
-            else -> throw IllegalStateException()
-        }
-    }
-
-    override fun onRenderTick(matrices: MatrixStack, tickDelta: Float) {
+    val renderTickEvent by event<RenderTickEvent> {
         var pressed = GLFW.glfwGetMouseButton(mc.window.handle, 0) == GLFW.GLFW_PRESS
 
         if (pressed != leftPressed) {
@@ -66,6 +58,15 @@ class ElementCps : SimpleTextElement("CPS") {
                 right.removeFirst()
                 if (right.isEmpty()) break
             }
+        }
+    }
+
+    override fun calculateValue(): String {
+        return when (button) {
+            MouseButton.LEFT -> left.size.toString()
+            MouseButton.RIGHT -> right.size.toString()
+            MouseButton.BOTH -> "${left.size} | ${right.size}"
+            else -> throw IllegalStateException()
         }
     }
 

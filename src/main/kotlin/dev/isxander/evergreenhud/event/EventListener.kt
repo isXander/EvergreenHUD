@@ -1,31 +1,22 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.event
 
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.client.world.ClientWorld
-import net.minecraft.entity.Entity
-import net.minecraft.entity.player.PlayerEntity
-import net.minecraft.network.Packet
-import net.minecraft.network.listener.PacketListener
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
-interface EventListener {
-    fun onClientTick() {}
+class EventListener<T, R : Any>(var cached: R? = null, private val predicate: (T) -> Boolean, private val executor: (T) -> R) : ReadOnlyProperty<Any?, R> {
+    fun onEvent(event: T) {
+        if (predicate(event)) {
+            cached = executor(event)
+        }
+    }
 
-    fun onRenderHud(matrices: MatrixStack, tickDelta: Float) {}
-    fun onRenderTick(matrices: MatrixStack, tickDelta: Float) {}
-
-    fun onClientDamageEntity(attacker: PlayerEntity, victim: Entity) {}
-    fun onServerDamageEntity(attacker: Entity, victim: Entity) {}
-
-    fun <T : PacketListener> onHandlePacket(packet: Packet<T>) {}
-
-    fun onClientJoinWorld(world: ClientWorld) {}
-    fun onClientDisconnect() {}
+    override fun getValue(thisRef: Any?, property: KProperty<*>): R = cached!!
 }

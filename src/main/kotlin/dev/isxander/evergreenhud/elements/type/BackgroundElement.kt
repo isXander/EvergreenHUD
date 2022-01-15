@@ -1,9 +1,9 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.elements.type
@@ -85,6 +85,20 @@ abstract class BackgroundElement : Element() {
         range = 0f..12f
     }
 
+    var minWidth by float(0f) {
+        name = "Minimum Width"
+        category = "Background"
+        description = "The minimum width of the background."
+        range = 0f..20f
+    }
+
+    var minHeight by float(0f) {
+        name = "Minimum Height"
+        category = "Background"
+        description = "The minimum height of the background."
+        range = 0f..20f
+    }
+
     var cornerRadius by float(0f) {
         name = "Corner Radius"
         category = "Background"
@@ -108,8 +122,8 @@ abstract class BackgroundElement : Element() {
     }
 
     override fun calculateHitBox(glScale: Float, drawScale: Float): HitBox2D {
-        val width = hitboxWidth * drawScale
-        val height = hitboxHeight * drawScale
+        val width = hitboxWidth.coerceAtLeast(minWidth) * drawScale
+        val height = hitboxHeight.coerceAtLeast(minHeight) * drawScale
 
         val top = paddingTop * drawScale
         val bottom = paddingBottom * drawScale

@@ -1,14 +1,15 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.elements.type
 
 import dev.isxander.evergreenhud.elements.RenderOrigin
+import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.utils.drawString
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.int
@@ -25,10 +26,11 @@ abstract class MultiLineTextElement
         range = 0..5
     }
 
-    var cachedDisplayString: ArrayList<String> = arrayListOf("Calculating...")
-        private set
+    val cachedDisplayString by eventReturnable<ClientTickEvent, MutableList<String>>(mutableListOf("Calculating..."), { clientTicks == 0 }) {
+        displayString
+    }
 
-    private val displayString: ArrayList<String>
+    private val displayString: MutableList<String>
         get() {
             val value = calculateValue()
             if (brackets) value.replaceAll { line: String -> "[$line]" }
@@ -39,7 +41,7 @@ abstract class MultiLineTextElement
             return value
         }
 
-    protected abstract fun calculateValue(): ArrayList<String>
+    protected abstract fun calculateValue(): MutableList<String>
 
     override val hitboxWidth: Float
         get() {
@@ -61,7 +63,7 @@ abstract class MultiLineTextElement
 
         for ((i, line) in cachedDisplayString.withIndex()) {
             val posX = x - (if (alignment == Alignment.RIGHT) mc.textRenderer.getWidth(line) else 0)
-            val posY = (y / position.scale) + (mc.textRenderer.fontHeight * i) + (verticalSpacing * i)
+            val posY = y + (mc.textRenderer.fontHeight * i) + (verticalSpacing * i)
 
             drawString(
                 matrices,
@@ -76,10 +78,5 @@ abstract class MultiLineTextElement
         }
 
         matrices.pop()
-    }
-
-    override fun onClientTick() {
-        if (clientTicks == 0) cachedDisplayString = displayString
-        super.onClientTick()
     }
 }

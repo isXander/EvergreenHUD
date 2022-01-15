@@ -1,14 +1,15 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.elements.type
 
 import dev.isxander.evergreenhud.elements.RenderOrigin
+import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.evergreenhud.utils.drawString
 import dev.isxander.evergreenhud.utils.mc
@@ -24,8 +25,9 @@ abstract class SimpleTextElement
         description = "Where to display the title."
     }
 
-    var cachedDisplayString: String = "Calculating..."
-        private set
+    val cachedDisplayString by eventReturnable<ClientTickEvent, String>("Calculating...", { clientTicks == 0 }) {
+        displayString
+    }
 
     protected abstract fun calculateValue(): String
 
@@ -80,12 +82,6 @@ abstract class SimpleTextElement
         )
 
         matrices.pop()
-    }
-
-    override fun onClientTick() {
-        if (clientTicks == 0) cachedDisplayString = displayString
-
-        super.onClientTick()
     }
 
     object TitleLocation : OptionContainer() {

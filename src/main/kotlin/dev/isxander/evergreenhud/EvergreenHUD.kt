@@ -1,9 +1,9 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud
@@ -11,10 +11,10 @@ package dev.isxander.evergreenhud
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.config.profile.ProfileManager
-import dev.isxander.evergreenhud.elements.impl.ElementCoordinates
-import dev.isxander.evergreenhud.elements.impl.ElementFps
+import dev.isxander.evergreenhud.elements.Element
+import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.EventBus
-import dev.isxander.evergreenhud.event.EventListener
+import dev.isxander.evergreenhud.event.RenderHudEvent
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
 import dev.isxander.evergreenhud.gui.screens.BlacklistedScreen
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
@@ -28,6 +28,7 @@ import io.ejekta.kambrik.text.textLiteral
 import kotlinx.coroutines.runBlocking
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.fabricmc.loader.api.FabricLoader
 import org.bundleproject.libversion.Version
 import org.lwjgl.glfw.GLFW
@@ -46,7 +47,7 @@ object EvergreenHUD : ClientModInitializer {
             else ReleaseChannel.BETA
 
     val dataDir: File = File(mc.runDirectory, "evergreenhud")
-    val eventBus = EventBus<EventListener>()
+    val eventBus = EventBus()
 
     lateinit var profileManager: ProfileManager private set
     lateinit var elementManager: ElementManager private set
@@ -83,8 +84,12 @@ object EvergreenHUD : ClientModInitializer {
         elementManager.apply {
             globalConfig.load()
 
-            addElement(ElementFps())
-            addElement(ElementCoordinates().apply { position.scaledX = 0f })
+            for ((elementClass, meta) in availableElements) {
+                getNewElementInstance<Element>(meta.id)?.let {
+                    it.position.scale = 2f
+                    addElement(it)
+                }
+            }
             elementConfig.save()
         }
 
@@ -164,9 +169,13 @@ object EvergreenHUD : ClientModInitializer {
 
     private fun registerEvents() {
         ClientTickEvents.END_CLIENT_TICK.register {
-            eventBus.post { onClientTick() }
+            eventBus.post(ClientTickEvent())
         }
 
-        eventBus.register(ServerDamageEntityEventManager())
+        HudRenderCallback.EVENT.register { matrices, tickDelta ->
+            eventBus.post(RenderHudEvent(matrices, tickDelta))
+        }
+
+        ServerDamageEntityEventManager(eventBus)
     }
 }

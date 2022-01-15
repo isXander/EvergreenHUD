@@ -9,7 +9,7 @@
     "AccessorKeyBindingRegistryImpl",
     "MixinClientConnection",
     "MixinClientPlayerEntity",
-    "MixinInGameHud",
+    "MixinClientPlayerInteractionManager",
     "MixinMinecraftClient",
     "MixinPlayerEntity",
     "MixinTitleScreen"

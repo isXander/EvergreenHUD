@@ -1,15 +1,16 @@
 /*
  * EvergreenHUD - A mod to improve your heads-up-display.
- * Copyright (c) isXander [2019 - 2021].
+ * Copyright (c) isXander [2019 - 2022].
  *
- * This work is licensed under the CC BY-NC-SA 4.0 License.
- * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-sa/4.0
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
 package dev.isxander.evergreenhud.elements
 
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.config.element.ElementSerializer
+import dev.isxander.evergreenhud.event.Event
 import dev.isxander.evergreenhud.event.EventListener
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
 import dev.isxander.settxi.Setting
@@ -24,7 +25,7 @@ import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.util.math.MatrixStack
 
 @Serializable(ElementSerializer::class)
-abstract class Element : EventListener, ConfigProcessor {
+abstract class Element : ConfigProcessor {
     var isAdded = false
         private set
 
@@ -74,12 +75,10 @@ abstract class Element : EventListener, ConfigProcessor {
 
     /* called when element is added */
     open fun onAdded() {
-        eventBus.register(this)
         isAdded = true
     }
     /* called when element is removed */
     open fun onRemoved() {
-        eventBus.unregister(this)
         utilities.unregisterAllForObject(this)
         isAdded = false
     }
@@ -108,6 +107,14 @@ abstract class Element : EventListener, ConfigProcessor {
 
         for (s in settings) s.reset()
         if (save) EvergreenHUD.elementManager.elementConfig.save()
+    }
+
+    protected inline fun <reified T : Event> event(noinline predicate: (T) -> Boolean = { true }, noinline executor: (T) -> Unit): EventListener<T, Unit> {
+        return eventBus.register({ isAdded && predicate(it) }, executor)
+    }
+
+    protected inline fun <reified T : Event, R : Any> eventReturnable(defaultCache: R? = null, noinline predicate: (T) -> Boolean = { true }, noinline executor: (T) -> R): EventListener<T, R> {
+        return eventBus.registerReturnable(defaultCache, { isAdded && predicate(it) }, executor)
     }
 
     companion object {
