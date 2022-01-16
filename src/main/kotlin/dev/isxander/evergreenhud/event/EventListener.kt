@@ -18,5 +18,6 @@ class EventListener<T, R : Any>(var cached: R? = null, private val predicate: (T
         }
     }
 
-    override fun getValue(thisRef: Any?, property: KProperty<*>): R = cached!!
+    fun get(): R = cached!!
+    override fun getValue(thisRef: Any?, property: KProperty<*>): R = get()
 }

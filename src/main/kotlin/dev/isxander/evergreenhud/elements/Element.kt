@@ -29,8 +29,8 @@ abstract class Element : ConfigProcessor {
     var isAdded = false
         private set
 
-    override val settings: MutableList<Setting<*>> = mutableListOf()
-    val metadata: ElementMeta = EvergreenHUD.elementManager.availableElements[this::class]!!
+    override val settings = mutableListOf<Setting<*>>()
+    val metadata = EvergreenHUD.elementManager.availableElements[this::class]!!
     var position = ZonedPosition.scaledPositioning(0.5f, 0.5f)
 
     var scale by float(100f) {

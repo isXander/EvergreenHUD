@@ -247,6 +247,37 @@ with the properties you can see above. This setting is automatically registered.
 Make sure to give each setting a unique name if in the same category so EvergreenHUD
 doesn't get confused when deserializing.
 
+#### Using the Event Bus
+
+A custom event bus is used because I didn't feel like any existing library really
+captures the modularity that EvergreenHUD demands.
+
+With this event bus, you can:
+* specify the predicate to call the event
+* specify return values
+
+_Kotlin_
+```kotlin
+@ElementMeta(id = "MY_ADDON_TEXT_ELEMENT", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
+class ElementText : SimpleTextElement("Your Text") {
+    // delegated return is Unit, so we don't technically need to delegate it
+    val clientTickEvent by event<ClientTickEvent>(predicate = { /* true by default */ true }) {
+        /* my amazing code! */
+    }
+
+    val cachedFunction by eventReturnable<ClientTickEvent, Float> {
+        myReallyComplicatedFunction()
+    }
+
+    override fun calculateValue(): String {
+        return cachedFunction
+    }
+}
+```
+
+_Java_
+not supported yet!
+
 #### Other Features
 
 EvergreenHUD caches calculated values for a certain amount of ticks. You can configure
