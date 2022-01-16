@@ -21,7 +21,7 @@ import gg.essential.elementa.dsl.*
  */
 class ArrowComponent : UIComponent() {
     init {
-        UIImage.ofResource("assets/evergreenhud/textures/arrow.png").constrain {
+        UIImage.ofResource("/assets/evergreenhud/textures/arrow.png").constrain {
             width = RelativeConstraint()
             height = RelativeConstraint()
         } childOf this
