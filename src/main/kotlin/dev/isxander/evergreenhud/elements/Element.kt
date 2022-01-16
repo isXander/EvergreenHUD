@@ -12,7 +12,7 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.config.element.ElementSerializer
 import dev.isxander.evergreenhud.event.Event
 import dev.isxander.evergreenhud.event.EventListener
-import dev.isxander.evergreenhud.gui.screens.ElementDisplay
+import dev.isxander.evergreenhud.gui.screens.ElementConfigurationMenu
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.*
@@ -92,7 +92,7 @@ abstract class Element : ConfigProcessor {
     open fun canRenderInHUD(): Boolean {
         val inChat = mc.currentScreen is ChatScreen
         val inDebug = mc.options.debugEnabled
-        val inGui = mc.currentScreen != null && mc.currentScreen !is ElementDisplay && !inChat
+        val inGui = mc.currentScreen != null && mc.currentScreen !is ElementConfigurationMenu && !inChat
         val inReplayViewer = FabricLoader.getInstance().isModLoaded("replaymod") && mc.world != null && !mc.isInSingleplayer && mc.currentServerEntry == null && !mc.isConnectedToRealms
 
         return (mc.mouse.isCursorLocked && !inDebug)

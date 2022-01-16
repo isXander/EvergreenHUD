@@ -10,10 +10,10 @@ package dev.isxander.evergreenhud.integrations
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory
 import com.terraformersmc.modmenu.api.ModMenuApi
-import dev.isxander.evergreenhud.gui.screens.ElementDisplay
+import dev.isxander.evergreenhud.gui.screens.ElementConfigurationMenu
 
 object ModMenuEntrypoint : ModMenuApi {
     override fun getModConfigScreenFactory(): ConfigScreenFactory<*> {
-        return ConfigScreenFactory { parent -> ElementDisplay(parent) }
+        return ConfigScreenFactory { ElementConfigurationMenu() }
     }
 }

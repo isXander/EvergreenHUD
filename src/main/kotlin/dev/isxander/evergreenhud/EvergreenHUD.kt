@@ -16,10 +16,7 @@ import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.EventBus
 import dev.isxander.evergreenhud.event.RenderHudEvent
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
-import dev.isxander.evergreenhud.gui.screens.BlacklistedScreen
-import dev.isxander.evergreenhud.gui.screens.ElementDisplay
-import dev.isxander.evergreenhud.gui.screens.UpdateScreen
-import dev.isxander.evergreenhud.gui.screens.test.PositionTest
+import dev.isxander.evergreenhud.gui.screens.ElementConfigurationMenu
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
@@ -97,16 +94,16 @@ object EvergreenHUD : ClientModInitializer {
 
         Kambrik.Command.addClientCommand("evergreenhud") {
             runs {
-                GuiHandler.displayGui(ElementDisplay())
+                GuiHandler.displayGui(ElementConfigurationMenu())
             }
 
-            if (FabricLoader.getInstance().isDevelopmentEnvironment) {
+            /*if (FabricLoader.getInstance().isDevelopmentEnvironment) {
                 "test" {
                     "position" runs {
                         GuiHandler.displayGui(PositionTest())
                     }
                 }
-            }
+            }*/
         }
 
         Kambrik.Input.registerKeyboardBinding(
@@ -115,7 +112,7 @@ object EvergreenHUD : ClientModInitializer {
             keyCategory = "evergreenhud.keycategory"
         ) {
             onDown {
-                mc.setScreen(ElementDisplay())
+                mc.setScreen(ElementConfigurationMenu())
             }
         }
 
@@ -150,12 +147,12 @@ object EvergreenHUD : ClientModInitializer {
                         val latest = response.latest[RELEASE_CHANNEL]!!
                         if (elementManager.checkForUpdates && latest < VERSION) {
                             logger.info("Found update.")
-                            mc.setScreen(UpdateScreen(latest.toString(), mc.currentScreen))
+                            //mc.setScreen(UpdateScreen(latest.toString(), mc.currentScreen))
                         }
 
                         if (elementManager.checkForSafety && REVISION in response.blacklisted) {
                             logger.info("Mod version has been marked as dangerous.")
-                            mc.setScreen(BlacklistedScreen(mc.currentScreen))
+                            //mc.setScreen(BlacklistedScreen(mc.currentScreen))
                         }
                     }
                 }
