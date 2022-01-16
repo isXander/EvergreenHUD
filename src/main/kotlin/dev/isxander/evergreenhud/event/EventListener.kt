@@ -9,9 +9,10 @@
 package dev.isxander.evergreenhud.event
 
 import kotlin.properties.ReadOnlyProperty
+import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-class EventListener<T, R : Any>(var cached: R? = null, private val predicate: (T) -> Boolean, private val executor: (T) -> R) : ReadOnlyProperty<Any?, R> {
+class EventListener<T, R : Any>(var cached: R? = null, private val predicate: (T) -> Boolean, private val executor: (T) -> R) : ReadWriteProperty<Any?, R> {
     fun onEvent(event: T) {
         if (predicate(event)) {
             cached = executor(event)
@@ -19,5 +20,8 @@ class EventListener<T, R : Any>(var cached: R? = null, private val predicate: (T
     }
 
     fun get(): R = cached!!
+    fun set(value: R) { cached = value }
+
     override fun getValue(thisRef: Any?, property: KProperty<*>): R = get()
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: R) = set(value)
 }
