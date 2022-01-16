@@ -11,16 +11,15 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement
+import dev.isxander.evergreenhud.settings.color
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.settxi.impl.*
 import io.ejekta.kambrik.ext.math.scale
 import io.ejekta.kambrik.text.textLiteral
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRenderer
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
-import java.awt.Color
 
 @ElementMeta(id = "ARMOUR_HUD", name = "Armour HUD", description = "Displays the player's currently equipped armour.", category = "Player")
 class ElementArmourHUD : BackgroundElement() {
@@ -81,19 +80,7 @@ class ElementArmourHUD : BackgroundElement() {
         name = "Color"
         category = "Text"
         description = "The color of the text."
-    }
-    var chroma by boolean(false) {
-        name = "Chroma"
-        category = "Text"
-        description = "Makes the text rainbow barf."
-    }
-    var chromaSpeed by int(2000) {
-        name = "Chroma Speed"
-        category = "Text"
-        description = "How fast should the chroma wave be?"
-        range = 500..10_000
-
-        depends { chroma }
+        canHaveChroma = true
     }
     var textStyle by option(TextElement.TextStyle.SHADOW) {
         name = "Text Style"
@@ -195,11 +182,11 @@ class ElementArmourHUD : BackgroundElement() {
                 matrices,
                 text,
                 0f, 0f,
-                textColor.rgb,
+                textColor.rgba,
 //                centered = alignment == Alignment.CENTER,
                 shadow = textStyle == TextElement.TextStyle.SHADOW,
                 bordered = textStyle == TextElement.TextStyle.BORDER,
-                chroma = chroma, chromaSpeed = chromaSpeed.toFloat()
+                chroma = textColor.chroma.hasChroma, chromaSpeed = textColor.chroma.chromaSpeed
             )
             matrices.pop()
         }

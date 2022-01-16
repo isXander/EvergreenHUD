@@ -147,7 +147,7 @@ object EvergreenHUD : ClientModInitializer {
                     runAsync {
                         val response = runBlocking { RepoManager.getResponse() }
 
-                        val latest = response.latest[RELEASE_CHANNEL.id]!!
+                        val latest = response.latest[RELEASE_CHANNEL]!!
                         if (elementManager.checkForUpdates && latest < VERSION) {
                             logger.info("Found update.")
                             mc.setScreen(UpdateScreen(latest.toString(), mc.currentScreen))

@@ -69,11 +69,11 @@ abstract class MultiLineTextElement
                 matrices,
                 line,
                 posX, posY,
-                textColor.rgb,
+                textColor.rgba,
                 centered = alignment == Alignment.CENTER,
                 shadow = textStyle == TextStyle.SHADOW,
                 bordered = textStyle == TextStyle.BORDER,
-                chroma = chroma, chromaSpeed = chromaSpeed.toFloat()
+                chroma = textColor.chroma.hasChroma, chromaSpeed = textColor.chroma.chromaSpeed
             )
         }
 

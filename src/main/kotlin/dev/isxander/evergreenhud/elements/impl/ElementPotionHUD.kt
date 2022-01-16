@@ -12,6 +12,7 @@ import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement.*
+import dev.isxander.evergreenhud.settings.color
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.settxi.impl.*
@@ -22,7 +23,6 @@ import net.minecraft.entity.effect.StatusEffects
 import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
-import java.awt.Color
 
 @ElementMeta(id = "POTIONS", name = "PotionHUD", category = "Player", description = "Display potions.")
 class ElementPotionHUD : BackgroundElement() {
@@ -36,27 +36,13 @@ class ElementPotionHUD : BackgroundElement() {
         name = "Color"
         category = "Title"
         description = "Color of the name of the potion effect."
+        canHaveChroma = true
     }
 
     var titleStyle by option(TextStyle.SHADOW) {
         name = "Style"
         category = "Title"
         description = "In what style should the text be rendered."
-    }
-
-    var titleChroma by boolean(false) {
-        name = "Chroma"
-        category = "Title"
-        description = "Makes the text rainbow barf."
-    }
-
-    var titleChromaSpeed by float(2000f) {
-        name = "Chroma Speed"
-        category = "Title"
-        description = "How fast should the chroma wave be?"
-        range = 500f..10_000f
-
-        depends { titleChroma }
     }
 
     var titleBold by boolean(true) {
@@ -106,27 +92,13 @@ class ElementPotionHUD : BackgroundElement() {
         name = "Color"
         category = "Duration"
         description = "Color of the name of the duration."
+        canHaveChroma = true
     }
 
     var durationStyle by option(TextStyle.SHADOW) {
         name = "Style"
         category = "Duration"
         description = "In what style should the text be rendered."
-    }
-
-    var durationChroma by boolean(false) {
-        name = "Chroma"
-        category = "Duration"
-        description = "Makes the text rainbow barf."
-    }
-
-    var durationChromaSpeed by float(2000f) {
-        name = "Chroma Speed"
-        category = "Duration"
-        description = "How fast should the chroma wave be?"
-        range = 500f..10_000f
-
-        depends { durationChroma }
     }
 
     var durationBold by boolean(true) {
@@ -295,12 +267,12 @@ class ElementPotionHUD : BackgroundElement() {
                     builtTitle,
                     titleX,
                     titleY,
-                    titleColor.rgb,
+                    titleColor.rgba,
                     titleStyle == TextStyle.SHADOW,
                     false,
                     titleStyle == TextStyle.BORDER,
-                    titleChroma,
-                    titleChromaSpeed
+                    titleColor.chroma.hasChroma,
+                    titleColor.chroma.chromaSpeed
                 )
             }
             if (durationVisible) {
@@ -324,12 +296,12 @@ class ElementPotionHUD : BackgroundElement() {
                         builtDuration,
                         timeX,
                         timeY,
-                        durationColor.rgb,
+                        durationColor.rgba,
                         durationStyle == TextStyle.SHADOW,
                         false,
                         durationStyle == TextStyle.BORDER,
-                        durationChroma,
-                        durationChromaSpeed,
+                        durationColor.chroma.hasChroma,
+                        durationColor.chroma.chromaSpeed,
                     )
                 }
             }

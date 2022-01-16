@@ -8,7 +8,11 @@
 
 package dev.isxander.evergreenhud.repo
 
-enum class ReleaseChannel(val id: String) {
-    RELEASE("release"),
-    BETA("prerelease")
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
+@Serializable
+enum class ReleaseChannel {
+    @SerialName("release") RELEASE,
+    @SerialName("prerelease") BETA,
 }

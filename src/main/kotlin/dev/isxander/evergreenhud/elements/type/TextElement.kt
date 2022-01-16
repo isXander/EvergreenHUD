@@ -10,8 +10,9 @@ package dev.isxander.evergreenhud.elements.type
 
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.event.ClientTickEvent
+import dev.isxander.evergreenhud.settings.color
+import dev.isxander.evergreenhud.utils.Color
 import dev.isxander.evergreenhud.utils.HitBox2D
-import java.awt.Color
 
 abstract class TextElement
 @JvmOverloads constructor(title: String, cacheTime: Int = 5) : BackgroundElement() {
@@ -31,21 +32,7 @@ abstract class TextElement
         name = "Color"
         category = "Text"
         description = "The color of the text."
-    }
-
-    var chroma by boolean(false) {
-        name = "Chroma"
-        category = "Text"
-        description = "Makes the text rainbow barf."
-    }
-
-    var chromaSpeed by int(2000) {
-        name = "Chroma Speed"
-        category = "Text"
-        description = "How fast should the chroma wave be?"
-        range = 500..10_000
-
-        depends { chroma }
+        canHaveChroma = true
     }
 
     var textStyle by option(TextStyle.SHADOW) {

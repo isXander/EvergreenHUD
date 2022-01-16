@@ -20,7 +20,6 @@ import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.position.ZonedPosition
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
-import java.awt.Color
 import java.io.File
 
 object ChromaHudConverter : ConfigConverter {
@@ -59,6 +58,8 @@ object ChromaHudConverter : ConfigConverter {
                 )
 
             val chroma = elementJson.decode("chroma") ?: false
+            textColor = textColor.withChroma(Color.ChromaProperties(chroma))
+
             val shadow = elementJson.decode("shadow") ?: false
             val useBg = elementJson.decode("highlighted") ?: false
 
@@ -73,7 +74,6 @@ object ChromaHudConverter : ConfigConverter {
 
                 if (element is TextElement) {
                     element.textColor = textColor
-                    element.chroma = chroma
                     element.textStyle = if (shadow) TextElement.TextStyle.SHADOW else TextElement.TextStyle.NORMAL
 
                     if (useBg) {

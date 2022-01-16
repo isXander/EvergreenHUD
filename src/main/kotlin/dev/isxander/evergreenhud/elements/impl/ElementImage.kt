@@ -22,7 +22,6 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Quaternion
 import net.minecraft.util.math.Vec3f
-import java.awt.Color
 import java.awt.Dimension
 import javax.imageio.ImageIO
 import kotlin.math.min
@@ -78,7 +77,7 @@ class ElementImage : BackgroundElement() {
         get() = imageDimension.height * scaleMod
 
     init {
-        backgroundColor = Color(0, 0, 0, 0)
+        backgroundColor = Color.black
     }
 
     override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
@@ -134,7 +133,7 @@ class ElementImage : BackgroundElement() {
         matrices.pop()
     }
 
-    fun loadImage() {
+    private fun loadImage() {
         val input =
             if (file.isDirectory || !file.exists()) mc.resourceManager.getResource(unknownResource).inputStream
             else file.inputStream()

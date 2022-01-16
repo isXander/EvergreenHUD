@@ -23,4 +23,4 @@ object RepoManager {
 }
 
 @Serializable
-data class RepoResponse(val latest: Map<String, Version>, val blacklisted: List<String>)
+data class RepoResponse(val latest: Map<ReleaseChannel, Version>, val blacklisted: List<String>)
