@@ -6,15 +6,15 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-package dev.isxander.evergreenhud.gui.screens.components
+package dev.isxander.evergreenhud.utils
 
 import gg.essential.elementa.components.UIImage
-import gg.essential.elementa.dsl.effect
+import net.minecraft.util.Identifier
 import java.util.concurrent.CompletableFuture
 import javax.imageio.ImageIO
 
-class ArrowComponent : UIImage(
-    CompletableFuture.supplyAsync {
-        ImageIO.read(this::class.java.getResourceAsStream("/assets/evergreenhud/textures/arrow.png"))
-    }
-)
+fun UIImage.Companion.ofIdentifier(identifier: Identifier): UIImage {
+    return UIImage(CompletableFuture.supplyAsync {
+        mc.resourceManager.getResource(identifier).inputStream.let { ImageIO.read(it) }
+    })
+}

@@ -8,6 +8,7 @@
 
 package dev.isxander.evergreenhud.gui.screens.components
 
+import dev.isxander.evergreenhud.gui.screens.effects.RotationEffect
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
@@ -48,13 +49,13 @@ class SidebarComponent : UIComponent() {
     fun expand() {
         expandArrow.hide()
         container.animate {
-            setWidthAnimation(Animations.IN_OUT_QUAD, 1f, 250.pixels())
+            setXAnimation(Animations.OUT_CUBIC, 1f, 0.pixels())
         }
     }
 
     fun collapse() {
         container.animate {
-            setWidthAnimation(Animations.IN_OUT_QUAD, 1f, 0.pixels(alignOutside = true))
+            setXAnimation(Animations.OUT_CUBIC, 1f, 0.pixels(alignOutside = true))
             onComplete {
                 expandArrow.unhide(true)
             }
@@ -71,7 +72,7 @@ class SidebarComponent : UIComponent() {
             height = 32.pixels()
         }.onMouseClick {
             sidebar.collapse()
-        } childOf this
+        } effect RotationEffect(180f) childOf this
         private val divider = UIBlock().constrain {
             y = 0.pixels(true)
             width = RelativeConstraint()

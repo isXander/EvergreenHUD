@@ -8,6 +8,8 @@
 
 package dev.isxander.evergreenhud.gui.screens
 
+import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.gui.screens.components.ElementComponent
 import dev.isxander.evergreenhud.gui.screens.components.SidebarComponent
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
@@ -20,6 +22,9 @@ class ElementConfigurationMenu : WindowScreen(ElementaVersion.V1) {
 
     init {
         Inspector(window) childOf window
+        for (element in EvergreenHUD.elementManager) {
+            ElementComponent(element) childOf window
+        }
     }
 
 }
