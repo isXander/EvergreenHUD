@@ -46,8 +46,12 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
 
     companion object {
         fun testColorRanges(color: Color) =
-            color.red in 0..255 && color.green in 0..255 && color.blue in 0..255 && color.alpha in 0..255
+            color.red in 0..255
+                && color.green in 0..255
+                && color.blue in 0..255
+                && color.alpha in 0..255
 
+        val none = Color(0, 0, 0, 0)
         val white = Color(255, 255, 255)
         val black = Color(0, 0, 0)
         val red = Color(255, 0, 0)
@@ -62,6 +66,7 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
     data class ChromaProperties(val hasChroma: Boolean, val chromaSpeed: Float = 2000f) {
         companion object {
             val none = ChromaProperties(false)
+            val default = ChromaProperties(true)
         }
     }
 }
