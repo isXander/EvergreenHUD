@@ -50,6 +50,9 @@ class ZonedPosition private constructor(
             (rawX / mc.window.scaledWidth - zone.x1) / (zone.x2 - zone.x1)
         fun calculateScaledY(rawY: Float, zone: Zone): Float =
             (rawY / mc.window.scaledHeight - zone.y1) / (zone.y2 - zone.y1)
+
+
+        fun center(scale: Float = 1f) = scaledPositioning(1f, 1f, scale, Zone.TOP_LEFT)
     }
 
     enum class Zone(override val x1: Float, override val y1: Float, override val x2: Float, override val y2: Float) : Rectangle {

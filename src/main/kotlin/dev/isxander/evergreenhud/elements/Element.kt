@@ -31,7 +31,7 @@ abstract class Element : ConfigProcessor {
 
     override val settings = mutableListOf<Setting<*>>()
     val metadata = EvergreenHUD.elementManager.availableElements[this::class]!!
-    var position = ZonedPosition.scaledPositioning(0.5f, 0.5f)
+    var position = ZonedPosition.center()
 
     var scale by float(100f) {
         name = "Scale"
