@@ -4,7 +4,7 @@
 # `EvergreenHUD`
 
 [![](https://jitpack.io/v/dev.isXander/EvergreenHUD.svg)](https://jitpack.io/#dev.isXander/EvergreenHUD)
-[![CC BY-NC-SA 4.0 License](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-%23ff3333)](https://creativecommons.org/licenses/by-nc-sa/4.0/)
+[![GPLv3 License](https://img.shields.io/badge/License-GPLv3-ff3333)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Github All Releases](https://img.shields.io/github/downloads/isXander/EvergreenHUD/total.svg?style=flat)](https://github.com/isXander/EvergreenHUD/releases)
 [![Donate](https://img.shields.io/badge/donate-patreon-ff6666.svg?style=flat)](https://paypal.me/isxander)
 [![Discord Chat](https://img.shields.io/discord/780023008668287017.svg)](https://short.isxander.dev/discord)
