@@ -22,41 +22,45 @@ import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
 import gg.essential.universal.UMatrixStack
+import org.lwjgl.glfw.GLFW
 import java.awt.Color
 
-class ElementComponent(private val element: Element) : UIComponent() {
+class ElementComponent(
+    private val element: Element,
+    private val selected: (ElementComponent) -> Boolean
+) : UIComponent() {
 
-    // TOOD
-
+    private var dragging = false
     private var clickPos: Pair<Float, Float>? = null
 
     init {
-        constrainSelf() effect OutlineEffect(Color.white, 0.5f)
+        constrainSelf() effect OutlineEffect(Color.WHITE, 0.5f)
 
         onMouseClick {
-            clickPos = if (it.relativeX < 0 || it.relativeY < 0 || it.relativeX > getWidth() || it.relativeY > getHeight()) {
-                null
-            } else {
-                it.relativeX to it.relativeY
+            if (selected(this@ElementComponent)) {
+                dragging = true
+                clickPos = if (it.relativeX < 0 || it.relativeY < 0 || it.relativeX > getWidth() || it.relativeY > getHeight()) {
+                    null
+                } else {
+                    it.relativeX to it.relativeY
+                }
             }
         }.onMouseRelease {
-            clickPos = null
+            dragging = false
         }.onMouseDrag { mouseX, mouseY, button ->
             if (clickPos == null) return@onMouseDrag
+            if (!dragging) return@onMouseDrag
+            if (!selected(this@ElementComponent)) return@onMouseDrag
             if (button == 0) {
-                val paddingLeft = if (element is BackgroundElement) element.paddingLeft else 0f
-                val paddingTop = if (element is BackgroundElement) element.paddingTop else 0f
-                val posX = this@ElementComponent.getLeft() + mouseX - clickPos!!.first
-                val posY = this@ElementComponent.getTop() + mouseY - clickPos!!.second
-
-                element.position.rawX = posX - paddingLeft
-                element.position.rawY = posY - paddingTop
-                println("X: ${element.position.rawX}")
-                println("Y: ${element.position.rawY}")
-
-                this@ElementComponent.constrain {
-                    x = posX.pixels()
-                    y = posY.pixels()
+                updatePosition(mouseX, mouseY)
+            }
+        }.onKeyType { _, keyCode ->
+            if (selected(this@ElementComponent)) {
+                when(keyCode) {
+                    GLFW.GLFW_KEY_LEFT -> {  }
+                    GLFW.GLFW_KEY_UP -> {  }
+                    GLFW.GLFW_KEY_DOWN -> {  }
+                    GLFW.GLFW_KEY_RIGHT -> {  }
                 }
             }
         }
@@ -83,24 +87,20 @@ class ElementComponent(private val element: Element) : UIComponent() {
             hoverable.hide()
         }
 
-        val overlay = UIRoundedRectangle(if (element is BackgroundElement) element.cornerRadius else 0f).apply {
-            constrain {
-                width = 100.percent()
-                height = 100.percent()
-                color = Color(255, 255, 255, 100).toConstraint()
-            } childOf hoverable
-        }
+        val overlay = UIRoundedRectangle(if (element is BackgroundElement) element.cornerRadius else 0f).constrain {
+            width = 100.percent()
+            height = 100.percent()
+            color = Color(255, 255, 255, 100).toConstraint()
+        } childOf hoverable
 
-        val settingsButton = UIImage.ofIdentifier(resource("textures/settings.png")).apply {
-            constrain {
-                height = 50.percent()
-                width = height as RelativeConstraint
-                x = 2.pixels()
-                y = 50.percent() - 2.pixels()
-            }.onMouseClick {
-                if (it.mouseButton != 0) return@onMouseClick
-            } childOf hoverable
-        }
+        val settingsButton = UIImage.ofIdentifier(resource("textures/settings.png")).constrain {
+            height = 50.percent()
+            width = height as RelativeConstraint
+            x = 2.pixels()
+            y = 50.percent() - 2.pixels()
+        }.onMouseClick {
+            if (it.mouseButton != GLFW.GLFW_MOUSE_BUTTON_1) return@onMouseClick
+        } childOf hoverable
     }
 
     override fun draw(matrixStack: UMatrixStack) {
@@ -112,6 +112,23 @@ class ElementComponent(private val element: Element) : UIComponent() {
     override fun onWindowResize() {
         super.onWindowResize()
         constrainSelf()
+    }
+
+    fun updatePosition(newX: Float, newY: Float) {
+        val paddingLeft = if (element is BackgroundElement) element.paddingLeft else 0f
+        val paddingTop = if (element is BackgroundElement) element.paddingTop else 0f
+        val posX = this@ElementComponent.getLeft() + newX - clickPos!!.first
+        val posY = this@ElementComponent.getTop() + newY - clickPos!!.second
+
+        element.position.rawX = posX - paddingLeft
+        element.position.rawY = posY - paddingTop
+        println("X: ${element.position.rawX}")
+        println("Y: ${element.position.rawY}")
+
+        this@ElementComponent.constrain {
+            x = posX.pixels()
+            y = posY.pixels()
+        }
     }
 
     private fun constrainSelf(): ElementComponent {

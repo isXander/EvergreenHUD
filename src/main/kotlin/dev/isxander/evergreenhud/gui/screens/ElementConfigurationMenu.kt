@@ -18,12 +18,17 @@ import gg.essential.elementa.dsl.*
 
 class ElementConfigurationMenu : WindowScreen(ElementaVersion.V1) {
 
+    lateinit var selectedElement: ElementComponent
     val sidebar = SidebarComponent() childOf window
 
     init {
         Inspector(window) childOf window
         for (element in EvergreenHUD.elementManager) {
-            ElementComponent(element) childOf window
+            ElementComponent(element) {
+                this::selectedElement.isInitialized && selectedElement == it
+            }.onMouseClick {
+                selectedElement = this as ElementComponent
+            } childOf window
         }
     }
 
