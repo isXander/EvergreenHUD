@@ -22,13 +22,13 @@ class ZonedPositionSerializer : KSerializer<ZonedPosition> {
             element<Float>("x")
             element<Float>("y")
             element<Float>("scale")
-            element<ZonedPosition.Zone>("origin")
+            element<ZonedPosition.Zone>("zone")
         }
 
     override fun serialize(encoder: Encoder, value: ZonedPosition) {
         encoder.encodeStructure(descriptor) {
-            encodeFloatElement(descriptor, 0, value.scaledX)
-            encodeFloatElement(descriptor, 1, value.scaledY)
+            encodeFloatElement(descriptor, 0, value.zoneX)
+            encodeFloatElement(descriptor, 1, value.zoneY)
             encodeFloatElement(descriptor, 2, value.scale)
             encodeSerializableElement(descriptor, 3, serializer(), value.zone)
         }
@@ -51,6 +51,6 @@ class ZonedPositionSerializer : KSerializer<ZonedPosition> {
             }
         }
 
-        ZonedPosition.scaledPositioning(x, y, scale, zone)
+        ZonedPosition(x, y, scale, zone)
     }
 }

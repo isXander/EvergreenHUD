@@ -40,7 +40,7 @@ open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Scre
 
             element.render(matrices, RenderOrigin.GUI)
 
-            val hitbox = element.calculateHitBox(1f, element.position.scale)
+            val hitbox = element.calculateHitBox(element.position.scale)
             val width = 0.5f
 
             matrices.drawBorderLines(hitbox.x1 - width, hitbox.y1 - width, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, width, -1)
@@ -60,7 +60,7 @@ open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Scre
 
         for (e in EvergreenHUD.elementManager.currentElements.reversed()) {
             // e.onMouseClicked()
-            if (e.calculateHitBox(1f, e.position.scale).overlaps(mouseX.toFloat(), mouseY.toFloat())) {
+            if (e.calculateHitBox(e.position.scale).overlaps(mouseX.toFloat(), mouseY.toFloat())) {
                 lastClicked = e
                 dragging = e
 

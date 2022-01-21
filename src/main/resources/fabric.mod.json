@@ -13,7 +13,7 @@
     "sources": "https://github.com/isXander/EvergreenHUD"
   },
   "license": "CC BY-NC-SA 4.0",
-  "icon": "assets/evergreenhud/evergreenhud-transparent.png",
+  "icon": "assets/evergreenhud/evergreenhud.png",
   "environment": "client",
   "entrypoints": {
     "client": [

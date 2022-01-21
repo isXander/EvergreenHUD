@@ -12,6 +12,8 @@ import net.minecraft.client.network.ClientPlayerEntity
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.client.world.ClientWorld
 import net.minecraft.entity.Entity
+import net.minecraft.entity.LivingEntity
+import net.minecraft.entity.damage.DamageSource
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.network.Packet
 import net.minecraft.network.listener.PacketListener
@@ -28,6 +30,7 @@ data class RenderTickEvent(val matrices: MatrixStack, val tickDelta: Float) : Ev
 
 data class ClientDamageEntityEvent(val attacker: PlayerEntity, val victim: Entity) : Event()
 data class ServerDamageEntityEvent(val attacker: Entity, val victim: Entity) : Event()
+data class EntityDamagedEvent(val entity: LivingEntity, val source: DamageSource, val amount: Float) : Event()
 
 data class HandlePacketEvent<T : PacketListener>(val packet: Packet<T>) : Event()
 

@@ -46,12 +46,14 @@ object EvergreenHUD : ClientModInitializer {
             if (VERSION.prerelease == null) ReleaseChannel.RELEASE
             else ReleaseChannel.BETA
 
-    val dataDir: File = File(mc.runDirectory, "evergreenhud")
+    val dataDir = File(mc.runDirectory, "evergreenhud")
     val eventBus = EventBus()
 
     lateinit var profileManager: ProfileManager private set
     lateinit var elementManager: ElementManager private set
     lateinit var addonLoader: AddonLoader private set
+
+    val isReplayModLoaded = FabricLoader.getInstance().isModLoaded("replaymod")
 
     var postInitialized = false
         private set
@@ -86,7 +88,6 @@ object EvergreenHUD : ClientModInitializer {
 
             for ((elementClass, meta) in availableElements) {
                 getNewElementInstance<Element>(meta.id)?.let {
-                    it.position.scale = 2f
                     addElement(it)
                 }
             }

@@ -26,6 +26,7 @@ class ElementPlaceCount : SimpleTextElement("Blocks") {
         name = "Interval"
         description = "The interval in which the number of blocks you have placed will be displayed."
         category = "Block Place Count"
+        range = 500..3000
     }
 
     private val blockCount = ArrayDeque<Long>()

@@ -61,21 +61,21 @@ abstract class TextElement
     }
     var clientTicks = 0
 
-    override fun calculateHitBox(glScale: Float, drawScale: Float): HitBox2D {
-        val width = hitboxWidth.coerceAtLeast(minWidth) * drawScale
-        val height = hitboxHeight.coerceAtLeast(minHeight) * drawScale
+    override fun calculateHitBox(scale: Float): HitBox2D {
+        val width = hitboxWidth.coerceAtLeast(minWidth) * scale
+        val height = hitboxHeight.coerceAtLeast(minHeight) * scale
 
-        val top = paddingTop * drawScale
-        val bottom = paddingBottom * drawScale
-        val left = paddingLeft * drawScale
-        val right = paddingRight * drawScale
+        val top = paddingTop * scale
+        val bottom = paddingBottom * scale
+        val left = paddingLeft * scale
+        val right = paddingRight * scale
 
-        val x = position.rawX / glScale
-        val y = position.rawY / glScale
+        val x = position.rawX
+        val y = position.rawY
 
         return when (alignment) {
             Alignment.LEFT -> HitBox2D(x - left, y - top, width + left + right, height + top + bottom)
-            Alignment.RIGHT -> HitBox2D(x - (width / drawScale) - left, y - top, width + left + right, height + top + bottom)
+            Alignment.RIGHT -> HitBox2D(x - (width / scale) - left, y - top, width + left + right, height + top + bottom)
             Alignment.CENTER -> HitBox2D(x - (width / 2f) - left, y - top, width + left + right, height + top + bottom)
             else -> throw IllegalStateException("Failed to parse alignment.")
         }

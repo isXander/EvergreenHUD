@@ -70,7 +70,7 @@ object ChromaHudConverter : ConfigConverter {
                 val element = EvergreenHUD.elementManager.getNewElementInstance<Element>(id) ?: continue
 
                 element.position = position
-                element.position.scaledY = element.position.scaledY + (i * changeY)
+                element.position.zoneY = element.position.zoneY + (i * changeY)
 
                 if (element is TextElement) {
                     element.textColor = textColor

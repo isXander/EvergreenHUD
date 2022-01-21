@@ -11,10 +11,7 @@ package dev.isxander.evergreenhud.elements.type
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.settings.color
-import dev.isxander.evergreenhud.utils.Color
-import dev.isxander.evergreenhud.utils.HitBox2D
-import dev.isxander.evergreenhud.utils.drawBorderLines
-import dev.isxander.evergreenhud.utils.fill
+import dev.isxander.evergreenhud.utils.*
 import dev.isxander.settxi.impl.*
 import net.minecraft.client.util.math.MatrixStack
 
@@ -112,7 +109,7 @@ abstract class BackgroundElement : Element() {
         val outlineCol = outlineColor
 
         val scale = position.scale
-        val hitbox = calculateHitBox(1f, scale)
+        val hitbox = calculateHitBox(scale)
 
         if (backgroundColor.alpha > 0) {
             matrices.fill(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, bgCol.rgba)
@@ -122,18 +119,21 @@ abstract class BackgroundElement : Element() {
         }
     }
 
-    override fun calculateHitBox(glScale: Float, drawScale: Float): HitBox2D {
-        val width = hitboxWidth.coerceAtLeast(minWidth) * drawScale
-        val height = hitboxHeight.coerceAtLeast(minHeight) * drawScale
+    override fun calculateHitBox(scale: Float): HitBox2D {
+        val width = hitboxWidth * scale
+        val height = hitboxHeight * scale
 
-        val top = paddingTop * drawScale
-        val bottom = paddingBottom * drawScale
-        val left = paddingLeft * drawScale
-        val right = paddingRight * drawScale
+        val top = paddingTop * scale
+        val bottom = paddingBottom * scale
+        val left = paddingLeft * scale
+        val right = paddingRight * scale
 
-        val x = position.rawX / glScale
-        val y = position.rawY / glScale
+        val x = position.rawX
+        val y = position.rawY
 
-        return HitBox2D(x - left, y - top, width + left + right, height + top + bottom)
+        val extraWidth = ((minWidth - hitboxWidth) * scale).coerceAtLeast(0f) / 2f
+        val extraHeight = ((minHeight - hitboxHeight) * scale).coerceAtLeast(0f) / 2f
+
+        return HitBox2D(x - left - extraWidth, y - top - extraHeight, width + left + right + extraWidth, height + top + bottom + extraHeight)
     }
 }

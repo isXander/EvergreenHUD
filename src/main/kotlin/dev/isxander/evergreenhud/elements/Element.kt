@@ -16,7 +16,6 @@ import dev.isxander.evergreenhud.gui.screens.ElementDisplay
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.*
-import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.position.ZonedPosition
 import dev.isxander.settxi.serialization.ConfigProcessor
 import kotlinx.serialization.Serializable
@@ -85,7 +84,7 @@ abstract class Element : ConfigProcessor {
 
     abstract fun render(matrices: MatrixStack, renderOrigin: RenderOrigin)
 
-    abstract fun calculateHitBox(glScale: Float, drawScale: Float): HitBox2D
+    abstract fun calculateHitBox(scale: Float): HitBox2D
     protected open val hitboxWidth = 10f
     protected open val hitboxHeight = 10f
 
@@ -93,7 +92,7 @@ abstract class Element : ConfigProcessor {
         val inChat = mc.currentScreen is ChatScreen
         val inDebug = mc.options.debugEnabled
         val inGui = mc.currentScreen != null && mc.currentScreen !is ElementDisplay && !inChat
-        val inReplayViewer = FabricLoader.getInstance().isModLoaded("replaymod") && mc.world != null && !mc.isInSingleplayer && mc.currentServerEntry == null && !mc.isConnectedToRealms
+        val inReplayViewer = EvergreenHUD.isReplayModLoaded && mc.world != null && !mc.isInSingleplayer && mc.currentServerEntry == null && !mc.isConnectedToRealms
 
         return (mc.mouse.isCursorLocked && !inDebug)
                 || (showInChat && inChat)
@@ -103,17 +102,17 @@ abstract class Element : ConfigProcessor {
     }
 
     fun resetSettings(save: Boolean = false) {
-        position = ZonedPosition.scaledPositioning(0.5f, 0.5f, 1f)
+        position = ZonedPosition.center()
 
         for (s in settings) s.reset()
         if (save) EvergreenHUD.elementManager.elementConfig.save()
     }
 
-    protected inline fun <reified T : Event> event(noinline predicate: (T) -> Boolean = { true }, noinline executor: (T) -> Unit): EventListener<T, Unit> {
+    protected inline fun <reified T : Event> event(noinline predicate: (T) -> Boolean = { true }, noinline executor: (T) -> Unit): EventListener<T, Unit?> {
         return eventBus.register({ isAdded && predicate(it) }, executor)
     }
 
-    protected inline fun <reified T : Event, R : Any> eventReturnable(defaultCache: R? = null, noinline predicate: (T) -> Boolean = { true }, noinline executor: (T) -> R): EventListener<T, R> {
+    protected inline fun <reified T : Event, R : Any?> eventReturnable(defaultCache: R? = null, noinline predicate: (T) -> Boolean = { true }, noinline executor: (T) -> R?): EventListener<T, R?> {
         return eventBus.registerReturnable(defaultCache, { isAdded && predicate(it) }, executor)
     }
 

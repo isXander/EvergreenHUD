@@ -69,7 +69,7 @@ class ElementImage : BackgroundElement() {
     var scaleMod = 1f
     var imgSize = 64
     val textureName = "evergreen-image-element-${hashCode()}"
-    val unknownResource = resource("unknown.png")
+    val unknownResource = resource("elements/image/unknown.png")
 
     override val hitboxWidth: Float
         get() = imageDimension.width * scaleMod
@@ -77,7 +77,11 @@ class ElementImage : BackgroundElement() {
         get() = imageDimension.height * scaleMod
 
     init {
-        backgroundColor = Color.black
+        backgroundColor = Color.black.withAlpha(100)
+        paddingLeft = 0f
+        paddingRight = 0f
+        paddingTop = 0f
+        paddingBottom = 0f
     }
 
     override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
@@ -90,7 +94,7 @@ class ElementImage : BackgroundElement() {
             changed = false
         }
 
-        val hitbox = calculateHitBox(1f, position.scale)
+        val hitbox = calculateHitBox(position.scale)
 
         scaleMod =
             if (autoScale) imgSize / min(imageDimension.width, imageDimension.height).toFloat()

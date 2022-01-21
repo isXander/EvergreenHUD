@@ -46,11 +46,11 @@ abstract class MultiLineTextElement
     override val hitboxWidth: Float
         get() {
             var width = 10
-            for (line in cachedDisplayString) width = max(width, mc.textRenderer.getWidth(line))
+            for (line in cachedDisplayString!!) width = max(width, mc.textRenderer.getWidth(line))
             return width.toFloat()
         }
     override val hitboxHeight: Float
-        get() = max((mc.textRenderer.fontHeight * cachedDisplayString.size) + (verticalSpacing * (cachedDisplayString.size - 1)), 10).toFloat()
+        get() = max((mc.textRenderer.fontHeight * cachedDisplayString!!.size) + (verticalSpacing * (cachedDisplayString!!.size - 1)), 10).toFloat()
 
     override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
         super.render(matrices, renderOrigin)
@@ -61,7 +61,7 @@ abstract class MultiLineTextElement
         val x = position.rawX / position.scale
         val y = position.rawY / position.scale
 
-        for ((i, line) in cachedDisplayString.withIndex()) {
+        for ((i, line) in cachedDisplayString!!.withIndex()) {
             val posX = x - (if (alignment == Alignment.RIGHT) mc.textRenderer.getWidth(line) else 0)
             val posY = y + (mc.textRenderer.fontHeight * i) + (verticalSpacing * i)
 

@@ -72,7 +72,7 @@ abstract class SimpleTextElement
 
         drawString(
             matrices,
-            cachedDisplayString,
+            cachedDisplayString!!,
             x, y,
             textColor.rgba,
             centered = alignment == Alignment.CENTER,

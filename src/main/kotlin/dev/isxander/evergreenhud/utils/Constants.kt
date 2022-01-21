@@ -14,8 +14,7 @@ import org.apache.logging.log4j.Logger
 
 val logger: Logger = LogManager.getLogger("EvergreenHUD")
 
-val mc: MinecraftClient
-    get() = MinecraftClient.getInstance()
+val mc: MinecraftClient = MinecraftClient.getInstance()
 
 val tickDelta: Float
     get() = mc.tickDelta

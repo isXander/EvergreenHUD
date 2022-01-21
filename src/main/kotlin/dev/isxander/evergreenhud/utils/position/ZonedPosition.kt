@@ -13,46 +13,66 @@ import dev.isxander.evergreenhud.utils.mc
 import kotlinx.serialization.Serializable
 
 @Serializable(ZonedPositionSerializer::class)
-class ZonedPosition private constructor(
-    var scaledX: Float,
-    var scaledY: Float,
+class ZonedPosition(
+    var zoneX: Float,
+    var zoneY: Float,
     var scale: Float,
     var zone: Zone,
 ) {
+    var scaledX: Float
+        get() = (zone.x2 - zone.x1) * zoneX + zone.x1
+        set(value) {
+            zone = calculateZone(value, scaledY)
+            zoneX = getZoneX(value, zone)
+        }
+
+    var scaledY: Float
+        get() = (zone.y2 - zone.y1) * zoneY + zone.y1
+        set(value) {
+            zone = calculateZone(scaledX, value)
+            zoneY = getZoneY(value, zone)
+        }
+
     var rawX: Float
-        get() = ((zone.x2 - zone.x1) * scaledX + zone.x1) * mc.window.scaledWidth
+        get() = scaledX * mc.window.scaledWidth
         set(x) {
-            zone = calculateOrigin(x, rawY)
-            scaledX = calculateScaledX(x, zone)
+            scaledX = x / mc.window.scaledWidth
         }
 
     var rawY: Float
-        get() = ((zone.y2 - zone.y1) * scaledY + zone.y1) * mc.window.scaledHeight
+        get() = scaledY * mc.window.scaledHeight
         set(y) {
-            zone = calculateOrigin(rawX, y)
-            scaledY = calculateScaledY(y, zone)
+            scaledY = y / mc.window.scaledHeight
         }
 
+    override fun toString(): String {
+        return "ZonedPosition(zoneX=$zoneX, zoneY=$zoneY, scale=$scale, zone=$zone)"
+    }
+
     companion object {
-        fun rawPositioning(x: Float, y: Float, scale: Float = 1f, origin: Zone = calculateOrigin(x / mc.window.scaledWidth, y / mc.window.scaledHeight)): ZonedPosition =
-            scaledPositioning(calculateScaledX(x, origin), calculateScaledY(y, origin), scale, origin)
+        fun rawPositioning(x: Float, y: Float, scale: Float = 1f, origin: Zone = calculateZone(x / mc.window.scaledWidth, y / mc.window.scaledHeight)): ZonedPosition =
+            scaledPositioning(calculateScaledZoneX(x, origin), calculateScaledZoneY(y, origin), scale, origin)
 
-        fun scaledPositioning(x: Float, y: Float, scale: Float = 1f, origin: Zone = calculateOrigin(x, y)): ZonedPosition =
-            ZonedPosition(x, y, scale, origin)
+        fun scaledPositioning(x: Float, y: Float, scale: Float = 1f, zone: Zone = calculateZone(x, y)): ZonedPosition =
+            ZonedPosition(getZoneX(x, zone), getZoneY(y, zone), scale, zone)
 
-        fun calculateOrigin(x: Float, y: Float): Zone {
+        fun calculateZone(x: Float, y: Float): Zone {
             return Zone.values().minByOrNull {
                 it.distFrom(x, y)
             }!!
         }
 
-        fun calculateScaledX(rawX: Float, zone: Zone): Float =
-            (rawX / mc.window.scaledWidth - zone.x1) / (zone.x2 - zone.x1)
-        fun calculateScaledY(rawY: Float, zone: Zone): Float =
-            (rawY / mc.window.scaledHeight - zone.y1) / (zone.y2 - zone.y1)
+        fun getZoneX(scaledX: Float, zone: Zone): Float =
+            (scaledX - zone.x1) / (zone.x2 - zone.x1)
+        fun getZoneY(scaledY: Float, zone: Zone): Float =
+            (scaledY - zone.y1) / (zone.y2 - zone.y1)
 
+        fun calculateScaledZoneX(rawX: Float, zone: Zone): Float =
+            getZoneX(rawX / mc.window.scaledWidth, zone)
+        fun calculateScaledZoneY(rawY: Float, zone: Zone): Float =
+            getZoneY(rawY / mc.window.scaledHeight, zone)
 
-        fun center(scale: Float = 1f) = scaledPositioning(1f, 1f, scale, Zone.TOP_LEFT)
+        fun center(scale: Float = 1f) = scaledPositioning(0.5f, 0.5f, scale)
     }
 
     enum class Zone(override val x1: Float, override val y1: Float, override val x2: Float, override val y2: Float) : Rectangle {

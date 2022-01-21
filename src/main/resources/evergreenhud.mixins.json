@@ -13,5 +13,8 @@
     "MixinMinecraftClient",
     "MixinPlayerEntity",
     "MixinTitleScreen"
+  ],
+  "mixins": [
+    "MixinLivingEntity"
   ]
 }

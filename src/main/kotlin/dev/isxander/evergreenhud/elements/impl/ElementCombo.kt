@@ -40,15 +40,20 @@ class ElementCombo : SimpleTextElement("Combo") {
         currentCombo = 0
     }
 
-    val serverDamageEntityEvent by event<ServerDamageEntityEvent>({ it.attacker.id == mc.player?.id }) {
-        if (it.victim.id == attackId) {
-            currentCombo++
-        } else {
-            currentCombo = 1
-        }
+    val serverDamageEntityEvent by event<ServerDamageEntityEvent> {
+        if (it.attacker == mc.player) {
+            if (it.victim.id == attackId) {
+                currentCombo++
+            } else {
+                currentCombo = 1
+            }
 
-        hitTime = System.currentTimeMillis()
-        attackId = it.victim.id
+            hitTime = System.currentTimeMillis()
+            attackId = it.victim.id
+        } else if (it.victim == mc.player) {
+            currentCombo = 0
+            attackId = 0
+        }
     }
 
     override fun calculateValue(): String {

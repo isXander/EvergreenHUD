@@ -49,7 +49,7 @@ class ElementReach : SimpleTextElement("Reach") {
 
     private var lastHit = System.currentTimeMillis()
 
-    var reach: String by eventReturnable<ClientDamageEntityEvent, String>(noHitMessage, { it.attacker == mc.player }) { event ->
+    var reach: String? by eventReturnable<ClientDamageEntityEvent, String>(noHitMessage, { it.attacker == mc.player }) { event ->
         val maxReach = 6.0
 
         val cameraPos = event.attacker.getCameraPosVec(mc.tickDelta)
@@ -72,7 +72,7 @@ class ElementReach : SimpleTextElement("Reach") {
     }
 
     override fun calculateValue(): String {
-        return reach
+        return reach!!
     }
 
     private fun getDecimalFormat(): DecimalFormat {

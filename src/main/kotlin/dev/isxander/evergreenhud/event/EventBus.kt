@@ -15,8 +15,8 @@ import kotlin.reflect.KClass
 class EventBus {
     val listeners = mutableMapOf<KClass<out Event>, MutableList<EventListener<out Event, *>>>()
 
-    fun <T : Event, R : Any> registerReturnable(event: KClass<T>, defaultCache: R? = null, predicate: (T) -> Boolean = { true }, executor: (T) -> R): EventListener<T, R> {
-        val listener = EventListener(defaultCache, predicate, executor)
+    fun <T : Event, R : Any?> registerReturnable(event: KClass<T>, defaultCache: R? = null, predicate: (T) -> Boolean = { true }, executor: (T) -> R?): EventListener<T, R?> {
+        val listener = EventListener<T, R?>(defaultCache, predicate, executor)
 
         if (listeners.containsKey(event)) {
             listeners[event]!!.add(listener)
@@ -27,11 +27,11 @@ class EventBus {
         return listener
     }
 
-    inline fun <reified T : Event, R : Any> registerReturnable(defaultCache: R? = null, noinline predicate: (T) -> Boolean = { true }, noinline executor: (T) -> R): EventListener<T, R> {
+    inline fun <reified T : Event, R : Any?> registerReturnable(defaultCache: R? = null, noinline predicate: (T) -> Boolean = { true }, noinline executor: (T) -> R?): EventListener<T, R?> {
         return registerReturnable(T::class, defaultCache, predicate, executor)
     }
 
-    inline fun <reified T : Event> register(noinline predicate: (T) -> Boolean = { true }, noinline executor: (T) -> Unit): EventListener<T, Unit> {
+    inline fun <reified T : Event> register(noinline predicate: (T) -> Boolean = { true }, noinline executor: (T) -> Unit): EventListener<T, Unit?> {
         return registerReturnable(Unit, predicate, executor)
     }
 
@@ -56,12 +56,12 @@ class EventBus {
     }
 
     @JvmOverloads
-    fun <T : Event, R : Any> registerReturnable(event: Class<T>, defaultCache: R? = null, predicate: Function<T, Boolean> = Function { true }, executor: Function<T, R>): EventListener<T, R> {
+    fun <T : Event, R : Any?> registerReturnable(event: Class<T>, defaultCache: R? = null, predicate: Function<T, Boolean> = Function { true }, executor: Function<T, R>): EventListener<T, R?> {
         return registerReturnable(event.kotlin, defaultCache, { predicate.apply(it) }) { executor.apply(it) }
     }
 
     @JvmOverloads
-    fun <T : Event> register(event: Class<T>, predicate: Function<T, Boolean> = Function { true }, executor: Consumer<T>): EventListener<T, Unit> {
+    fun <T : Event> register(event: Class<T>, predicate: Function<T, Boolean> = Function { true }, executor: Consumer<T>): EventListener<T, Unit?> {
         return registerReturnable(event.kotlin, Unit, { predicate.apply(it) }) { executor.accept(it) }
     }
 }
