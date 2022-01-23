@@ -10,8 +10,8 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
-import dev.isxander.evergreenhud.utils.capitalizeEnum
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
+import dev.isxander.evergreenhud.utils.formatEnum
 import dev.isxander.evergreenhud.utils.hypixel.isHypixel
 import dev.isxander.settxi.impl.string
 
@@ -38,7 +38,7 @@ class ElementHypixelMode : SimpleTextElement("Mode") {
         if (mode == null || location.isLobby)
             return inLobbyMessage
 
-        return capitalizeEnum(mode)
+        return mode.formatEnum()
     }
 }
 

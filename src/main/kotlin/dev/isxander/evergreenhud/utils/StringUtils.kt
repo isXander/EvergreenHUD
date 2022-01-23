@@ -75,68 +75,9 @@ fun formatBedwarsStar(stars: Int): String {
 }
 
 /**
- * @param str string to check
- * @param times how many times the character has to appear in a string before it is counted as a duplicate
- * @return the amount of duplicate characters in a string
- */
-fun hasDuplicateCharacters(str: String, times: Int): Int {
-    var repeat = 0
-    var index = -1
-    var lastChar: Char? = null
-    for (c in str.toCharArray()) {
-        index++
-
-        if (lastChar == null) {
-            lastChar = c
-            continue
-        }
-
-        if (lastChar == c) repeat++
-        else repeat = 0
-
-        if (repeat >= times)
-            return index
-
-        lastChar = c
-    }
-    return -1
-}
-
-/**
- * Wraps text according to the character length per line
- *
- * This function is lenient as each line can go above the maximum
- * character length in order to complete a word
- *
- * @param text text to wrap
- * @param charLength the desired character length of each line
- */
-fun wrapTextLenient(text: String, charLength: Int): String {
-    val sb = StringBuilder()
-    var lineLength = 0
-    var needsLineBreak = false
-    for (c in text.toCharArray()) {
-        lineLength += 1
-        if (c == '\n') lineLength = 0
-        if (lineLength > charLength) {
-            needsLineBreak = true
-        }
-        if (needsLineBreak && c == ' ') {
-            lineLength = 0
-            sb.append('\n')
-            needsLineBreak = false
-        } else {
-            sb.append(c)
-        }
-    }
-    return sb.toString()
-}
-
-/**
  * Wraps text according to the font renderer's string width
  *
  * @param text text to wrap
- * @param fontRenderer font renderer that measures string width
  * @param lineWidth maximum line width
  * @param split word splitter
  * @return wrapped text
@@ -150,7 +91,7 @@ fun wrapTextFR(text: String, lineWidth: Int, split: String): String {
     val output = StringBuilder()
     for (i in words.indices) {
         var word = words[i]
-        // add a the word splitter after the word every time except the last word
+        // add the word splitter after the word every time except the last word
         if (i != words.size - 1) {
             word += split
         }
@@ -192,37 +133,8 @@ fun wrapTextLinesFR(text: String, lineWidth: Int, split: String): List<String> {
 }
 
 /**
- * Counts how many times text appears in a string
- *
- * @param text string to check
- * @param toCheck what to check for
- */
-fun count(text: String, toCheck: String): Int {
-    var count = 0
-    var i = 0
-    while (i < text.length) {
-        if (text.substring(i).startsWith(toCheck)) {
-            count++
-            i += toCheck.length - 1
-        }
-        i++
-    }
-    return count
-}
-
-/**
- * Makes the first character of a string upper-case
- *
- * @param original original text
- */
-fun firstUpper(original: String): String {
-    return if (original.length == 1) original.uppercase() else original.substring(0, 1)
-        .uppercase() + original.substring(1).lowercase()
-}
-
-/**
  * Converts 'SOME_ENUM' to 'Some Enum'
  */
-fun capitalizeEnum(string: String): String {
-    return string.split("_").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }.trimEnd()
+fun String.formatEnum(): String {
+    return split("_").joinToString(" ") { it.lowercase().replaceFirstChar { char -> char.uppercase() } }.trimEnd()
 }

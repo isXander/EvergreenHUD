@@ -10,11 +10,9 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
-import dev.isxander.evergreenhud.utils.capitalizeEnum
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.hypixel.isHypixel
 import dev.isxander.evergreenhud.utils.hypixel.locraw.GameType
-import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.string
 
 @ElementMeta(id = "evergreenhud:hypixel_game", name = "Hypixel Game", description = "Display the current game you are playing.", category = "Hypixel")

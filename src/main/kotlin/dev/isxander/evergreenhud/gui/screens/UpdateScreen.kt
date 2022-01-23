@@ -9,8 +9,8 @@
 package dev.isxander.evergreenhud.gui.screens
 
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.utils.UDesktop
 import dev.isxander.evergreenhud.utils.drawString
+import gg.essential.universal.UDesktop
 import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget

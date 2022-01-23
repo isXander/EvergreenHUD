@@ -8,7 +8,6 @@
 
 package dev.isxander.evergreenhud
 
-import com.llamalad7.mixinextras.MixinExtrasBootstrap
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.config.profile.ProfileManager
@@ -27,19 +26,20 @@ import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
 import io.ejekta.kambrik.Kambrik
+import io.ejekta.kambrik.command.suggestionList
 import io.ejekta.kambrik.text.textLiteral
 import kotlinx.coroutines.runBlocking
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint
 import net.minecraft.SharedConstants
+import net.minecraft.util.Identifier
 import org.bundleproject.libversion.Version
 import org.lwjgl.glfw.GLFW
 import java.io.File
 
-object EvergreenHUD : ClientModInitializer, PreLaunchEntrypoint {
+object EvergreenHUD : ClientModInitializer {
     const val NAME = "__GRADLE_NAME__"
     const val ID = "__GRADLE_ID__"
     const val REVISION = "__GRADLE_REVISION__"
@@ -91,13 +91,7 @@ object EvergreenHUD : ClientModInitializer, PreLaunchEntrypoint {
         profileManager = ProfileManager().apply { load() }
         elementManager.apply {
             globalConfig.load()
-
-            for ((elementClass, meta) in availableElements) {
-                getNewElementInstance<Element>(meta.id)?.let {
-                    addElement(it)
-                }
-            }
-            elementConfig.save()
+            elementConfig.load()
         }
 
         logger.debug("Registering hooks...")
@@ -111,6 +105,39 @@ object EvergreenHUD : ClientModInitializer, PreLaunchEntrypoint {
                 "test" {
                     "position" runs {
                         GuiHandler.displayGui(PositionTest())
+                    }
+                }
+            }
+
+            "add" {
+                val availableIds = suggestionList {
+                    elementManager.availableElements.values
+                        .map { it.id }
+                        .filter {
+                            it !in (mc.currentServerEntry?.address
+                                ?.let { address -> elementManager.blacklistedElements[address] } ?: emptyList())
+                        }
+                        .map { Identifier(it) }
+                }
+                argIdentifier("id", availableIds) { argId ->
+                    runs {
+                        val id = argId()
+                        val element = elementManager.getNewElementInstance<Element>(id.toString())!!
+                        elementManager.addElement(element)
+                        elementManager.elementConfig.save()
+                    }
+                }
+            }
+
+            "remove" {
+                argIdentifier("id", suggestionList { elementManager.currentElements.map { Identifier(it.metadata.id) } }) { argId ->
+                    argInt("index") { argIndex ->
+                        runs {
+                            val id = argId()
+                            val index = argIndex()
+                            elementManager.removeElement(elementManager.currentElements.filter { it.metadata.id == id.toString() }[index])
+                            elementManager.elementConfig.save()
+                        }
                     }
                 }
             }
@@ -187,9 +214,5 @@ object EvergreenHUD : ClientModInitializer, PreLaunchEntrypoint {
         }
 
         ServerDamageEntityEventManager(eventBus)
-    }
-
-    override fun onPreLaunch() {
-        MixinExtrasBootstrap.init()
     }
 }
