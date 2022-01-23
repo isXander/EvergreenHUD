@@ -22,6 +22,9 @@
         "value": "dev.isxander.evergreenhud.EvergreenHUD"
       }
     ],
+    "preLaunch": [
+      "com.llamalad7.mixinextras.MixinExtrasBootstrap::init"
+    ],
     "modmenu": [
       {
         "adapter": "kotlin",

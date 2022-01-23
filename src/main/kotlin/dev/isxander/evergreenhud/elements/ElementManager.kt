@@ -24,8 +24,6 @@ import dev.isxander.evergreenhud.utils.logger
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.serialization.ConfigProcessor
 import kotlinx.serialization.decodeFromString
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.client.world.ClientWorld
 import java.io.InputStream
 import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
@@ -35,6 +33,8 @@ import kotlin.reflect.full.createInstance
 class ElementManager : ConfigProcessor, Iterable<Element> {
     val availableElements: MutableMap<KClass<out Element>, ElementMeta> = mutableMapOf()
     val currentElements: ArrayList<Element> = ArrayList()
+
+    val blacklistedElements = mutableMapOf<String, List<String>>()
 
     /* Config */
     val globalConfig: GlobalConfig = GlobalConfig(this)
@@ -77,7 +77,13 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         }
     }
 
+    fun isIdBlacklisted(id: String) =
+        id in (blacklistedElements[mc.currentServerEntry?.address] ?: emptyList())
+
     fun addElement(element: Element) {
+        if (isIdBlacklisted(element.metadata.id))
+            error("Cannot add blacklisted element defined by server!")
+
         currentElements.add(element)
         if (inGame) element.onAdded()
     }

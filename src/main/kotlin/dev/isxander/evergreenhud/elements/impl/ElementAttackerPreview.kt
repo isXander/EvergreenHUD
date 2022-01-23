@@ -22,7 +22,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.EntityDamageSource
 
-@ElementMeta(id = "ATTACKER_PREVIEW", name = "Attacker Preview", description = "Show the model of the person who is currently attacking you.", category = "Player")
+@ElementMeta(id = "evergreenhud:attacker_preview", name = "Attacker Preview", description = "Show the model of the person who is currently attacking you.", category = "Player")
 class ElementAttackerPreview : BackgroundElement() {
     var rotation by int(0) {
         name = "Rotation"

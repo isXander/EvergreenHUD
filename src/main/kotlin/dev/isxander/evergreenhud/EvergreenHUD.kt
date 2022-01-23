@@ -8,6 +8,7 @@
 
 package dev.isxander.evergreenhud
 
+import com.llamalad7.mixinextras.MixinExtrasBootstrap
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.config.profile.ProfileManager
@@ -20,9 +21,11 @@ import dev.isxander.evergreenhud.gui.screens.BlacklistedScreen
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
 import dev.isxander.evergreenhud.gui.screens.UpdateScreen
 import dev.isxander.evergreenhud.gui.screens.test.PositionTest
+import dev.isxander.evergreenhud.packets.client.registerElementsPacket
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.utils.*
+import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
 import io.ejekta.kambrik.Kambrik
 import io.ejekta.kambrik.text.textLiteral
 import kotlinx.coroutines.runBlocking
@@ -30,11 +33,13 @@ import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.fabricmc.loader.api.FabricLoader
+import net.fabricmc.loader.api.entrypoint.PreLaunchEntrypoint
+import net.minecraft.SharedConstants
 import org.bundleproject.libversion.Version
 import org.lwjgl.glfw.GLFW
 import java.io.File
 
-object EvergreenHUD : ClientModInitializer {
+object EvergreenHUD : ClientModInitializer, PreLaunchEntrypoint {
     const val NAME = "__GRADLE_NAME__"
     const val ID = "__GRADLE_ID__"
     const val REVISION = "__GRADLE_REVISION__"
@@ -48,6 +53,7 @@ object EvergreenHUD : ClientModInitializer {
 
     val dataDir = File(mc.runDirectory, "evergreenhud")
     val eventBus = EventBus()
+    val locrawManager = LocrawManager()
 
     lateinit var profileManager: ProfileManager private set
     lateinit var elementManager: ElementManager private set
@@ -65,23 +71,23 @@ object EvergreenHUD : ClientModInitializer {
      * @author isXander
      */
     override fun onInitializeClient() {
-        logger.info("Starting EvergreenHUD $VERSION_STR")
+        logger.info("Starting EvergreenHUD $VERSION_STR for ${SharedConstants.getGameVersion().name}")
 
         val startTime = System.currentTimeMillis()
 
         dataDir.mkdirs()
 
-        logger.info("Initialising element manager...")
+        logger.debug("Initialising element manager...")
         elementManager = ElementManager()
 
-        logger.info("Discovering addons...")
+        logger.debug("Discovering addons...")
         addonLoader = AddonLoader()
-        logger.info("Adding addon element sources...")
+        logger.debug("Adding addon element sources...")
         addonLoader.addSources(elementManager)
-        logger.info("Invoking pre-initialization addon entrypoints...")
+        logger.debug("Invoking pre-initialization addon entrypoints...")
         addonLoader.invokePreinitEntrypoints()
 
-        logger.info("Loading configs...")
+        logger.debug("Loading configs...")
         profileManager = ProfileManager().apply { load() }
         elementManager.apply {
             globalConfig.load()
@@ -94,7 +100,7 @@ object EvergreenHUD : ClientModInitializer {
             elementConfig.save()
         }
 
-        logger.info("Registering hooks...")
+        logger.debug("Registering hooks...")
 
         Kambrik.Command.addClientCommand("evergreenhud") {
             runs {
@@ -131,10 +137,13 @@ object EvergreenHUD : ClientModInitializer {
             }
         }
 
-        logger.info("Registering events...")
+        logger.debug("Registering events...")
         registerEvents()
 
-        logger.info("Invoking addon entrypoints...")
+        logger.debug("Registering packet listeners...")
+        registerElementsPacket()
+
+        logger.debug("Invoking addon entrypoints...")
         addonLoader.invokeInitEntrypoints()
 
         logger.info("Finished loading EvergreenHUD. Took ${System.currentTimeMillis() - startTime} ms.")
@@ -155,7 +164,7 @@ object EvergreenHUD : ClientModInitializer {
                         }
 
                         if (elementManager.checkForSafety && REVISION in response.blacklisted) {
-                            logger.info("Mod version has been marked as dangerous.")
+                            logger.warn("Mod version has been marked as dangerous.")
                             mc.setScreen(BlacklistedScreen(mc.currentScreen))
                         }
                     }
@@ -178,5 +187,9 @@ object EvergreenHUD : ClientModInitializer {
         }
 
         ServerDamageEntityEventManager(eventBus)
+    }
+
+    override fun onPreLaunch() {
+        MixinExtrasBootstrap.init()
     }
 }

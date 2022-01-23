@@ -24,7 +24,7 @@ import net.minecraft.util.Formatting
 import net.minecraft.util.Identifier
 import net.minecraft.util.registry.Registry
 
-@ElementMeta(id = "POTIONS", name = "PotionHUD", category = "Player", description = "Display potions.")
+@ElementMeta(id = "evergreenhud:potion_hud", name = "PotionHUD", category = "Player", description = "Display potions.")
 class ElementPotionHUD : BackgroundElement() {
     var titleVisible by boolean(true) {
         name = "Visible"

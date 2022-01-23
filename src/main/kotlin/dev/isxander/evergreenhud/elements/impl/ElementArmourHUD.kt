@@ -21,7 +21,7 @@ import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
 
-@ElementMeta(id = "ARMOUR_HUD", name = "Armour HUD", description = "Displays the player's currently equipped armour.", category = "Player")
+@ElementMeta(id = "evergreenhud:armour_hud", name = "Armour HUD", description = "Displays the player's currently equipped armour.", category = "Player")
 class ElementArmourHUD : BackgroundElement() {
     var showHelmet by boolean(true) {
         name = "Show Helmet"

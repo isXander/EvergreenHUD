@@ -15,6 +15,7 @@
     "MixinTitleScreen"
   ],
   "mixins": [
+    "MixinClientPlayNetworkHandler",
     "MixinLivingEntity"
   ]
 }

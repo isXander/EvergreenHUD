@@ -26,7 +26,7 @@ import java.awt.Dimension
 import javax.imageio.ImageIO
 import kotlin.math.min
 
-@ElementMeta(id = "IMAGE", name = "Image", category = "Miscallaneous", description = "Display an image file.")
+@ElementMeta(id = "evergreenhud:image", name = "Image", category = "Miscallaneous", description = "Display an image file.")
 class ElementImage : BackgroundElement() {
     var file by file(EvergreenHUD.dataDir) {
         name = "File"

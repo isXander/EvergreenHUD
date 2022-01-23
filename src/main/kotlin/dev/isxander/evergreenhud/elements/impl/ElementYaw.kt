@@ -16,7 +16,7 @@ import dev.isxander.settxi.impl.int
 import net.minecraft.util.math.MathHelper
 import java.text.DecimalFormat
 
-@ElementMeta(id = "YAW", name = "Yaw", description = "Displays the player's yaw.", category = "Player")
+@ElementMeta(id = "evergreenhud:yaw", name = "Yaw", description = "Displays the player's yaw.", category = "Player")
 class ElementYaw : SimpleTextElement("Yaw", 0) {
     var accuracy by int(2) {
         range = 0..8

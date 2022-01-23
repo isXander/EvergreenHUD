@@ -18,7 +18,7 @@ import net.minecraft.client.util.math.MatrixStack
 import org.lwjgl.glfw.GLFW
 import kotlin.collections.ArrayDeque
 
-@ElementMeta(id = "CPS", name = "Cps Counter", category = "Combat", description = "How many times you click in a second.")
+@ElementMeta(id = "evergreenhud:cps", name = "Cps Counter", category = "Combat", description = "How many times you click in a second.")
 class ElementCps : SimpleTextElement("CPS") {
     var button by option(MouseButton.BOTH) {
         name = "Button"

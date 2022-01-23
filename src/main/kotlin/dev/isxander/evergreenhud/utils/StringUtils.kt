@@ -223,21 +223,6 @@ fun firstUpper(original: String): String {
 /**
  * Converts 'SOME_ENUM' to 'Some Enum'
  */
-fun capitalizeEnum(`in`: String): String {
-    val out = `in`.lowercase()
-    var lastSpace = true
-    val chars: MutableList<String> = ArrayList()
-    for (c in out.toCharArray()) {
-        chars.add(c.toString() + "")
-    }
-    for (i in chars.indices) {
-        val c = chars[i]
-        if (lastSpace) {
-            chars[i] = c.uppercase()
-        }
-        lastSpace = c == " "
-    }
-    val sb = StringBuilder()
-    for (s in chars) sb.append(s)
-    return sb.toString()
+fun capitalizeEnum(string: String): String {
+    return string.split("_").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }.trimEnd()
 }

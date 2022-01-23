@@ -31,14 +31,14 @@ class AddonLoader {
                 try {
                     entrypoint.onPreInitialize()
                 } catch (e: Exception) {
-                    logger.error('\n')
+                    logger.error("\n")
                     logger.error("<------------------------------------------------------------------->")
                     logger.error("Exception occurred in addon pre-init entrypoint: ${addon.name}")
                     e.printStackTrace()
                     logger.error("Please report this issue to ${addon.author}, not the")
                     logger.error("EvergreenHUD developer.")
                     logger.error("<------------------------------------------------------------------->")
-                    logger.error('\n')
+                    logger.error("\n")
                 }
             }
         }
@@ -50,14 +50,14 @@ class AddonLoader {
                 try {
                     entrypoint.onInitialize()
                 } catch (e: Exception) {
-                    logger.error('\n')
+                    logger.error("\n")
                     logger.error("<------------------------------------------------------------------->")
                     logger.error("Exception occurred in addon init entrypoint: ${addon.name}")
                     e.printStackTrace()
                     logger.error("Please report this issue to ${addon.author}, not the")
                     logger.error("EvergreenHUD developer.")
                     logger.error("<------------------------------------------------------------------->")
-                    logger.error('\n')
+                    logger.error("\n")
                 }
             }
         }

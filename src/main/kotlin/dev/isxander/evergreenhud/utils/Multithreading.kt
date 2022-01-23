@@ -19,12 +19,12 @@ val POOL = ThreadPoolExecutor(20, 20, 0L, TimeUnit.SECONDS, LinkedBlockingQueue(
     Thread(r, "EvergreenHUD Thread ${counter.incrementAndGet()}")
 }
 
-fun scheduleAsyncAtFixedRate(runnable: Runnable, initialDelay: Long, delayBetweenExecution: Long, unit: TimeUnit): ScheduledFuture<*> =
-    SCHEDULED_POOL.scheduleAtFixedRate(runnable, initialDelay, delayBetweenExecution, unit)
+fun scheduleAsyncAtFixedRate(initialDelay: Long, delayBetweenExecution: Long, unit: TimeUnit = TimeUnit.MILLISECONDS, action: () -> Unit): ScheduledFuture<*> =
+    SCHEDULED_POOL.scheduleAtFixedRate(action, initialDelay, delayBetweenExecution, unit)
 
 
-fun scheduleAsync(runnable: Runnable, delay: Long, unit: TimeUnit): ScheduledFuture<*> =
-    SCHEDULED_POOL.schedule(runnable, delay, unit)
+fun scheduleAsync(delay: Long, unit: TimeUnit = TimeUnit.MILLISECONDS, action: () -> Unit): ScheduledFuture<*> =
+    SCHEDULED_POOL.schedule(action, delay, unit)
 
 
 fun runAsync(runnable: () -> Unit) =

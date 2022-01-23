@@ -17,7 +17,7 @@ import dev.isxander.evergreenhud.utils.renderEntity
 import dev.isxander.settxi.impl.int
 import net.minecraft.client.util.math.MatrixStack
 
-@ElementMeta(id = "PLAYER_PREVIEW", name = "Player Preview", description = "Show a model of your player.", category = "Player")
+@ElementMeta(id = "evergreenhud:player_preview", name = "Player Preview", description = "Show a model of your player.", category = "Player")
 class ElementPlayerPreview : BackgroundElement() {
     var rotation by int(0) {
         name = "Rotation"

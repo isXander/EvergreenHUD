@@ -14,7 +14,7 @@ import dev.isxander.evergreenhud.utils.mc
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.util.registry.Registry
 
-@ElementMeta(id = "BIOME", name = "Biome Display", description = "Displays the current biome you are in.", category = "World")
+@ElementMeta(id = "evergreenhud:biome", name = "Biome Display", description = "Displays the current biome you are in.", category = "World")
 class ElementBiome : SimpleTextElement("Biome") {
     override fun calculateValue(): String {
         val player = mc.player ?: return "Unknown"

@@ -14,7 +14,7 @@ import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-@ElementMeta(id = "FRAME_CONSISTENCY", name = "Frame Consistency", category = "Simple", description = "Displays how consistent your frame times are.")
+@ElementMeta(id = "evergreenhud:frame_consistency", name = "Frame Consistency", category = "Simple", description = "Displays how consistent your frame times are.")
 class ElementFrameConsistency : SimpleTextElement("Consistency") {
     private val frameTimes by FrameTimeHelper { isAdded }
 

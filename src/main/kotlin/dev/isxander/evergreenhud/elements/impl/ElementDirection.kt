@@ -14,7 +14,7 @@ import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
 
-@ElementMeta(id = "DIRECTION", name = "Direction", category = "Player", description = "Which way the player is facing.")
+@ElementMeta(id = "evergreenhud:direction", name = "Direction", category = "Player", description = "Which way the player is facing.")
 class ElementDirection : SimpleTextElement("Direction") {
     var abbreviated by boolean(false) {
         name = "Abbreviated"

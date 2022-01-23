@@ -15,13 +15,19 @@ import net.minecraft.entity.Entity
 import net.minecraft.entity.LivingEntity
 import net.minecraft.entity.damage.DamageSource
 import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.network.MessageType
 import net.minecraft.network.Packet
 import net.minecraft.network.listener.PacketListener
+import net.minecraft.text.Text
 import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
+import java.util.*
 
 abstract class Event
+abstract class CancelableEvent : Event() {
+    var canceled = false
+}
 
 class ClientTickEvent : Event()
 
@@ -39,3 +45,5 @@ class ClientDisconnectEvent : Event()
 
 data class ClientPlaceBlockEvent(val player: ClientPlayerEntity, val world: ClientWorld, val hand: Hand, val hitResult: BlockHitResult) : Event()
 data class ClientBreakBlockEvent(val pos: BlockPos) : Event()
+
+data class ClientReceivedChatMessage(val type: MessageType, val text: Text, val sender: UUID) : CancelableEvent()

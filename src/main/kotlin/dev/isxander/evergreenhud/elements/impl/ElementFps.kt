@@ -16,7 +16,7 @@ import dev.isxander.settxi.impl.option
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-@ElementMeta(id = "FPS", name = "FPS Display", category = "Simple", description = "Display how many times your screen is updating every second.")
+@ElementMeta(id = "evergreenhud:fps", name = "FPS Display", category = "Simple", description = "Display how many times your screen is updating every second.")
 class ElementFps : SimpleTextElement("FPS") {
     var averageMethod by option(AverageMethod.Mean) {
         name = "Average Method"

@@ -19,7 +19,7 @@ import java.text.DecimalFormat
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-@ElementMeta(id = "SPEED", name = "Speed", category = "Player", description = "Display how fast you are moving.")
+@ElementMeta(id = "evergreenhud:speed", name = "Speed", category = "Player", description = "Display how fast you are moving.")
 class ElementSpeed : SimpleTextElement("Speed") {
     var useX by boolean(true) {
         name = "Use X"

@@ -12,7 +12,7 @@ import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 
-@ElementMeta(id = "DAY_COUNTER", name = "Day Counter", description = "Displays the current day in the world.", category = "World")
+@ElementMeta(id = "evergreenhud:day", name = "Day Counter", description = "Displays the current day in the world.", category = "World")
 class ElementDay : SimpleTextElement("Day") {
     override fun calculateValue(): String {
         if (mc.world == null) return "0"

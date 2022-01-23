@@ -110,7 +110,7 @@ fun Text.extractString(): String {
     return when (this) {
         is TranslatableText -> I18n.translate(key, args)
         is KeybindText -> I18n.translate(key)
-        is LiteralText -> this.rawString
+        is LiteralText -> this.string
         else -> throw UnsupportedOperationException("ScoreText is not supported")
     }
 }

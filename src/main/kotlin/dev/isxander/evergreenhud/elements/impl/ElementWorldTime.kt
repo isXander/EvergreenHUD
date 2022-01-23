@@ -16,7 +16,7 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-@ElementMeta(id = "WORLD_TIME", name = "World Time", description = "Show the current time in-game.", category = "World")
+@ElementMeta(id = "evergreenhud:world_time", name = "World Time", description = "Show the current time in-game.", category = "World")
 class ElementWorldTime : SimpleTextElement("Time") {
     var twelveHour by boolean(false) {
         name = "Twelve Hour"

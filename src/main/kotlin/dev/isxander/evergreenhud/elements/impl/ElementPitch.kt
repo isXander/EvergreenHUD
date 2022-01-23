@@ -15,7 +15,7 @@ import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.int
 import java.text.DecimalFormat
 
-@ElementMeta(id = "PITCH", name = "Pitch", description = "Displays the player's pitch.", category = "Player")
+@ElementMeta(id = "evergreenhud:pitch", name = "Pitch", description = "Displays the player's pitch.", category = "Player")
 class ElementPitch : SimpleTextElement("Pitch", 0) {
     var accuracy by int(2) {
         range = 0..8

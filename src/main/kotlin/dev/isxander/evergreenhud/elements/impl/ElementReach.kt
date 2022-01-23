@@ -19,7 +19,7 @@ import dev.isxander.settxi.impl.string
 import net.minecraft.entity.projectile.ProjectileUtil
 import java.text.DecimalFormat
 
-@ElementMeta(id = "REACH", name = "Reach Display", description = "Displays the reach of the last attacked entity.", category = "Player")
+@ElementMeta(id = "evergreenhud:reach", name = "Reach Display", description = "Displays the reach of the last attacked entity.", category = "Player")
 class ElementReach : SimpleTextElement("Reach") {
     var trailingZeros by boolean(false) {
         name = "Trailing Zeros"

@@ -6,6 +6,8 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-const val kotlinVersion = "1.6.10"
-const val ktorVersion = "2.0-eap-298"
-const val kotlinxSerializationVersion = "1.3.+"
+package dev.isxander.evergreenhud.packets
+
+import net.minecraft.util.Identifier
+
+val ELEMENTS_PACKET = Identifier("elements")

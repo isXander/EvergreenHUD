@@ -17,7 +17,7 @@ import dev.isxander.settxi.impl.int
 import dev.isxander.settxi.impl.string
 import net.minecraft.entity.Entity
 
-@ElementMeta(id = "COMBO_DISPLAY", name = "Combo Display", description = "Display how many hits you get on a player before they hit you.", category = "Combat")
+@ElementMeta(id = "evergreenhud:combo_display", name = "Combo Display", description = "Display how many hits you get on a player before they hit you.", category = "Combat")
 class ElementCombo : SimpleTextElement("Combo") {
     var discardTime by int(3) {
         name = "Discard Time"

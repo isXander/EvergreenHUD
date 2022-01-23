@@ -20,7 +20,7 @@ import net.minecraft.util.Hand
 import net.minecraft.util.hit.BlockHitResult
 import net.minecraft.util.math.BlockPos
 
-@ElementMeta(id = "PLACE_COUNT", name = "Block Place Count", description = "Displays the number of blocks you have placed in a certain interval.", category = "World")
+@ElementMeta(id = "evergreenhud:place_count", name = "Block Place Count", description = "Displays the number of blocks you have placed in a certain interval.", category = "World")
 class ElementPlaceCount : SimpleTextElement("Blocks") {
     var interval by int(1000) {
         name = "Interval"

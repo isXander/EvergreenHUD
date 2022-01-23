@@ -59,13 +59,16 @@ dependencies {
     minecraft("com.mojang:minecraft:1.18.1")
     mappings("net.fabricmc:yarn:1.18.1+build.+:v2")
     modImplementation("net.fabricmc:fabric-loader:0.12.+")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.46.0+1.18")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.46.1+1.18")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
 
     modImplementation("io.ejekta:kambrik:3.1.0-1.18")
     includeModApi("gg.essential:elementa-1.18-fabric:414")
 
     modImplementation("com.terraformersmc:modmenu:3.0.1")
+
+    includeApi("com.github.LlamaLad7:MixinExtras:0.0.3")
+    annotationProcessor("com.github.LlamaLad7:MixinExtras:0.0.3")
 }
 
 blossom {

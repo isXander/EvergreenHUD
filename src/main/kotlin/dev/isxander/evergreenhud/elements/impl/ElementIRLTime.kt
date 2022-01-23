@@ -14,7 +14,7 @@ import dev.isxander.settxi.impl.boolean
 import java.text.SimpleDateFormat
 import java.util.*
 
-@ElementMeta(id = "IRL_TIME", name = "IRL Time", description = "Show the current time in real life.", category = "Miscallaneous")
+@ElementMeta(id = "evergreenhud:irl_time", name = "IRL Time", description = "Show the current time in real life.", category = "Miscallaneous")
 class ElementIRLTime : SimpleTextElement("Time") {
     var twelveHour by boolean(false) {
         name = "Twelve Hour"

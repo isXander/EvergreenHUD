@@ -17,7 +17,7 @@ import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.int
 import net.minecraft.client.util.math.MatrixStack
 
-@ElementMeta(id = "PING", name = "Ping", description = "Displays the quality of your connection.", category = "Server")
+@ElementMeta(id = "evergreenhud:ping", name = "Ping", description = "Displays the quality of your connection.", category = "Server")
 class ElementPing : SimpleTextElement("Ping") {
     var interval by int(20) {
         name = "Backup Interval"

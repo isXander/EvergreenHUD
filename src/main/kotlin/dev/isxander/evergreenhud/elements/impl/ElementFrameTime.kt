@@ -16,7 +16,7 @@ import dev.isxander.settxi.impl.option
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-@ElementMeta(id = "FRAME_TIME", name = "Frame Time", category = "Simple", description = "Display how long it took to render the current frame.")
+@ElementMeta(id = "evergreenhud:frame_time", name = "Frame Time", category = "Simple", description = "Display how long it took to render the current frame.")
 class ElementFrameTime : SimpleTextElement("Frame Time") {
     var averageMethod by option(AverageMethod.Mean) {
         name = "Average Method"

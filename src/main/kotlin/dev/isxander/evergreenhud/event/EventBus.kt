@@ -36,23 +36,27 @@ class EventBus {
     }
 
     @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : Event> post(event: T) {
+    inline fun <reified T : Event> post(event: T): T {
         if (listeners.containsKey(T::class)) {
             listeners[T::class]!!.forEach {
                 (it as EventListener<T, *>).onEvent(event)
             }
         }
+
+        return event
     }
 
     /* Java Users are annoying */
 
-    fun <T : Event> post(type: Class<T>, event: T) {
+    fun <T : Event> post(type: Class<T>, event: T): T {
         val kotlinClass = type.kotlin
         if (listeners.containsKey(kotlinClass)) {
             listeners[kotlinClass]!!.forEach {
                 (it as EventListener<T, *>).onEvent(event)
             }
         }
+
+        return event
     }
 
     @JvmOverloads
