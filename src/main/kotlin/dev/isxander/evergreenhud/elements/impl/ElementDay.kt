@@ -15,7 +15,7 @@ import dev.isxander.evergreenhud.utils.mc
 @ElementMeta(id = "evergreenhud:day", name = "Day Counter", description = "Displays the current day in the world.", category = "World")
 class ElementDay : SimpleTextElement("Day") {
     override fun calculateValue(): String {
-        if (mc.world == null) return "0"
-        return (mc.world!!.timeOfDay / 24000L).toString()
+        if (mc.theWorld == null) return "0"
+        return (mc.theWorld!!.worldTime / 24000L).toString()
     }
 }

@@ -16,8 +16,11 @@ import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.int
 import dev.isxander.settxi.impl.string
-import net.minecraft.entity.projectile.ProjectileUtil
+import net.minecraft.entity.Entity
+import net.minecraft.util.AxisAlignedBB
+import net.minecraft.util.Vec3
 import java.text.DecimalFormat
+
 
 @ElementMeta(id = "evergreenhud:reach", name = "Reach Display", description = "Displays the reach of the last attacked entity.", category = "Player")
 class ElementReach : SimpleTextElement("Reach") {
@@ -49,19 +52,10 @@ class ElementReach : SimpleTextElement("Reach") {
 
     private var lastHit = System.currentTimeMillis()
 
-    var reach: String? by eventReturnable<ClientDamageEntityEvent, String>(noHitMessage, { it.attacker == mc.player }) { event ->
-        val maxReach = 6.0
-
-        val cameraPos = event.attacker.getCameraPosVec(mc.tickDelta)
-        val rotationVec = event.attacker.getRotationVec(1f)
-        val reachCamera = cameraPos.add(rotationVec.multiply(maxReach))
-        val box = event.attacker.boundingBox.stretch(rotationVec.multiply(maxReach)).expand(1.0)
-
-        val hitResult = ProjectileUtil.raycast(event.attacker, cameraPos, reachCamera, box, { it == event.victim }, maxReach * maxReach) ?: return@eventReturnable reach
-
-        val reach = cameraPos.distanceTo(hitResult.pos)
+    var reach: String? by eventReturnable<ClientDamageEntityEvent, String>(noHitMessage, { it.attacker == mc.thePlayer }) { event ->
+        val hitResult = getReachDistanceFromEntity(event.attacker) ?: return@eventReturnable reach
         lastHit = System.currentTimeMillis()
-        getDecimalFormat().format(reach)
+        getDecimalFormat().format(hitResult)
     }
 
     val clientTickEvent by event<ClientTickEvent> {
@@ -80,5 +74,36 @@ class ElementReach : SimpleTextElement("Reach") {
         val formatBuilder = StringBuilder(if (accuracy < 1) formatter else "$formatter.")
         for (i in 0 until accuracy) formatBuilder.append(formatter)
         return DecimalFormat(formatBuilder.toString())
+    }
+
+    private fun getReachDistanceFromEntity(entity: Entity): Double? {
+        mc.mcProfiler.startSection("Calculate Reach Dist")
+
+        // How far will ray travel before ending
+        val maxSize = 6.0 // use 6 because creative mode is 6 and any more is literally reach
+        // Bounding box of entity
+        val otherBB: AxisAlignedBB = entity.entityBoundingBox
+        // This is where people found out that F3+B is not accurate for hitboxes,
+        // it makes hitboxes bigger by certain amount
+        val collisionBorderSize: Float = entity.collisionBorderSize
+        val otherHitbox = otherBB.expand(
+            collisionBorderSize.toDouble(),
+            collisionBorderSize.toDouble(),
+            collisionBorderSize.toDouble()
+        )
+        // Not quite sure what the difference is between these two vectors
+        // In actual code where this is taken from, partialTicks is always 1.0
+        // So this won't decrease accuracy
+        val eyePos = mc.thePlayer.getPositionEyes(1.0f)
+        val lookPos = mc.thePlayer.getLook(1.0f)
+        // Get vector for raycast
+        val adjustedPos = eyePos.addVector(lookPos.xCoord * maxSize, lookPos.yCoord * maxSize, lookPos.zCoord * maxSize)
+        val movingObjectPosition = otherHitbox.calculateIntercept(eyePos, adjustedPos) ?: return null
+        // This will trigger if hit distance is more than maxSize
+        val otherEntityVec: Vec3 = movingObjectPosition.hitVec
+        // finally calculate distance between both vectors
+        val dist = eyePos.distanceTo(otherEntityVec)
+        mc.mcProfiler.endSection()
+        return dist
     }
 }

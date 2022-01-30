@@ -13,15 +13,18 @@ import dev.isxander.evergreenhud.config.element.ElementSerializer
 import dev.isxander.evergreenhud.event.Event
 import dev.isxander.evergreenhud.event.EventListener
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
-import dev.isxander.settxi.Setting
-import dev.isxander.settxi.impl.*
-import dev.isxander.evergreenhud.utils.*
+import dev.isxander.evergreenhud.utils.HitBox2D
+import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.evergreenhud.utils.position.ZonedPosition
+import dev.isxander.settxi.Setting
+import dev.isxander.settxi.impl.boolean
+import dev.isxander.settxi.impl.float
 import dev.isxander.settxi.serialization.ConfigProcessor
 import kotlinx.serialization.Serializable
-import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.client.gui.screen.ChatScreen
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.gui.GuiChat
+import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+
 
 @Serializable(ElementSerializer::class)
 abstract class Element : ConfigProcessor {
@@ -69,7 +72,7 @@ abstract class Element : ConfigProcessor {
         category = "Visibility"
         description = "Render the element if you are in the replay viewer."
 
-        depends { FabricLoader.getInstance().isModLoaded("replaymod") }
+        depends { EvergreenHUD.isReplayModLoaded }
     }
 
     /* called when element is added */
@@ -82,19 +85,19 @@ abstract class Element : ConfigProcessor {
         isAdded = false
     }
 
-    abstract fun render(matrices: MatrixStack, renderOrigin: RenderOrigin)
+    abstract fun render(renderOrigin: RenderOrigin)
 
     abstract fun calculateHitBox(scale: Float): HitBox2D
     protected open val hitboxWidth = 10f
     protected open val hitboxHeight = 10f
 
     open fun canRenderInHUD(): Boolean {
-        val inChat = mc.currentScreen is ChatScreen
-        val inDebug = mc.options.debugEnabled
+        val inChat = mc.currentScreen is GuiChat
+        val inDebug = mc.gameSettings.showDebugInfo
         val inGui = mc.currentScreen != null && mc.currentScreen !is ElementDisplay && !inChat
-        val inReplayViewer = EvergreenHUD.isReplayModLoaded && mc.world != null && !mc.isInSingleplayer && mc.currentServerEntry == null && !mc.isConnectedToRealms
+        val inReplayViewer = EvergreenHUD.isReplayModLoaded && mc.theWorld != null && !mc.isSingleplayer && mc.currentServerData == null && !mc.isConnectedToRealms
 
-        return (mc.mouse.isCursorLocked && !inDebug)
+        return (mc.inGameHasFocus && !inDebug)
                 || (showInChat && inChat)
                 || (showInDebug && inDebug && !(!showInChat && inChat))
                 || (showUnderGui && inGui)
@@ -119,6 +122,23 @@ abstract class Element : ConfigProcessor {
     companion object {
         protected val utilities = ElementUtilitySharer()
         protected val eventBus by EvergreenHUD::eventBus
+    }
+
+    fun drawTexturedModalRectF(x: Float, y: Float, textureX: Int, textureY: Int, width: Float, height: Float) {
+        val f = 0.00390625f
+        val f1 = 0.00390625f
+        val tessellator = Tessellator.getInstance()
+        val worldrenderer = tessellator.worldRenderer
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX)
+        worldrenderer.pos(x.toDouble(), (y + height).toDouble(), 0.0)
+            .tex((textureX * f).toDouble(), ((textureY + height) * f1).toDouble()).endVertex()
+        worldrenderer.pos((x + width).toDouble(), (y + height).toDouble(), 0.0)
+            .tex(((textureX + width) * f).toDouble(), ((textureY + height) * f1).toDouble()).endVertex()
+        worldrenderer.pos((x + width).toDouble(), y.toDouble(), 0.0)
+            .tex(((textureX + width) * f).toDouble(), (textureY * f1).toDouble()).endVertex()
+        worldrenderer.pos((x + 0).toDouble(), (y + 0).toDouble(), 0.0)
+            .tex((textureX * f).toDouble(), (textureY * f1).toDouble()).endVertex()
+        tessellator.draw()
     }
 }
 

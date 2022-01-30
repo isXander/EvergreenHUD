@@ -11,9 +11,12 @@ package dev.isxander.evergreenhud.elements.type
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.settings.color
-import dev.isxander.evergreenhud.utils.*
-import dev.isxander.settxi.impl.*
-import net.minecraft.client.util.math.MatrixStack
+import dev.isxander.evergreenhud.utils.Color
+import dev.isxander.evergreenhud.utils.HitBox2D
+import dev.isxander.evergreenhud.utils.drawBorderLines
+import dev.isxander.settxi.impl.boolean
+import dev.isxander.settxi.impl.float
+import net.minecraft.client.gui.Gui
 
 abstract class BackgroundElement : Element() {
     var backgroundColor: Color by color(Color.black.withAlpha(100)) {
@@ -104,7 +107,7 @@ abstract class BackgroundElement : Element() {
         range = 0f..6f
     }
 
-    override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
+    override fun render(renderOrigin: RenderOrigin) {
         val bgCol = backgroundColor
         val outlineCol = outlineColor
 
@@ -112,10 +115,11 @@ abstract class BackgroundElement : Element() {
         val hitbox = calculateHitBox(scale)
 
         if (backgroundColor.alpha > 0) {
-            matrices.fill(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, bgCol.rgba)
+            Gui.drawRect(hitbox.x1.toInt(),
+                hitbox.y1.toInt(), (hitbox.x1 + hitbox.width).toInt(), (hitbox.y1 + hitbox.height).toInt(), bgCol.rgba)
         }
         if (outlineEnabled) {
-            matrices.drawBorderLines(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.height, outlineThickness, outlineCol.rgba)
+            drawBorderLines(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.height, outlineThickness, outlineCol.rgba)
         }
     }
 

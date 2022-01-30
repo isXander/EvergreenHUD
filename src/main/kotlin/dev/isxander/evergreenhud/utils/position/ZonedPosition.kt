@@ -9,7 +9,7 @@
 package dev.isxander.evergreenhud.utils.position
 
 import dev.isxander.evergreenhud.utils.Rectangle
-import dev.isxander.evergreenhud.utils.mc
+import gg.essential.universal.UResolution
 import kotlinx.serialization.Serializable
 
 @Serializable(ZonedPositionSerializer::class)
@@ -34,15 +34,15 @@ class ZonedPosition(
         }
 
     var rawX: Float
-        get() = scaledX * mc.window.scaledWidth
+        get() = scaledX * UResolution.scaledWidth
         set(x) {
-            scaledX = x / mc.window.scaledWidth
+            scaledX = x / UResolution.scaledWidth
         }
 
     var rawY: Float
-        get() = scaledY * mc.window.scaledHeight
+        get() = scaledY * UResolution.scaledHeight
         set(y) {
-            scaledY = y / mc.window.scaledHeight
+            scaledY = y / UResolution.scaledHeight
         }
 
     override fun toString(): String {
@@ -50,7 +50,7 @@ class ZonedPosition(
     }
 
     companion object {
-        fun rawPositioning(x: Float, y: Float, scale: Float = 1f, origin: Zone = calculateZone(x / mc.window.scaledWidth, y / mc.window.scaledHeight)): ZonedPosition =
+        fun rawPositioning(x: Float, y: Float, scale: Float = 1f, origin: Zone = calculateZone(x / UResolution.scaledWidth, y / UResolution.scaledHeight)): ZonedPosition =
             scaledPositioning(calculateScaledZoneX(x, origin), calculateScaledZoneY(y, origin), scale, origin)
 
         fun scaledPositioning(x: Float, y: Float, scale: Float = 1f, zone: Zone = calculateZone(x, y)): ZonedPosition =
@@ -68,9 +68,9 @@ class ZonedPosition(
             (scaledY - zone.y1) / (zone.y2 - zone.y1)
 
         fun calculateScaledZoneX(rawX: Float, zone: Zone): Float =
-            getZoneX(rawX / mc.window.scaledWidth, zone)
+            getZoneX(rawX / UResolution.scaledWidth, zone)
         fun calculateScaledZoneY(rawY: Float, zone: Zone): Float =
-            getZoneY(rawY / mc.window.scaledHeight, zone)
+            getZoneY(rawY / UResolution.scaledHeight, zone)
 
         fun center(scale: Float = 1f) = scaledPositioning(0.5f, 0.5f, scale)
     }

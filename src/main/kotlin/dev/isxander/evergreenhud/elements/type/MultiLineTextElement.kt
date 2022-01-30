@@ -13,8 +13,8 @@ import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.utils.drawString
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.int
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.Formatting
+import gg.essential.universal.ChatColor
+import net.minecraft.client.renderer.GlStateManager
 import kotlin.math.max
 
 abstract class MultiLineTextElement
@@ -36,7 +36,7 @@ abstract class MultiLineTextElement
             if (brackets) value.replaceAll { line: String -> "[$line]" }
 
             if (!title.equals("", true)) {
-                value.add(0, Formatting.BOLD.toString() + title)
+                value.add(0, ChatColor.BOLD + title)
             }
             return value
         }
@@ -46,27 +46,26 @@ abstract class MultiLineTextElement
     override val hitboxWidth: Float
         get() {
             var width = 10
-            for (line in cachedDisplayString!!) width = max(width, mc.textRenderer.getWidth(line))
+            for (line in cachedDisplayString!!) width = max(width, mc.fontRendererObj.getStringWidth(line))
             return width.toFloat()
         }
     override val hitboxHeight: Float
-        get() = max((mc.textRenderer.fontHeight * cachedDisplayString!!.size) + (verticalSpacing * (cachedDisplayString!!.size - 1)), 10).toFloat()
+        get() = max((mc.fontRendererObj.FONT_HEIGHT * cachedDisplayString!!.size) + (verticalSpacing * (cachedDisplayString!!.size - 1)), 10).toFloat()
 
-    override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
-        super.render(matrices, renderOrigin)
+    override fun render(renderOrigin: RenderOrigin) {
+        super.render(renderOrigin)
 
-        matrices.push()
-        matrices.scale(position.scale, position.scale, 1f)
+        GlStateManager.pushMatrix()
+        GlStateManager.scale(position.scale, position.scale, 1f)
 
         val x = position.rawX / position.scale
         val y = position.rawY / position.scale
 
         for ((i, line) in cachedDisplayString!!.withIndex()) {
-            val posX = x - (if (alignment == Alignment.RIGHT) mc.textRenderer.getWidth(line) else 0)
-            val posY = y + (mc.textRenderer.fontHeight * i) + (verticalSpacing * i)
+            val posX = x - (if (alignment == Alignment.RIGHT) mc.fontRendererObj.getStringWidth(line) else 0)
+            val posY = y + (mc.fontRendererObj.FONT_HEIGHT * i) + (verticalSpacing * i)
 
             drawString(
-                matrices,
                 line,
                 posX, posY,
                 textColor.rgba,
@@ -77,6 +76,6 @@ abstract class MultiLineTextElement
             )
         }
 
-        matrices.pop()
+        GlStateManager.popMatrix()
     }
 }

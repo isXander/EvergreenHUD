@@ -10,19 +10,21 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
-import dev.isxander.evergreenhud.event.ClientDamageEntityEvent
 import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.EntityDamagedEvent
-import dev.isxander.evergreenhud.event.ServerDamageEntityEvent
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.evergreenhud.utils.renderEntity
 import dev.isxander.settxi.impl.int
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.LivingEntity
-import net.minecraft.entity.damage.EntityDamageSource
+import net.minecraft.entity.EntityLivingBase
+import net.minecraft.util.EntityDamageSource
 
-@ElementMeta(id = "evergreenhud:attacker_preview", name = "Attacker Preview", description = "Show the model of the person who is currently attacking you.", category = "Player")
+@ElementMeta(
+    id = "evergreenhud:attacker_preview",
+    name = "Attacker Preview",
+    description = "Show the model of the person who is currently attacking you.",
+    category = "Player"
+)
 class ElementAttackerPreview : BackgroundElement() {
     var rotation by int(0) {
         name = "Rotation"
@@ -36,9 +38,11 @@ class ElementAttackerPreview : BackgroundElement() {
 
     private var lastHit = 0L
 
-    var attacker by eventReturnable<EntityDamagedEvent, LivingEntity?>(null, { it.entity == mc.player && it.source is EntityDamageSource }) {
+    var attacker by eventReturnable<EntityDamagedEvent, EntityLivingBase?>(
+        null,
+        { it.entity == mc.thePlayer && it.source is EntityDamageSource }) {
         lastHit = System.currentTimeMillis()
-        (it.source as EntityDamageSource).attacker as? LivingEntity
+        (it.source as EntityDamageSource).sourceOfDamage as? EntityLivingBase
     }
 
     val clientTickEvent by event<ClientTickEvent> {
@@ -47,18 +51,16 @@ class ElementAttackerPreview : BackgroundElement() {
         }
     }
 
-    override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
-        val entity = attacker ?: mc.player?.takeIf { renderOrigin == RenderOrigin.GUI } ?: return
-        val size = position.scale * 50
-        val rotation = 360f - rotation
+    override fun render(renderOrigin: RenderOrigin) {
+        val entity = attacker ?: mc.thePlayer?.takeIf { renderOrigin == RenderOrigin.GUI } ?: return
 
-        super.render(matrices, renderOrigin)
+        super.render(renderOrigin)
 
         entity.renderEntity(
             position.rawX + hitboxWidth / 2 * position.scale,
             position.rawY + hitboxHeight * position.scale - 15f * position.scale,
-            size,
-            rotation,
+            position.scale,
+            rotation
         )
     }
 }

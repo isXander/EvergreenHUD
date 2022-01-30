@@ -1,0 +1,16 @@
+[
+  {
+    "modid": "${mod_id}",
+    "name": "${mod_name}",
+    "description": "One of the most loved HUD mods for Minecraft.",
+    "version": "${mod_version}",
+    "mcversion": "1.8.9",
+    "url": "https://modrinth.com/mod/evergreenhud/",
+    "updateUrl": "https://modrinth.com/mod/evergreenhud/",
+    "authorList": ["isXander", "Wyvest"],
+    "credits": "",
+    "logoFile": "assets/evergreenhud/evergreenhud.png",
+    "screenshots": [],
+    "dependencies": []
+  }
+]

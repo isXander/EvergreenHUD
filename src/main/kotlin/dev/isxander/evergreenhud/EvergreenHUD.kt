@@ -8,38 +8,37 @@
 
 package dev.isxander.evergreenhud
 
+import cc.woverflow.wcore.utils.command
 import dev.isxander.evergreenhud.addons.AddonLoader
-import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.config.profile.ProfileManager
 import dev.isxander.evergreenhud.elements.Element
-import dev.isxander.evergreenhud.event.ClientTickEvent
+import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.event.EventBus
-import dev.isxander.evergreenhud.event.RenderHudEvent
+import dev.isxander.evergreenhud.event.Events
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
 import dev.isxander.evergreenhud.gui.screens.BlacklistedScreen
 import dev.isxander.evergreenhud.gui.screens.ElementDisplay
 import dev.isxander.evergreenhud.gui.screens.UpdateScreen
 import dev.isxander.evergreenhud.gui.screens.test.PositionTest
-import dev.isxander.evergreenhud.packets.client.registerElementsPacket
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
-import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
-import io.ejekta.kambrik.Kambrik
-import io.ejekta.kambrik.command.suggestionList
-import io.ejekta.kambrik.text.textLiteral
+import dev.isxander.evergreenhud.utils.logger
+import dev.isxander.evergreenhud.utils.mc
+import gg.essential.api.EssentialAPI
+import gg.essential.api.utils.Multithreading
 import kotlinx.coroutines.runBlocking
-import net.fabricmc.api.ClientModInitializer
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
-import net.fabricmc.loader.api.FabricLoader
-import net.minecraft.SharedConstants
-import net.minecraft.util.Identifier
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.fml.common.Loader
+import net.minecraftforge.fml.common.Mod
+import net.minecraftforge.fml.common.event.FMLInitializationEvent
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import org.bundleproject.libversion.Version
-import org.lwjgl.glfw.GLFW
 import java.io.File
 
-object EvergreenHUD : ClientModInitializer {
+
+@Mod(name = EvergreenHUD.NAME, modid = EvergreenHUD.ID, version = EvergreenHUD.VERSION_STR, modLanguageAdapter = "gg.essential.api.utils.KotlinAdapter")
+object EvergreenHUD {
     const val NAME = "__GRADLE_NAME__"
     const val ID = "__GRADLE_ID__"
     const val REVISION = "__GRADLE_REVISION__"
@@ -51,7 +50,7 @@ object EvergreenHUD : ClientModInitializer {
             if (VERSION.prerelease == null) ReleaseChannel.RELEASE
             else ReleaseChannel.BETA
 
-    val dataDir = File(mc.runDirectory, "evergreenhud")
+    val dataDir = File(mc.mcDataDir, "evergreenhud")
     val eventBus = EventBus()
     val locrawManager = LocrawManager()
 
@@ -59,7 +58,7 @@ object EvergreenHUD : ClientModInitializer {
     lateinit var elementManager: ElementManager private set
     lateinit var addonLoader: AddonLoader private set
 
-    val isReplayModLoaded = FabricLoader.getInstance().isModLoaded("replaymod")
+    val isReplayModLoaded by lazy { Loader.isModLoaded("replaymod") }
 
     var postInitialized = false
         private set
@@ -70,8 +69,9 @@ object EvergreenHUD : ClientModInitializer {
      * @since 2.0
      * @author isXander
      */
-    override fun onInitializeClient() {
-        logger.info("Starting EvergreenHUD $VERSION_STR for ${SharedConstants.getGameVersion().name}")
+    @Mod.EventHandler
+    fun onInitializeClient(event: FMLInitializationEvent) {
+        logger.info("Starting EvergreenHUD $VERSION_STR for ${MinecraftForge.MC_VERSION}")
 
         val startTime = System.currentTimeMillis()
 
@@ -82,8 +82,6 @@ object EvergreenHUD : ClientModInitializer {
 
         logger.debug("Discovering addons...")
         addonLoader = AddonLoader()
-        logger.debug("Adding addon element sources...")
-        addonLoader.addSources(elementManager)
         logger.debug("Invoking pre-initialization addon entrypoints...")
         addonLoader.invokePreinitEntrypoints()
 
@@ -96,79 +94,57 @@ object EvergreenHUD : ClientModInitializer {
 
         logger.debug("Registering hooks...")
 
-        Kambrik.Command.addClientCommand("evergreenhud") {
-            runs {
-                GuiHandler.displayGui(ElementDisplay())
+        command("evergreenhud", aliases = arrayListOf("evergreen", "egh")) {
+            main {
+                EssentialAPI.getGuiUtil().openScreen(ElementDisplay(mc.currentScreen))
             }
-
-            if (FabricLoader.getInstance().isDevelopmentEnvironment) {
+            if (EssentialAPI.getMinecraftUtil().isDevelopment()) {
                 "test" {
-                    "position" runs {
-                        GuiHandler.displayGui(PositionTest())
+                    action = {
+                        if (it.isNotEmpty() && it[0] == "position") {
+                            EssentialAPI.getGuiUtil().openScreen(PositionTest())
+                        }
                     }
                 }
             }
-
             "add" {
-                val availableIds = suggestionList {
-                    elementManager.availableElements.values
-                        .map { it.id }
-                        .filter {
-                            it !in (mc.currentServerEntry?.address
-                                ?.let { address -> elementManager.blacklistedElements[address] } ?: emptyList())
+                action = { array ->
+                    val availableIds = elementManager.availableElements.values.map { it.id }
+                    println(availableIds)
+                    if (array.isNotEmpty()) {
+                        println(array[0])
+                        for (id in availableIds) {
+                            if (array[0].lowercase() == id.lowercase()) {
+                                val element = elementManager.getNewElementInstance<Element>(id)!!
+                                elementManager.addElement(element)
+                                elementManager.elementConfig.save()
+                            }
                         }
-                        .map { Identifier(it) }
-                }
-                argIdentifier("id", availableIds) { argId ->
-                    runs {
-                        val id = argId()
-                        val element = elementManager.getNewElementInstance<Element>(id.toString())!!
-                        elementManager.addElement(element)
-                        elementManager.elementConfig.save()
                     }
                 }
             }
-
             "remove" {
-                argIdentifier("id", suggestionList { elementManager.currentElements.map { Identifier(it.metadata.id) } }) { argId ->
-                    argInt("index") { argIndex ->
-                        runs {
-                            val id = argId()
-                            val index = argIndex()
-                            elementManager.removeElement(elementManager.currentElements.filter { it.metadata.id == id.toString() }[index])
-                            elementManager.elementConfig.save()
+                action = {
+                    val elements = elementManager.currentElements
+                    if (it.size == 2) {
+                        for (id in elements) {
+                            if (it[0] == id.metadata.id) {
+                                if (it[1].toIntOrNull() != null) {
+                                    elementManager.removeElement(elementManager.currentElements.filter { yes -> yes.metadata.id == id.toString() }[it[1].toInt()])
+                                    elementManager.elementConfig.save()
+                                }
+                            }
                         }
                     }
                 }
-            }
-        }
-
-        Kambrik.Input.registerKeyboardBinding(
-            GLFW.GLFW_KEY_HOME,
-            keyTranslation = "evergreenhud.key.opengui",
-            keyCategory = "evergreenhud.keycategory"
-        ) {
-            onDown {
-                mc.setScreen(ElementDisplay())
-            }
-        }
-
-        Kambrik.Input.registerKeyboardBinding(
-            GLFW.GLFW_KEY_UNKNOWN,
-            keyTranslation = "evergreenhud.key.toggle",
-            keyCategory = "evergreenhud.keycategory"
-        ) {
-            onDown {
-                elementManager.enabled = !elementManager.enabled
-                mc.inGameHud?.chatHud?.addMessage(evergreenHudPrefix + textLiteral("Toggled mod."))
             }
         }
 
         logger.debug("Registering events...")
         registerEvents()
 
-        logger.debug("Registering packet listeners...")
-        registerElementsPacket()
+        //logger.debug("Registering packet listeners...")
+        //registerElementsPacket()
 
         logger.debug("Invoking addon entrypoints...")
         addonLoader.invokeInitEntrypoints()
@@ -176,23 +152,24 @@ object EvergreenHUD : ClientModInitializer {
         logger.info("Finished loading EvergreenHUD. Took ${System.currentTimeMillis() - startTime} ms.")
     }
 
-    fun onPostInitialize() {
+    @Mod.EventHandler
+    fun onPostInitialize(event: FMLPostInitializationEvent) {
         if (!postInitialized) {
-            if (!FabricLoader.getInstance().isDevelopmentEnvironment) {
+            if (!EssentialAPI.getMinecraftUtil().isDevelopment()) {
                 if (elementManager.checkForUpdates || elementManager.checkForSafety) {
                     logger.info("Getting information from API...")
-                    runAsync {
+                    Multithreading.runAsync {
                         val response = runBlocking { RepoManager.getResponse() }
 
                         val latest = response.latest[RELEASE_CHANNEL]!!
                         if (elementManager.checkForUpdates && latest < VERSION) {
                             logger.info("Found update.")
-                            mc.setScreen(UpdateScreen(latest.toString(), mc.currentScreen))
+                            mc.displayGuiScreen(UpdateScreen(latest.toString(), mc.currentScreen))
                         }
 
                         if (elementManager.checkForSafety && REVISION in response.blacklisted) {
                             logger.warn("Mod version has been marked as dangerous.")
-                            mc.setScreen(BlacklistedScreen(mc.currentScreen))
+                            mc.displayGuiScreen(BlacklistedScreen(mc.currentScreen))
                         }
                     }
                 }
@@ -205,14 +182,7 @@ object EvergreenHUD : ClientModInitializer {
     }
 
     private fun registerEvents() {
-        ClientTickEvents.END_CLIENT_TICK.register {
-            eventBus.post(ClientTickEvent())
-        }
-
-        HudRenderCallback.EVENT.register { matrices, tickDelta ->
-            eventBus.post(RenderHudEvent(matrices, tickDelta))
-        }
-
+        MinecraftForge.EVENT_BUS.register(Events)
         ServerDamageEntityEventManager(eventBus)
     }
 }

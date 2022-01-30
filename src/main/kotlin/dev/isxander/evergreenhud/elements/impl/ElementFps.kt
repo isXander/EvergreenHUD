@@ -17,7 +17,7 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 @ElementMeta(id = "evergreenhud:fps", name = "FPS Display", category = "Simple", description = "Display how many times your screen is updating every second.")
-class ElementFps : SimpleTextElement("FPS") {
+class ElementFps : SimpleTextElement("FPS", 0) {
     var averageMethod by option(AverageMethod.Mean) {
         name = "Average Method"
         description = "Method in which to calculate the average FPS."

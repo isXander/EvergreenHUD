@@ -12,14 +12,19 @@ import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement
 import dev.isxander.evergreenhud.settings.color
-import dev.isxander.evergreenhud.utils.*
+import dev.isxander.evergreenhud.utils.Color
+import dev.isxander.evergreenhud.utils.drawString
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
-import dev.isxander.settxi.impl.*
-import io.ejekta.kambrik.ext.math.scale
-import io.ejekta.kambrik.text.textLiteral
-import net.minecraft.client.util.math.MatrixStack
+import dev.isxander.evergreenhud.utils.mc
+import dev.isxander.settxi.impl.OptionContainer
+import dev.isxander.settxi.impl.boolean
+import dev.isxander.settxi.impl.int
+import dev.isxander.settxi.impl.option
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.RenderHelper
+import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
-import net.minecraft.item.Items
+
 
 @ElementMeta(id = "evergreenhud:armour_hud", name = "Armour HUD", description = "Displays the player's currently equipped armour.", category = "Player")
 class ElementArmourHUD : BackgroundElement() {
@@ -46,11 +51,6 @@ class ElementArmourHUD : BackgroundElement() {
     var showMainHand by boolean(true) {
         name = "Show Main Hand"
         description = "Render what you're holding in your main hand."
-        category = "ArmourHUD"
-    }
-    var showOffHand by boolean(true) {
-        name = "Show Off-Hand"
-        description = "Render what you're holding in your off-hand."
         category = "ArmourHUD"
     }
 
@@ -96,34 +96,32 @@ class ElementArmourHUD : BackgroundElement() {
     override var hitboxWidth: Float = 10f
     override var hitboxHeight: Float = 10f
 
-    override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
-        val items: List<ItemStack> = if (mc.player != null && renderOrigin != RenderOrigin.GUI) {
-            val inventory = mc.player!!.inventory
+    override fun render(renderOrigin: RenderOrigin) {
+        val items: List<ItemStack> = if (mc.thePlayer != null && renderOrigin != RenderOrigin.GUI) {
+            val inventory = mc.thePlayer!!.inventory
 
             buildList {
-                if (showHelmet) inventory.getArmorStack(3).takeIf { !it.isEmpty }?.let { add(it) }
-                if (showChestplate) inventory.getArmorStack(2).takeIf { !it.isEmpty }?.let { add(it) }
-                if (showLeggings) inventory.getArmorStack(1).takeIf { !it.isEmpty }?.let { add(it) }
-                if (showBoots) inventory.getArmorStack(0).takeIf { !it.isEmpty }?.let { add(it) }
-                if (showMainHand) mc.player!!.mainHandStack.takeIf { !it.isEmpty }?.let { add(it) }
-                if (showOffHand) mc.player!!.offHandStack.takeIf { !it.isEmpty }?.let { add(it) }
+                if (showHelmet) inventory.armorItemInSlot(3).takeIf { it != null }?.let { add(it) }
+                if (showChestplate) inventory.armorItemInSlot(2).takeIf { it != null }?.let { add(it) }
+                if (showLeggings) inventory.armorItemInSlot(1).takeIf { it != null }?.let { add(it) }
+                if (showBoots) inventory.armorItemInSlot(0).takeIf { it != null }?.let { add(it) }
+                if (showMainHand) inventory.getCurrentItem().takeIf { it != null }?.let { add(it) }
 
                 if (displayType == DisplayType.Up) reverse()
             }
         } else {
             buildList {
-                if (showHelmet) add(Items.NETHERITE_HELMET.defaultStack)
-                if (showChestplate) add(Items.NETHERITE_CHESTPLATE.defaultStack)
-                if (showLeggings) add(Items.NETHERITE_LEGGINGS.defaultStack)
-                if (showBoots) add(Items.NETHERITE_BOOTS.defaultStack)
-                if (showMainHand) add(Items.NETHERITE_SWORD.defaultStack)
-                if (showOffHand) add(Items.SHIELD.defaultStack)
+                if (showHelmet) add(ItemStack(Items.diamond_helmet))
+                if (showChestplate) add(ItemStack(Items.diamond_chestplate))
+                if (showLeggings) add(ItemStack(Items.diamond_leggings))
+                if (showBoots) add(ItemStack(Items.diamond_boots))
+                if (showMainHand) add(ItemStack(Items.diamond_sword))
 
                 if (displayType == DisplayType.Up) reverse()
             }
         }
 
-        if (items.isNotEmpty()) super.render(matrices, renderOrigin)
+        if (items.isNotEmpty()) super.render(renderOrigin)
 
         val x = position.rawX
         val y = position.rawY
@@ -132,15 +130,15 @@ class ElementArmourHUD : BackgroundElement() {
 
         val texts = items.map {
             when (extraInfo) {
-                ExtraInfo.DurabilityAbsolute -> textLiteral(if (it.isDamageable) (it.maxDamage - it.damage).toString() else "")
-                ExtraInfo.DurabilityPercent -> textLiteral(if (it.isDamageable) "${(it.maxDamage - it.damage) / it.maxDamage * 100}%" else "")
-                ExtraInfo.Name -> it.name ?: textLiteral("")
-                else -> textLiteral("")
+                ExtraInfo.DurabilityAbsolute -> if (it.isItemStackDamageable) (it.maxDamage - it.itemDamage).toString() else ""
+                ExtraInfo.DurabilityPercent -> if (it.isItemStackDamageable) "${(it.maxDamage - it.itemDamage) / it.maxDamage * 100}%" else ""
+                ExtraInfo.Name -> it.displayName
+                else -> ""
             }.let { text ->
-                text to mc.textRenderer.getWidth(text)
+                text to mc.fontRendererObj.getStringWidth(text)
             }
         }
-        hitboxWidth = (texts.maxOfOrNull { mc.textRenderer.getWidth(it.first) } ?: 0) + 2f + 16f
+        hitboxWidth = (texts.maxOfOrNull { mc.fontRendererObj.getStringWidth(it.first) } ?: 0) + 2f + 16f
         hitboxHeight = items.size * offset - padding * 2
 
         var i = -1
@@ -155,17 +153,21 @@ class ElementArmourHUD : BackgroundElement() {
             Alignment.RIGHT -> hitboxWidth - 16f - 2f
             else -> error("Unknown alignment: ${alignment.id}")
         }
+        val itemRenderer = mc.renderItem
         for (stack in items) {
             i++
 
             val itemY = y + offset * i * position.scale
 
-            matrices.push()
-            matrices.translate(itemX - 4f, itemY - 4f)
-            matrices.scale(position.scale, position.scale, 1f)
-            renderGuiItemModel(matrices, stack, 0f, 0f)
-            renderGuiItemOverlay(matrices, stack, 0f, 0f, null, showDurabilityBar, -1, true)
-            matrices.pop()
+            GlStateManager.pushMatrix()
+            GlStateManager.translate((itemX - 4f).toDouble(), (itemY - 4f).toDouble(), 0.0)
+            GlStateManager.scale(position.scale, position.scale, position.scale)
+            RenderHelper.enableGUIStandardItemLighting()
+            itemRenderer.zLevel = 200f
+            itemRenderer.renderItemAndEffectIntoGUI(stack, 0, 0)
+            itemRenderer.renderItemOverlayIntoGUI(mc.fontRendererObj, stack, 0, 0, "")
+            RenderHelper.disableStandardItemLighting()
+            GlStateManager.popMatrix()
 
             val (text, textWidth) = texts[i]
 
@@ -175,11 +177,10 @@ class ElementArmourHUD : BackgroundElement() {
                 else -> error("Unknown alignment: ${alignment.id}")
             }
 
-            matrices.push()
-            matrices.translate(textX, itemY)
-            matrices.scale(position.scale)
+            GlStateManager.pushMatrix()
+            GlStateManager.translate(textX.toDouble(), itemY.toDouble(), 0.0)
+            GlStateManager.scale(position.scale, position.scale, position.scale)
             drawString(
-                matrices,
                 text,
                 0f, 0f,
                 textColor.rgba,
@@ -188,7 +189,7 @@ class ElementArmourHUD : BackgroundElement() {
                 bordered = textStyle == TextElement.TextStyle.BORDER,
                 chroma = textColor.chroma.hasChroma, chromaSpeed = textColor.chroma.chromaSpeed
             )
-            matrices.pop()
+            GlStateManager.popMatrix()
         }
     }
 

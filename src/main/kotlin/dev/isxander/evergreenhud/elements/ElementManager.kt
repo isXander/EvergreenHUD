@@ -9,8 +9,8 @@
 package dev.isxander.evergreenhud.elements
 
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.config.global.GlobalConfig
 import dev.isxander.evergreenhud.config.element.ElementConfig
+import dev.isxander.evergreenhud.config.global.GlobalConfig
 import dev.isxander.evergreenhud.event.ClientDisconnectEvent
 import dev.isxander.evergreenhud.event.ClientJoinWorldEvent
 import dev.isxander.evergreenhud.event.RenderHudEvent
@@ -18,14 +18,13 @@ import dev.isxander.evergreenhud.utils.decode
 import dev.isxander.evergreenhud.utils.elementmeta.ElementListJson
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.json
-import dev.isxander.settxi.Setting
-import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.logger
 import dev.isxander.evergreenhud.utils.mc
+import dev.isxander.settxi.Setting
+import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.serialization.ConfigProcessor
 import kotlinx.serialization.decodeFromString
 import java.io.InputStream
-import kotlin.collections.ArrayList
 import kotlin.reflect.KClass
 import kotlin.reflect.KParameter
 import kotlin.reflect.full.createInstance
@@ -78,7 +77,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     }
 
     fun isIdBlacklisted(id: String) =
-        id in (blacklistedElements[mc.currentServerEntry?.address] ?: emptyList())
+        id in (blacklistedElements[mc.currentServerData?.serverIP] ?: emptyList())
 
     fun addElement(element: Element) {
         if (isIdBlacklisted(element.metadata.id))
@@ -93,11 +92,8 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         element.onRemoved()
     }
 
-    /**
-     * Adds a JSON source to the list of available elements found in the jar
-     */
-    fun addSource(input: InputStream, name: String) {
-        val elements = json.decodeFromString<List<ElementListJson>>(input.readBytes().decodeToString())
+    fun addSource(string: String, name: String) {
+        val elements = json.decodeFromString<List<ElementListJson>>(string)
 
         var i = 0
         for (element in elements) {
@@ -133,6 +129,13 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         logger.info("Registered $i elements from source: $name.")
     }
 
+    /**
+     * Adds a JSON source to the list of available elements found in the jar
+     */
+    fun addSource(input: InputStream, name: String) {
+        addSource(input.readBytes().decodeToString(), name)
+    }
+
     fun getElementClass(id: String): KClass<out Element>? {
         return availableElements.entries.find { (_, metadata) -> metadata.id == id }?.key
     }
@@ -147,15 +150,15 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     inline fun <reified T : Element> getNewElementInstance(id: String): T? = getElementClass(id)?.createInstance() as? T
 
     val renderHudEvent by EvergreenHUD.eventBus.register<RenderHudEvent>({ enabled }) {
-        mc.profiler.push("EvergreenHUD Render")
+        mc.mcProfiler.startSection("EvergreenHUD Render")
 
         for (e in currentElements) {
             if (e.canRenderInHUD()) {
-                e.render(it.matrices, RenderOrigin.HUD)
+                e.render(RenderOrigin.HUD)
             }
         }
 
-        mc.profiler.pop()
+        mc.mcProfiler.endSection()
     }
 
     val clientJoinWorldEvent by EvergreenHUD.eventBus.register<ClientJoinWorldEvent> {
@@ -167,7 +170,7 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
     }
 
     private val inGame: Boolean
-        get() = mc.world != null
+        get() = mc.theWorld != null
 
     override fun iterator(): Iterator<Element> = currentElements.iterator()
 }

@@ -10,27 +10,28 @@ package dev.isxander.evergreenhud.event
 
 import dev.isxander.evergreenhud.utils.mc
 import net.minecraft.entity.Entity
-import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket
+import net.minecraft.network.play.server.S19PacketEntityStatus
+import java.util.*
 
 class ServerDamageEntityEventManager(private val eventBus: EventBus) {
     private var attacker: Entity? = null
-    private var targetId = -1
+    private var targetId: UUID? = null
 
-    private val packetHandleListener by eventBus.register<HandlePacketEvent<*>> {
-        if (it.packet is EntityStatusS2CPacket) {
-            if (it.packet.status.toInt() != 2) return@register
+    private val packetHandleListener by eventBus.register { it: HandlePacketEvent ->
+        if (it.packet is S19PacketEntityStatus) {
+            if (it.packet.opCode.toInt() != 2) return@register
 
-            val target = it.packet.getEntity(mc.world) ?: return@register
-            if (attacker != null && targetId == target.id) {
+            val target = it.packet.getEntity(mc.theWorld) ?: return@register
+            if (attacker != null && targetId == target.uniqueID) {
                 eventBus.post(ServerDamageEntityEvent(attacker!!, target))
                 attacker = null
-                targetId = -1
+                targetId = null
             }
         }
     }
 
     private val clientDamageEntityListener by eventBus.register<ClientDamageEntityEvent> {
         this.attacker = it.attacker
-        targetId = it.victim.id
+        targetId = it.victim.uniqueID
     }
 }

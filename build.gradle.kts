@@ -6,13 +6,21 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+import net.minecraftforge.gradle.user.IReobfuscator
+import net.minecraftforge.gradle.user.ReobfMappingType.SEARGE
+import net.minecraftforge.gradle.user.TaskSingleReobf
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
-    id("fabric-loom") version "0.10.+"
     id("com.google.devtools.ksp") version "$kotlinVersion-1.0.2"
     id("net.kyori.blossom") version "1.3.+"
     id("org.ajoberstar.grgit") version "4.1.+"
+    id("net.minecraftforge.gradle.forge") version "6f53277"
+    id("com.github.johnrengelman.shadow") version "6.1.0"
+    id("org.spongepowered.mixin") version "d5f9873d60"
     `java-library`
     java
 }
@@ -22,13 +30,33 @@ group = "dev.isxander"
 val revision: String? = grgit.head()?.abbreviatedId
 version = "2.0.0-pre13"
 
+minecraft {
+    version = "1.8.9-11.15.1.2318-1.8.9"
+    runDir = "run"
+    mappings = "stable_22"
+    makeObfSourceJar = false
+    clientJvmArgs.addAll(
+        arrayOf(
+            "-Dfml.coreMods.load=cc.woverflow.wcore.tweaker.WCoreTweaker"
+        )
+    )
+    clientRunArgs.addAll(
+        arrayOf(
+            "--tweakClass gg.essential.loader.stage0.EssentialSetupTweaker",
+            "--mixin mixins.evergreenhud.json"
+        )
+    )
+}
+
 repositories {
     mavenCentral()
     mavenLocal()
-    maven(url = "https://maven.fabricmc.net")
-    maven(url = "https://repo.sk1er.club/repository/maven-public")
     maven(url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
-    maven(url = "https://maven.terraformersmc.com/releases")
+    maven(url = "https://repo.woverflow.cc/")
+}
+
+val include: Configuration by configurations.creating {
+    configurations.implementation.get().extendsFrom(this)
 }
 
 fun DependencyHandlerScope.includeApi(dep: Any) {
@@ -36,9 +64,9 @@ fun DependencyHandlerScope.includeApi(dep: Any) {
     include(dep)
 }
 
-fun DependencyHandlerScope.includeModApi(dep: Any) {
-    modApi(dep)
-    include(dep)
+fun DependencyHandlerScope.compileMainAnnotationProcessor(dep: Any) {
+    compileOnly(dep)
+    annotationProcessor(dep)
 }
 
 dependencies {
@@ -51,24 +79,30 @@ dependencies {
     includeApi("io.ktor:ktor-serialization:$ktorVersion")
     includeApi("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
+    includeApi("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
 
     includeApi("org.bundleproject:libversion:0.0.3")
     includeApi("dev.isxander:settxi:2.1.0")
 
-    minecraft("com.mojang:minecraft:1.18.1")
-    mappings("net.fabricmc:yarn:1.18.1+build.+:v2")
-    modImplementation("net.fabricmc:fabric-loader:0.12.+")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.46.1+1.18")
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
+    include ("gg.essential:loader-launchwrapper:1.1.3") {
+        isTransitive = false
+    }
+    compileOnly ("gg.essential:essential-1.8.9-forge:1788")
+    compileOnly ("cc.woverflow:w-core:1.1.3")
+    include ("cc.woverflow:w-core-tweaker:1.0.2") {
+        isTransitive = false
+    }
 
-    modImplementation("io.ejekta:kambrik:3.1.0-1.18")
-    includeModApi("gg.essential:elementa-1.18-fabric:414")
+    compileMainAnnotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
+    annotationProcessor("com.google.code.gson:gson:2.2.4")
+    annotationProcessor("com.google.guava:guava:21.0")
+    annotationProcessor("org.ow2.asm:asm-tree:6.2")
+}
 
-    modImplementation("com.terraformersmc:modmenu:3.0.1")
-
-    includeApi("com.github.LlamaLad7:MixinExtras:0.0.3")
-    annotationProcessor("com.github.LlamaLad7:MixinExtras:0.0.3")
+mixin {
+    disableRefMapWarning = true
+    defaultObfuscationEnv = searge
+    add(sourceSets.main.get(), "mixins.evergreenhud.refmap.json")
 }
 
 blossom {
@@ -80,19 +114,79 @@ blossom {
     replaceToken("__GRADLE_REVISION__", revision ?: "unknown", evergreenClass)
 }
 
+sourceSets {
+    main {
+        ext["refmap"] = "mixins.evergreenhud.refmap.json"
+        output.setResourcesDir(file("${buildDir}/classes/kotlin/main"))
+    }
+}
+
+configure<NamedDomainObjectContainer<IReobfuscator>> {
+    clear()
+    create("shadowJar") {
+        mappingType = SEARGE
+        classpath = sourceSets.main.get().compileClasspath
+    }
+}
+
 tasks {
     processResources {
         inputs.property("mod_id", modId)
         inputs.property("mod_name", modName)
         inputs.property("mod_version", project.version)
 
-        filesMatching(listOf("fabric.mod.json", "bundle.project.json")) {
+        filesMatching(listOf("mcmod.info", "bundle.project.json")) {
             expand(
                 "mod_id" to modId,
                 "mod_name" to modName,
                 "mod_version" to project.version
             )
         }
+    }
+    named<Jar>("jar") {
+        archiveBaseName.set("EvergreenHUD")
+        manifest {
+            attributes(
+                mapOf(
+                    "FMLCorePlugin" to "cc.woverflow.wcore.tweaker.WCoreTweaker",
+                    "FMLCorePluginContainsFMLMod" to true,
+                    "ForceLoadAsMod" to true,
+                    "MixinConfigs" to "mixins.evergreenhud.json",
+                    "ModSide" to "CLIENT",
+                    "TweakClass" to "gg.essential.loader.stage0.EssentialSetupTweaker",
+                    "TweakOrder" to "0"
+                )
+            )
+        }
+        enabled = false
+    }
+    named<ShadowJar>("shadowJar") {
+        archiveFileName.set(jar.get().archiveFileName)
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        configurations = listOf(include)
+
+        exclude(
+            "**/LICENSE.md",
+            "**/LICENSE.txt",
+            "**/LICENSE",
+            "**/NOTICE",
+            "**/NOTICE.txt",
+            "pack.mcmeta",
+            "dummyThing",
+            "**/module-info.class",
+            "META-INF/proguard/**",
+            "META-INF/maven/**",
+            "META-INF/versions/**",
+            "META-INF/com.android.tools/**",
+            "fabric.mod.json"
+        )
+        mergeServiceFiles()
+    }
+    named<TaskSingleReobf>("reobfJar") {
+        enabled = false
+    }
+    named<TaskSingleReobf>("reobfShadowJar") {
+        mustRunAfter(shadowJar)
     }
 }
 
@@ -104,13 +198,16 @@ allprojects {
 
     tasks {
         withType<JavaCompile> {
-            options.release.set(17)
+            options.encoding = "UTF-8"
         }
-
-        withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+        withType<KotlinCompile> {
             kotlinOptions {
-                jvmTarget = "17"
+                jvmTarget = "1.8"
+                freeCompilerArgs = listOf("-opt-in=kotlin.RequiresOptIn")
             }
+            kotlinDaemonJvmArguments.set(listOf("-Xmx2G", "-Dkotlin.enableCacheBuilding=true", "-Dkotlin.useParallelTasks=true", "-Dkotlin.enableFastIncremental=true"))
         }
     }
 }
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+java.targetCompatibility = JavaVersion.VERSION_1_8

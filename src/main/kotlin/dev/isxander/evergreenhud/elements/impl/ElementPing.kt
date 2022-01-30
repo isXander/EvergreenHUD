@@ -15,7 +15,6 @@ import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.int
-import net.minecraft.client.util.math.MatrixStack
 
 @ElementMeta(id = "evergreenhud:ping", name = "Ping", description = "Displays the quality of your connection.", category = "Server")
 class ElementPing : SimpleTextElement("Ping") {
@@ -32,12 +31,12 @@ class ElementPing : SimpleTextElement("Ping") {
         category = "Ping"
     }
 
-    val ping by ServerPinger.createListener({ interval * 20 }, { isAdded }) { mc.currentServerEntry }
+    val ping by ServerPinger.createListener({ interval * 20 }, { isAdded })
 
-    override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
-        if (mc.isInSingleplayer && !showInSinglePlayer && renderOrigin == RenderOrigin.HUD) return
+    override fun render(renderOrigin: RenderOrigin) {
+        if (mc.isSingleplayer && !showInSinglePlayer && renderOrigin == RenderOrigin.HUD) return
 
-        super.render(matrices, renderOrigin)
+        super.render(renderOrigin)
     }
 
     override fun calculateValue(): String {

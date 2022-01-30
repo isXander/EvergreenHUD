@@ -9,30 +9,38 @@
 package dev.isxander.evergreenhud.gui.screens
 
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.utils.drawString
+import dev.isxander.evergreenhud.utils.drawStringExt
+import gg.essential.api.EssentialAPI
 import gg.essential.universal.UDesktop
-import io.ejekta.kambrik.text.textLiteral
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.gui.widget.ButtonWidget
-import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.client.gui.GuiButton
+import net.minecraft.client.gui.GuiScreen
 import java.net.URI
 
-class UpdateScreen(private val latest: String, private val parent: Screen?) : Screen(textLiteral("EvergreenHUD Update")) {
-    override fun init() {
-        addDrawableChild(ButtonWidget(width / 2 - 102, height / 4 * 3, 100, 20, textLiteral("Download")) {
-            UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
-            client!!.setScreen(parent)
-        })
-        addDrawableChild(ButtonWidget(width / 2 + 2, height / 4 * 3, 100, 20, textLiteral("Skip")) {
-            client!!.setScreen(parent)
-        })
+class UpdateScreen(private val latest: String, private val parent: GuiScreen?) : GuiScreen() {
+    override fun initGui() {
+        super.initGui()
+        buttonList.add(GuiButton(1, width / 2 - 102, height / 4 * 3, 100, 20, "Download"))
+        buttonList.add(GuiButton(2, width / 2 + 2, height / 4 * 3, 100, 20, "Skip"))
     }
 
-    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
-        renderBackground(matrices)
-        super.render(matrices, mouseX, mouseY, delta)
-        drawString(matrices, "A new version is available for EvergreenHUD!", width / 2f, height / 4f, -1, centered = true)
-        drawString(matrices, "The latest version is $latest.", width / 2f, height / 4f + textRenderer.fontHeight + 2, -1, centered = true)
-        drawString(matrices, "The current version is ${EvergreenHUD.VERSION_STR}.", width / 2f, height / 4f + ((textRenderer.fontHeight + 2) * 2), -1, centered = true)
+    override fun mouseClicked(mouseX: Int, mouseY: Int, mouseButton: Int) {
+        super.mouseClicked(mouseX, mouseY, mouseButton)
+        when (mouseButton) {
+            1 -> {
+                UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
+                EssentialAPI.getGuiUtil().openScreen(parent)
+            }
+            2 -> {
+                EssentialAPI.getGuiUtil().openScreen(parent)
+            }
+        }
+    }
+
+    override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
+        drawDefaultBackground()
+        super.drawScreen(mouseX, mouseY, partialTicks)
+        drawStringExt("A new version is available for EvergreenHUD!", width / 2f, height / 4f, -1, centered = true)
+        drawStringExt("The latest version is $latest.", width / 2f, height / 4f + fontRendererObj.FONT_HEIGHT + 2, -1, centered = true)
+        drawStringExt("The current version is ${EvergreenHUD.VERSION_STR}.", width / 2f, height / 4f + ((fontRendererObj.FONT_HEIGHT + 2) * 2), -1, centered = true)
     }
 }

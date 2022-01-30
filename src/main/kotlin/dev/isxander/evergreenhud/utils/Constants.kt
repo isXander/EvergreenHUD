@@ -8,14 +8,11 @@
 
 package dev.isxander.evergreenhud.utils
 
-import net.minecraft.client.MinecraftClient
+import net.minecraft.client.Minecraft
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
 val logger: Logger = LoggerFactory.getLogger("EvergreenHUD")
 
-val mc: MinecraftClient
-    get() = MinecraftClient.getInstance()
-
-val tickDelta: Float
-    get() = mc.tickDelta
+val mc: Minecraft
+    get() = Minecraft.getMinecraft()

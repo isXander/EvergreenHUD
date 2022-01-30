@@ -13,11 +13,9 @@ import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.int
-import net.minecraft.block.AbstractBannerBlock
-import net.minecraft.block.Blocks
-import net.minecraft.block.SignBlock
-import net.minecraft.sound.SoundCategory
-import net.minecraft.sound.SoundEvents
+import net.minecraft.block.*
+import net.minecraft.util.BlockPos
+
 
 @ElementMeta(id = "evergreenhud:block_above", name = "Block Above", description = "Show how many blocks until you hit your head on something above you.", category = "World")
 class ElementBlockAbove : SimpleTextElement("Above") {
@@ -44,27 +42,26 @@ class ElementBlockAbove : SimpleTextElement("Above") {
     private var notified = false
 
     override fun calculateValue(): String {
-        if (mc.world == null || mc.player == null) return "0"
+        if (mc.theWorld == null || mc.thePlayer == null) return "0"
 
         var above = 0
         for (i in 1..checkHeight) {
-            val pos = mc.player!!.blockPos.add(0, i + 1, 0)
-            if (pos.y > mc.world!!.topY) break
+            val pos = BlockPos(mc.thePlayer.posX, mc.thePlayer.posY + 1 + i, mc.thePlayer.posZ)
+            if (pos.y > 255) break
 
-            val state = mc.world!!.getBlockState(pos) ?: continue
-            if (state.isOf(Blocks.AIR)
-                || state.isOf(Blocks.WATER)
-                || state.block is SignBlock
-                || state.isOf(Blocks.WEEPING_VINES)
-                || state.isOf(Blocks.VINE)
-                || state.block is AbstractBannerBlock)
+            val state = mc.theWorld!!.getBlockState(pos) ?: continue
+            if (state.block is BlockAir
+                || state is BlockStaticLiquid
+                || state.block is BlockSign
+                || state is BlockVine
+                || state.block is BlockBanner)
                 continue
 
             above = i
 
             if (above <= notifyHeight && notify) {
                 if (!notified) {
-                    mc.player!!.playSound(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, SoundCategory.PLAYERS, 1f, 1f)
+                    mc.thePlayer.playSound("random.orb", 0.1f, 0.5f)
                     notified = true
                 }
             } else {

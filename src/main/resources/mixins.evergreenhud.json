@@ -1,0 +1,10 @@
+{
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.7",
+  "package": "dev.isxander.evergreenhud.mixins",
+  "refmap": "mixins.evergreenhud.refmap.json",
+  "mixins": [
+    "ForgeHooksMixin"
+  ],
+  "verbose": true
+}

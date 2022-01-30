@@ -10,13 +10,14 @@ package dev.isxander.evergreenhud.utils.hypixel.locraw
 
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.event.ClientReceivedChatMessage
-import dev.isxander.evergreenhud.utils.*
-import dev.isxander.evergreenhud.utils.hypixel.isHypixel
+import dev.isxander.evergreenhud.utils.json
+import dev.isxander.evergreenhud.utils.logger
+import dev.isxander.evergreenhud.utils.mc
+import dev.isxander.evergreenhud.utils.stripColorCodes
+import gg.essential.api.EssentialAPI
+import gg.essential.api.utils.Multithreading
 import kotlinx.serialization.decodeFromString
-import net.minecraft.client.gui.ClientChatListener
-import net.minecraft.network.MessageType
-import net.minecraft.text.Text
-import java.util.*
+import java.util.concurrent.TimeUnit
 
 class LocrawManager {
     var currentLocation = LocationParsed.UNKNOWN
@@ -28,8 +29,8 @@ class LocrawManager {
     private var waitingForLocraw = false
 
     val onChatMessage by EvergreenHUD.eventBus.register<ClientReceivedChatMessage> {
-        if (isHypixel) {
-            val string = stripColorCodes(it.text.extractString())
+        if (EssentialAPI.getMinecraftUtil().isHypixel()) {
+            val string = stripColorCodes(it.text)
 
             when (string) {
                 "                         ",
@@ -63,9 +64,9 @@ class LocrawManager {
         if (!waitingForLocraw) {
             waitingForLocraw = true
 
-            scheduleAsync(ms) {
-                mc.player?.sendChatMessage("/locraw")
-            }
+            Multithreading.schedule({
+                mc.thePlayer?.sendChatMessage("/locraw")
+            }, ms, TimeUnit.MILLISECONDS)
         }
     }
 }

@@ -15,7 +15,7 @@ import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.int
 import dev.isxander.settxi.impl.string
-import net.minecraft.entity.Entity
+import java.util.*
 
 @ElementMeta(id = "evergreenhud:combo_display", name = "Combo Display", description = "Display how many hits you get on a player before they hit you.", category = "Combat")
 class ElementCombo : SimpleTextElement("Combo") {
@@ -33,7 +33,7 @@ class ElementCombo : SimpleTextElement("Combo") {
     }
 
     private var hitTime = 0L
-    private var attackId = 0
+    private var attackId: UUID? = null
     private var currentCombo = 0
 
     val clientTickEvent by event<ClientTickEvent>({ System.currentTimeMillis() - hitTime >= discardTime * 1000L }) {
@@ -41,18 +41,18 @@ class ElementCombo : SimpleTextElement("Combo") {
     }
 
     val serverDamageEntityEvent by event<ServerDamageEntityEvent> {
-        if (it.attacker == mc.player) {
-            if (it.victim.id == attackId) {
+        if (it.attacker == mc.thePlayer) {
+            if (it.victim.uniqueID == attackId) {
                 currentCombo++
             } else {
                 currentCombo = 1
             }
 
             hitTime = System.currentTimeMillis()
-            attackId = it.victim.id
-        } else if (it.victim == mc.player) {
+            attackId = it.victim.uniqueID
+        } else if (it.victim == mc.thePlayer) {
             currentCombo = 0
-            attackId = 0
+            attackId = null
         }
     }
 

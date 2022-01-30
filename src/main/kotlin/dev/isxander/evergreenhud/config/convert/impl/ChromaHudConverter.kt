@@ -16,10 +16,14 @@ import dev.isxander.evergreenhud.elements.impl.ElementCps
 import dev.isxander.evergreenhud.elements.impl.ElementIRLTime
 import dev.isxander.evergreenhud.elements.impl.ElementText
 import dev.isxander.evergreenhud.elements.type.TextElement
-import dev.isxander.evergreenhud.utils.*
+import dev.isxander.evergreenhud.utils.Color
+import dev.isxander.evergreenhud.utils.decode
+import dev.isxander.evergreenhud.utils.json
+import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.evergreenhud.utils.position.ZonedPosition
+import gg.essential.universal.UResolution
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.JsonObject
 import java.io.File
 
 object ChromaHudConverter : ConfigConverter {
@@ -64,7 +68,7 @@ object ChromaHudConverter : ConfigConverter {
             val useBg = elementJson.decode("highlighted") ?: false
 
             var i = 0
-            val changeY = (mc.textRenderer.fontHeight + 4) / mc.window.scaledHeight
+            val changeY = (mc.fontRendererObj.FONT_HEIGHT + 4) / UResolution.scaledHeight
             for (item in elementJson.decode<List<JsonObject>>("items") ?: emptyList()) {
                 val id = ids[item.decode("type") ?: ""] ?: continue
                 val element = EvergreenHUD.elementManager.getNewElementInstance<Element>(id) ?: continue

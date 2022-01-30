@@ -23,9 +23,9 @@ class ElementDirection : SimpleTextElement("Direction") {
     }
 
     override fun calculateValue(): String {
-        if (mc.player == null) return "Unknown"
+        if (mc.thePlayer == null) return "Unknown"
 
-        val facing = Facing.parse(mc.player!!.yaw)
+        val facing = Facing.parse(mc.thePlayer!!.rotationYaw)
         return if (abbreviated) facing.abbreviated else facing.full
     }
 }

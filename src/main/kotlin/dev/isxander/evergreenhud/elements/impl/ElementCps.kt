@@ -11,15 +11,12 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.RenderTickEvent
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
-import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.option
-import net.minecraft.client.util.math.MatrixStack
-import org.lwjgl.glfw.GLFW
-import kotlin.collections.ArrayDeque
+import org.lwjgl.input.Mouse
 
 @ElementMeta(id = "evergreenhud:cps", name = "Cps Counter", category = "Combat", description = "How many times you click in a second.")
-class ElementCps : SimpleTextElement("CPS") {
+class ElementCps : SimpleTextElement("CPS", 0) {
     var button by option(MouseButton.BOTH) {
         name = "Button"
         category = "CPS"
@@ -32,14 +29,14 @@ class ElementCps : SimpleTextElement("CPS") {
     private var rightPressed = false
 
     val renderTickEvent by event<RenderTickEvent> {
-        var pressed = GLFW.glfwGetMouseButton(mc.window.handle, 0) == GLFW.GLFW_PRESS
+        var pressed = Mouse.isButtonDown(0)
 
         if (pressed != leftPressed) {
             leftPressed = pressed
             if (pressed) left.add(System.currentTimeMillis())
         }
 
-        pressed = GLFW.glfwGetMouseButton(mc.window.handle, 1) == GLFW.GLFW_PRESS
+        pressed = Mouse.isButtonDown(1)
 
         if (pressed != rightPressed) {
             rightPressed = pressed

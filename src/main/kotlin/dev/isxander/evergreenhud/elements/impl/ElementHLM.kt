@@ -13,13 +13,12 @@ import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.utils.AsyncCacheHolder
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.http
-import dev.isxander.evergreenhud.utils.hypixel.isHypixel
 import dev.isxander.evergreenhud.utils.hypixel.locraw.GameType
 import dev.isxander.settxi.impl.string
+import gg.essential.api.EssentialAPI
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.coroutines.runBlocking
-import kotlin.time.Duration.Companion.hours
 
 @ElementMeta(id = "evergreenhud:height_limit", name = "Height Limit", description = "Show the Bedwars height limit.", category = "Hypixel", credits = "Pinkulu")
 class ElementHLM : SimpleTextElement("Height") {
@@ -30,7 +29,7 @@ class ElementHLM : SimpleTextElement("Height") {
     }
 
     override fun calculateValue(): String {
-        if (isHypixel) {
+        if (EssentialAPI.getMinecraftUtil().isHypixel()) {
             val location = EvergreenHUD.locrawManager.currentLocation
             if (location.gameType == GameType.BEDWARS && !location.isLobby && location.map != null) {
                 return cache?.get(location.map.split(" ").joinToString("_") { it.lowercase() })?.toString()
@@ -41,7 +40,7 @@ class ElementHLM : SimpleTextElement("Height") {
     }
 
     companion object {
-        val cache by AsyncCacheHolder(1.hours) {
+        val cache by AsyncCacheHolder(3600000) {
             val json = runBlocking { http.get("https://api.pinkulu.com/HeightLimitMod/Limits").body<Map<String, Map<String, Int>>>() }
             json["bedwars"]!!.mapKeys { (k, _) -> k.lowercase() }
         }

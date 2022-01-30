@@ -13,7 +13,7 @@ import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.int
-import net.minecraft.util.math.MathHelper
+import net.minecraft.util.MathHelper
 import java.text.DecimalFormat
 
 @ElementMeta(id = "evergreenhud:yaw", name = "Yaw", description = "Displays the player's yaw.", category = "Player")
@@ -34,7 +34,6 @@ class ElementYaw : SimpleTextElement("Yaw", 0) {
     override fun calculateValue(): String {
         val format = if (trailingZeros) "0" else "#"
 
-        return DecimalFormat("0${if (accuracy > 0) "." else ""}" + format.repeat(accuracy))
-            .format(mc.player?.yaw?.let(MathHelper::wrapDegrees) ?: 0f)
+        return DecimalFormat("0${if (accuracy > 0) "." else ""}" + format.repeat(accuracy)).format(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationYaw))
     }
 }

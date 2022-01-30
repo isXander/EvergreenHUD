@@ -8,59 +8,54 @@
 
 package dev.isxander.evergreenhud.utils
 
-import com.mojang.blaze3d.systems.RenderSystem
-import net.minecraft.client.render.DiffuseLighting
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.entity.LivingEntity
-import net.minecraft.util.math.Quaternion
-import net.minecraft.util.math.Vec3f
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.RenderHelper
+import net.minecraft.entity.EntityLivingBase
 
-fun LivingEntity.renderEntity(x: Float, y: Float, size: Float, viewRotation: Float = 0f) {
-    val matrixStack = RenderSystem.getModelViewStack()
-    matrixStack.push()
-    matrixStack.translate(
-        x,
-        y,
-        1050f
-    )
-    matrixStack.scale(1.0f, 1.0f, -1.0f)
-    RenderSystem.applyModelViewMatrix()
-    val matrixStack2 = MatrixStack()
-    matrixStack2.translate(0.0, 0.0, 1000.0)
-    matrixStack2.scale(size, size, size)
-    val quaternion = Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0f)
-    matrixStack2.multiply(quaternion)
+fun EntityLivingBase?.renderEntity(posX: Float, posY: Float, scale: Float, viewRotation: Int = 0) {
+    this?.let {
+        GlStateManager.pushMatrix()
+        GlStateManager.enableDepth()
+        GlStateManager.color(1f, 1f, 1f, 1f)
 
-    val interpolatedYaw = lerp(prevYaw, yaw, mc.tickDelta)
-    matrixStack2.multiply(Quaternion(Vec3f(0f, 1f, 0f), interpolatedYaw - 180f + viewRotation, true))
-    val prevHeadYaw: Float = prevHeadYaw
-    val headYaw: Float = headYaw
+        val ent = this
 
-    this.headYaw = interpolatedYaw
-    this.prevHeadYaw = interpolatedYaw
-    DiffuseLighting.method_34742()
-    val entityRenderDispatcher = mc.entityRenderDispatcher
-    entityRenderDispatcher.rotation = quaternion
-    entityRenderDispatcher.setRenderShadows(false)
-    val immediate = mc.bufferBuilders.entityVertexConsumers
-    RenderSystem.runAsFancy {
-        entityRenderDispatcher.render(
-            this,
-            0.0,
-            0.0,
-            0.0,
-            0f,
-            mc.tickDelta,
-            matrixStack2,
-            immediate,
-            0xF000F0
-        )
+        GlStateManager.enableColorMaterial()
+        GlStateManager.pushMatrix()
+        GlStateManager.translate(posX, posY, 50.0f)
+        GlStateManager.scale(-scale * 50, scale * 50, scale * 50)
+        GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f)
+        val f = ent.renderYawOffset
+        val f1 = ent.rotationYaw
+        val f2 = ent.rotationPitch
+        val f3 = ent.prevRotationYawHead
+        val f4 = ent.rotationYawHead
+        GlStateManager.rotate(135.0f, 0.0f, 1.0f, 0.0f)
+        RenderHelper.enableStandardItemLighting()
+        GlStateManager.rotate(-135.0f, 0.0f, 1.0f, 0.0f)
+        val rotation = 360f - viewRotation
+        ent.renderYawOffset = rotation
+        ent.rotationYaw = rotation
+        ent.rotationYawHead = ent.rotationYaw
+        ent.prevRotationYawHead = ent.rotationYaw
+        GlStateManager.translate(0.0f, 0.0f, 0.0f)
+        val rendermanager = mc.renderManager
+        rendermanager.setPlayerViewY(180.0f)
+        rendermanager.isRenderShadow = false
+        rendermanager.renderEntityWithPosYaw(ent, 0.0, 0.0, 0.0, 0.0f, 1.0f)
+        rendermanager.isRenderShadow = true
+        ent.renderYawOffset = f
+        ent.rotationYaw = f1
+        ent.rotationPitch = f2
+        ent.prevRotationYawHead = f3
+        ent.rotationYawHead = f4
+        GlStateManager.popMatrix()
+        RenderHelper.disableStandardItemLighting()
+        GlStateManager.disableRescaleNormal()
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit)
+        GlStateManager.disableTexture2D()
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit)
+        GlStateManager.popMatrix()
     }
-    immediate.draw()
-    entityRenderDispatcher.setRenderShadows(true)
-    this.prevHeadYaw = prevHeadYaw
-    this.headYaw = headYaw
-    matrixStack.pop()
-    RenderSystem.applyModelViewMatrix()
-    DiffuseLighting.enableGuiDepthLighting()
 }

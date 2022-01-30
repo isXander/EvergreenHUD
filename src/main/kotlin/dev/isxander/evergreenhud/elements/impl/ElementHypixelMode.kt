@@ -12,8 +12,8 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.formatEnum
-import dev.isxander.evergreenhud.utils.hypixel.isHypixel
 import dev.isxander.settxi.impl.string
+import gg.essential.api.EssentialAPI
 
 @ElementMeta(id = "evergreenhud:hypixel_mode", name = "Hypixel Mode", description = "Display the current mode of the game you are playing.", category = "Hypixel")
 class ElementHypixelMode : SimpleTextElement("Mode") {
@@ -30,7 +30,7 @@ class ElementHypixelMode : SimpleTextElement("Mode") {
     }
 
     override fun calculateValue(): String {
-        if (!isHypixel) return noHypixelMessage
+        if (!EssentialAPI.getMinecraftUtil().isHypixel()) return noHypixelMessage
 
         val location = EvergreenHUD.locrawManager.currentLocation
         val mode = location.mode

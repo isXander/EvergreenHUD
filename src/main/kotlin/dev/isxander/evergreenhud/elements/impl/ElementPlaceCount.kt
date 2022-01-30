@@ -14,11 +14,6 @@ import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.int
-import net.minecraft.client.network.ClientPlayerEntity
-import net.minecraft.client.world.ClientWorld
-import net.minecraft.util.Hand
-import net.minecraft.util.hit.BlockHitResult
-import net.minecraft.util.math.BlockPos
 
 @ElementMeta(id = "evergreenhud:place_count", name = "Block Place Count", description = "Displays the number of blocks you have placed in a certain interval.", category = "World")
 class ElementPlaceCount : SimpleTextElement("Blocks") {
@@ -41,7 +36,7 @@ class ElementPlaceCount : SimpleTextElement("Blocks") {
         }
     }
 
-    val clientPlaceBlockEvent by event<ClientPlaceBlockEvent>({ it.player == mc.player }) {
+    val clientPlaceBlockEvent by event<ClientPlaceBlockEvent>({ it.player == mc.thePlayer }) {
         blockCount.addLast(System.currentTimeMillis())
     }
 

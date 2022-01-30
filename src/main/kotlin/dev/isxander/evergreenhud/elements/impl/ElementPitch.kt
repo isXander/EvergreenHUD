@@ -13,6 +13,7 @@ import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.int
+import net.minecraft.util.MathHelper
 import java.text.DecimalFormat
 
 @ElementMeta(id = "evergreenhud:pitch", name = "Pitch", description = "Displays the player's pitch.", category = "Player")
@@ -34,6 +35,6 @@ class ElementPitch : SimpleTextElement("Pitch", 0) {
         val format = if (trailingZeros) "0" else "#"
 
         return DecimalFormat("0${if (accuracy > 0) "." else ""}" + format.repeat(accuracy))
-            .format(mc.player?.pitch ?: 0f)
+            .format(MathHelper.wrapAngleTo180_float(mc.thePlayer.rotationPitch))
     }
 }

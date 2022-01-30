@@ -11,12 +11,11 @@ package dev.isxander.evergreenhud.gui.screens
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
-import dev.isxander.evergreenhud.utils.*
-import io.ejekta.kambrik.text.textLiteral
-import net.minecraft.client.gui.screen.Screen
-import net.minecraft.client.util.math.MatrixStack
+import dev.isxander.evergreenhud.utils.drawBorderLines
+import gg.essential.api.EssentialAPI
+import net.minecraft.client.gui.GuiScreen
 
-open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Screen(textLiteral("EvergreenHUD")) {
+open class ElementDisplay(private val parent: GuiScreen?) : GuiScreen() {
     protected var renderElements = true
 
     protected var dragging: Element? = null
@@ -24,38 +23,35 @@ open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Scre
     protected var offX = 0f
     protected var offY = 0f
 
-    override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
-        renderBackground(matrices)
-        renderElements(matrices, mouseX, mouseY, delta)
-        super.render(matrices, mouseX, mouseY, delta)
+    override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
+        drawDefaultBackground()
+        renderElements(mouseX, mouseY, partialTicks)
+        super.drawScreen(mouseX, mouseY, partialTicks)
     }
 
-    open fun renderElements(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
+    open fun renderElements(mouseX: Int, mouseY: Int, delta: Float) {
         if (!renderElements) return
-
-        val scaledMouseX = client!!.mouse.scaledX
-        val scaledMouseY = client!!.mouse.scaledY
 
         for (element in EvergreenHUD.elementManager.currentElements) {
 
-            element.render(matrices, RenderOrigin.GUI)
+            element.render(RenderOrigin.GUI)
 
             val hitbox = element.calculateHitBox(element.position.scale)
             val width = 0.5f
 
-            matrices.drawBorderLines(hitbox.x1 - width, hitbox.y1 - width, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, width, -1)
+            drawBorderLines(hitbox.x1 - width, hitbox.y1 - width, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, width, -1)
         }
 
         if (dragging != null) {
-            val elementX = scaledMouseX - offX
-            val elementY = scaledMouseY - offY
+            val elementX = mouseX - offX
+            val elementY = mouseY - offY
 
-            dragging!!.position.rawX = elementX.toFloat()
-            dragging!!.position.rawY = elementY.toFloat()
+            dragging!!.position.rawX = elementX
+            dragging!!.position.rawY = elementY
         }
     }
 
-    override fun mouseClicked(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    override fun mouseClicked(mouseX: Int, mouseY: Int, button: Int) {
         var clickedElement = false
 
         for (e in EvergreenHUD.elementManager.currentElements.reversed()) {
@@ -76,14 +72,14 @@ open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Scre
             EvergreenHUD.elementManager.currentElements.add(lastClicked!!)
         }
 
-        if (clickedElement) return true
+        if (clickedElement) return
 
         dragging = null
         lastClicked = null
         return super.mouseClicked(mouseX, mouseY, button)
     }
 
-    override fun mouseReleased(mouseX: Double, mouseY: Double, button: Int): Boolean {
+    override fun mouseReleased(mouseX: Int, mouseY: Int, button: Int) {
         dragging = null
         offX = 0f
         offY = 0f
@@ -91,7 +87,12 @@ open class ElementDisplay(private val parent: Screen? = mc.currentScreen) : Scre
         return super.mouseReleased(mouseX, mouseY, button)
     }
 
-    override fun onClose() {
-        client?.setScreen(parent)
+    override fun onGuiClosed() {
+        super.onGuiClosed()
+        EssentialAPI.getGuiUtil().openScreen(parent)
+    }
+
+    override fun doesGuiPauseGame(): Boolean {
+        return false
     }
 }

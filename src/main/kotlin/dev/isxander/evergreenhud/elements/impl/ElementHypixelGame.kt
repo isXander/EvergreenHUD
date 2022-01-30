@@ -11,9 +11,9 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
-import dev.isxander.evergreenhud.utils.hypixel.isHypixel
 import dev.isxander.evergreenhud.utils.hypixel.locraw.GameType
 import dev.isxander.settxi.impl.string
+import gg.essential.api.EssentialAPI
 
 @ElementMeta(id = "evergreenhud:hypixel_game", name = "Hypixel Game", description = "Display the current game you are playing.", category = "Hypixel")
 class ElementHypixelGame : SimpleTextElement("Game") {
@@ -24,7 +24,7 @@ class ElementHypixelGame : SimpleTextElement("Game") {
     }
 
     override fun calculateValue(): String {
-        if (!isHypixel) return noHypixelMessage
+        if (!EssentialAPI.getMinecraftUtil().isHypixel()) return noHypixelMessage
 
         val location = EvergreenHUD.locrawManager.currentLocation
         val gameType = location.gameType

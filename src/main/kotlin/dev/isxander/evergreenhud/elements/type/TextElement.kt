@@ -8,11 +8,11 @@
 
 package dev.isxander.evergreenhud.elements.type
 
-import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.settings.color
 import dev.isxander.evergreenhud.utils.Color
 import dev.isxander.evergreenhud.utils.HitBox2D
+import dev.isxander.settxi.impl.*
 
 abstract class TextElement
 @JvmOverloads constructor(title: String, cacheTime: Int = 5) : BackgroundElement() {
@@ -83,7 +83,7 @@ abstract class TextElement
 
     object TextStyle : OptionContainer() {
         val NORMAL = option("Normal", "Just plain text.")
-        val SHADOW = option("Shadow", "Text with Minecraft's shadow. This can be modified with mods like patcher.")
+        val SHADOW = option("Shadow", "Text with Minecraft's shadow. This can also be modified with mods like Patcher.")
         val BORDER = option("Border", "Adds a black border around normal text. (Can cause increased amount of lag)")
     }
 

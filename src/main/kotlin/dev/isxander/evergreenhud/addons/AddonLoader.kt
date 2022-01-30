@@ -8,25 +8,13 @@
 
 package dev.isxander.evergreenhud.addons
 
-import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.utils.logger
-import net.fabricmc.loader.api.FabricLoader
-import kotlin.io.path.inputStream
 
 class AddonLoader {
-    val addons = FabricLoader.getInstance().allMods
-        .filter { EvergreenAddonInfo.isAddon(it.metadata) }
-        .associateWith { EvergreenAddonInfo.of(it) }
-
-    fun addSources(elementManager: ElementManager) {
-        for ((mod, addon) in addons) {
-            val elements = mod.getPath("evergreenhud-elements.json")
-            elementManager.addSource(elements.inputStream(), addon.id)
-        }
-    }
+    val addons = arrayListOf<EvergreenAddonInfo>()
 
     fun invokePreinitEntrypoints() {
-        for (addon in addons.values) {
+        for (addon in addons) {
             for (entrypoint in addon.entrypoints) {
                 try {
                     entrypoint.onPreInitialize()
@@ -45,7 +33,7 @@ class AddonLoader {
     }
 
     fun invokeInitEntrypoints() {
-        for (addon in addons.values) {
+        for (addon in addons) {
             for (entrypoint in addon.entrypoints) {
                 try {
                     entrypoint.onInitialize()

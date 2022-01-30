@@ -11,15 +11,17 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
-import net.minecraft.client.resource.language.I18n
-import net.minecraft.util.registry.Registry
+import net.minecraft.util.BlockPos
+
 
 @ElementMeta(id = "evergreenhud:biome", name = "Biome Display", description = "Displays the current biome you are in.", category = "World")
 class ElementBiome : SimpleTextElement("Biome") {
     override fun calculateValue(): String {
-        val player = mc.player ?: return "Unknown"
+        val player = mc.thePlayer ?: return "Unknown"
 
-        val id = mc.world!!.registryManager!!.get(Registry.BIOME_KEY)!!.getId(mc.world?.getBiome(player.blockPos))!!
-        return I18n.translate("biome.${id.namespace}.${id.path}")
+        val playerPos = BlockPos(player.posX, player.posY, player.posZ)
+        val playerChunk = mc.theWorld.getChunkFromBlockCoords(playerPos)
+
+        return playerChunk.getBiome(playerPos, mc.theWorld.worldChunkManager).biomeName
     }
 }

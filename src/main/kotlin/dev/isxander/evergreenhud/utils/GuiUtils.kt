@@ -8,50 +8,45 @@
 
 package dev.isxander.evergreenhud.utils
 
-import io.ejekta.kambrik.text.textLiteral
-import net.minecraft.client.resource.language.I18n
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.text.*
+import net.minecraft.client.gui.GuiScreen
 import java.awt.Color
-import java.lang.StringBuilder
 
 val COLOR_CODES = arrayOf("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f")
 const val FORMATTING_CODE = '\u00A7'
 
-fun drawString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int, shadow: Boolean = true, centered: Boolean = false, bordered: Boolean = false, chroma: Boolean = false, chromaSpeed: Float = 2000.0f) {
+fun drawString(text: String, x: Float, y: Float, color: Int, shadow: Boolean = true, centered: Boolean = false, bordered: Boolean = false, chroma: Boolean = false, chromaSpeed: Float = 2000.0f) {
     when {
-        centered -> drawCenteredString(matrices, text, x, y, color, shadow, bordered, chroma, chromaSpeed)
-        bordered -> drawBorderedString(matrices, text, x, y, color, chroma, chromaSpeed)
-        chroma -> drawChromaString(matrices, text, x, y, shadow, chromaSpeed)
-        shadow -> mc.textRenderer.drawWithShadow(matrices, text, x, y, color)
-        else -> mc.textRenderer.draw(matrices, text, x, y, color)
+        centered -> drawCenteredString(text, x, y, color, shadow, bordered, chroma, chromaSpeed)
+        bordered -> drawBorderedString(text, x, y, color, chroma, chromaSpeed)
+        chroma -> drawChromaString(text, x, y, shadow, chromaSpeed)
+        shadow -> mc.fontRendererObj.drawStringWithShadow(text, x, y, color)
+        else -> mc.fontRendererObj.drawString(text, x, y, color, false)
     }
 }
 
-fun drawString(matrices: MatrixStack, text: String, x: Float, y: Float, color: Int, shadow: Boolean = true, centered: Boolean = false, bordered: Boolean = false, chroma: Boolean = false, chromaSpeed: Float = 2000.0f) {
-    drawString(matrices, textLiteral(text), x, y, color, shadow, centered, bordered, chroma, chromaSpeed)
+fun GuiScreen.drawStringExt(text: String, x: Number, y: Number, color: Int, shadow: Boolean = true, centered: Boolean = false, bordered: Boolean = false, chroma: Boolean = false, chromaSpeed: Float = 2000.0f) = drawString(text,
+    x.toFloat(), y.toFloat(), color, shadow, centered, bordered, chroma, chromaSpeed)
+
+private fun drawCenteredString(text: String, x: Float, y: Float, color: Int, shadow: Boolean, bordered: Boolean, chroma: Boolean, chromaSpeed: Float) {
+    drawString(text, x - (mc.fontRendererObj.getStringWidth(text) / 2f), y, color, shadow = shadow, centered = false, bordered = bordered, chroma = chroma, chromaSpeed = chromaSpeed)
 }
 
-private fun drawCenteredString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int, shadow: Boolean, bordered: Boolean, chroma: Boolean, chromaSpeed: Float) {
-    drawString(matrices, text, x - (mc.textRenderer.getWidth(text) / 2f), y, color, shadow = shadow, centered = false, bordered = bordered, chroma = chroma, chromaSpeed = chromaSpeed)
+private fun drawBorderedString(text: String, x: Float, y: Float, color: Int, chroma: Boolean, chromaSpeed: Float) {
+    val noCols = stripColorCodes(text)
+
+    drawString(noCols, x + 1, y, 0, shadow = false, centered = false, bordered = false, chroma = false)
+    drawString(noCols, x - 1, y, 0, shadow = false, centered = false, bordered = false, chroma = false)
+    drawString(noCols, x, (y + 1f), 0, shadow = false, centered = false, bordered = false, chroma = false)
+    drawString(noCols, x, (y - 1f), 0, shadow = false, centered = false, bordered = false, chroma = false)
+    drawString(text, x, y, color, shadow = false, centered = false, bordered = false, chroma = chroma, chromaSpeed = chromaSpeed)
 }
 
-private fun drawBorderedString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int, chroma: Boolean, chromaSpeed: Float) {
-    val noCols = text.modify { stripColorCodes(it) }
-
-    drawString(matrices, noCols, x + 1, y, 0, shadow = false, centered = false, bordered = false, chroma = false)
-    drawString(matrices, noCols, x - 1, y, 0, shadow = false, centered = false, bordered = false, chroma = false)
-    drawString(matrices, noCols, x, (y + 1f), 0, shadow = false, centered = false, bordered = false, chroma = false)
-    drawString(matrices, noCols, x, (y - 1f), 0, shadow = false, centered = false, bordered = false, chroma = false)
-    drawString(matrices, text, x, y, color, shadow = false, centered = false, bordered = false, chroma = chroma, chromaSpeed = chromaSpeed)
-}
-
-private fun drawChromaString(matrices: MatrixStack, text: Text, _x: Float, y: Float, shadow: Boolean, speed: Float = 2000.0f) {
+private fun drawChromaString(text: String, _x: Float, y: Float, shadow: Boolean, speed: Float = 2000.0f) {
     var x = _x
-    for (char in toCharArrNoFormatting(text.extractString())) {
+    for (char in toCharArrNoFormatting(text)) {
         val i = getChroma(x, y, speed).rgb
-        drawString(matrices, textLiteral(char), x, y, i, shadow = shadow)
-        x += mc.textRenderer.getWidth(char)
+        drawString(text, x, y, i, shadow = shadow)
+        x += mc.fontRendererObj.getStringWidth(char)
     }
 }
 
@@ -90,32 +85,10 @@ fun toCharArrNoFormatting(text: String): ArrayList<String> {
     return split
 }
 
-fun stripFormattingCodes(_text: String, formatCode: String = "$FORMATTING_CODE"): String {
-    var text = _text
-    while (text.contains(formatCode)) {
-        text = text.replaceFirst(formatCode + text[text.indexOf(formatCode) + 1], "")
-    }
-    return text
-}
-
 fun stripColorCodes(_text: String, formatCode: String = "$FORMATTING_CODE"): String {
     var text = _text
     for (code in COLOR_CODES) {
         text = text.replace("${formatCode}${code}", "${formatCode}r", ignoreCase = true)
     }
     return text
-}
-
-fun Text.extractString(): String {
-    return when (this) {
-        is TranslatableText -> I18n.translate(key, args)
-        is KeybindText -> I18n.translate(key)
-        is LiteralText -> this.string
-        else -> throw UnsupportedOperationException("ScoreText is not supported")
-    }
-}
-
-fun Text.modify(lambda: (String) -> String): Text {
-    val string = extractString().run(lambda)
-    return textLiteral(string).fillStyle(this.style)
 }

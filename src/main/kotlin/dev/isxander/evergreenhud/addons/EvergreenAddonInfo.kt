@@ -8,26 +8,6 @@
 
 package dev.isxander.evergreenhud.addons
 
-import net.fabricmc.loader.api.FabricLoader
-import net.fabricmc.loader.api.ModContainer
-import net.fabricmc.loader.api.metadata.ModMetadata
+import java.util.jar.JarFile
 
-data class EvergreenAddonInfo(val id: String, val name: String, val author: String, val entrypoints: List<AddonInitializer>) {
-    companion object {
-        fun isAddon(metadata: ModMetadata) = metadata.containsCustomValue("evergreenhud")
-
-        fun of(mod: ModContainer): EvergreenAddonInfo {
-            val entrypoints = FabricLoader.getInstance().getEntrypointContainers("evergreenhud", AddonInitializer::class.java)
-                .filter { it.provider == mod }
-                .map { it.entrypoint }
-
-            val metadata = mod.metadata
-            val wrapper = metadata.getCustomValue("evergreenhud").asObject
-
-            val id = wrapper["id"]?.asString ?: metadata.id
-            val name = wrapper["name"]?.asString ?: metadata.name
-            val author = wrapper["author"]?.asString ?: "Unknown"
-            return EvergreenAddonInfo(id, name, author, entrypoints)
-        }
-    }
-}
+data class EvergreenAddonInfo(val id: String, val name: String, val author: String, val entrypoints: List<AddonInitializer>, val jarFile: JarFile)

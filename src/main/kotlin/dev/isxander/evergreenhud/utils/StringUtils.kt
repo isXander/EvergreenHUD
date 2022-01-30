@@ -8,15 +8,9 @@
 
 package dev.isxander.evergreenhud.utils
 
-import io.ejekta.kambrik.text.textLiteral
-import net.minecraft.text.MutableText
-import net.minecraft.text.Text
-import net.minecraft.util.Formatting
-import java.util.*
+import gg.essential.universal.ChatColor
 
-val evergreenHudPrefix = textLiteral("[EvergreenHUD] ") { format(Formatting.GREEN) }
-
-operator fun Text.plus(text: Text): MutableText = this.copy().append(text)
+val evergreenHudPrefix = "${ChatColor.GREEN}[EvergreenHUD] "
 
 fun ticksToTime(ticks: Int): String {
     var i = ticks / 20
@@ -48,16 +42,16 @@ fun shiftString(s: String, amt: Int): String {
  */
 fun formatBedwarsStar(stars: Int): String {
     return when {
-        stars < 100 -> "[${Formatting.GRAY}[${stars}\u272B]"
-        stars < 200 -> "[${Formatting.WHITE}[${stars}\u272B]"
-        stars < 300 -> "[${Formatting.GOLD}[${stars}\u272B]"
-        stars < 400 -> "[${Formatting.AQUA}[${stars}\u272B]"
-        stars < 500 -> "[${Formatting.DARK_GREEN}[${stars}\u272B]"
-        stars < 600 -> "[${Formatting.DARK_AQUA}[${stars}\u272B]"
-        stars < 700 -> "[${Formatting.DARK_RED}[${stars}\u272B]"
-        stars < 800 -> "[${Formatting.LIGHT_PURPLE}[${stars}\u272B]"
-        stars < 900 -> "[${Formatting.BLUE}[${stars}\u272B]"
-        stars < 1000 -> "[${Formatting.DARK_PURPLE}[${stars}\u272B]"
+        stars < 100 -> "[${ChatColor.GRAY}[${stars}\u272B]"
+        stars < 200 -> "[${ChatColor.WHITE}[${stars}\u272B]"
+        stars < 300 -> "[${ChatColor.GOLD}[${stars}\u272B]"
+        stars < 400 -> "[${ChatColor.AQUA}[${stars}\u272B]"
+        stars < 500 -> "[${ChatColor.DARK_GREEN}[${stars}\u272B]"
+        stars < 600 -> "[${ChatColor.DARK_AQUA}[${stars}\u272B]"
+        stars < 700 -> "[${ChatColor.DARK_RED}[${stars}\u272B]"
+        stars < 800 -> "[${ChatColor.LIGHT_PURPLE}[${stars}\u272B]"
+        stars < 900 -> "[${ChatColor.BLUE}[${stars}\u272B]"
+        stars < 1000 -> "[${ChatColor.DARK_PURPLE}[${stars}\u272B]"
 
         else -> {
             val sb = StringBuilder()
@@ -97,7 +91,7 @@ fun wrapTextFR(text: String, lineWidth: Int, split: String): String {
         }
 
         // length of next word
-        val wordLength: Int = mc.textRenderer.getWidth(word)
+        val wordLength: Int = mc.fontRendererObj.getStringWidth(word)
         when {
             lineLength + wordLength <= lineWidth -> { // if the current line length plus this next word is less than the maximum line width
                 // if the condition is met, we can just append the word to the current line as it is small enough

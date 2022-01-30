@@ -11,8 +11,8 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
-import dev.isxander.evergreenhud.utils.hypixel.isHypixel
 import dev.isxander.settxi.impl.string
+import gg.essential.api.EssentialAPI
 
 @ElementMeta(id = "evergreenhud:hypixel_map", name = "Hypixel Map", description = "Display the current map of the game you are playing.", category = "Hypixel")
 class ElementHypixelMap : SimpleTextElement("Map") {
@@ -29,7 +29,7 @@ class ElementHypixelMap : SimpleTextElement("Map") {
     }
 
     override fun calculateValue(): String {
-        if (!isHypixel) return noHypixelMessage
+        if (!EssentialAPI.getMinecraftUtil().isHypixel()) return noHypixelMessage
 
         val location = EvergreenHUD.locrawManager.currentLocation
         val map = location.map

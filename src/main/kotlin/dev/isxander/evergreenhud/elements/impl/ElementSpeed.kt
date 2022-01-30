@@ -16,7 +16,6 @@ import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.int
 import dev.isxander.settxi.impl.option
 import java.text.DecimalFormat
-import kotlin.math.pow
 import kotlin.math.sqrt
 
 @ElementMeta(id = "evergreenhud:speed", name = "Speed", category = "Player", description = "Display how fast you are moving.")
@@ -67,10 +66,10 @@ class ElementSpeed : SimpleTextElement("Speed") {
     override fun calculateValue(): String {
         var speed = 0.0
 
-        if (mc.player != null) {
-            val dx = if (useX) mc.player!!.x - mc.player!!.prevX else 0.0
-            val dy = if (useY) mc.player!!.y - mc.player!!.prevY else 0.0
-            val dz = if (useZ) mc.player!!.z - mc.player!!.prevZ else 0.0
+        if (mc.thePlayer != null) {
+            val dx = if (useX) mc.thePlayer!!.posX - mc.thePlayer!!.prevPosX else 0.0
+            val dy = if (useY) mc.thePlayer!!.posY - mc.thePlayer!!.prevPosY else 0.0
+            val dz = if (useZ) mc.thePlayer!!.posZ - mc.thePlayer!!.prevPosZ else 0.0
 
             // I usually don't leave out whitespaces, but in this case it greatly improved readability
             speed = convertSpeed(sqrt(dx*dx + dy*dy + dz*dz))

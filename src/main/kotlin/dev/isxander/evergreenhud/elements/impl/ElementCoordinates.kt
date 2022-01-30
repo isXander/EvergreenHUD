@@ -12,7 +12,10 @@ import dev.isxander.evergreenhud.elements.type.MultiLineTextElement
 import dev.isxander.evergreenhud.utils.Facing
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
-import dev.isxander.settxi.impl.*
+import dev.isxander.settxi.impl.OptionContainer
+import dev.isxander.settxi.impl.boolean
+import dev.isxander.settxi.impl.int
+import dev.isxander.settxi.impl.option
 import java.text.DecimalFormat
 
 @ElementMeta(id = "evergreenhud:coordinates", name = "Coordinates", description = "Show your current coordinates in the world.", category = "World")
@@ -68,7 +71,7 @@ class ElementCoordinates : MultiLineTextElement("Coords") {
 
     override fun calculateValue(): MutableList<String> {
         val lines = mutableListOf<String>()
-        if (mc.player == null) {
+        if (mc.thePlayer == null) {
             lines.add("Unknown")
             return lines
         }
@@ -79,10 +82,10 @@ class ElementCoordinates : MultiLineTextElement("Coords") {
         val df = DecimalFormat(formatBuilder.toString())
 
         val sb = StringBuilder()
-        val facing = Facing.parseExact(mc.player!!.yaw)
+        val facing = Facing.parseExact(mc.thePlayer!!.rotationYaw)
         if (showX) {
             sb.append(if (showAxis) "X: " else "")
-            sb.append(df.format(mc.player!!.x))
+            sb.append(df.format(mc.thePlayer!!.posX))
             if (showDirection) {
                 sb.append(" (")
 
@@ -103,7 +106,7 @@ class ElementCoordinates : MultiLineTextElement("Coords") {
         }
         if (showY) {
             sb.append(if (showAxis) "Y: " else "")
-            sb.append(df.format(mc.player!!.y))
+            sb.append(df.format(mc.thePlayer!!.posY))
             if (displayMode == DisplayMode.VERTICAL) {
                 lines.add(sb.toString())
                 sb.setLength(0)
@@ -113,7 +116,7 @@ class ElementCoordinates : MultiLineTextElement("Coords") {
         }
         if (showZ) {
             sb.append(if (showAxis) "Z: " else "")
-            sb.append(df.format(mc.player!!.z))
+            sb.append(df.format(mc.thePlayer!!.posZ))
             if (showDirection) {
                 sb.append(" (")
 

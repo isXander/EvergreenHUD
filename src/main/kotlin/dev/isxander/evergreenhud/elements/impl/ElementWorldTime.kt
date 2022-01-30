@@ -31,10 +31,10 @@ class ElementWorldTime : SimpleTextElement("Time") {
     }
 
     override fun calculateValue(): String {
-        if (mc.world == null) return "06:00${if (seconds) ":00" else ""} AM"
+        if (mc.theWorld == null) return "06:00${if (seconds) ":00" else ""} AM"
 
         // ticks to ticks in day to seconds to millis plus six hours (time 0 = 6am)
-        val date = Date(mc.world!!.timeOfDay / 20 * 1000 + TimeUnit.HOURS.toMillis(6))
+        val date = Date(mc.theWorld!!.worldTime / 20 * 1000 + TimeUnit.HOURS.toMillis(6))
         return SimpleDateFormat(String.format(if (twelveHour) "hh:mm%s a" else "HH:mm%s", if (seconds) ":ss" else ""))
             .format(date).uppercase()
     }

@@ -8,23 +8,28 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
-import dev.isxander.evergreenhud.utils.*
+import dev.isxander.evergreenhud.utils.Color
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
+import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.file
 import dev.isxander.settxi.impl.float
-import net.minecraft.client.texture.NativeImageBackedTexture
-import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.Identifier
-import net.minecraft.util.math.Quaternion
-import net.minecraft.util.math.Vec3f
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.Tessellator
+import net.minecraft.client.renderer.texture.DynamicTexture
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.util.ResourceLocation
 import java.awt.Dimension
+import java.awt.image.BufferedImage
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
 import javax.imageio.ImageIO
-import kotlin.math.min
+
 
 @ElementMeta(id = "evergreenhud:image", name = "Image", category = "Miscallaneous", description = "Display an image file.")
 class ElementImage : BackgroundElement() {
@@ -64,12 +69,12 @@ class ElementImage : BackgroundElement() {
     }
 
     var changed = true
-    var currentImage: Identifier? = null
+    private var currentImage: ResourceLocation? = null
     lateinit var imageDimension: Dimension
     var scaleMod = 1f
     var imgSize = 64
     val textureName = "evergreen-image-element-${hashCode()}"
-    val unknownResource = resource("elements/image/unknown.png")
+    private val unknownImage = ResourceLocation("evergreenhud", "textures/unknown.png")
 
     override val hitboxWidth: Float
         get() = imageDimension.width * scaleMod
@@ -84,67 +89,124 @@ class ElementImage : BackgroundElement() {
         paddingBottom = 0f
     }
 
-    override fun render(matrices: MatrixStack, renderOrigin: RenderOrigin) {
+    override fun render(renderOrigin: RenderOrigin) {
         if (changed || currentImage == null) {
-            if (currentImage != null)
-                mc.textureManager.destroyTexture(currentImage!!)
-
-            loadImage()
-
+            // Reload the texture
+            if (currentImage != null) mc.textureManager.deleteTexture(currentImage)
+            try {
+                cacheResourceLocation()
+            } catch (e: IOException) {
+                e.printStackTrace()
+            }
             changed = false
         }
 
+        GlStateManager.pushMatrix()
+        val scale = position.scale
+
+        scaleMod = if (autoScale) {
+            imgSize / imageDimension.getWidth().toFloat().coerceAtMost(imageDimension.getHeight().toFloat())
+        } else {
+            1f
+        }
+        GlStateManager.pushMatrix()
         val hitbox = calculateHitBox(position.scale)
-
-        scaleMod =
-            if (autoScale) imgSize / min(imageDimension.width, imageDimension.height).toFloat()
-            else 1f
-
-        matrices.push()
-        matrices.push()
-        val bgPivotX = hitbox.x1 + (hitbox.width / 2)
-        val bgPivotY = hitbox.y1 + (hitbox.height / 2)
-        matrices.translate(bgPivotX, bgPivotY)
-        matrices.multiply(Quaternion(Vec3f(0f, 0f, 1f), rotation, true))
-        matrices.translate(-bgPivotX, -bgPivotY)
-        super.render(matrices, renderOrigin)
-        matrices.pop()
-        matrices.scale(position.scale, position.scale, 1f)
-        RenderSystem.enableDepthTest()
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f)
-        RenderSystem.setShaderTexture(0, currentImage!!)
-        val width = imageDimension.width
-        val height = imageDimension.height
+        val bgPivotX: Float = hitbox.x1 + hitbox.width / 2f
+        val bgPivotY: Float = hitbox.x1 + hitbox.height / 2f
+        GlStateManager.translate(bgPivotX, bgPivotY, 0f)
+        GlStateManager.rotate(rotation, 0f, 0f, 1f)
+        GlStateManager.translate(-bgPivotX, -bgPivotY, 0f)
+        super.render(renderOrigin)
+        GlStateManager.popMatrix()
+        GlStateManager.scale(scale, scale, 1f)
+        GlStateManager.enableDepth()
+        GlStateManager.color(1f, 1f, 1f, 1f)
+        mc.textureManager.bindTexture(currentImage)
+        val width = imageDimension.getWidth()
+        val height = imageDimension.getHeight()
         val renderWidth = width * scaleMod
         val renderHeight = height * scaleMod
         val renderX = position.rawX
         val renderY = position.rawY
 
-        val imgPivotX = (renderX + (renderWidth / 2f)) / position.scale
-        val imgPivotY = (renderY + (renderHeight / 2f)) / position.scale
-        matrices.translate(imgPivotX, imgPivotY)
-        matrices.multiply(Quaternion(Vec3f(0f, 0f, 1f), rotation, true))
-        if (mirror) matrices.multiply(Quaternion(Vec3f(1f, 0f, 0f), 180f, true))
-        matrices.translate(-imgPivotX, -imgPivotY)
+        val imgPivotX = (renderX + renderWidth.toFloat() / 2f) / scale
+        val imgPivotY = (renderY + renderHeight.toFloat() / 2f) / scale
+        GlStateManager.translate(imgPivotX, imgPivotY, 0f)
+        GlStateManager.rotate(rotation, 0f, 0f, 1f)
+        GlStateManager.translate(-imgPivotX, -imgPivotY, 0f)
 
-        matrices.drawTexture(
-            renderX / position.scale, renderY / position.scale,
-            0f, 0f,
-            renderWidth, renderHeight,
-            imageDimension.width.toFloat(), imageDimension.height.toFloat(),
+        drawModalRect(
+            renderX / scale,
+            renderY / scale,
+            0,
+            0,
+            imageDimension.getWidth(),
+            imageDimension.getHeight(),
+            renderWidth,
+            renderHeight,
+            imageDimension.getWidth(),
+            imageDimension.getHeight()
         )
 
-        matrices.pop()
+        GlStateManager.popMatrix()
     }
 
-    private fun loadImage() {
-        val input =
-            if (file.isDirectory || !file.exists()) mc.resourceManager.getResource(unknownResource).inputStream
-            else file.inputStream()
+    @Throws(IOException::class)
+    private fun cacheResourceLocation() {
+        val imgFile: File? = getImageFile()
+        val `in`: InputStream
+        if (imgFile == null) {
+            `in` = mc.resourceManager.getResource(unknownImage).inputStream
+        } else {
+            `in` = FileInputStream(imgFile)
+        }
+        var img: BufferedImage = ImageIO.read(`in`)
+        if (mirror) img = mirror(img)
+        currentImage = mc.textureManager.getDynamicTextureLocation(textureName, DynamicTexture(img))
+        imageDimension = Dimension(img.width, img.height)
+    }
 
-        val image = ImageIO.read(input)
+    private fun getImageFile(): File? {
+        return if (file.name == "" || file.exists()) {
+            null
+        } else file
+    }
 
-        currentImage = mc.textureManager.registerDynamicTexture(textureName, NativeImageBackedTexture(image.toNativeImage()))
-        imageDimension = Dimension(image.width, image.height)
+    private fun mirror(image: BufferedImage): BufferedImage {
+        val newImage = BufferedImage(image.width, image.height, image.type)
+        for (y in 0 until newImage.height) {
+            var x1 = 0
+            var x2 = newImage.width - 1
+            while (x1 < newImage.width) {
+                newImage.setRGB(x1, y, image.getRGB(x2, y))
+                x1++
+                x2--
+            }
+        }
+        return newImage
+    }
+
+    fun drawModalRect(
+        x: Float,
+        y: Float,
+        u: Int,
+        v: Int,
+        uWidth: Double,
+        vHeight: Double,
+        width: Double,
+        height: Double,
+        tileWidth: Double,
+        tileHeight: Double
+    ) {
+        val f = 1.0 / tileWidth
+        val f1 = 1.0 / tileHeight
+        val tessellator = Tessellator.getInstance()
+        val worldrenderer = tessellator.worldRenderer
+        worldrenderer.begin(7, DefaultVertexFormats.POSITION_TEX)
+        worldrenderer.pos(x.toDouble(), y + height, 0.0).tex(u * f, (v + vHeight) * f1).endVertex()
+        worldrenderer.pos(x + width, y + height, 0.0).tex((u + uWidth) * f, (v + vHeight) * f1).endVertex()
+        worldrenderer.pos(x + width, y.toDouble(), 0.0).tex((u + uWidth) * f, v * f1).endVertex()
+        worldrenderer.pos(x.toDouble(), y.toDouble(), 0.0).tex(u * f, v * f1).endVertex()
+        tessellator.draw()
     }
 }
