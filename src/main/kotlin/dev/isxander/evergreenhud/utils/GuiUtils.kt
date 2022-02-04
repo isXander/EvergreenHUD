@@ -12,6 +12,7 @@ import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.*
+import net.minecraft.util.Formatting
 import java.awt.Color
 import java.lang.StringBuilder
 
@@ -119,3 +120,6 @@ fun Text.modify(lambda: (String) -> String): Text {
     val string = extractString().run(lambda)
     return textLiteral(string).fillStyle(this.style)
 }
+
+operator fun Formatting.plus(string: String): String =
+    this.toString() + string

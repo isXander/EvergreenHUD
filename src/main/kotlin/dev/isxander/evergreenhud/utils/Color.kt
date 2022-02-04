@@ -17,11 +17,11 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
         chroma
     )
 
-    constructor(r: Float, g: Float, b: Float, a: Float = 255f, chroma: ChromaProperties = ChromaProperties.none) : this(
-        (a * 255).toInt(),
+    constructor(r: Float, g: Float, b: Float, a: Float = 1f, chroma: ChromaProperties = ChromaProperties.none) : this(
         (r * 255).toInt(),
         (g * 255).toInt(),
         (b * 255).toInt(),
+        (a * 255).toInt(),
         chroma
     )
 
@@ -38,10 +38,19 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
     val blue: Int
         get() = rgba shr 0 and 0xFF
 
+    val awt: java.awt.Color
+        get() = java.awt.Color(rgba, true)
+
     fun withRed(red: Int) = Color(red, green, blue, alpha, chroma)
     fun withGreen(green: Int) = Color(red, green, blue, alpha, chroma)
     fun withBlue(blue: Int) = Color(red, green, blue, alpha, chroma)
     fun withAlpha(alpha: Int) = Color(red, green, blue, alpha, chroma)
+
+    fun withRed(red: Float) = Color(red, green / 255f, blue / 255f, alpha / 255f, chroma)
+    fun withGreen(green: Float) = Color(red / 255f, green, blue / 255f, alpha / 255f, chroma)
+    fun withBlue(blue: Float) = Color(red / 255f, green / 255f, blue, alpha / 255f, chroma)
+    fun withAlpha(alpha: Float) = Color(red / 255f, green / 255f, blue / 255f, alpha, chroma)
+
     fun withChroma(chroma: ChromaProperties) = Color(red, green, blue, alpha, chroma)
 
     companion object {

@@ -1,0 +1,53 @@
+/*
+ * EvergreenHUD - A mod to improve your heads-up-display.
+ * Copyright (c) isXander [2019 - 2022].
+ *
+ * This work is licensed under the GPL-3 License.
+ * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
+ */
+
+package dev.isxander.evergreenhud.gui.screens.ui.components
+
+import dev.isxander.evergreenhud.gui.screens.ui.EvergreenPalette
+import dev.isxander.evergreenhud.utils.Color
+import dev.isxander.evergreenhud.utils.constraint
+import dev.isxander.evergreenhud.utils.ofIdentifier
+import dev.isxander.evergreenhud.utils.resource
+import gg.essential.elementa.components.UIContainer
+import gg.essential.elementa.components.UIImage
+import gg.essential.elementa.components.UIRoundedRectangle
+import gg.essential.elementa.components.input.UITextInput
+import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.ImageAspectConstraint
+import gg.essential.elementa.constraints.SiblingConstraint
+import gg.essential.elementa.dsl.*
+
+class SearchField : UIRoundedRectangle(3f) {
+    init {
+        constrain {
+            color = EvergreenPalette.Greyscale.Dark3.constraint
+        }
+    }
+
+    val content by UIContainer().constrain {
+        x = CenterConstraint()
+        y = CenterConstraint()
+        width = (100 - 8).percent()
+        height = (100 - 8).percent()
+    } childOf this
+
+    val icon by UIImage.ofIdentifier(resource("ui/search.png")).constrain {
+        y = CenterConstraint()
+        width = ImageAspectConstraint()
+        height = 55.percent()
+    } childOf content
+
+    val text by UITextInput(placeholder = "Search...", shadow = false, cursorColor = Color(0xDCDCDC).awt).constrain {
+        x = SiblingConstraint(2f)
+        y = CenterConstraint()
+        width = 95.percent()
+        height = 80.percent() * 0.5f
+        color = Color(0xDCDCDC).constraint
+        textScale = 0.5.pixels()
+    } childOf content
+}
