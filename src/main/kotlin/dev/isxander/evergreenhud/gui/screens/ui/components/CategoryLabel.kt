@@ -17,30 +17,51 @@ import gg.essential.elementa.components.UIText
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
+import gg.essential.elementa.font.DefaultFonts
+import gg.essential.elementa.font.FontProvider
 import net.minecraft.util.Formatting
 
 class CategoryLabel(val category: String, selected: Boolean) : UIText(Formatting.BOLD + category, false) {
+    var isSelected = selected
+        private set
+
     init {
         constrain {
-            color = Color.white.withAlpha(if (selected) 1f else 0.7f).constraint
+            color = if (isSelected)
+                Color.white.constraint
+            else
+                Color(0xB4B4B4, false).constraint
         }
     }
 
-    val underline by GradientComponent(EvergreenPalette.Evergreen.Evergreen3.awt, Color(0x00C142).awt, GradientComponent.GradientDirection.LEFT_TO_RIGHT).constrain {
+    val underline by RoundedGradientComponent(EvergreenPalette.Evergreen.Evergreen3.awt, Color(0x00C142, false).awt, GradientComponent.GradientDirection.LEFT_TO_RIGHT, 3f).constrain {
         x = CenterConstraint()
-        if (selected) width = 100.percent()
-        y = 100.percent() - 5.percent()
-        height = 5.percent()
+        if (isSelected) width = 100.percent()
+        y = 100.percent() + 5.percent()
+        height = 40.percent()
     } childOf this
 
-    var selected = selected
-        set(value) {
-            field = value
-            underline.animate {
-                setWidthAnimation(Animations.IN_OUT_SIN, 0.3f, if (selected) 100.percent() else 0.percent())
-            }
-            this.animate {
-                setColorAnimation(Animations.IN_OUT_SIN, 0.3f, Color.white.withAlpha(if (selected) 1f else 0.7f).constraint)
-            }
+    fun select() {
+        if (isSelected) return
+        isSelected = true
+
+        underline.animate {
+            setWidthAnimation(Animations.IN_OUT_SIN, 0.3f, 100.percent())
         }
+        this.animate {
+            setColorAnimation(Animations.IN_OUT_SIN, 0.3f, Color.white.constraint)
+        }
+    }
+
+    fun deselect() {
+        if (!isSelected) return
+        isSelected = false
+
+        underline.animate {
+            setWidthAnimation(Animations.IN_OUT_SIN, 0.3f, 0.percent())
+        }
+        this.animate {
+            setColorAnimation(Animations.IN_OUT_SIN, 0.3f, Color(0xB4B4B4, false).constraint)
+        }
+    }
 }

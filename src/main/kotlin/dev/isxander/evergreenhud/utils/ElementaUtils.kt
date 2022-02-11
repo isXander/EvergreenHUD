@@ -30,4 +30,4 @@ fun UIImage.Companion.ofBase64(base64: String): UIImage {
 }
 
 val Color.constraint: ColorConstraint
-    get() = java.awt.Color(this.rgba).toConstraint()
+    get() = java.awt.Color(this.rgba, this.alpha != 255).toConstraint()

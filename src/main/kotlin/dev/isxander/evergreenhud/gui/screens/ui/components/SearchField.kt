@@ -42,12 +42,14 @@ class SearchField : UIRoundedRectangle(3f) {
         height = 55.percent()
     } childOf content
 
-    val text by UITextInput(placeholder = "Search...", shadow = false, cursorColor = Color(0xDCDCDC).awt).constrain {
+    val text by UITextInput(placeholder = "Search...", shadow = false, cursorColor = Color(0xDCDCDC, false).awt).constrain {
         x = SiblingConstraint(2f)
         y = CenterConstraint()
         width = 95.percent()
         height = 80.percent() * 0.5f
-        color = Color(0xDCDCDC).constraint
+        color = Color(0xDCDCDC, false).constraint
         textScale = 0.5.pixels()
+    }.onMouseClick {
+        println("ffff")
     } childOf content
 }

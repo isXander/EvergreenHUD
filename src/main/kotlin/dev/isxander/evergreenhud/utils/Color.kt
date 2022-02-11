@@ -12,6 +12,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.none) {
+    constructor(rgba: Int, hasAlpha: Boolean, chroma: ChromaProperties = ChromaProperties.none) : this(if (hasAlpha) rgba else -0x1000000 or rgba, chroma)
+
     constructor(r: Int, g: Int, b: Int, a: Int = 255, chroma: ChromaProperties = ChromaProperties.none) : this(
         a and 0xFF shl 24 or (r and 0xFF shl 16) or (g and 0xFF shl 8) or (b and 0xFF shl 0),
         chroma

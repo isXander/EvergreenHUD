@@ -41,8 +41,8 @@ class ConfigUI(val config: ConfigProcessor, parent: Screen? = null) : MainUI(par
                 height = 100.percent()
             }
             label.onMouseClick {
-                categoryList.forEach { it.selected = false }
-                label.selected = true
+                categoryList.forEach { it.deselect() }
+                label.select()
             }
             label childOf categoryContainer
             categoryList.add(label)
