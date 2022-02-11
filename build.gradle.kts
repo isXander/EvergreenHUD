@@ -67,7 +67,7 @@ dependencies {
 
     modImplementation("com.terraformersmc:modmenu:3.0.1")
 
-    includeApi("com.github.LlamaLad7:MixinExtras:0.0.3")
+    includeApi("com.github.LlamaLad7:MixinExtras:0.0.4")
     annotationProcessor("com.github.LlamaLad7:MixinExtras:0.0.3")
 }
 
