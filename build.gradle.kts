@@ -12,7 +12,7 @@ plugins {
     id("fabric-loom") version "0.11.+"
     id("com.google.devtools.ksp") version "$kotlinVersion-1.0.+"
     id("net.kyori.blossom") version "1.3.+"
-    id("org.ajoberstar.grgit") version "4.1.+"
+    id("org.ajoberstar.grgit") version "5.0.+"
     `java-library`
     java
 }
