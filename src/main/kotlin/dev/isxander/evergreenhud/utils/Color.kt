@@ -27,6 +27,8 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
         chroma
     )
 
+    constructor(color: java.awt.Color) : this(color.red, color.green, color.blue, color.alpha)
+
     init {
         check(testColorRanges(this)) { "Color value out of range." }
     }

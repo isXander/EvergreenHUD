@@ -11,6 +11,7 @@ package dev.isxander.evergreenhud.ui
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.ui.components.CloseButton
 import dev.isxander.evergreenhud.ui.components.ElementComponent
+import dev.isxander.evergreenhud.ui.components.ProfileComponent
 import dev.isxander.evergreenhud.ui.components.SearchField
 import dev.isxander.evergreenhud.utils.*
 import gg.essential.elementa.ElementaVersion
@@ -77,17 +78,11 @@ abstract class MainUI : UIBlock(EvergreenPalette.Greyscale.Dark2.constraint) {
         height = 50.percent()
     } childOf upperHeader
 
-    val profileOutline = OutlineEffect(Color(0.85f, 0.85f, 0.85f, 0f).awt, 0.5f)
-    val profileIcon by UIImage.ofBase64(EvergreenHUD.profileManager.currentProfile.icon).constrain {
+    val profileIcon by ProfileComponent().constrain {
         x = SiblingConstraint(15f)
         y = CenterConstraint()
-        width = ImageAspectConstraint()
         height = 55.percent()
-    }.onMouseEnter {
-        profileOutline::color.animate(Animations.OUT_CUBIC, 0.3f, Color(0.85f, 0.85f, 0.85f, 0.5f).awt)
-    }.onMouseLeave {
-        profileOutline::color.animate(Animations.OUT_CUBIC, 0.3f, Color(0.85f, 0.85f, 0.85f, 0f).awt)
-    } effect profileOutline childOf upperHeader
+    } childOf upperHeader
 
     val optionsButton by UIImage.ofIdentifier(resource("ui/options.png")).constrain {
         x = SiblingConstraint(5f)
@@ -95,7 +90,9 @@ abstract class MainUI : UIBlock(EvergreenPalette.Greyscale.Dark2.constraint) {
         width = ImageAspectConstraint()
         height = 55.percent()
     }.onMouseClick {
-
+        this@MainUI.hide()
+        val elementManagerSettings by ConfigUI(EvergreenHUD.elementManager)
+        elementManagerSettings childOf this@MainUI.parent
     } childOf upperHeader
 
     val rightHeader by UIContainer().constrain {
@@ -104,13 +101,18 @@ abstract class MainUI : UIBlock(EvergreenPalette.Greyscale.Dark2.constraint) {
         height = 100.percent()
     } childOf upperHeader
 
+    val closeButtonOutline = OutlineEffect(Color.white.withAlpha(0).awt, 1f, drawInsideChildren = true)
     val closeButton by CloseButton().constrain {
         y = CenterConstraint()
         width = 2.5.percent() boundTo paddedHeader
         height = AspectConstraint()
     }.onMouseClick {
         this@MainUI.hide(true)
-    } childOf rightHeader
+    }.onMouseEnter {
+        closeButtonOutline::color.animate(Animations.IN_OUT_SIN, 0.3f, Color.white.awt)
+    }.onMouseLeave {
+        closeButtonOutline::color.animate(Animations.IN_OUT_SIN, 0.3f, Color.white.withAlpha(0).awt)
+    } effect closeButtonOutline childOf rightHeader
 
     val lowerHeader by UIContainer().constrain {
         y = 50.percent()

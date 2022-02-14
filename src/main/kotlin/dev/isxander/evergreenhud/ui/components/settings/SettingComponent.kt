@@ -8,6 +8,7 @@
 
 package dev.isxander.evergreenhud.ui.components.settings
 
+import dev.isxander.evergreenhud.settings.ColorSetting
 import dev.isxander.evergreenhud.ui.EvergreenPalette
 import dev.isxander.evergreenhud.utils.constraint
 import dev.isxander.settxi.Setting
@@ -22,7 +23,7 @@ import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
 import kotlin.reflect.KClass
 
-class SettingComponent(val setting: Setting<*>, val onChange: () -> Unit = {}) : UIBlock(EvergreenPalette.Greyscale.Dark3.constraint) {
+class SettingComponent(val setting: Setting<*>, val settingList: UIComponent, val onChange: () -> Unit = {}) : UIBlock(EvergreenPalette.Greyscale.Dark3.constraint) {
     init {
         constrain {
             y = SiblingConstraint()
@@ -72,6 +73,7 @@ class SettingComponent(val setting: Setting<*>, val onChange: () -> Unit = {}) :
             is FloatSetting -> FloatSettingComponent(this, setting)
             is IntSetting -> IntSettingComponent(this, setting)
             is LongSetting -> LongSettingComponent(this, setting)
+            is ColorSetting -> ColorSettingComponent(this, setting)
             else -> UIContainer()
         }
     }

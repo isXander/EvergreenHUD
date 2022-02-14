@@ -8,18 +8,17 @@
 
 package dev.isxander.evergreenhud.ui
 
+import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.ui.components.CategoryLabel
-import dev.isxander.evergreenhud.ui.components.settings.SettingComponent
-import dev.isxander.evergreenhud.utils.constraint
-import dev.isxander.settxi.serialization.ConfigProcessor
+import dev.isxander.evergreenhud.ui.components.ElementDescriptionComponent
+import dev.isxander.evergreenhud.utils.mc
 import gg.essential.elementa.components.ScrollComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
-import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.constraints.*
 import gg.essential.elementa.dsl.*
 
-class ConfigUI(val config: ConfigProcessor) : MainUI() {
+class AddElementUI : MainUI() {
     val categoryList = mutableListOf<CategoryLabel>()
 
     val categoryContainer by UIContainer().constrain {
@@ -34,29 +33,29 @@ class ConfigUI(val config: ConfigProcessor) : MainUI() {
         height = FillConstraint()
     } childOf paddedMainContent
 
-    val settingScroller by ScrollComponent(pixelsPerScroll = 25f).constrain {
+    val elementScroller by ScrollComponent(pixelsPerScroll = 25f).constrain {
         width = 100.percent()
         height = 100.percent()
     } childOf scrollContainer
 
-    val settingsScrollbarContainer by UIBlock(EvergreenPalette.Greyscale.Dark3.awt).constrain {
+    val elementsScrollbarContainer by UIBlock(EvergreenPalette.Greyscale.Dark3.awt).constrain {
         x = 98.percent()
         width = 2.percent()
     } childOf scrollContainer
 
-    val settingScrollbar by UIBlock(EvergreenPalette.Greyscale.Gray1.awt).constrain {
+    val elementScrollbar by UIBlock(EvergreenPalette.Greyscale.Gray1.awt).constrain {
         width = 100.percent()
-    } childOf settingsScrollbarContainer
+    } childOf elementsScrollbarContainer
 
     init {
-        settingScroller.setVerticalScrollBarComponent(settingScrollbar)
+        elementScroller.setVerticalScrollBarComponent(elementScrollbar)
     }
 
-    val settingsList = mutableListOf<SettingComponent>()
+    val elementList = mutableListOf<ElementDescriptionComponent>()
 
     init {
         // get all categories and remove duplicates
-        val categories = config.settings.map { it.category }.toSet()
+        val categories = EvergreenHUD.elementManager.availableElements.values.map { it.category }.toSet()
         for (i in categories.indices) {
             val category = categories.elementAt(i)
 
@@ -89,20 +88,37 @@ class ConfigUI(val config: ConfigProcessor) : MainUI() {
         private set
 
     private fun setCurrentCategory(category: String) {
-        settingsList.forEach {
-            settingScroller.removeChild(it)
+        elementList.forEach {
+            it.parent.hide()
         }
-        settingsList.clear()
+        elementList.clear()
 
-        val settings = config.settings
+        val elements = EvergreenHUD.elementManager.availableElements.values
             .filter { it.category == category }
-            .filter { !it.hidden }
             .filter { searchField.text.getText() == searchField.text.placeholder || it.name.contains(searchField.text.getText()) }
 
-        for (setting in settings) {
-            val settingComponent by SettingComponent(setting, settingScroller) { settingUpdatedCallback() }
-            settingComponent childOf settingScroller
-            settingsList.add(settingComponent)
+        for ((i, element) in elements.withIndex()) {
+            val left = i % 2 == 0
+
+            val container = if (left)
+                UIContainer().constrain {
+                    y = SiblingConstraint(10f)
+                    width = 100.percent()
+                    height = 15.percent()
+                } childOf elementScroller
+            else elementList.last().parent
+
+            val elementComponent by ElementDescriptionComponent(element).constrain {
+                if (i % 2 == 1)
+                    x = 50.percent() + 5.pixels()
+                width = 50.percent() - 5.pixels()
+                height = 100.percent()
+            }
+            elementComponent.onMouseClick {
+                mc.setScreen(ElementDisplay())
+            }
+            elementComponent childOf container
+            elementList.add(elementComponent)
         }
 
         this.category = category

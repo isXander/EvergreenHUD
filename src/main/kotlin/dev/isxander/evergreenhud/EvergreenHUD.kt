@@ -108,39 +108,6 @@ object EvergreenHUD : ClientModInitializer {
                     }
                 }
             }
-
-            "add" {
-                val availableIds = suggestionList {
-                    elementManager.availableElements.values
-                        .map { it.id }
-                        .filter {
-                            it !in (mc.currentServerEntry?.address
-                                ?.let { address -> elementManager.blacklistedElements[address] } ?: emptyList())
-                        }
-                        .map { Identifier(it) }
-                }
-                argIdentifier("id", availableIds) { argId ->
-                    runs {
-                        val id = argId()
-                        val element = elementManager.getNewElementInstance<Element>(id.toString())!!
-                        elementManager.addElement(element)
-                        elementManager.elementConfig.save()
-                    }
-                }
-            }
-
-            "remove" {
-                argIdentifier("id", suggestionList { elementManager.currentElements.map { Identifier(it.metadata.id) } }) { argId ->
-                    argInt("index") { argIndex ->
-                        runs {
-                            val id = argId()
-                            val index = argIndex()
-                            elementManager.removeElement(elementManager.currentElements.filter { it.metadata.id == id.toString() }[index])
-                            elementManager.elementConfig.save()
-                        }
-                    }
-                }
-            }
         }
 
         Kambrik.Input.registerKeyboardBinding(

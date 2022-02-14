@@ -28,9 +28,9 @@ class ElementComponent(val element: Element) : UIComponent() {
 
     val settingsButton by UIImage.ofIdentifier(resource("ui/settings.png")).constrain {
         x = 2.percent()
-        y = (100 - 50 - 4).percent()
+        y = (100 - 4).percent() - (10.pixels() * element.position.scale)
         width = ImageAspectConstraint()
-        height = 50.percent()
+        height = 10.pixels() * element.position.scale
     }.animateAfterUnhide {
         setColorAnimation(Animations.IN_OUT_SIN, 0.3f, Color.white.constraint)
     }.animateBeforeHide {
@@ -39,9 +39,9 @@ class ElementComponent(val element: Element) : UIComponent() {
 
     val removeButton by UIImage.ofIdentifier(resource("ui/close.png")).constrain {
         x = 0.pixels(alignOpposite = true) - 2.percent()
-        y = (100 - 50 - 4).percent()
+        y = (100 - 4).percent() - (10.pixels() * element.position.scale)
         width = ImageAspectConstraint()
-        height = 50.percent()
+        height = 10.pixels() * element.position.scale
     }.onMouseClick {
         EvergreenHUD.elementManager.removeElement(element)
         this@ElementComponent.hide(true)

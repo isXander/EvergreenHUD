@@ -11,12 +11,16 @@ package dev.isxander.evergreenhud.utils
 import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.text.MutableText
 import net.minecraft.text.Text
+import net.minecraft.text.TranslatableText
 import net.minecraft.util.Formatting
 import java.util.*
 
 val evergreenHudPrefix = textLiteral("[EvergreenHUD] ") { format(Formatting.GREEN) }
 
 operator fun Text.plus(text: Text): MutableText = this.copy().append(text)
+
+val String.localized: String
+    get() = TranslatableText(this).string
 
 fun ticksToTime(ticks: Int): String {
     var i = ticks / 20

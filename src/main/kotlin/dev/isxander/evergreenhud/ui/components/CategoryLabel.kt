@@ -32,6 +32,22 @@ class CategoryLabel(val category: String, selected: Boolean) : UIText(Formatting
             else
                 Color(0xB4B4B4, false).constraint
         }
+
+        onMouseEnter {
+            if (!isSelected) {
+                this.animate {
+                    setColorAnimation(Animations.IN_OUT_SIN, 0.3f, Color.white.constraint)
+                }
+            }
+        }
+
+        onMouseLeave {
+            if (!isSelected) {
+                this.animate {
+                    setColorAnimation(Animations.IN_OUT_SIN, 0.3f, Color(0xB4B4B4, false).constraint)
+                }
+            }
+        }
     }
 
     val underline by GradientComponent(EvergreenPalette.Evergreen.Evergreen3.awt, Color(0x00C142, false).awt, GradientComponent.GradientDirection.LEFT_TO_RIGHT).constrain {
