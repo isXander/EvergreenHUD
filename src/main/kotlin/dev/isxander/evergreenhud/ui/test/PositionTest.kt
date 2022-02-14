@@ -6,7 +6,7 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-package dev.isxander.evergreenhud.gui.screens.test
+package dev.isxander.evergreenhud.ui.test
 
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.position.ZonedPosition

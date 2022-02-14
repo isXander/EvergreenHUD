@@ -6,25 +6,19 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-package dev.isxander.evergreenhud.gui.screens.ui.components
+package dev.isxander.evergreenhud.ui.components
 
-import dev.isxander.evergreenhud.gui.screens.ui.EvergreenPalette
+import dev.isxander.evergreenhud.ui.EvergreenPalette
 import dev.isxander.evergreenhud.utils.constraint
 import dev.isxander.evergreenhud.utils.ofIdentifier
 import dev.isxander.evergreenhud.utils.resource
+import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIImage
 import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.constraints.CenterConstraint
 import gg.essential.elementa.dsl.*
 
-class CloseButton : UIRoundedRectangle(1f) {
-    init {
-        constrain {
-            color = EvergreenPalette.Greyscale.Dark3.constraint
-            radius = 6.pixels()
-        }
-    }
-
+class CloseButton : UIBlock(EvergreenPalette.Greyscale.Dark3.awt) {
     val icon by UIImage.ofIdentifier(resource("ui/close.png")).constrain {
         x = CenterConstraint()
         y = CenterConstraint()

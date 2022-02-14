@@ -6,9 +6,9 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-package dev.isxander.evergreenhud.gui.screens.ui.components
+package dev.isxander.evergreenhud.ui.components
 
-import dev.isxander.evergreenhud.gui.screens.ui.EvergreenPalette
+import dev.isxander.evergreenhud.ui.EvergreenPalette
 import dev.isxander.evergreenhud.utils.Color
 import dev.isxander.evergreenhud.utils.constraint
 import dev.isxander.evergreenhud.utils.plus
@@ -34,11 +34,11 @@ class CategoryLabel(val category: String, selected: Boolean) : UIText(Formatting
         }
     }
 
-    val underline by RoundedGradientComponent(EvergreenPalette.Evergreen.Evergreen3.awt, Color(0x00C142, false).awt, GradientComponent.GradientDirection.LEFT_TO_RIGHT, 3f).constrain {
+    val underline by GradientComponent(EvergreenPalette.Evergreen.Evergreen3.awt, Color(0x00C142, false).awt, GradientComponent.GradientDirection.LEFT_TO_RIGHT).constrain {
         x = CenterConstraint()
         if (isSelected) width = 100.percent()
         y = 100.percent() + 5.percent()
-        height = 40.percent()
+        height = 20.percent()
     } childOf this
 
     fun select() {

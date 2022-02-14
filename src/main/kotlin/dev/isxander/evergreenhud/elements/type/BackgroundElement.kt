@@ -13,6 +13,8 @@ import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.settings.color
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.settxi.impl.*
+import gg.essential.elementa.components.UIRoundedRectangle
+import gg.essential.universal.UMatrixStack
 import net.minecraft.client.util.math.MatrixStack
 
 abstract class BackgroundElement : Element() {
@@ -26,26 +28,12 @@ abstract class BackgroundElement : Element() {
         name = "Enabled"
         category = "Outline"
         description = "If the background is rendered."
-
-        set { enabled ->
-            val new = if (enabled) Color(outlineColor.red, outlineColor.green, outlineColor.blue, 255)
-            else Color(outlineColor.red, outlineColor.green, outlineColor.blue, 0)
-            if (outlineColor != new) outlineColor = new
-
-            return@set enabled
-        }
     }
 
     var outlineColor: Color by color(Color.black) {
         name = "Color"
         category = "Outline"
         description = "The color of the outline."
-
-        set {
-            val enabled = it.alpha != 0
-            if (outlineEnabled != enabled) outlineEnabled = enabled
-            return@set it
-        }
     }
 
     var outlineThickness by float(1f) {
@@ -112,10 +100,13 @@ abstract class BackgroundElement : Element() {
         val hitbox = calculateHitBox(scale)
 
         if (backgroundColor.alpha > 0) {
-            matrices.fill(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, bgCol.rgba)
+            if (cornerRadius == 0f)
+                matrices.fill(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, bgCol.rgba)
+            else
+                UIRoundedRectangle.drawRoundedRectangle(UMatrixStack(matrices), hitbox.x1, hitbox.y1, hitbox.x2, hitbox.y2, cornerRadius, bgCol.awt)
         }
-        if (outlineEnabled) {
-            matrices.drawBorderLines(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.height, outlineThickness, outlineCol.rgba)
+        if (outlineEnabled && outlineCol.alpha != 0) {
+            matrices.drawBorderLines(hitbox.x1, hitbox.y1, hitbox.x2, hitbox.y2, outlineThickness, outlineCol.rgba)
         }
     }
 

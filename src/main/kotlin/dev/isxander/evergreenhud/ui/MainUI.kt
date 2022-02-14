@@ -6,40 +6,39 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-package dev.isxander.evergreenhud.gui.screens.ui
+package dev.isxander.evergreenhud.ui
 
 import dev.isxander.evergreenhud.EvergreenHUD
-import dev.isxander.evergreenhud.gui.screens.ui.components.CloseButton
-import dev.isxander.evergreenhud.gui.screens.ui.components.SearchField
+import dev.isxander.evergreenhud.ui.components.CloseButton
+import dev.isxander.evergreenhud.ui.components.ElementComponent
+import dev.isxander.evergreenhud.ui.components.SearchField
 import dev.isxander.evergreenhud.utils.*
 import gg.essential.elementa.ElementaVersion
 import gg.essential.elementa.WindowScreen
-import gg.essential.elementa.components.UIBlock
-import gg.essential.elementa.components.UIContainer
-import gg.essential.elementa.components.UIImage
-import gg.essential.elementa.components.UIText
+import gg.essential.elementa.components.*
 import gg.essential.elementa.components.inspector.Inspector
 import gg.essential.elementa.constraints.*
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
+import gg.essential.elementa.effects.ScissorEffect
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.util.Formatting
 
-abstract class MainUI(val parent: Screen? = null) : WindowScreen(ElementaVersion.V1) {
+abstract class MainUI : UIBlock(EvergreenPalette.Greyscale.Dark2.constraint) {
     init {
-        UIBlock(EvergreenPalette.Greyscale.Dark2.constraint).constrain {
-            width = 100.percent()
-            height = 100.percent()
-        } childOf window
-
-        Inspector(window) childOf window
+        constrain {
+            x = CenterConstraint()
+            y = CenterConstraint()
+            width = 75.percent()
+            height = 75.percent()
+        }
     }
 
     val header by UIBlock(EvergreenPalette.Greyscale.Dark1.constraint).constrain {
         width = 100.percent()
         height = 20.percent()
-    } childOf window
+    } childOf this
 
     val paddedHeader by UIContainer().constrain {
         x = CenterConstraint()
@@ -110,7 +109,7 @@ abstract class MainUI(val parent: Screen? = null) : WindowScreen(ElementaVersion
         width = 2.5.percent() boundTo paddedHeader
         height = AspectConstraint()
     }.onMouseClick {
-        mc.setScreen(this@MainUI.parent)
+        this@MainUI.hide(true)
     } childOf rightHeader
 
     val lowerHeader by UIContainer().constrain {
@@ -119,11 +118,16 @@ abstract class MainUI(val parent: Screen? = null) : WindowScreen(ElementaVersion
         height = 50.percent()
     } childOf paddedHeader
 
-
-
     val mainContent by UIBlock(EvergreenPalette.Greyscale.Dark2.constraint).constrain {
         y = 20.percent()
         width = 100.percent()
         height = 80.percent()
-    } childOf window
+    } childOf this
+
+    val paddedMainContent by UIContainer().constrain {
+        x = CenterConstraint()
+        y = CenterConstraint()
+        width = (100 - 5).percent()
+        height = (100 - 4).percent()
+    } effect ScissorEffect() childOf mainContent
 }

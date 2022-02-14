@@ -6,13 +6,14 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-package dev.isxander.evergreenhud.gui.screens.ui.components
+package dev.isxander.evergreenhud.ui.components
 
-import dev.isxander.evergreenhud.gui.screens.ui.EvergreenPalette
+import dev.isxander.evergreenhud.ui.EvergreenPalette
 import dev.isxander.evergreenhud.utils.Color
 import dev.isxander.evergreenhud.utils.constraint
 import dev.isxander.evergreenhud.utils.ofIdentifier
 import dev.isxander.evergreenhud.utils.resource
+import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIImage
 import gg.essential.elementa.components.UIRoundedRectangle
@@ -22,13 +23,7 @@ import gg.essential.elementa.constraints.ImageAspectConstraint
 import gg.essential.elementa.constraints.SiblingConstraint
 import gg.essential.elementa.dsl.*
 
-class SearchField : UIRoundedRectangle(3f) {
-    init {
-        constrain {
-            color = EvergreenPalette.Greyscale.Dark3.constraint
-        }
-    }
-
+class SearchField : UIBlock(EvergreenPalette.Greyscale.Dark3.awt) {
     val content by UIContainer().constrain {
         x = CenterConstraint()
         y = CenterConstraint()
@@ -48,8 +43,13 @@ class SearchField : UIRoundedRectangle(3f) {
         width = 95.percent()
         height = 80.percent() * 0.5f
         color = Color(0xDCDCDC, false).constraint
-        textScale = 0.5.pixels()
-    }.onMouseClick {
-        println("ffff")
     } childOf content
+
+    init {
+        text.lineHeight = 10f
+
+        text.onMouseClick {
+            text.grabWindowFocus()
+        }
+    }
 }

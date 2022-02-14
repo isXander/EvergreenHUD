@@ -12,7 +12,7 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.config.element.ElementSerializer
 import dev.isxander.evergreenhud.event.Event
 import dev.isxander.evergreenhud.event.EventListener
-import dev.isxander.evergreenhud.gui.screens.ElementDisplay
+import dev.isxander.evergreenhud.ui.ElementDisplay
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
 import dev.isxander.evergreenhud.utils.*
@@ -78,7 +78,6 @@ abstract class Element : ConfigProcessor {
     }
     /* called when element is removed */
     open fun onRemoved() {
-        utilities.unregisterAllForObject(this)
         isAdded = false
     }
 
@@ -117,7 +116,6 @@ abstract class Element : ConfigProcessor {
     }
 
     companion object {
-        protected val utilities = ElementUtilitySharer()
         protected val eventBus by EvergreenHUD::eventBus
     }
 }

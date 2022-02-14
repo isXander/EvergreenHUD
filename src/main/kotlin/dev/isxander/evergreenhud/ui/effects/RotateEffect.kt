@@ -6,12 +6,12 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-package dev.isxander.evergreenhud.gui.screens.ui.effects
+package dev.isxander.evergreenhud.ui.effects
 
 import gg.essential.elementa.effects.Effect
 import gg.essential.universal.UMatrixStack
 
-class RotateEffect(private val angle: Float) : Effect() {
+class RotateEffect(var angle: Float) : Effect() {
     override fun beforeDraw(matrixStack: UMatrixStack) {
         matrixStack.push()
 

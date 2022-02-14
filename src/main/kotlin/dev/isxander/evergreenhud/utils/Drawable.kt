@@ -33,20 +33,21 @@ fun MatrixStack.drawVerticalLine(x: Float, y1: Float, y2: Float, width: Float, c
 }
 
 fun MatrixStack.drawBorderLines(x0: Float, y0: Float, x1: Float, y1: Float, width: Float, color: Int) {
-    drawHorizontalLine(x0, x1, y0, width, color)
-    drawVerticalLine(x1, y0, y1, width, color)
-    drawHorizontalLine(x0, x1, y1, width, color)
-    drawVerticalLine(x0, y0, y1, width, color)
+    drawHorizontalLine(x0, x1, y0 - width / 2, width, color)
+    drawVerticalLine(x1 - width / 2, y0, y1, width, color)
+    drawHorizontalLine(x0, x1, y1 - width / 2, width, color)
+    drawVerticalLine(x0 - width / 2, y0, y1, width, color)
 }
 
-fun MatrixStack.fill(x1: Float, y1: Float, x2: Float, y2: Float, color: Int) {
+fun MatrixStack.fill(x1: Float, y1: Float, x2: Float, y2: Float, color: Int, shader: Boolean = true) {
     val matrix = peek().positionMatrix
     val (r, g, b, a) = extractRGBA(color)
     val bufferBuilder = Tessellator.getInstance().buffer
     RenderSystem.enableBlend()
     RenderSystem.disableTexture()
     RenderSystem.defaultBlendFunc()
-    RenderSystem.setShader { GameRenderer.getPositionColorShader() }
+    if (shader)
+        RenderSystem.setShader { GameRenderer.getPositionColorShader() }
     bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR)
     bufferBuilder.vertex(matrix, x1, y2, 0.0f).color(r, g, b, a).next()
     bufferBuilder.vertex(matrix, x2, y2, 0.0f).color(r, g, b, a).next()

@@ -16,15 +16,13 @@ import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.EventBus
 import dev.isxander.evergreenhud.event.RenderHudEvent
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
-import dev.isxander.evergreenhud.gui.screens.BlacklistedScreen
-import dev.isxander.evergreenhud.gui.screens.ElementDisplay
-import dev.isxander.evergreenhud.gui.screens.UpdateScreen
-import dev.isxander.evergreenhud.gui.screens.test.PositionTest
-import dev.isxander.evergreenhud.gui.screens.ui.ConfigUI
-import dev.isxander.evergreenhud.gui.screens.ui.MainUI
+import dev.isxander.evergreenhud.ui.BlacklistedScreen
+import dev.isxander.evergreenhud.ui.UpdateScreen
+import dev.isxander.evergreenhud.ui.test.PositionTest
 import dev.isxander.evergreenhud.packets.client.registerElementsPacket
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
+import dev.isxander.evergreenhud.ui.ElementDisplay
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
 import io.ejekta.kambrik.Kambrik
@@ -107,12 +105,6 @@ object EvergreenHUD : ClientModInitializer {
                 "test" {
                     "position" runs {
                         GuiHandler.displayGui(PositionTest())
-                    }
-
-                    "ui" runs {
-                        elementManager.currentElements.firstOrNull()?.let {
-                            GuiHandler.displayGui(ConfigUI(it))
-                        }
                     }
                 }
             }
