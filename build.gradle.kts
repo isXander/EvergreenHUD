@@ -9,8 +9,8 @@
 plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
-    id("fabric-loom") version "0.10.+"
-    id("com.google.devtools.ksp") version "$kotlinVersion-1.0.2"
+    id("fabric-loom") version "0.11.+"
+    id("com.google.devtools.ksp") version "$kotlinVersion-1.0.+"
     id("net.kyori.blossom") version "1.3.+"
     id("org.ajoberstar.grgit") version "4.1.+"
     `java-library`
@@ -58,7 +58,7 @@ dependencies {
 
     minecraft("com.mojang:minecraft:1.18.1")
     mappings("net.fabricmc:yarn:1.18.1+build.+:v2")
-    modImplementation("net.fabricmc:fabric-loader:0.12.+")
+    modImplementation("net.fabricmc:fabric-loader:0.13.+")
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.46.1+1.18")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
 
