@@ -12,7 +12,7 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.config.element.ElementSerializer
 import dev.isxander.evergreenhud.event.Event
 import dev.isxander.evergreenhud.event.EventListener
-import dev.isxander.evergreenhud.gui.screens.ElementDisplay
+import dev.isxander.evergreenhud.ui.ElementDisplay
 import dev.isxander.evergreenhud.utils.HitBox2D
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.evergreenhud.utils.position.ZonedPosition
@@ -81,7 +81,6 @@ abstract class Element : ConfigProcessor {
     }
     /* called when element is removed */
     open fun onRemoved() {
-        utilities.unregisterAllForObject(this)
         isAdded = false
     }
 
@@ -105,7 +104,7 @@ abstract class Element : ConfigProcessor {
     }
 
     fun resetSettings(save: Boolean = false) {
-        position = ZonedPosition.center()
+        position = ZonedPosition.scaledPositioning(0.25f, 0.25f)
 
         for (s in settings) s.reset()
         if (save) EvergreenHUD.elementManager.elementConfig.save()
@@ -120,7 +119,6 @@ abstract class Element : ConfigProcessor {
     }
 
     companion object {
-        protected val utilities = ElementUtilitySharer()
         protected val eventBus by EvergreenHUD::eventBus
     }
 

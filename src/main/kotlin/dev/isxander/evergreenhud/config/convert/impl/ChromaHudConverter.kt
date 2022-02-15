@@ -52,7 +52,7 @@ object ChromaHudConverter : ConfigConverter {
                 scale = elementJson.decode("scale")!!,
             )
 
-            var textColor = Color(elementJson.decode("color")!!)
+            var textColor = Color(elementJson.decode<Int>("color")!!)
             if (elementJson.decode<Boolean>("rgb") == true)
                 textColor = Color(
                     elementJson.decode("red") ?: 255,

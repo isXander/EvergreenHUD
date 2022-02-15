@@ -11,17 +11,16 @@ package dev.isxander.evergreenhud
 import cc.woverflow.wcore.utils.command
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.config.profile.ProfileManager
-import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.event.EventBus
 import dev.isxander.evergreenhud.event.Events
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
-import dev.isxander.evergreenhud.gui.screens.BlacklistedScreen
-import dev.isxander.evergreenhud.gui.screens.ElementDisplay
-import dev.isxander.evergreenhud.gui.screens.UpdateScreen
-import dev.isxander.evergreenhud.gui.screens.test.PositionTest
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
+import dev.isxander.evergreenhud.ui.BlacklistedScreen
+import dev.isxander.evergreenhud.ui.ElementDisplay
+import dev.isxander.evergreenhud.ui.UpdateScreen
+import dev.isxander.evergreenhud.ui.test.PositionTest
 import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
 import dev.isxander.evergreenhud.utils.logger
 import dev.isxander.evergreenhud.utils.mc
@@ -96,44 +95,13 @@ object EvergreenHUD {
 
         command("evergreenhud", aliases = arrayListOf("evergreen", "egh")) {
             main {
-                EssentialAPI.getGuiUtil().openScreen(ElementDisplay(mc.currentScreen))
+                EssentialAPI.getGuiUtil().openScreen(ElementDisplay())
             }
             if (EssentialAPI.getMinecraftUtil().isDevelopment()) {
                 "test" {
                     action = {
                         if (it.isNotEmpty() && it[0] == "position") {
                             EssentialAPI.getGuiUtil().openScreen(PositionTest())
-                        }
-                    }
-                }
-            }
-            "add" {
-                action = { array ->
-                    val availableIds = elementManager.availableElements.values.map { it.id }
-                    println(availableIds)
-                    if (array.isNotEmpty()) {
-                        println(array[0])
-                        for (id in availableIds) {
-                            if (array[0].lowercase() == id.lowercase()) {
-                                val element = elementManager.getNewElementInstance<Element>(id)!!
-                                elementManager.addElement(element)
-                                elementManager.elementConfig.save()
-                            }
-                        }
-                    }
-                }
-            }
-            "remove" {
-                action = {
-                    val elements = elementManager.currentElements
-                    if (it.size == 2) {
-                        for (id in elements) {
-                            if (it[0] == id.metadata.id) {
-                                if (it[1].toIntOrNull() != null) {
-                                    elementManager.removeElement(elementManager.currentElements.filter { yes -> yes.metadata.id == id.toString() }[it[1].toInt()])
-                                    elementManager.elementConfig.save()
-                                }
-                            }
                         }
                     }
                 }

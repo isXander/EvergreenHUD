@@ -25,10 +25,10 @@ fun drawVerticalLine(x: Number, y1: Number, y2: Number, width: Number, color: In
 }
 
 fun drawBorderLines(x0: Float, y0: Float, x1: Float, y1: Float, width: Float, color: Int) {
-    drawHorizontalLine(x0, x1, y0, width, color)
-    drawVerticalLine(x1, y0, y1, width, color)
-    drawHorizontalLine(x0, x1, y1, width, color)
-    drawVerticalLine(x0, y0, y1, width, color)
+    drawHorizontalLine(x0, x1, y0 - width / 2, width, color)
+    drawVerticalLine(x1 - width / 2, y0, y1, width, color)
+    drawHorizontalLine(x0, x1, y1 - width / 2, width, color)
+    drawVerticalLine(x0 - width / 2, y0, y1, width, color)
 }
 
 fun FontRenderer.drawCenteredText(
