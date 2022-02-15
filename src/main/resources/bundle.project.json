@@ -1,6 +1,6 @@
 {
   "id": "${mod_id}",
   "version": "${mod_version}",
-  "minecraft_version": "1.18.1",
-  "platform": "fabric"
+  "minecraft_version": "1.8.9",
+  "platform": "forge"
 }
