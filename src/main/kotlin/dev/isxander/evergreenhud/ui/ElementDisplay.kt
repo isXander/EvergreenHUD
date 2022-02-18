@@ -30,15 +30,18 @@ import net.minecraft.client.gui.screen.Screen
 
 class ElementDisplay(val parentScreen: Screen? = null) : WindowScreen(ElementaVersion.V1) {
     val inspector by Inspector(window) childOf window
+    val elements = mutableListOf<ElementComponent>()
 
     init {
         for (element in EvergreenHUD.elementManager) {
-            val component by ElementComponent(element)
+            val component by ElementComponent(element, this)
 
             component.settingsButton.onMouseClick {
                 val configUI by ConfigUI(component.element)
                 configUI childOf window
             }
+
+            elements += component
 
             component childOf window
         }

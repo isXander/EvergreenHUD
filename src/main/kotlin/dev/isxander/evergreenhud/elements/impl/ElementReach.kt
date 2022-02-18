@@ -11,6 +11,7 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.ClientDamageEntityEvent
 import dev.isxander.evergreenhud.event.ClientTickEvent
+import dev.isxander.evergreenhud.utils.decimalFormat
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
@@ -61,7 +62,7 @@ class ElementReach : SimpleTextElement("Reach") {
 
         val reach = cameraPos.distanceTo(hitResult.pos)
         lastHit = System.currentTimeMillis()
-        getDecimalFormat().format(reach)
+        decimalFormat(accuracy, trailingZeros).format(reach)
     }
 
     val clientTickEvent by event<ClientTickEvent> {
@@ -73,12 +74,5 @@ class ElementReach : SimpleTextElement("Reach") {
 
     override fun calculateValue(): String {
         return reach!!
-    }
-
-    private fun getDecimalFormat(): DecimalFormat {
-        val formatter = if (trailingZeros) "0" else "#"
-        val formatBuilder = StringBuilder(if (accuracy < 1) formatter else "$formatter.")
-        for (i in 0 until accuracy) formatBuilder.append(formatter)
-        return DecimalFormat(formatBuilder.toString())
     }
 }

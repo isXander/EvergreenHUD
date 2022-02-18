@@ -186,7 +186,7 @@ class ElementArmourHUD : BackgroundElement() {
 //                centered = alignment == Alignment.CENTER,
                 shadow = textStyle == TextElement.TextStyle.SHADOW,
                 bordered = textStyle == TextElement.TextStyle.BORDER,
-                chroma = textColor.chroma.hasChroma, chromaSpeed = textColor.chroma.chromaSpeed
+                chroma = textColor.chroma
             )
             matrices.pop()
         }

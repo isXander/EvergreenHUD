@@ -101,12 +101,16 @@ abstract class BackgroundElement : Element() {
 
         if (backgroundColor.alpha > 0) {
             if (cornerRadius == 0f)
-                matrices.fill(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, bgCol.rgba)
+                chroma(backgroundColor.chroma) {
+                    matrices.fill(hitbox.x1, hitbox.y1, hitbox.x1 + hitbox.width, hitbox.y1 + hitbox.height, bgCol.rgba, !backgroundColor.chroma.hasChroma)
+                }
             else
                 UIRoundedRectangle.drawRoundedRectangle(UMatrixStack(matrices), hitbox.x1, hitbox.y1, hitbox.x2, hitbox.y2, cornerRadius, bgCol.awt)
         }
         if (outlineEnabled && outlineCol.alpha != 0) {
-            matrices.drawBorderLines(hitbox.x1, hitbox.y1, hitbox.x2, hitbox.y2, outlineThickness, outlineCol.rgba)
+            chroma(outlineCol.chroma) {
+                matrices.drawBorderLines(hitbox.x1, hitbox.y1, hitbox.x2, hitbox.y2, outlineThickness, outlineCol.rgba, !outlineCol.chroma.hasChroma)
+            }
         }
     }
 

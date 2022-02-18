@@ -78,7 +78,7 @@ abstract class SimpleTextElement
             centered = alignment == Alignment.CENTER,
             shadow = textStyle == TextStyle.SHADOW,
             bordered = textStyle == TextStyle.BORDER,
-            chroma = textColor.chroma.hasChroma, chromaSpeed = textColor.chroma.chromaSpeed
+            chroma = textColor.chroma
         )
 
         matrices.pop()

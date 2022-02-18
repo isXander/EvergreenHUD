@@ -8,56 +8,52 @@
 
 package dev.isxander.evergreenhud.utils
 
+import gg.essential.universal.shader.BlendState
+import gg.essential.universal.shader.UShader
 import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.*
 import net.minecraft.util.Formatting
-import java.awt.Color
-import java.lang.StringBuilder
+import net.minecraft.util.Identifier
 
 val COLOR_CODES = arrayOf("0","1","2","3","4","5","6","7","8","9","a","b","c","d","e","f")
 const val FORMATTING_CODE = '\u00A7'
 
-fun drawString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int, shadow: Boolean = true, centered: Boolean = false, bordered: Boolean = false, chroma: Boolean = false, chromaSpeed: Float = 2000.0f) {
+fun drawString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int, shadow: Boolean = true, centered: Boolean = false, bordered: Boolean = false, chroma: Color.ChromaProperties = Color.ChromaProperties.none) {
     when {
-        centered -> drawCenteredString(matrices, text, x, y, color, shadow, bordered, chroma, chromaSpeed)
-        bordered -> drawBorderedString(matrices, text, x, y, color, chroma, chromaSpeed)
-        chroma -> drawChromaString(matrices, text, x, y, shadow, chromaSpeed)
+        centered -> drawCenteredString(matrices, text, x, y, color, shadow, bordered, chroma)
+        bordered -> drawBorderedString(matrices, text, x, y, color, chroma)
+        chroma.hasChroma -> drawChromaString(matrices, text, x, y, shadow, chroma)
         shadow -> mc.textRenderer.drawWithShadow(matrices, text, x, y, color)
         else -> mc.textRenderer.draw(matrices, text, x, y, color)
     }
 }
 
-fun drawString(matrices: MatrixStack, text: String, x: Float, y: Float, color: Int, shadow: Boolean = true, centered: Boolean = false, bordered: Boolean = false, chroma: Boolean = false, chromaSpeed: Float = 2000.0f) {
-    drawString(matrices, textLiteral(text), x, y, color, shadow, centered, bordered, chroma, chromaSpeed)
+fun drawString(matrices: MatrixStack, text: String, x: Float, y: Float, color: Int, shadow: Boolean = true, centered: Boolean = false, bordered: Boolean = false, chroma: Color.ChromaProperties = Color.ChromaProperties.none) {
+    drawString(matrices, textLiteral(text), x, y, color, shadow, centered, bordered, chroma)
 }
 
-private fun drawCenteredString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int, shadow: Boolean, bordered: Boolean, chroma: Boolean, chromaSpeed: Float) {
-    drawString(matrices, text, x - (mc.textRenderer.getWidth(text) / 2f), y, color, shadow = shadow, centered = false, bordered = bordered, chroma = chroma, chromaSpeed = chromaSpeed)
+private fun drawCenteredString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int, shadow: Boolean, bordered: Boolean, chroma: Color.ChromaProperties) {
+    drawString(matrices, text, x - (mc.textRenderer.getWidth(text) / 2f), y, color, shadow = shadow, centered = false, bordered = bordered, chroma = chroma)
 }
 
-private fun drawBorderedString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int, chroma: Boolean, chromaSpeed: Float) {
+private fun drawBorderedString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int, chroma: Color.ChromaProperties) {
     val noCols = text.modify { stripColorCodes(it) }
 
-    drawString(matrices, noCols, x + 1, y, 0, shadow = false, centered = false, bordered = false, chroma = false)
-    drawString(matrices, noCols, x - 1, y, 0, shadow = false, centered = false, bordered = false, chroma = false)
-    drawString(matrices, noCols, x, (y + 1f), 0, shadow = false, centered = false, bordered = false, chroma = false)
-    drawString(matrices, noCols, x, (y - 1f), 0, shadow = false, centered = false, bordered = false, chroma = false)
-    drawString(matrices, text, x, y, color, shadow = false, centered = false, bordered = false, chroma = chroma, chromaSpeed = chromaSpeed)
+    drawString(matrices, noCols, x + 1, y, 0, shadow = false, centered = false, bordered = false, chroma = Color.ChromaProperties.none)
+    drawString(matrices, noCols, x - 1, y, 0, shadow = false, centered = false, bordered = false, chroma = Color.ChromaProperties.none)
+    drawString(matrices, noCols, x, (y + 1f), 0, shadow = false, centered = false, bordered = false, chroma = Color.ChromaProperties.none)
+    drawString(matrices, noCols, x, (y - 1f), 0, shadow = false, centered = false, bordered = false, chroma = Color.ChromaProperties.none)
+    drawString(matrices, text, x, y, color, shadow = false, centered = false, bordered = false, chroma = chroma)
 }
 
-private fun drawChromaString(matrices: MatrixStack, text: Text, _x: Float, y: Float, shadow: Boolean, speed: Float = 2000.0f) {
+private fun drawChromaString(matrices: MatrixStack, text: Text, _x: Float, y: Float, shadow: Boolean, chroma: Color.ChromaProperties) {
     var x = _x
     for (char in toCharArrNoFormatting(text.extractString())) {
-        val i = getChroma(x, y, speed).rgb
+        val i = chroma.getChroma(x, y)
         drawString(matrices, textLiteral(char), x, y, i, shadow = shadow)
-        x += mc.textRenderer.getWidth(char)
-    }
-}
-
-fun getChroma(x: Float, y: Float, speed: Float = 2000.0f): Color {
-    return Color(Color.HSBtoRGB(((System.currentTimeMillis() - x * 10f * 1f - y * 10f * 1f) % speed) / speed, 0.8f, 0.8f))
+        x += mc.textRenderer.getWidth(char)}
 }
 
 fun toCharArrNoFormatting(text: String): ArrayList<String> {
@@ -123,3 +119,10 @@ fun Text.modify(lambda: (String) -> String): Text {
 
 operator fun Formatting.plus(string: String): String =
     this.toString() + string
+
+fun UShader.Companion.readFromLegacyShader(shader: Identifier, blendState: BlendState = BlendState.NORMAL): UShader =
+    fromLegacyShader(
+        Identifier(shader.namespace, shader.path + ".vsh").readText(),
+        Identifier(shader.namespace, shader.path + ".fsh").readText(),
+        blendState
+    )

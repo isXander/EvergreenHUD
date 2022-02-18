@@ -12,7 +12,7 @@
     "issues": "https://github.com/isXander/EvergreenHUD/issues",
     "sources": "https://github.com/isXander/EvergreenHUD"
   },
-  "license": "CC BY-NC-SA 4.0",
+  "license": "GPLv3",
   "icon": "assets/evergreenhud/evergreenhud.png",
   "environment": "client",
   "entrypoints": {

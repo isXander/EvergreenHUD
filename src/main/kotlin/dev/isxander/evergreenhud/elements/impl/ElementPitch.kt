@@ -9,6 +9,7 @@
 package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.utils.decimalFormat
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
@@ -31,9 +32,6 @@ class ElementPitch : SimpleTextElement("Pitch", 0) {
     }
 
     override fun calculateValue(): String {
-        val format = if (trailingZeros) "0" else "#"
-
-        return DecimalFormat("0${if (accuracy > 0) "." else ""}" + format.repeat(accuracy))
-            .format(mc.player?.pitch ?: 0f)
+        return decimalFormat(accuracy, trailingZeros).format(mc.player?.pitch ?: 0f )
     }
 }

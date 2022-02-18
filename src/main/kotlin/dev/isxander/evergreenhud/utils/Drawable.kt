@@ -10,6 +10,9 @@ package dev.isxander.evergreenhud.utils
 
 import com.mojang.blaze3d.platform.GlStateManager
 import com.mojang.blaze3d.systems.RenderSystem
+import gg.essential.elementa.components.UIBlock
+import gg.essential.universal.UMatrixStack
+import gg.essential.universal.shader.UShader
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.*
 import net.minecraft.client.texture.NativeImage
@@ -17,6 +20,7 @@ import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.OrderedText
 import net.minecraft.text.Text
+import net.minecraft.util.Identifier
 import net.minecraft.util.math.Matrix4f
 import java.awt.image.BufferedImage
 import java.util.function.BiConsumer
@@ -24,37 +28,43 @@ import java.util.function.BiConsumer
 fun MatrixStack.translate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) =
     translate(x.toDouble(), y.toDouble(), z.toDouble())
 
-fun MatrixStack.drawHorizontalLine(x1: Float, x2: Float, y: Float, width: Float, color: Int) {
-    fill(x1, y, x2 + width, y + width, color)
+fun MatrixStack.drawHorizontalLine(x1: Float, x2: Float, y: Float, width: Float, color: Int, shader: Boolean = true) {
+    fill(x1, y, x2 + width, y + width, color, shader)
 }
 
-fun MatrixStack.drawVerticalLine(x: Float, y1: Float, y2: Float, width: Float, color: Int) {
-    fill(x, y1 + width, x + width, y2, color)
+fun MatrixStack.drawVerticalLine(x: Float, y1: Float, y2: Float, width: Float, color: Int, shader: Boolean = true) {
+    fill(x, y1 + width, x + width, y2, color, shader)
 }
 
-fun MatrixStack.drawBorderLines(x0: Float, y0: Float, x1: Float, y1: Float, width: Float, color: Int) {
-    drawHorizontalLine(x0, x1, y0 - width / 2, width, color)
-    drawVerticalLine(x1 - width / 2, y0, y1, width, color)
-    drawHorizontalLine(x0, x1, y1 - width / 2, width, color)
-    drawVerticalLine(x0 - width / 2, y0, y1, width, color)
+fun MatrixStack.drawBorderLines(x0: Float, y0: Float, x1: Float, y1: Float, width: Float, color: Int, shader: Boolean = true) {
+    drawHorizontalLine(x0 - width, x1, y0 - width, width, color, shader)
+    drawVerticalLine(x1, y0 - width, y1 + width, width, color, shader)
+    drawHorizontalLine(x0 - width, x1, y1, width, color, shader)
+    drawVerticalLine(x0 - width, y0 - width, y1 + width, width, color, shader)
 }
 
 fun MatrixStack.fill(x1: Float, y1: Float, x2: Float, y2: Float, color: Int, shader: Boolean = true) {
-    val matrix = peek().positionMatrix
-    val (r, g, b, a) = extractRGBA(color)
-    val bufferBuilder = Tessellator.getInstance().buffer
     RenderSystem.enableBlend()
     RenderSystem.disableTexture()
     RenderSystem.defaultBlendFunc()
-    if (shader)
-        RenderSystem.setShader { GameRenderer.getPositionColorShader() }
-    bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR)
-    bufferBuilder.vertex(matrix, x1, y2, 0.0f).color(r, g, b, a).next()
-    bufferBuilder.vertex(matrix, x2, y2, 0.0f).color(r, g, b, a).next()
-    bufferBuilder.vertex(matrix, x2, y1, 0.0f).color(r, g, b, a).next()
-    bufferBuilder.vertex(matrix, x1, y1, 0.0f).color(r, g, b, a).next()
-    bufferBuilder.end()
-    BufferRenderer.draw(bufferBuilder)
+    tessellate(DrawMode.QUADS, VertexFormats.POSITION_COLOR, shader) {
+        vertex {
+            pos(x1, y2, 0f)
+            color(color)
+        }
+        vertex {
+            pos(x2, y2, 0f)
+            color(color)
+        }
+        vertex {
+            pos(x2, y1, 0f)
+            color(color)
+        }
+        vertex {
+            pos(x1, y1, 0f)
+            color(color)
+        }
+    }
     RenderSystem.enableTexture()
     RenderSystem.disableBlend()
 }
@@ -374,4 +384,37 @@ fun BufferedImage.toNativeImage(): NativeImage {
     }
 
     return nativeImage
+}
+
+val shader by lazy { UShader.readFromLegacyShader(resource("shaders/chroma")) }
+val shaderTimeUniform by lazy { shader.getIntUniform("u_time") }
+val shaderSpeedUniform by lazy { shader.getFloatUniform("u_speed") }
+val shaderFrequencyUniform by lazy { shader.getFloatUniform("u_frequency") }
+
+fun chroma(properties: Color.ChromaProperties, block: () -> Unit) {
+    if (!properties.hasChroma) {
+        block()
+        return
+    }
+
+    shader.bind()
+    shaderTimeUniform.setValue((System.currentTimeMillis() % properties.chromaSpeed.toDouble()).toInt())
+    shaderSpeedUniform.setValue(properties.chromaSpeed)
+    shaderFrequencyUniform.setValue(properties.chromaFrequency)
+
+    block()
+
+    shader.unbind()
+}
+fun MatrixStack.drawChromaRectangle() {
+    val speed = 1000f
+
+    shader.bind()
+    shaderTimeUniform.setValue((System.currentTimeMillis() % speed.toDouble()).toInt())
+    shaderSpeedUniform.setValue(speed)
+    shaderFrequencyUniform.setValue(2f)
+
+    UIBlock.drawBlockWithActiveShader(UMatrixStack(this), Color.white.awt, 0.0, 0.0, mc.window.scaledWidth.toDouble(), mc.window.scaledHeight.toDouble())
+
+    shader.unbind()
 }

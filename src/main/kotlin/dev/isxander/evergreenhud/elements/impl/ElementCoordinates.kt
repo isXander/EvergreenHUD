@@ -10,6 +10,7 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.type.MultiLineTextElement
 import dev.isxander.evergreenhud.utils.Facing
+import dev.isxander.evergreenhud.utils.decimalFormat
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.*
@@ -73,10 +74,7 @@ class ElementCoordinates : MultiLineTextElement("Coords") {
             return lines
         }
 
-        val formatter = if (trailingZeros) "0" else "#"
-        val formatBuilder = StringBuilder(if (accuracy < 1) formatter else "$formatter.")
-        for (i in 0 until accuracy) formatBuilder.append(formatter)
-        val df = DecimalFormat(formatBuilder.toString())
+        val df = decimalFormat(accuracy, trailingZeros)
 
         val sb = StringBuilder()
         val facing = Facing.parseExact(mc.player!!.yaw)

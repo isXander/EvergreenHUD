@@ -14,14 +14,11 @@ import dev.isxander.evergreenhud.config.element.ElementConfig
 import dev.isxander.evergreenhud.event.ClientDisconnectEvent
 import dev.isxander.evergreenhud.event.ClientJoinWorldEvent
 import dev.isxander.evergreenhud.event.RenderHudEvent
-import dev.isxander.evergreenhud.utils.decode
+import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.elementmeta.ElementListJson
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
-import dev.isxander.evergreenhud.utils.json
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
-import dev.isxander.evergreenhud.utils.logger
-import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.serialization.ConfigProcessor
 import kotlinx.serialization.decodeFromString
 import java.io.InputStream
@@ -47,6 +44,12 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         name = "Enabled"
         category = "General"
         description = "Display any elements you have created."
+    }
+
+    var elementSnapping by boolean(true) {
+        name = "Element Snapping"
+        category = "General"
+        description = "When dragging elements, EGH snaps it "
     }
 
     var checkForUpdates by boolean(true) {

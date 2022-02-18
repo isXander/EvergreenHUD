@@ -9,6 +9,7 @@
 package dev.isxander.evergreenhud.utils
 
 import kotlinx.serialization.Serializable
+import kotlin.math.floor
 
 @Serializable
 data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.none) {
@@ -27,7 +28,7 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
         chroma
     )
 
-    constructor(color: java.awt.Color) : this(color.red, color.green, color.blue, color.alpha)
+    constructor(color: AwtColor) : this(color.red, color.green, color.blue, color.alpha)
 
     init {
         check(testColorRanges(this)) { "Color value out of range." }
@@ -42,8 +43,8 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
     val blue: Int
         get() = rgba shr 0 and 0xFF
 
-    val awt: java.awt.Color
-        get() = java.awt.Color(rgba, true)
+    val awt: AwtColor
+        get() = AwtColor(rgba, true)
 
     fun withRed(red: Int) = Color(red, green, blue, alpha, chroma)
     fun withGreen(green: Int) = Color(red, green, blue, alpha, chroma)
@@ -76,10 +77,17 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
     }
 
     @Serializable
-    data class ChromaProperties(val hasChroma: Boolean, val chromaSpeed: Float = 2000f) {
+    data class ChromaProperties(val hasChroma: Boolean, val chromaSpeed: Float = 2000f, val chromaFrequency: Float = 4f) {
+        fun getChroma(x: Float, y: Float): Int {
+            val c = ((chromaFrequency * (-2.0 * x.toDouble() + y.toDouble())) / 10.0) % 1.0
+            return AwtColor.HSBtoRGB(((c + ((System.currentTimeMillis() % chromaSpeed.toDouble()).toInt() / chromaSpeed.toDouble())) % 1.0).toFloat(), 0.8f, 0.8f)
+        }
+
         companion object {
             val none = ChromaProperties(false)
             val default = ChromaProperties(true)
         }
     }
 }
+
+typealias AwtColor = java.awt.Color

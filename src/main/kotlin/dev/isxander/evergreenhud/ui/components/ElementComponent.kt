@@ -11,19 +11,23 @@ package dev.isxander.evergreenhud.ui.components
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
+import dev.isxander.evergreenhud.ui.ElementDisplay
 import dev.isxander.evergreenhud.utils.Color
 import dev.isxander.evergreenhud.utils.constraint
 import dev.isxander.evergreenhud.utils.ofIdentifier
 import dev.isxander.evergreenhud.utils.resource
 import gg.essential.elementa.UIComponent
+import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIImage
 import gg.essential.elementa.constraints.ImageAspectConstraint
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
 import gg.essential.universal.UMatrixStack
+import net.minecraft.util.math.Vec2f
+import kotlin.math.abs
 
-class ElementComponent(val element: Element) : UIComponent() {
+class ElementComponent(val element: Element, val display: ElementDisplay) : UIComponent() {
     private var clickPos: Pair<Float, Float>? = null
 
     val settingsButton by UIImage.ofIdentifier(resource("ui/settings.png")).constrain {
@@ -53,9 +57,15 @@ class ElementComponent(val element: Element) : UIComponent() {
 
     val outlineEffect = OutlineEffect(Color.white.withAlpha(0).awt, 0.5f)
 
+    val verticalSnapBlock by UIBlock(Color.red.awt) childOf display.window
+    val horizontalSnapBlock by UIBlock(Color.red.awt) childOf display.window
+
     init {
         settingsButton.hide(true)
         removeButton.hide(true)
+
+        verticalSnapBlock.hide()
+        horizontalSnapBlock.hide()
 
         constrainSelf() effect outlineEffect
 
@@ -65,9 +75,15 @@ class ElementComponent(val element: Element) : UIComponent() {
             } else {
                 it.relativeX to it.relativeY
             }
+
+            verticalSnapBlock.unhide()
+            horizontalSnapBlock.unhide()
         }
         onMouseRelease {
             clickPos = null
+
+            verticalSnapBlock.hide()
+            horizontalSnapBlock.hide()
         }
 
         onMouseDrag { mouseX, mouseY, button ->
@@ -78,8 +94,83 @@ class ElementComponent(val element: Element) : UIComponent() {
                 val posX = this@ElementComponent.getLeft() + mouseX - clickPos!!.first
                 val posY = this@ElementComponent.getTop() + mouseY - clickPos!!.second
 
-                element.position.rawX = posX + (element.position.rawX - hitbox.x1)
-                element.position.rawY = posY + (element.position.rawY - hitbox.y1)
+                val targetPosX = posX + (element.position.rawX - hitbox.x1)
+                val targetPosY = posY + (element.position.rawY - hitbox.y1)
+
+                element.position.rawX = targetPosX
+                element.position.rawY = targetPosY
+
+                if (!EvergreenHUD.elementManager.elementSnapping)
+                    return@onMouseDrag
+
+                val movedHitbox = element.calculateHitBox(element.position.scale)
+
+                val scaledSnapPoints = element.snapPoints.map {
+                    Vec2f(movedHitbox.x1 + movedHitbox.width * it.x, movedHitbox.y1 + movedHitbox.height * it.y)
+                }
+
+                val otherScaledSnapPoints = display.elements
+                    .filter { it !== this@ElementComponent }
+                    .map {
+                        val otherHitbox = it.element.calculateHitBox(element.position.scale)
+                        it.element.snapPoints.map { point ->
+                            Vec2f(otherHitbox.x1 + otherHitbox.width * point.x, otherHitbox.y1 + otherHitbox.height * point.y)
+                        }
+                    }.flatten()
+
+                var verticalSnap: Pair<Vec2f, Vec2f>? = null
+                var horizontalSnap: Pair<Vec2f, Vec2f>? = null
+                val snapThreshold = 5f
+                for (snapPoint in scaledSnapPoints) {
+                    for (otherSnapPoint in otherScaledSnapPoints) {
+                        // horizontal line, vertical snap
+                        if (verticalSnap == null) {
+                            if (abs(snapPoint.y - otherSnapPoint.y) <= snapThreshold) {
+                                verticalSnap = snapPoint to otherSnapPoint
+                            }
+                        }
+
+                        // vertical line, horizontal snap
+                        if (horizontalSnap == null) {
+                            if (abs(snapPoint.x - otherSnapPoint.x) <= snapThreshold) {
+                                horizontalSnap = snapPoint to otherSnapPoint
+                            }
+                        }
+                    }
+                }
+
+                if (verticalSnap != null) {
+                    val origin = verticalSnap.first.y - movedHitbox.y1 - (element.position.rawY - movedHitbox.y1)
+                    element.position.rawY = verticalSnap.second.y - origin
+
+                    verticalSnapBlock.constrain {
+                        x = kotlin.math.min(verticalSnap.first.x, verticalSnap.second.x).pixels()
+                        y = verticalSnap.second.y.pixels() - 0.5.pixels()
+                        width = abs(verticalSnap.second.x - verticalSnap.first.x).pixels()
+                        height = 1.pixels()
+                    }
+                } else {
+                    verticalSnapBlock.constrain {
+                        width = 0.pixels()
+                        height = 0.pixels()
+                    }
+                }
+                if (horizontalSnap != null) {
+                    val origin = horizontalSnap.first.x - movedHitbox.x1 - (element.position.rawX - movedHitbox.x1)
+                    element.position.rawX = horizontalSnap.second.x - origin
+
+                    horizontalSnapBlock.constrain {
+                        x = horizontalSnap.second.x.pixels() - 0.5.pixels()
+                        y = kotlin.math.min(horizontalSnap.first.y, horizontalSnap.second.y).pixels()
+                        width = 1.pixels()
+                        height = abs(horizontalSnap.second.y - horizontalSnap.first.y).pixels()
+                    }
+                } else {
+                    horizontalSnapBlock.constrain {
+                        width = 0.pixels()
+                        height = 0.pixels()
+                    }
+                }
             }
         }
 

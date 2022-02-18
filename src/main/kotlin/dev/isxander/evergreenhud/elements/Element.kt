@@ -22,6 +22,7 @@ import kotlinx.serialization.Serializable
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.gui.screen.ChatScreen
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.util.math.Vec2f
 
 @Serializable(ElementSerializer::class)
 abstract class Element : ConfigProcessor {
@@ -71,6 +72,18 @@ abstract class Element : ConfigProcessor {
 
         depends { FabricLoader.getInstance().isModLoaded("replaymod") }
     }
+
+    open val snapPoints = listOf(
+        Vec2f(0f, 0f), // top left
+        Vec2f(0f, 0.5f), // middle left
+        Vec2f(0f, 1f), // bottom left
+        Vec2f(0.5f, 0f), // top middle
+        Vec2f(0.5f, 0.5f), // center
+        Vec2f(0.5f, 1f), // bottom middle
+        Vec2f(1f, 0f), // top right
+        Vec2f(1f, 0.5f), // middle right
+        Vec2f(1f, 1f), // bottom right
+    )
 
     /* called when element is added */
     open fun onAdded() {

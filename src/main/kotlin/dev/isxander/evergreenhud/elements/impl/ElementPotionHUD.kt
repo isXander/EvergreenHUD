@@ -271,8 +271,7 @@ class ElementPotionHUD : BackgroundElement() {
                     titleStyle == TextStyle.SHADOW,
                     false,
                     titleStyle == TextStyle.BORDER,
-                    titleColor.chroma.hasChroma,
-                    titleColor.chroma.chromaSpeed
+                    titleColor.chroma
                 )
             }
             if (durationVisible) {
@@ -300,8 +299,7 @@ class ElementPotionHUD : BackgroundElement() {
                         durationStyle == TextStyle.SHADOW,
                         false,
                         durationStyle == TextStyle.BORDER,
-                        durationColor.chroma.hasChroma,
-                        durationColor.chroma.chromaSpeed,
+                        durationColor.chroma
                     )
                 }
             }

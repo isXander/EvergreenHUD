@@ -21,3 +21,6 @@ val InputStream.base64: String
 
 fun fromBase64(string: String): InputStream =
     ByteArrayInputStream(Base64.getDecoder().decode(string))
+
+fun Identifier.readText(): String =
+    mc.resourceManager.getResource(this).inputStream.readAllBytes().decodeToString()
