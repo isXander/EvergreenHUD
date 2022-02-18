@@ -11,7 +11,6 @@ package dev.isxander.evergreenhud
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.config.profile.ProfileManager
-import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.EventBus
 import dev.isxander.evergreenhud.event.RenderHudEvent
@@ -26,7 +25,6 @@ import dev.isxander.evergreenhud.ui.ElementDisplay
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
 import io.ejekta.kambrik.Kambrik
-import io.ejekta.kambrik.command.suggestionList
 import io.ejekta.kambrik.text.textLiteral
 import kotlinx.coroutines.runBlocking
 import net.fabricmc.api.ClientModInitializer
@@ -34,7 +32,6 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.SharedConstants
-import net.minecraft.util.Identifier
 import org.bundleproject.libversion.Version
 import org.lwjgl.glfw.GLFW
 import java.io.File

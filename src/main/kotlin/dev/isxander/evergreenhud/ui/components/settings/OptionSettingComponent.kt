@@ -19,6 +19,7 @@ import gg.essential.elementa.constraints.*
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
+import gg.essential.elementa.effects.ScissorEffect
 
 class OptionSettingComponent(val component: SettingComponent, val setting: OptionSetting) : UIBlock(EvergreenPalette.Greyscale.Dark2.awt) {
     var expanded = false
@@ -70,6 +71,7 @@ class OptionSettingComponent(val component: SettingComponent, val setting: Optio
             }.onMouseClick {
                 minimize()
                 setting.set(option)
+                it.stopImmediatePropagation()
             } effect OutlineEffect(Color.black.awt, 1f, drawInsideChildren = true) childOf scroller
 
             val text by UIText(option.name, shadow = false).constrain {
@@ -87,6 +89,7 @@ class OptionSettingComponent(val component: SettingComponent, val setting: Optio
 
         caretRotateEffect::angle.animate(Animations.IN_OUT_CIRCULAR, 0.2f, 180f)
         scroller.unhide()
+        setFloating(true)
     }
 
     fun minimize() {
@@ -95,6 +98,7 @@ class OptionSettingComponent(val component: SettingComponent, val setting: Optio
 
         caretRotateEffect::angle.animate(Animations.IN_OUT_CIRCULAR, 0.2f, 0f)
         scroller.hide()
+        setFloating(false)
     }
 }
 
