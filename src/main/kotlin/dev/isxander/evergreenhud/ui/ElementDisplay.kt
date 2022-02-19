@@ -27,10 +27,20 @@ import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
 import net.minecraft.client.gui.screen.Screen
+import net.minecraft.util.math.Vec2f
 
 class ElementDisplay(val parentScreen: Screen? = null) : WindowScreen(ElementaVersion.V1) {
     val inspector by Inspector(window) childOf window
     val elements = mutableListOf<ElementComponent>()
+
+    val globalSnapPoints = listOf(
+        Vec2f(0f, 0f),
+        Vec2f(0f, 1f),
+        Vec2f(0.5f, 0f),
+        Vec2f(0.5f, 1f),
+        Vec2f(1f, 0f),
+        Vec2f(1f, 1f),
+    )
 
     init {
         for (element in EvergreenHUD.elementManager) {

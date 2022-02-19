@@ -12,10 +12,7 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.ui.ElementDisplay
-import dev.isxander.evergreenhud.utils.Color
-import dev.isxander.evergreenhud.utils.constraint
-import dev.isxander.evergreenhud.utils.ofIdentifier
-import dev.isxander.evergreenhud.utils.resource
+import dev.isxander.evergreenhud.utils.*
 import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIImage
@@ -116,7 +113,9 @@ class ElementComponent(val element: Element, val display: ElementDisplay) : UICo
                         it.element.snapPoints.map { point ->
                             Vec2f(otherHitbox.x1 + otherHitbox.width * point.x, otherHitbox.y1 + otherHitbox.height * point.y)
                         }
-                    }.flatten()
+                    }.flatten() + display.globalSnapPoints.map {
+                        Vec2f(mc.window.scaledWidth * it.x, mc.window.scaledHeight * it.y)
+                    }
 
                 var verticalSnap: Pair<Vec2f, Vec2f>? = null
                 var horizontalSnap: Pair<Vec2f, Vec2f>? = null
