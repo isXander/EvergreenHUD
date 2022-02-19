@@ -21,7 +21,7 @@ import dev.isxander.evergreenhud.EvergreenHUD;
 
 public class UpdateChecker {
 
-    private static final String URL = "https://raw.githubusercontent.com/isXander/EvergreenHUD/main/version.json";
+    private static final String URL = "https://raw.githubusercontent.com/isXander/EvergreenHUD/main/legacy.json";
     private static BetterJsonObject cache = null;
 
     public static String getNeededVersion() {
