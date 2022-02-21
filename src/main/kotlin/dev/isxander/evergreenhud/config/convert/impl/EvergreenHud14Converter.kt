@@ -85,7 +85,7 @@ object EvergreenHud14Converter : ConfigConverter {
             dynamic.decode<Boolean>("showunderguis")?.let { element.showUnderGui = it }
 
             if (element is BackgroundElement) {
-                element.backgroundColor = if (dynamic.decode<Boolean>("bgenabled") == true) {
+                element.backgroundColor = if (dynamic.decode<Boolean>("bgenabled") != false) {
                     Color(
                         dynamic.decode<Int>("bgred") ?: element.backgroundColor.red,
                         dynamic.decode<Int>("bggreen") ?: element.backgroundColor.green,
@@ -271,10 +271,10 @@ object EvergreenHud14Converter : ConfigConverter {
 
                 dynamic.decode<Boolean>("showtime")?.let { element.durationVisible = it }
                 element.durationColor = Color(
-                    dynamic.decode<Int>("timered") ?: element.durationColor.red,
-                    dynamic.decode<Int>("timegreen") ?: element.durationColor.green,
-                    dynamic.decode<Int>("timeblue") ?: element.durationColor.blue,
-                    dynamic.decode<Int>("timealpha") ?: element.durationColor.alpha,
+                    dynamic.decode<Int>("timered") ?: 255,
+                    dynamic.decode<Int>("timegreen") ?: 255,
+                    dynamic.decode<Int>("timeblue") ?: 180,
+                    dynamic.decode<Int>("timealpha") ?: 255,
                     if (dynamic.decode<Boolean>("timechroma") == true) Color.ChromaProperties.default else Color.ChromaProperties.none
                 )
                 dynamic.decode<Boolean>("timebold")?.let { element.durationBold = it }
