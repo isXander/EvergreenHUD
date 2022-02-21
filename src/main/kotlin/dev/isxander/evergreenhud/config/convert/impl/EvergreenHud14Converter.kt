@@ -63,11 +63,13 @@ object EvergreenHud14Converter : ConfigConverter {
         if (configFile.isDirectory || !configFile.exists())
             return "Invalid EvergreenHUD 1.4 configuration."
 
-        val config = json.decodeFromString<List<ConfigSchema>>(configFile.readText())
+        val config = json.decodeFromString<RootConfig>(configFile.readText())
 
-        for (elementConfig in config) {
+        for (elementConfig in config.elements) {
             val element = idMap[elementConfig.id]?.let { EvergreenHUD.elementManager.getNewElementInstance<Element>(it) }
                 ?: continue
+
+            println("Converting element ${element.metadata.id}...")
 
             val settings = elementConfig.settings
             element.position = ZonedPosition.scaledPositioning(
@@ -78,80 +80,86 @@ object EvergreenHud14Converter : ConfigConverter {
 
             val dynamic = settings.dynamic
 
-            element.showInChat = dynamic.decode("showinchat")!!
-            element.showInDebug = dynamic.decode("showinf3")!!
-            element.showUnderGui = dynamic.decode("showunderguis")!!
+            dynamic.decode<Boolean>("showinchat")?.let { element.showInChat = it }
+            dynamic.decode<Boolean>("showinf3")?.let { element.showInDebug = it }
+            dynamic.decode<Boolean>("showunderguis")?.let { element.showUnderGui = it }
 
             if (element is BackgroundElement) {
-                element.backgroundColor = if (dynamic.decode("bgenabled")!!) {
+                element.backgroundColor = if (dynamic.decode<Boolean>("bgenabled") == true) {
                     Color(
-                        dynamic.decode<Int>("bgred")!!,
-                        dynamic.decode<Int>("bggreen")!!,
-                        dynamic.decode<Int>("bgblue")!!,
-                        dynamic.decode<Int>("bgalpha")!!
+                        dynamic.decode<Int>("bgred") ?: element.backgroundColor.red,
+                        dynamic.decode<Int>("bggreen") ?: element.backgroundColor.green,
+                        dynamic.decode<Int>("bgblue") ?: element.backgroundColor.blue,
+                        dynamic.decode<Int>("bgalpha") ?: element.backgroundColor.alpha,
                     )
                 } else {
                     Color.none
                 }
 
-                element.paddingLeft = dynamic.decode("paddingleft")!!
-                element.paddingRight = dynamic.decode("paddingright")!!
-                element.paddingTop = dynamic.decode("paddingtop")!!
-                element.paddingBottom = dynamic.decode("paddingbottom")!!
+                dynamic.decode<Float>("paddingleft")?.let { element.paddingLeft = it }
+                dynamic.decode<Float>("paddingright")?.let { element.paddingRight = it }
+                dynamic.decode<Float>("paddingtop")?.let { element.paddingTop = it }
+                dynamic.decode<Float>("paddingbottom")?.let { element.paddingBottom = it }
 
-                element.cornerRadius = dynamic.decode("cornerradius")!!
+                dynamic.decode<Float>("cornerradius")?.let { element.cornerRadius = it }
 
-                element.outlineEnabled = dynamic.decode("outlineenabled")!!
+                dynamic.decode<Boolean>("outlineenabled")?.let { element.outlineEnabled = it }
                 element.outlineColor = Color(
-                    dynamic.decode<Int>("outlinered")!!,
-                    dynamic.decode<Int>("outlinegreen")!!,
-                    dynamic.decode<Int>("outlineblue")!!,
-                    dynamic.decode<Int>("outlinealpha")!!
+                    dynamic.decode<Int>("outlinered") ?: element.outlineColor.red,
+                    dynamic.decode<Int>("outlinegreen") ?: element.outlineColor.green,
+                    dynamic.decode<Int>("outlineblue") ?: element.outlineColor.blue,
+                    dynamic.decode<Int>("outlinealpha") ?: element.outlineColor.alpha,
                 )
-                element.outlineThickness = dynamic.decode("outlineweight")!!
+                dynamic.decode<Float>("outlineweight")?.let { element.outlineThickness = it }
             }
 
             if (element is TextElement) {
-                element.brackets = dynamic.decode("brackets")!!
-                element.title = dynamic.decode("title")!!
+                dynamic.decode<Boolean>("brackets")?.let { element.brackets = it }
+                dynamic.decode<String>("title")?.let { element.title = it }
                 element.textColor = Color(
-                    dynamic.decode<Int>("textred")!!,
-                    dynamic.decode<Int>("textgreen")!!,
-                    dynamic.decode<Int>("textblue")!!,
-                    dynamic.decode<Int>("textalpha")!!,
-                    if (dynamic.decode("chromatext")!!) Color.ChromaProperties.default else Color.ChromaProperties.none
+                    dynamic.decode<Int>("textred") ?: element.textColor.red,
+                    dynamic.decode<Int>("textgreen") ?: element.textColor.green,
+                    dynamic.decode<Int>("textblue") ?: element.textColor.blue,
+                    dynamic.decode<Int>("textalpha") ?: element.textColor.alpha,
+                    if (dynamic.decode<Boolean>("chromatext") == true) Color.ChromaProperties.default else Color.ChromaProperties.none
                 )
-                element.textStyle = TextElement.TextStyle.options[dynamic.decode("textmode")!!]
-                element.alignment = when (dynamic.decode<Int>("alignment")) {
-                    0 -> TextElement.Alignment.LEFT
-                    1 -> TextElement.Alignment.CENTER
-                    2 -> TextElement.Alignment.RIGHT
-                    else -> TextElement.Alignment.LEFT
+                dynamic.decode<Int>("textmode")?.let { element.textStyle = TextElement.TextStyle.options[it] }
+                dynamic.decode<Int>("alignment")?.let {
+                    when (it) {
+                        0 -> TextElement.Alignment.LEFT
+                        1 -> TextElement.Alignment.CENTER
+                        2 -> TextElement.Alignment.RIGHT
+                        else -> TextElement.Alignment.LEFT
+                    }
                 }
             }
 
             if (element is SimpleTextElement) {
                 element.titleLocation =
-                    if (dynamic.decode("invertedtitle")!!)
+                    if (dynamic.decode<Boolean>("invertedtitle") == true)
                         SimpleTextElement.TitleLocation.END
                     else
                         SimpleTextElement.TitleLocation.BEGINNING
             }
 
             if (element is MultiLineTextElement) {
-                element.verticalSpacing = dynamic.decode("verticalspacing")!!
+                dynamic.decode<Int>("verticalspacing")?.let { element.verticalSpacing = it }
             }
 
             if (element is ElementArmourHUD) {
-                element.showHelmet = dynamic.decode("showhelmet")!!
-                element.showChestplate = dynamic.decode("showchestplate")!!
-                element.showLeggings = dynamic.decode("showleggings")!!
-                element.showBoots = dynamic.decode("showboots")!!
-                val showItem = dynamic.decode<Boolean>("showitem")!!
-                element.showMainHand = showItem
-                element.showOffHand = showItem
-                element.padding = dynamic.decode("spacing")!!
-                element.displayType = ElementArmourHUD.DisplayType.options[dynamic.decode("listtype")!!]
+                dynamic.decode<Boolean>("showhelmet")?.let { element.showHelmet = it }
+                dynamic.decode<Boolean>("showchestplate")?.let { element.showChestplate = it }
+                dynamic.decode<Boolean>("showleggings")?.let { element.showLeggings = it }
+                dynamic.decode<Boolean>("showboots")?.let { element.showBoots = it }
+                val showItem = dynamic.decode<Boolean>("showitem")
+                showItem?.let {
+                    element.showMainHand = it
+                    element.showOffHand = it
+                }
+                dynamic.decode<Int>("spacing")?.let { element.padding = it }
+                dynamic.decode<Int>("listtype")?.let {
+                    element.displayType = ElementArmourHUD.DisplayType.options[it]
+                }
                 element.extraInfo = when (dynamic.decode<Int>("text")) {
                     0 -> ElementArmourHUD.ExtraInfo.DurabilityAbsolute
                     1 -> ElementArmourHUD.ExtraInfo.Name
@@ -160,11 +168,11 @@ object EvergreenHud14Converter : ConfigConverter {
                 }
 
                 element.textColor = Color(
-                    dynamic.decode<Int>("textred")!!,
-                    dynamic.decode<Int>("textgreen")!!,
-                    dynamic.decode<Int>("textblue")!!,
-                    dynamic.decode<Int>("textalpha")!!,
-                    if (dynamic.decode("chromatext")!!) Color.ChromaProperties.default else Color.ChromaProperties.none
+                    dynamic.decode<Int>("textred") ?: element.textColor.red,
+                    dynamic.decode<Int>("textgreen") ?: element.textColor.green,
+                    dynamic.decode<Int>("textblue") ?: element.textColor.blue,
+                    dynamic.decode<Int>("textalpha") ?: element.textColor.alpha,
+                    if (dynamic.decode<Boolean>("chromatext") == true) Color.ChromaProperties.default else Color.ChromaProperties.none
                 )
                 element.textStyle = TextElement.TextStyle.options[dynamic.decode("textmode")!!]
                 element.alignment = when (dynamic.decode<Int>("alignment")) {
@@ -175,83 +183,117 @@ object EvergreenHud14Converter : ConfigConverter {
             }
 
             if (element is ElementBlockAbove) {
-                element.notify = dynamic.decode("notify")!!
-                element.notifyHeight = dynamic.decode("notifyheight")!!
-                element.checkHeight = dynamic.decode("checkamount")!!
+                dynamic.decode<Boolean>("notify")?.let { element.notify = it }
+                dynamic.decode<Int>("notifyheight")?.let { element.notifyHeight = it }
+                dynamic.decode<Int>("checkamount")?.let { element.checkHeight = it }
             }
 
             if (element is ElementPlaceCount) {
-                element.interval = dynamic.decode("interval")!!
+                dynamic.decode<Int>("interval")?.let { element.interval = it }
             }
 
             if (element is ElementCombo) {
-                element.discardTime = dynamic.decode("discardtime")!!
-                element.noHitMessage = dynamic.decode("nohitmessage")!!
+                dynamic.decode<Int>("discardtime")?.let { element.discardTime = it }
+                dynamic.decode<String>("nohitmessage")?.let { element.noHitMessage = it }
             }
 
             if (element is ElementCoordinates) {
-                element.displayMode = ElementCoordinates.DisplayMode.options[dynamic.decode("mode")!!]
-                element.showAxis = dynamic.decode("showname")!!
-                element.showDirection = dynamic.decode("showdirection")!!
-                element.showX = dynamic.decode("showx")!!
-                element.showY = dynamic.decode("showy")!!
-                element.showZ = dynamic.decode("showz")!!
-                element.accuracy = dynamic.decode("accuracy")!!
-                element.trailingZeros = dynamic.decode("trailingzeros")!!
+                dynamic.decode<Int>("mode")?.let { element.displayMode = ElementCoordinates.DisplayMode.options[it] }
+                dynamic.decode<Boolean>("showname")?.let { element.showAxis = it }
+                dynamic.decode<Boolean>("showdirection")?.let { element.showDirection = it }
+                dynamic.decode<Boolean>("showx")?.let { element.showX = it }
+                dynamic.decode<Boolean>("showy")?.let { element.showY = it }
+                dynamic.decode<Boolean>("showz")?.let { element.showZ = it }
+                dynamic.decode<Int>("accuracy")?.let { element.accuracy = it }
+                dynamic.decode<Boolean>("trailingzeros")?.let { element.trailingZeros = it }
             }
 
             if (element is ElementCps) {
-                element.button = ElementCps.MouseButton.options[dynamic.decode("button")!!]
+                dynamic.decode<Int>("button")?.let { element.button = ElementCps.MouseButton.options[it] }
             }
 
             if (element is ElementDirection) {
-                element.abbreviated = dynamic.decode("abbreviated")!!
+                dynamic.decode<Boolean>("abbreviated")?.let { element.abbreviated = it }
             }
 
             if (element is ElementHypixelGame) {
-                element.noHypixelMessage = dynamic.decode("nothypixelmessage")!!
+                dynamic.decode<String>("nothypixelmessage")?.let { element.noHypixelMessage = it }
             }
 
             if (element is ElementHypixelMap) {
-                element.noHypixelMessage = dynamic.decode("nothypixelmessage")!!
+                dynamic.decode<String>("nothypixelmessage")?.let { element.noHypixelMessage = it }
             }
 
             if (element is ElementHypixelMode) {
-                element.noHypixelMessage = dynamic.decode("nothypixelmessage")!!
+                dynamic.decode<String>("nothypixelmessage")?.let { element.noHypixelMessage = it }
             }
 
             if (element is ElementImage) {
-                element.autoScale = dynamic.decode("autoscale")!!
-                element.mirror = dynamic.decode("mirror")!!
-                element.rotation = dynamic.decode("rotation")!!
-                element.file = File(dynamic.decode<String>("filepath")!!)
+                dynamic.decode<Boolean>("autoscale")?.let { element.autoScale = it }
+                dynamic.decode<Boolean>("mirror")?.let { element.mirror = it }
+                dynamic.decode<Float>("rotation")?.let { element.rotation = it }
+                dynamic.decode<String>("filepath")?.let { element.file = File(it) }
             }
 
             if (element is ElementMemory) {
-                element.displayType = ElementMemory.DisplayType.options[dynamic.decode("mode")!!]
-                element.trailingZeros = dynamic.decode("trailingzeros")!!
+                dynamic.decode<Int>("mode")?.let { element.displayType = ElementMemory.DisplayType.options[it] }
+                dynamic.decode<Boolean>("trailingzeros")?.let { element.trailingZeros = it }
             }
 
             if (element is ElementPing) {
-                element.showInSinglePlayer = !dynamic.decode<Boolean>("hideinsingleplayer")!!
+                dynamic.decode<Boolean>("hideinsingleplayer")?.let { element.showInSinglePlayer = !it }
             }
 
             if (element is ElementPitch) {
                 element.accuracy = 1
-                element.trailingZeros = dynamic.decode("trailingzeros")!!
+                dynamic.decode<Boolean>("trailingzeros")?.let { element.trailingZeros = it }
             }
 
             if (element is ElementPlayerPreview) {
-                element.rotation = 360 - dynamic.decode<Int>("rotation")!!
+                dynamic.decode<Int>("rotation")?.let { element.rotation = 360 - it }
             }
 
-            // TODO: potion hud i really can't be bothered
+            if (element is ElementPotionHUD) {
+                dynamic.decode<Boolean>("showtitle")?.let { element.titleVisible = it }
+                element.titleColor = Color(
+                    dynamic.decode<Int>("titlered") ?: element.titleColor.red,
+                    dynamic.decode<Int>("titlegreen") ?: element.titleColor.green,
+                    dynamic.decode<Int>("titleblue") ?: element.titleColor.blue,
+                    dynamic.decode<Int>("titlealpha") ?: element.titleColor.alpha,
+                    if (dynamic.decode<Boolean>("titlechroma") == true) Color.ChromaProperties.default else Color.ChromaProperties.none
+                )
+                dynamic.decode<Boolean>("titlebold")?.let { element.titleBold = it }
+                dynamic.decode<Boolean>("titleitalic")?.let { element.titleItalic = it }
+                dynamic.decode<Boolean>("titleunderlined")?.let { element.titleUnderlined = it }
+                dynamic.decode<Int>("titlemode")?.let { element.titleStyle = TextElement.TextStyle.options[it] }
+                dynamic.decode<Boolean>("showamplifier")?.let { element.amplifier = it }
+                dynamic.decode<Boolean>("showlvl1")?.let { element.showLvl1 = it }
+
+                dynamic.decode<Boolean>("showtime")?.let { element.durationVisible = it }
+                element.durationColor = Color(
+                    dynamic.decode<Int>("timered") ?: element.durationColor.red,
+                    dynamic.decode<Int>("timegreen") ?: element.durationColor.green,
+                    dynamic.decode<Int>("timeblue") ?: element.durationColor.blue,
+                    dynamic.decode<Int>("timealpha") ?: element.durationColor.alpha,
+                    if (dynamic.decode<Boolean>("timechroma") == true) Color.ChromaProperties.default else Color.ChromaProperties.none
+                )
+                dynamic.decode<Boolean>("timebold")?.let { element.durationBold = it }
+                dynamic.decode<Boolean>("timeitalic")?.let { element.durationItalic = it }
+                dynamic.decode<Boolean>("timeunderlined")?.let { element.durationUnderlined = it }
+                dynamic.decode<Int>("timemode")?.let { element.durationStyle = TextElement.TextStyle.options[it] }
+                dynamic.decode<String>("permanenttext")?.let { element.permanentText = it }
+                dynamic.decode<Int>("blinkingtime")?.let { element.blinkingTime = it }
+                dynamic.decode<Int>("blinkingspeed")?.let { element.blinkingSpeed = it }
+
+                dynamic.decode<Boolean>("showicon")?.let { element.showIcon = it }
+                dynamic.decode<Int>("verticalalign")?.let { element.invertSort = it != 0 }
+                dynamic.decode<Int>("sort")?.let { element.sort = ElementPotionHUD.PotionSorting.options[it] }
+                dynamic.decode<Int>("verticalspacing")?.let { element.verticalSpacing = it }
+            }
 
             if (element is ElementReach) {
-                element.trailingZeros = dynamic.decode("trailingzeros")!!
+                dynamic.decode<Boolean>("trailingzeros")?.let { element.trailingZeros = it }
             }
-
-
 
             EvergreenHUD.elementManager.addElement(element)
         }
@@ -262,6 +304,9 @@ object EvergreenHud14Converter : ConfigConverter {
     override fun detect(): Boolean {
         return configFile.exists() && json.decodeFromString<JsonObject>(configFile.readText())["version"]!!.jsonPrimitive.int == 3
     }
+
+    @Serializable
+    data class RootConfig(val version: Int, val elements: List<ConfigSchema>)
 
     @Serializable
     data class ConfigSchema(@SerialName("type") val id: String, val settings: ElementSettingsSchema)

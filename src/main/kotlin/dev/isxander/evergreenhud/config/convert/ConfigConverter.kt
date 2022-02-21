@@ -9,6 +9,7 @@
 package dev.isxander.evergreenhud.config.convert
 
 import dev.isxander.evergreenhud.config.convert.impl.ChromaHudConverter
+import dev.isxander.evergreenhud.config.convert.impl.EvergreenHud14Converter
 import dev.isxander.evergreenhud.config.convert.impl.KronHudConverter
 
 interface ConfigConverter {
@@ -18,6 +19,6 @@ interface ConfigConverter {
     fun detect(): Boolean
 
     companion object {
-        val all = listOf(ChromaHudConverter, KronHudConverter)
+        val all = listOf(ChromaHudConverter, KronHudConverter, EvergreenHud14Converter)
     }
 }
