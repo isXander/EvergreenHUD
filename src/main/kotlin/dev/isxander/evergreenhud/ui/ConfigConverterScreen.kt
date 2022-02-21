@@ -8,22 +8,22 @@
 
 package dev.isxander.evergreenhud.ui
 
+import dev.isxander.evergreenhud.config.convert.ConfigConverter
 import dev.isxander.evergreenhud.utils.drawString
-import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.evergreenhud.utils.translate
 import io.ejekta.kambrik.ext.math.scale
 import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.util.math.MatrixStack
-import net.minecraft.util.Formatting
 
-class BlacklistedScreen(private val parent: Screen?) : Screen(textLiteral("EvergreenHUD Dangerous Version")) {
+class ConfigConverterScreen(val converter: ConfigConverter, val parent: Screen?) : Screen(textLiteral("Config Converter")) {
     override fun init() {
-        addDrawableChild(ButtonWidget(width / 2 - 100, height / 4 * 3, 200, 20, textLiteral("Quit Game")) {
-            mc.scheduleStop()
+        addDrawableChild(ButtonWidget(width / 2 - 102, height / 4 * 3, 100, 20, textLiteral("Convert")) {
+            converter.process()
+            client!!.setScreen(parent)
         })
-        addDrawableChild(ButtonWidget(width / 2 - 100, height / 4 * 3 + 22, 200, 20, textLiteral("I understand the risks, continue.") { color(Formatting.RED.colorValue!!) }) {
+        addDrawableChild(ButtonWidget(width / 2 + 2, height / 4 * 3, 100, 20, textLiteral("Skip")) {
             client!!.setScreen(parent)
         })
     }
@@ -36,8 +36,8 @@ class BlacklistedScreen(private val parent: Screen?) : Screen(textLiteral("Everg
         matrices.scale(2f)
         drawString(matrices, "EvergreenHUD", 0f, 0f, EvergreenPalette.Evergreen.Evergreen3.rgba, centered = true)
         matrices.pop()
-        drawString(matrices, "This version of EvergreenHUD has been marked as dangerous!", width / 2f, height / 4f, 0xff4747, centered = true)
-        drawString(matrices, "It is recommended that you quit immediately", width / 2f, height / 4f + textRenderer.fontHeight + 2, -1, centered = true)
-        drawString(matrices, "or download the latest update if there is one.", width / 2f, height / 4f + ((textRenderer.fontHeight + 2) * 2), -1, centered = true)
+        drawString(matrices, "${converter.name} has been detected!", width / 2f, height / 4f, -1, centered = true)
+        drawString(matrices, "You can convert this into EvergreenHUD if you wish.", width / 2f, height / 4f + textRenderer.fontHeight + 2, -1, centered = true)
+        drawString(matrices, "This will not destroy ${converter.name}'s config.", width / 2f, height / 4f + ((textRenderer.fontHeight + 2) * 2), -1, centered = true)
     }
 }

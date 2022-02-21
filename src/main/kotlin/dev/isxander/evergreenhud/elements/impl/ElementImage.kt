@@ -65,7 +65,7 @@ class ElementImage : BackgroundElement() {
 
     var changed = true
     var currentImage: Identifier? = null
-    lateinit var imageDimension: Dimension
+    var imageDimension = Dimension(64, 64)
     var scaleMod = 1f
     var imgSize = 64
     val textureName = "evergreen-image-element-${hashCode()}"

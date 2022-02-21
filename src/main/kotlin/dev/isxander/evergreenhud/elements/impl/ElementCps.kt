@@ -14,6 +14,7 @@ import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.option
+import io.ejekta.kambrik.ext.client.getBoundKey
 import net.minecraft.client.util.math.MatrixStack
 import org.lwjgl.glfw.GLFW
 import kotlin.collections.ArrayDeque
@@ -32,14 +33,14 @@ class ElementCps : SimpleTextElement("CPS") {
     private var rightPressed = false
 
     val renderTickEvent by event<RenderTickEvent> {
-        var pressed = GLFW.glfwGetMouseButton(mc.window.handle, 0) == GLFW.GLFW_PRESS
+        var pressed = GLFW.glfwGetMouseButton(mc.window.handle, mc.options.keyAttack.getBoundKey().code) == GLFW.GLFW_PRESS
 
         if (pressed != leftPressed) {
             leftPressed = pressed
             if (pressed) left.add(System.currentTimeMillis())
         }
 
-        pressed = GLFW.glfwGetMouseButton(mc.window.handle, 1) == GLFW.GLFW_PRESS
+        pressed = GLFW.glfwGetMouseButton(mc.window.handle, mc.options.keyUse.getBoundKey().code) == GLFW.GLFW_PRESS
 
         if (pressed != rightPressed) {
             rightPressed = pressed

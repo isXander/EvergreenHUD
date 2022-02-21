@@ -10,7 +10,9 @@ package dev.isxander.evergreenhud.ui
 
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.utils.drawString
+import dev.isxander.evergreenhud.utils.translate
 import gg.essential.universal.UDesktop
+import io.ejekta.kambrik.ext.math.scale
 import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
@@ -31,6 +33,11 @@ class UpdateScreen(private val latest: String, private val parent: Screen?) : Sc
     override fun render(matrices: MatrixStack, mouseX: Int, mouseY: Int, delta: Float) {
         renderBackground(matrices)
         super.render(matrices, mouseX, mouseY, delta)
+        matrices.push()
+        matrices.translate(width / 2f, height / 8f)
+        matrices.scale(2f)
+        drawString(matrices, "EvergreenHUD", 0f, 0f, EvergreenPalette.Evergreen.Evergreen3.rgba, centered = true)
+        matrices.pop()
         drawString(matrices, "A new version is available for EvergreenHUD!", width / 2f, height / 4f, -1, centered = true)
         drawString(matrices, "The latest version is $latest.", width / 2f, height / 4f + textRenderer.fontHeight + 2, -1, centered = true)
         drawString(matrices, "The current version is ${EvergreenHUD.VERSION_STR}.", width / 2f, height / 4f + ((textRenderer.fontHeight + 2) * 2), -1, centered = true)

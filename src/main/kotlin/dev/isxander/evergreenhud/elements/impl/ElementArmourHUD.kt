@@ -193,8 +193,8 @@ class ElementArmourHUD : BackgroundElement() {
     }
 
     object DisplayType : OptionContainer() {
-        val Up = option("Up")
         val Down = option("Down")
+        val Up = option("Up")
     }
 
     object ExtraInfo : OptionContainer() {

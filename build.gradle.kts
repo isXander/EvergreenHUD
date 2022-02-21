@@ -20,7 +20,7 @@ plugins {
 group = "dev.isxander"
 
 val revision: String? = grgit.head()?.abbreviatedId
-version = "2.0.0-pre13"
+version = "2.0.0-alpha.4"
 
 repositories {
     mavenCentral()
@@ -56,7 +56,7 @@ dependencies {
     includeApi("org.bundleproject:libversion:0.0.3")
     includeApi("dev.isxander:settxi:2.1.0")
 
-    minecraft("com.mojang:minecraft:1.18.1")
+    minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings("net.fabricmc:yarn:1.18.1+build.+:v2")
     modImplementation("net.fabricmc:fabric-loader:0.13.+")
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.46.1+1.18")
@@ -81,6 +81,10 @@ blossom {
 }
 
 tasks {
+    remapJar {
+        archiveVersion.set("${project.version}-$minecraftVersion" + (revision?.let { "-$it" } ?: ""))
+    }
+
     processResources {
         inputs.property("mod_id", modId)
         inputs.property("mod_name", modName)

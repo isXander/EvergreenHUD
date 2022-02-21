@@ -9,6 +9,8 @@
 package dev.isxander.evergreenhud
 
 import dev.isxander.evergreenhud.addons.AddonLoader
+import dev.isxander.evergreenhud.config.convert.ConfigConverter
+import dev.isxander.evergreenhud.config.convert.impl.ChromaHudConverter
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.config.profile.ProfileManager
 import dev.isxander.evergreenhud.event.ClientTickEvent
@@ -21,6 +23,7 @@ import dev.isxander.evergreenhud.ui.test.PositionTest
 import dev.isxander.evergreenhud.packets.client.registerElementsPacket
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
+import dev.isxander.evergreenhud.ui.ConfigConverterScreen
 import dev.isxander.evergreenhud.ui.ElementDisplay
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
@@ -61,6 +64,9 @@ object EvergreenHUD : ClientModInitializer {
     var postInitialized = false
         private set
 
+    var firstLaunch = false
+        private set
+
     /**
      * Initialises the whole mod
      *
@@ -71,7 +77,9 @@ object EvergreenHUD : ClientModInitializer {
         logger.info("Starting EvergreenHUD $VERSION_STR for ${SharedConstants.getGameVersion().name}")
 
         val startTime = System.currentTimeMillis()
+        mc.profiler.push("EvergreenHUD Startup")
 
+        firstLaunch = !dataDir.exists()
         dataDir.mkdirs()
 
         logger.debug("Initialising element manager...")
@@ -137,6 +145,7 @@ object EvergreenHUD : ClientModInitializer {
         logger.debug("Invoking addon entrypoints...")
         addonLoader.invokeInitEntrypoints()
 
+        mc.profiler.pop()
         logger.info("Finished loading EvergreenHUD. Took ${System.currentTimeMillis() - startTime} ms.")
     }
 
@@ -162,6 +171,23 @@ object EvergreenHUD : ClientModInitializer {
                 }
             } else {
                 logger.info("Skipping update and blacklisting check due to being in a development environment.")
+            }
+
+            if (firstLaunch) {
+                logger.info("Welcome to EvergreenHUD! Detected first launch.")
+
+                logger.debug("Detecting other HUD mod configs...")
+
+                var lastGui = mc.currentScreen
+                for (converter in ConfigConverter.all) {
+                    if (converter.detect()) {
+                        logger.info("Found ${converter.name} config! Displaying GUI.")
+                        lastGui = ConfigConverterScreen(converter, lastGui)
+                    }
+                }
+
+                if (lastGui is ConfigConverterScreen)
+                    mc.setScreen(lastGui)
             }
         }
 

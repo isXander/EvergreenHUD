@@ -20,22 +20,25 @@ import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.position.ZonedPosition
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
+import net.fabricmc.loader.api.FabricLoader
 import java.io.File
 
 object ChromaHudConverter : ConfigConverter {
+    override val name = "ChromaHUD"
+    val file = File(mc.runDirectory, "config/ChromaHUD.cfg")
+
     private val ids = mapOf(
-        "CORDS" to "COORDS",
-        "PING" to "PING",
-        "DIRECTION" to "DIRECTION",
-        "CPS" to "CPS",
-        "FPS" to "FPS",
-        "TEXT" to "TEXT",
-        "TIME" to "IRL_TIME",
-        "ARMOUR_HUD" to "ARMOUR",
-        "C_COUNTER" to "CHUNK_COUNTER"
+        "CORDS" to "evergreenhud:coordinates",
+        "PING" to "evergreenhud:ping",
+        "DIRECTION" to "evergreenhud:direction",
+        "CPS" to "evergreenhud:cps",
+        "FPS" to "evergreenhud:fps",
+        "TEXT" to "evergreenhud:text",
+        "TIME" to "evergreenhud:irl_time",
+        "ARMOUR_HUD" to "evergreenhud:armour_hud"
     )
 
-    override fun process(file: File): String? {
+    override fun process(): String? {
         if (!file.exists() || file.isDirectory) return "Invalid ChromaHUD config."
 
         val config = json.decodeFromString<JsonObject>(file.readText())
@@ -82,7 +85,7 @@ object ChromaHudConverter : ConfigConverter {
                         element.paddingTop = 1f
                         element.paddingBottom = 1f
                     } else {
-                        element.backgroundColor = Color(0, 0, 0, 0)
+                        element.backgroundColor = Color.none
                     }
                 }
 
@@ -100,5 +103,9 @@ object ChromaHudConverter : ConfigConverter {
         }
 
         return null
+    }
+
+    override fun detect(): Boolean {
+        return file.exists()
     }
 }
