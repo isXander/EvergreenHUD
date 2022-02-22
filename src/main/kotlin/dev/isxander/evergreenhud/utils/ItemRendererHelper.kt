@@ -30,11 +30,11 @@ import kotlin.math.floor
  */
 
 fun renderGuiItemModel(matrices: MatrixStack, stack: ItemStack?, x: Float, y: Float) {
-    val model: BakedModel = mc.itemRenderer.getModel(stack, null, mc.player, (x * y).toInt())
+    val model: BakedModel = mc.itemRenderer.getHeldItemModel(stack, null, mc.player, (x * y).toInt())
     mc.textureManager.getTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).setFilter(false, false)
     RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
     RenderSystem.enableBlend()
-    RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA)
+    RenderSystem.blendFunc(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA)
     RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
     matrices.push()
     matrices.translate(x.toDouble(), y.toDouble(), 100.0f + mc.itemRenderer.zOffset)

@@ -86,7 +86,7 @@ fun MatrixStack.fillGradient(
     val bufferBuilder = tessellator.buffer
     bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR)
     fillGradient(
-        peek().positionMatrix,
+        peek().model,
         bufferBuilder,
         startX,
         startY,
@@ -175,16 +175,16 @@ fun TextRenderer.drawCenteredTextWithShadow(
  */
 fun drawWithOutline(x: Float, y: Float, renderAction: BiConsumer<Float, Float>) {
     RenderSystem.blendFuncSeparate(
-        GlStateManager.SrcFactor.ZERO,
-        GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
-        GlStateManager.SrcFactor.SRC_ALPHA,
-        GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA
+        GlStateManager.class_4535.ZERO,
+        GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA,
+        GlStateManager.class_4535.SRC_ALPHA,
+        GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA
     )
     renderAction.accept(x + 1, y)
     renderAction.accept(x - 1, y)
     renderAction.accept(x, y + 1)
     renderAction.accept(x, y - 1)
-    RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA)
+    RenderSystem.blendFunc(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA)
     renderAction.accept(x, y)
 }
 
@@ -352,7 +352,7 @@ fun MatrixStack.drawTexturedQuad(
     v1: Float
 ) {
     RenderSystem.setShader { GameRenderer.getPositionTexShader() }
-    val matrix = peek().positionMatrix
+    val matrix = peek().model
     val bufferBuilder = Tessellator.getInstance().buffer
     bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
     bufferBuilder.vertex(matrix, x0, y1, z).texture(u0, v1).next()
@@ -379,7 +379,7 @@ fun BufferedImage.toNativeImage(): NativeImage {
     val nativeImage = NativeImage(width, height, false)
     for (x in 0 until nativeImage.width) {
         for (y in 0 until nativeImage.height) {
-            nativeImage.setColor(x, y, getRGB(x, y))
+            nativeImage.setPixelColor(x, y, getRGB(x, y))
         }
     }
 

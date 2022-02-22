@@ -10,6 +10,8 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
     id("fabric-loom") version "0.11.+"
+    id("org.quiltmc.quilt-mappings-on-loom") version "4.0.+"
+    id("io.github.juuxel.loom-quiltflower") version "1.6.+"
     id("com.google.devtools.ksp") version "$kotlinVersion-1.0.+"
     id("net.kyori.blossom") version "1.3.+"
     id("org.ajoberstar.grgit") version "5.0.+"
@@ -57,7 +59,9 @@ dependencies {
     includeApi("dev.isxander:settxi:2.1.0")
 
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings("net.fabricmc:yarn:1.18.1+build.+:v2")
+    mappings(loom.layered {
+        addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:$minecraftVersion+build.+:v2"))
+    })
     modImplementation("net.fabricmc:fabric-loader:0.13.+")
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.46.1+1.18")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
