@@ -63,7 +63,7 @@ dependencies {
         addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:$minecraftVersion+build.+:v2"))
     })
     modImplementation("net.fabricmc:fabric-loader:0.13.+")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.46.1+1.18")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.47.7+")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
 
     modImplementation("io.ejekta:kambrik:3.1.0-1.18")
