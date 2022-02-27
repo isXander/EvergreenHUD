@@ -38,7 +38,7 @@ class SearchField : UIBlock(EvergreenPalette.Greyscale.Dark3.awt) {
 
     val text by UITextInput(placeholder = "Search...", shadow = false, cursorColor = Color(0xDCDCDC, false).awt).constrain {
         x = SiblingConstraint(2f)
-        y = CenterConstraint()
+        y = CenterConstraint() + 3.pixels()
         width = 95.percent()
         height = 100.percent()
         textScale = 0.5.pixels()

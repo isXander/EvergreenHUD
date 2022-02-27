@@ -22,6 +22,7 @@ import gg.essential.elementa.constraints.*
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
+import gg.essential.universal.UMatrixStack
 
 class OptionSettingComponent(val component: SettingComponent, val setting: OptionSetting) : UIBlock(EvergreenPalette.Greyscale.Dark2.awt) {
     var expanded = false
@@ -100,7 +101,13 @@ class OptionSettingComponent(val component: SettingComponent, val setting: Optio
 
         caretRotateEffect::angle.animate(Animations.IN_OUT_CIRCULAR, 0.2f, 0f)
         scroller.hide()
-        setFloating(false)
+    }
+
+    override fun beforeDraw(matrixStack: UMatrixStack) {
+        if (caretRotateEffect.angle == 0f) {
+            setFloating(false)
+        }
+        super.beforeDraw(matrixStack)
     }
 }
 
