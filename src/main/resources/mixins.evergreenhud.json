@@ -6,5 +6,8 @@
   "mixins": [
     "ForgeHooksMixin"
   ],
-  "verbose": true
+  "verbose": true,
+  "client": [
+    "MinecraftMixin"
+  ]
 }

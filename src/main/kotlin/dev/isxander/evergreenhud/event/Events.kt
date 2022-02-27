@@ -27,7 +27,6 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.event.entity.living.LivingHurtEvent
 import net.minecraftforge.event.entity.player.AttackEntityEvent
-import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 
@@ -79,23 +78,17 @@ object Events {
     }
 
     @SubscribeEvent
-    fun onWorldJoin(event: WorldEvent.Load) {
-        EvergreenHUD.eventBus.post(ClientJoinWorldEvent(event.world))
-    }
-
-    @SubscribeEvent
-    fun onWorldLeave(event: WorldEvent.Unload) {
-        EvergreenHUD.eventBus.post(ClientDisconnectEvent())
-    }
-
-    @SubscribeEvent
     fun onAttackEntity(event: AttackEntityEvent) {
         EvergreenHUD.eventBus.post(ClientDamageEntityEvent(event.entityPlayer, event.target))
     }
 
     @SubscribeEvent
     fun onMessage(event: ClientChatReceivedEvent) {
-        EvergreenHUD.eventBus.post(ClientReceivedChatMessage(UTextComponent.stripFormatting(event.message.unformattedText)))
+        val e = ClientReceivedChatMessage(UTextComponent.stripFormatting(event.message.unformattedText))
+        EvergreenHUD.eventBus.post(e)
+        if (e.canceled) {
+            event.isCanceled = true
+        }
     }
 
     @SubscribeEvent

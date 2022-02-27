@@ -103,11 +103,11 @@ class OptionSettingComponent(val component: SettingComponent, val setting: Optio
         scroller.hide()
     }
 
-    override fun beforeDraw(matrixStack: UMatrixStack) {
+    override fun draw(matrixStack: UMatrixStack) {
         if (caretRotateEffect.angle == 0f) {
             setFloating(false)
         }
-        super.beforeDraw(matrixStack)
+        super.draw(matrixStack)
     }
 }
 
