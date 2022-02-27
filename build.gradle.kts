@@ -138,7 +138,7 @@ publishing {
                 classifier = "fabric-$minecraftVersion"
             }
             artifact(tasks.remapSourcesJar) {
-                classifier = "fabric-$minecraftVersion"
+                classifier = "fabric-$minecraftVersion-sources"
             }
         }
     }
