@@ -16,13 +16,13 @@ Firstly, make sure you have the jitpack maven repository.
 _Gradle Kotlin DSL (build.gradle.kts)_
 ```kotlin
 repositories {
-    maven(url = "https://jitpack.io")
+    maven(url = "https://repo.woverflow.cc")
 }
 ```
 _Gradle Groovy (build.gradle)_
 ```groovy
 repositories {
-    maven { url = 'https://jitpack.io' }
+    maven { url = 'https://repo.woverflow.cc' }
 }
 ```
 
@@ -54,16 +54,16 @@ _Gradle Kotlin DSL (build.gradle.kts)_
 ```kotlin
 val evergreenVersion = "2.0.+" // you can store this however you want
 
-ksp("dev.isxander.evergreenhud:processor:$evergreenVersion")
-modImplementation("dev.isxander:evergreenhud:$evergreenVersion")
+ksp("dev.isxander:evergreenhud-ap:$evergreenVersion:fabric-$minecraftVersion")
+modImplementation("dev.isxander:evergreenhud:$evergreenVersion:fabric-$minecraftVersion")
 ```
 
 _Gradle Groovy (build.gradle)_
 ```groovy
 def evergreenVersion = '2.0.+' // you can store this however you want
 
-ksp "dev.isxander.evergreenhud:processor:$evergreenVersion"
-modImplementation "dev.isxander:evergreenhud:$evergreenVersion"
+ksp "dev.isxander:evergreenhud-ap:$evergreenVersion:fabric-$minecraftVersion"
+modImplementation "dev.isxander:evergreenhud:$evergreenVersion:fabric-$minecraftVersion"
 ```
 ### Fabric Setup
 
@@ -139,26 +139,26 @@ of the user's choosing.
 The most important part of an Element is the annotation.
 
 ```kotlin
-@ElementMeta(id = "MY_ADDON_TEXT_ELEMENT", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
+@ElementMeta(id = "examplemod:exampleelement", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
 ```
 
 This dictates to the annotation processor that the annotated class
 is an Element, without it, the element would not be recognised. The ID
-of the element must be unique, so it is recommended to prefix it with
-the ID of your addon to make sure those edge cases don't occur.
+of the element must be unique, so it is recommended to use the Minecraft
+identifier format: `modid:elementid`.
 
 Create a class anywhere, it doesn't matter, this is another benefit
 of the annotation.
 
 _Kotlin_
 ```kotlin
-@ElementMeta(id = "MY_ADDON_TEXT_ELEMENT", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
+@ElementMeta(id = "examplemod:exampleelement", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
 class ElementText : SimpleTextElement("Your Text")
 ```
 
 _Java_
 ```java
-@ElementMeta(id = "MY_ADDON_TEXT_ELEMENT", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
+@ElementMeta(id = "examplemod:exampleelement", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
 class ElementText extends SimpleTextElement {
     public ElementText() {
         super("Your Text");
@@ -173,7 +173,7 @@ Next, we have to give a value to display. And this is as simple as overriding a 
 
 _Kotlin_
 ```kotlin
-@ElementMeta(id = "MY_ADDON_TEXT_ELEMENT", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
+@ElementMeta(id = "examplemod:exampleelement", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
 class ElementText : SimpleTextElement("Your Text") {
     override fun calculateValue(): String {
         return "Sample Text"
@@ -183,7 +183,7 @@ class ElementText : SimpleTextElement("Your Text") {
 
 _Java_
 ```java
-@ElementMeta(id = "MY_ADDON_TEXT_ELEMENT", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
+@ElementMeta(id = "examplemod:exampleelement", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
 class ElementText extends SimpleTextElement {
     public ElementText() {
         super("Your Text");
@@ -206,7 +206,7 @@ so let's add a setting!
 
 _Kotlin_
 ```kotlin
-@ElementMeta(id = "MY_ADDON_TEXT_ELEMENT", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
+@ElementMeta(id = "examplemod:exampleelement", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
 class ElementText : SimpleTextElement("Your Text") {
     var text by string("Sample Text") {
         name = "Text"
@@ -222,7 +222,7 @@ class ElementText : SimpleTextElement("Your Text") {
 
 _Java_
 ```java
-@ElementMeta(id = "MY_ADDON_TEXT_ELEMENT", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
+@ElementMeta(id = "examplemod:exampleelement", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
 class ElementText extends SimpleTextElement {
     public StringSetting text = StringSettingKt.stringSetting(this, "Sample Text", (setting) -> {
         setting.name = "Text";
@@ -258,7 +258,7 @@ With this event bus, you can:
 
 _Kotlin_
 ```kotlin
-@ElementMeta(id = "MY_ADDON_TEXT_ELEMENT", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
+@ElementMeta(id = "examplemod:exampleelement", name = "Text Element", description = "Displays the text of your choosing!", category = "My Category")
 class ElementText : SimpleTextElement("Your Text") {
     // delegated return is Unit, so we don't technically need to delegate it
     val clientTickEvent by event<ClientTickEvent>(predicate = { /* true by default */ true }) {
@@ -266,7 +266,7 @@ class ElementText : SimpleTextElement("Your Text") {
     }
 
     val cachedFunction by eventReturnable<ClientTickEvent, Float> {
-        myReallyComplicatedFunction()
+        myReallyComplicatedFunctionThatReturnsFloat()
     }
 
     override fun calculateValue(): String {
