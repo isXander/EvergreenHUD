@@ -43,7 +43,6 @@ fun DependencyHandlerScope.includeModApi(dep: String, action: Action<ExternalMod
 }
 
 dependencies {
-    includeApi(project(":utils"))
     ksp(project(":processor"))
 
     includeApi("io.ktor:ktor-client-core:$ktorVersion")
@@ -86,6 +85,9 @@ blossom {
 tasks {
     remapJar {
         archiveVersion.set("${project.version}-$minecraftVersion" + (revision?.let { "-$it" } ?: ""))
+    }
+    remapSourcesJar {
+        archiveClassifier.set("sources")
     }
 
     processResources {
@@ -132,14 +134,18 @@ publishing {
             groupId = "dev.isxander"
             artifactId = "evergreenhud"
 
-            from(components["java"])
-            artifact(tasks.remapJar)
-            artifact(tasks.remapSourcesJar)
+            artifact(tasks.remapJar) {
+                classifier = "fabric-$minecraftVersion"
+            }
+            artifact(tasks.remapSourcesJar) {
+                classifier = "fabric-$minecraftVersion"
+            }
         }
     }
 
     repositories {
         if (hasProperty("WOVERFLOW_REPO_PASS")) {
+            logger.log(LogLevel.INFO, "Publishing to W-OVERFLOW")
             maven(url = "https://repo.woverflow.cc/releases") {
                 credentials {
                     username = "wyvest"
