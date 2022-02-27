@@ -14,9 +14,14 @@ import gg.essential.universal.UMatrixStack
 import gg.essential.universal.UResolution
 import gg.essential.universal.shader.BlendState
 import gg.essential.universal.shader.UShader
+import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.OpenGlHelper
+import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
+import net.minecraft.entity.EntityLivingBase
+import net.minecraft.item.ItemStack
 
 fun translate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) =
     GlStateManager.translate(x.toDouble(), y.toDouble(), z.toDouble())
@@ -131,4 +136,67 @@ fun drawChromaRectangle() {
     )
 
     shader.unbind()
+}
+
+fun EntityLivingBase?.renderEntity(posX: Float, posY: Float, scale: Float, viewRotation: Int = 0) {
+    this?.let {
+        GlStateManager.pushMatrix()
+        GlStateManager.enableDepth()
+        GlStateManager.color(1f, 1f, 1f, 1f)
+
+        val ent = this
+
+        GlStateManager.enableColorMaterial()
+        GlStateManager.pushMatrix()
+        GlStateManager.translate(posX, posY, 50.0f)
+        GlStateManager.scale(-scale * 50, scale * 50, scale * 50)
+        GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f)
+        val f = ent.renderYawOffset
+        val f1 = ent.rotationYaw
+        val f2 = ent.rotationPitch
+        val f3 = ent.prevRotationYawHead
+        val f4 = ent.rotationYawHead
+        GlStateManager.rotate(135.0f, 0.0f, 1.0f, 0.0f)
+        RenderHelper.enableStandardItemLighting()
+        GlStateManager.rotate(-135.0f, 0.0f, 1.0f, 0.0f)
+        val rotation = 360f - viewRotation
+        ent.renderYawOffset = rotation
+        ent.rotationYaw = rotation
+        ent.rotationYawHead = ent.rotationYaw
+        ent.prevRotationYawHead = ent.rotationYaw
+        GlStateManager.translate(0.0f, 0.0f, 0.0f)
+        val rendermanager = mc.renderManager
+        rendermanager.setPlayerViewY(180.0f)
+        rendermanager.isRenderShadow = false
+        rendermanager.renderEntityWithPosYaw(ent, 0.0, 0.0, 0.0, 0.0f, 1.0f)
+        rendermanager.isRenderShadow = true
+        ent.renderYawOffset = f
+        ent.rotationYaw = f1
+        ent.rotationPitch = f2
+        ent.prevRotationYawHead = f3
+        ent.rotationYawHead = f4
+        GlStateManager.popMatrix()
+        RenderHelper.disableStandardItemLighting()
+        GlStateManager.disableRescaleNormal()
+        GlStateManager.setActiveTexture(OpenGlHelper.lightmapTexUnit)
+        GlStateManager.disableTexture2D()
+        GlStateManager.setActiveTexture(OpenGlHelper.defaultTexUnit)
+        GlStateManager.popMatrix()
+    }
+}
+
+/*
+ * Taken from KronHUD under CC Attribution-NonCommercial 3.0.
+ * Modified in Kotlin
+ * https://github.com/Moulberry/NotEnoughUpdates/blob/master/LICENSE
+ */
+fun drawItemStack(stack: ItemStack?, x: Int, y: Int) {
+    if (stack == null) return
+    val itemRender = Minecraft.getMinecraft().renderItem
+    RenderHelper.enableGUIStandardItemLighting()
+    itemRender.zLevel = -145f //Negates the z-offset of the below method.
+    itemRender.renderItemAndEffectIntoGUI(stack, x, y)
+    itemRender.renderItemOverlayIntoGUI(Minecraft.getMinecraft().fontRendererObj, stack, x, y, null)
+    itemRender.zLevel = 0f
+    RenderHelper.disableStandardItemLighting()
 }

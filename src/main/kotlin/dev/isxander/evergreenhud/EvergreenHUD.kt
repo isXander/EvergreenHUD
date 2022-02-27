@@ -21,7 +21,6 @@ import dev.isxander.evergreenhud.repo.RepoManager
 import dev.isxander.evergreenhud.ui.BlacklistedScreen
 import dev.isxander.evergreenhud.ui.ElementDisplay
 import dev.isxander.evergreenhud.ui.UpdateScreen
-import dev.isxander.evergreenhud.ui.test.PositionTest
 import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
 import dev.isxander.evergreenhud.utils.logger
 import dev.isxander.evergreenhud.utils.mc
@@ -39,7 +38,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent
 import org.bundleproject.libversion.Version
 import java.io.File
-
 
 @Mod(name = EvergreenHUD.NAME, modid = EvergreenHUD.ID, version = EvergreenHUD.VERSION_STR, modLanguageAdapter = "gg.essential.api.utils.KotlinAdapter")
 object EvergreenHUD {
@@ -105,15 +103,6 @@ object EvergreenHUD {
         command("evergreenhud", aliases = arrayListOf("evergreen", "egh")) {
             main {
                 EssentialAPI.getGuiUtil().openScreen(ElementDisplay())
-            }
-            if (EssentialAPI.getMinecraftUtil().isDevelopment()) {
-                "test" {
-                    action = {
-                        if (it.isNotEmpty() && it[0] == "position") {
-                            EssentialAPI.getGuiUtil().openScreen(PositionTest())
-                        }
-                    }
-                }
             }
         }
 

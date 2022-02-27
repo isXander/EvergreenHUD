@@ -14,6 +14,5 @@ val implementation by configurations
 dependencies {
     implementation("com.google.devtools.ksp:symbol-processing-api:$kotlinVersion-1.0.+")
     implementation(kotlin("stdlib-jdk8"))
-    implementation(project(":utils"))
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
 }

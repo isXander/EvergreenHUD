@@ -8,11 +8,8 @@
 
 package dev.isxander.evergreenhud.utils.elementmeta
 
-import kotlinx.serialization.Serializable
-
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-@Serializable(ElementMetaSerializer::class)
 annotation class ElementMeta(
     val id: String,
     val name: String,

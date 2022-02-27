@@ -88,3 +88,14 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
         }
     }
 }
+
+fun extractRGBA(color: Int): RGBA {
+    val a = (color shr 24 and 0xFF).toFloat() / 255.0f
+    val r = (color shr 16 and 0xFF).toFloat() / 255.0f
+    val g = (color shr 8 and 0xFF).toFloat() / 255.0f
+    val b = (color and 0xFF).toFloat() / 255.0f
+
+    return RGBA(r, g, b, a)
+}
+
+data class RGBA(val r: Float, val g: Float, val b: Float, val a: Float)

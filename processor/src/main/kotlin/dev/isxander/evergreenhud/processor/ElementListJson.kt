@@ -6,12 +6,10 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-package dev.isxander.evergreenhud.utils
+package dev.isxander.evergreenhud.processor
 
-class HitBox2D(
-    override val x1: Float, override val y1: Float,
-    val width: Float, val height: Float
-) : Rectangle {
-    override val x2 = x1 + width
-    override val y2 = y1 + height
-}
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.JsonObject
+
+@Serializable
+data class ElementListJson(val `class`: String, val metadata: JsonObject)

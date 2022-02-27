@@ -125,8 +125,8 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
                     meta.decode<String>("name")!!,
                     meta.decode<String>("category")!!,
                     meta.decode<String>("description")!!,
-                    meta.decode<String>("credits")!!,
-                    meta.decode<Int>("maxInstances")!!,
+                    meta.decode<String>("credits") ?: "",
+                    meta.decode<Int>("maxInstances") ?: Int.MAX_VALUE,
                 )
 
             i++

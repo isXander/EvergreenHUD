@@ -15,8 +15,8 @@ import dev.isxander.evergreenhud.elements.impl.ElementPotionHUD
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement
 import dev.isxander.evergreenhud.utils.Color
+import dev.isxander.evergreenhud.utils.OriginedPosition
 import dev.isxander.evergreenhud.utils.json
-import dev.isxander.evergreenhud.utils.position.ZonedPosition
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
 import org.apache.commons.io.IOUtils
@@ -55,7 +55,7 @@ object KronHudConverter : ConfigConverter {
             val element = EvergreenHUD.elementManager.getNewElementInstance<Element>(new)
                 ?: continue
 
-            element.position = ZonedPosition.scaledPositioning(
+            element.position = OriginedPosition.scaledPositioning(
                 x = hudJson["x"]!!.jsonPrimitive.float,
                 y = hudJson["y"]!!.jsonPrimitive.float,
                 scale = hudJson["scale"]!!.jsonPrimitive.float

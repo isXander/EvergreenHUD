@@ -12,8 +12,6 @@ import com.google.devtools.ksp.processing.*
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
 import com.google.devtools.ksp.validate
-import dev.isxander.evergreenhud.utils.elementmeta.ElementListJson
-import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonNull
@@ -27,7 +25,7 @@ class ElementProcessor(
 ): SymbolProcessor {
     override fun process(resolver: Resolver): List<KSAnnotated> {
         val symbols = resolver
-            .getSymbolsWithAnnotation(ElementMeta::class.qualifiedName!!)
+            .getSymbolsWithAnnotation("dev.isxander.evergreenhud.utils.elementmeta.ElementMeta")
             .filterIsInstance<KSClassDeclaration>()
 
         if (!symbols.iterator().hasNext()) return emptyList()
@@ -35,7 +33,7 @@ class ElementProcessor(
         val elements = mutableListOf<ElementListJson>()
         for (classDeclaration in symbols) {
             val annotation = classDeclaration.annotations.first {
-                it.shortName.asString() == ElementMeta::class.simpleName
+                it.shortName.asString() == "ElementMeta"
             }
 
             val meta = annotation.arguments
@@ -45,14 +43,19 @@ class ElementProcessor(
             elements.add(ElementListJson(classDeclaration.qualifiedName!!.asString(), meta))
         }
 
-        val file = codeGenerator.createNewFile(
-            dependencies = Dependencies.ALL_FILES,
-            packageName = "",
-            fileName = "evergreenhud-elements",
-            extensionName = "json",
-        )
+        try {
+            val file = codeGenerator.createNewFile(
+                dependencies = Dependencies.ALL_FILES,
+                packageName = "",
+                fileName = "evergreenhud-elements",
+                extensionName = "json",
+            )
 
-        file.use { it.write(Json.encodeToString(elements).toByteArray()) }
+            file.use { it.write(Json.encodeToString(elements).toByteArray()) }
+        } catch (e: FileAlreadyExistsException) {
+            //logger.error("File already exists: ${e.file.absolutePath}")
+        }
+
 
         return symbols.filterNot { it.validate() }.toList()
     }

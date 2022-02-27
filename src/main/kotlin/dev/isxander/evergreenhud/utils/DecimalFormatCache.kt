@@ -20,6 +20,6 @@ private val decimalFormat: (Int, Boolean, Boolean) -> DecimalFormat = { places: 
     DecimalFormat(pattern)
 }.memoize()
 
-fun decimalFormat(places: Int, trailingZeroes: Boolean, percentage: Boolean = true): DecimalFormat {
+fun decimalFormat(places: Int, trailingZeroes: Boolean, percentage: Boolean = false): DecimalFormat {
     return decimalFormat.invoke(places, trailingZeroes, percentage)
 }

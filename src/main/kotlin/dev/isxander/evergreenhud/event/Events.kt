@@ -58,7 +58,7 @@ data class ClientReceivedChatMessage(val text: String) : CancelableEvent() // do
 object Events {
     @SubscribeEvent
     fun onTick(event: TickEvent.ClientTickEvent) {
-        if (event.phase == TickEvent.Phase.START) {
+        if (event.phase == TickEvent.Phase.END) {
             EvergreenHUD.eventBus.post(ClientTickEvent())
         }
     }

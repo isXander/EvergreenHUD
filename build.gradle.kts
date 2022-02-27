@@ -23,6 +23,7 @@ plugins {
     id("org.spongepowered.mixin") version "d5f9873d60"
     `java-library`
     java
+    `maven-publish`
 }
 
 group = "dev.isxander"
@@ -70,7 +71,6 @@ fun DependencyHandlerScope.compileMainAnnotationProcessor(dep: Any) {
 }
 
 dependencies {
-    includeApi(project(":utils"))
     ksp(project(":processor"))
 
     includeApi("io.ktor:ktor-client-core:$ktorVersion")
@@ -188,6 +188,13 @@ tasks {
     named<TaskSingleReobf>("reobfShadowJar") {
         mustRunAfter(shadowJar)
     }
+    register<Jar>("sourcesJar") {
+        archiveClassifier.set("sources")
+        from(sourceSets.main.get().allSource)
+    }
+    artifacts {
+        archives(this@tasks["sourcesJar"])
+    }
 }
 
 allprojects {
@@ -211,3 +218,32 @@ allprojects {
 }
 java.sourceCompatibility = JavaVersion.VERSION_1_8
 java.targetCompatibility = JavaVersion.VERSION_1_8
+
+publishing {
+    publications {
+        register<MavenPublication>("evergreenhud") {
+            groupId = "dev.isxander"
+            artifactId = "evergreenhud"
+
+            // WYVEST: when changing to architectury, make sure to set these to remapJar and remapSourcesJar
+            artifact(tasks.shadowJar) {
+                classifier = "forge-1.8.9"
+            }
+            artifact(tasks["sourcesJar"]) {
+                classifier = "forge-1.8.9-sources"
+            }
+        }
+    }
+
+    repositories {
+        if (hasProperty("WOVERFLOW_REPO_PASS")) {
+            logger.log(LogLevel.INFO, "Publishing to W-OVERFLOW")
+            maven(url = "https://repo.woverflow.cc/releases") {
+                credentials {
+                    username = "wyvest"
+                    password = property("WOVERFLOW_REPO_PASS") as? String
+                }
+            }
+        }
+    }
+}

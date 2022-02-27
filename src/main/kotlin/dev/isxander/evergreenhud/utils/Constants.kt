@@ -8,6 +8,10 @@
 
 package dev.isxander.evergreenhud.utils
 
+import io.ktor.client.*
+import io.ktor.client.engine.apache.*
+import io.ktor.client.plugins.*
+import io.ktor.serialization.kotlinx.json.*
 import net.minecraft.client.Minecraft
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -16,3 +20,9 @@ val logger: Logger = LoggerFactory.getLogger("EvergreenHUD")
 
 val mc: Minecraft
     get() = Minecraft.getMinecraft()
+
+val http = HttpClient(Apache) {
+    install(ContentNegotiation) {
+        json(json)
+    }
+}

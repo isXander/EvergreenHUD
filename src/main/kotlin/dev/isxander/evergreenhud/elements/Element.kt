@@ -14,8 +14,8 @@ import dev.isxander.evergreenhud.event.Event
 import dev.isxander.evergreenhud.event.EventListener
 import dev.isxander.evergreenhud.ui.ElementDisplay
 import dev.isxander.evergreenhud.utils.HitBox2D
+import dev.isxander.evergreenhud.utils.OriginedPosition
 import dev.isxander.evergreenhud.utils.mc
-import dev.isxander.evergreenhud.utils.position.ZonedPosition
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.float
@@ -26,7 +26,6 @@ import net.minecraft.client.gui.GuiChat
 import net.minecraft.client.renderer.Tessellator
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 
-
 @Serializable(ElementSerializer::class)
 abstract class Element : ConfigProcessor {
     var isAdded = false
@@ -34,7 +33,7 @@ abstract class Element : ConfigProcessor {
 
     override val settings = mutableListOf<Setting<*>>()
     val metadata = EvergreenHUD.elementManager.availableElements[this::class]!!
-    var position = ZonedPosition.scaledPositioning(0.25f, 0.25f)
+    var position = OriginedPosition.scaledPositioning(0.25f, 0.25f)
 
     var scale by float(100f) {
         name = "Scale"
@@ -117,7 +116,7 @@ abstract class Element : ConfigProcessor {
     }
 
     fun resetSettings(save: Boolean = false) {
-        position = ZonedPosition.scaledPositioning(0.25f, 0.25f)
+        position = OriginedPosition.scaledPositioning(0.25f, 0.25f)
 
         for (s in settings) s.reset()
         if (save) EvergreenHUD.elementManager.elementConfig.save()
