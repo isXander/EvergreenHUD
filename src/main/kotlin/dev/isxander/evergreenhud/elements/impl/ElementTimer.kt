@@ -11,8 +11,10 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.mixins.AccessorKeyBindingRegistryImpl
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
-import io.ejekta.kambrik.input.KambrikKeybind
+import dev.isxander.evergreenhud.utils.extractString
+import dev.isxander.evergreenhud.utils.registerKeyBind
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+import net.minecraft.client.option.KeyBinding
 import net.minecraft.client.util.InputUtil
 import org.lwjgl.glfw.GLFW
 import java.text.SimpleDateFormat
@@ -22,7 +24,7 @@ import kotlin.concurrent.timer
 
 @ElementMeta(id = "evergreenhud:timer", name = "Timer", category = "Miscallaneous", description = "Set a timer.", credits = "Wyvest")
 class ElementTimer : SimpleTextElement("Timer") {
-    var keybind: KambrikKeybind? = null
+    var keybind: KeyBinding? = null
 
     var elapsed = 0L
     var stopped = true
@@ -51,9 +53,7 @@ class ElementTimer : SimpleTextElement("Timer") {
             keyTranslation = "Toggle ${metadata.name}",
             keyCategory = "EvergreenHUD Timers",
         ) {
-            onDown {
-                stopped = !stopped
-            }
+            stopped = !stopped
         }
     }
 
@@ -68,20 +68,19 @@ class ElementTimer : SimpleTextElement("Timer") {
         key: Int = GLFW.GLFW_KEY_UNKNOWN,
         keyTranslation: String,
         keyCategory: String,
-        realTime: Boolean = false,
-        bindingDsl: KambrikKeybind.() -> Unit
-    ): KambrikKeybind {
-        val current = KambrikKeybind(keyTranslation, InputUtil.Type.KEYSYM, key, keyCategory, realTime).apply(bindingDsl)
-        var result: KambrikKeybind = current
+        bindingDsl: () -> Unit
+    ): KeyBinding {
+        val current = KeyBinding(keyTranslation, InputUtil.Type.KEYSYM, key, keyCategory)
+        var result: KeyBinding = current
 
         try {
             KeyBindingHelper.registerKeyBinding(current)!!
         } catch (e: RuntimeException) {
             var tries = 1
             while (true) {
-                result = KambrikKeybind("$keyTranslation (${tries++}", InputUtil.Type.KEYSYM, key, keyCategory, realTime).apply(bindingDsl)
+                result = KeyBinding("$keyTranslation (${tries++}", InputUtil.Type.KEYSYM, key, keyCategory)
                 try {
-                    result = KeyBindingHelper.registerKeyBinding(result)!! as KambrikKeybind
+                    result = registerKeyBind(result.defaultKey.code, result.defaultKey.category, result.translationKey, result.category, bindingDsl)
                     break
                 } catch (e: RuntimeException) {}
             }
@@ -90,7 +89,7 @@ class ElementTimer : SimpleTextElement("Timer") {
         return result
     }
 
-    private fun unregisterKeybind(keybind: KambrikKeybind) {
+    private fun unregisterKeybind(keybind: KeyBinding) {
         AccessorKeyBindingRegistryImpl.getModdedKeyBindings().removeIf { it.category == keybind.category && it.translationKey == keybind.translationKey }
     }
 }

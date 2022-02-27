@@ -28,3 +28,11 @@ interface Rectangle {
 }
 
 data class SimpleRectangle(override val x1: Float, override val y1: Float, override val x2: Float, override val y2: Float) : Rectangle
+
+data class HitBox2D(
+    override val x1: Float, override val y1: Float,
+    val width: Float, val height: Float
+) : Rectangle {
+    override val x2 = x1 + width
+    override val y2 = y1 + height
+}

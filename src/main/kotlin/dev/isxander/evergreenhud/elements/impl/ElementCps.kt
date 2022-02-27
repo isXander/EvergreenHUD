@@ -11,11 +11,10 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.RenderTickEvent
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
+import dev.isxander.evergreenhud.utils.getBoundKey
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.option
-import io.ejekta.kambrik.ext.client.getBoundKey
-import net.minecraft.client.util.math.MatrixStack
 import org.lwjgl.glfw.GLFW
 import kotlin.collections.ArrayDeque
 

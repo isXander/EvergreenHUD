@@ -45,14 +45,19 @@ class ElementProcessor(
             elements.add(ElementListJson(classDeclaration.qualifiedName!!.asString(), meta))
         }
 
-        val file = codeGenerator.createNewFile(
-            dependencies = Dependencies.ALL_FILES,
-            packageName = "",
-            fileName = "evergreenhud-elements",
-            extensionName = "json",
-        )
+        try {
+            val file = codeGenerator.createNewFile(
+                dependencies = Dependencies.ALL_FILES,
+                packageName = "",
+                fileName = "evergreenhud-elements",
+                extensionName = "json",
+            )
 
-        file.use { it.write(Json.encodeToString(elements).toByteArray()) }
+            file.use { it.write(Json.encodeToString(elements).toByteArray()) }
+        } catch (e: FileAlreadyExistsException) {
+            //logger.error("File already exists: ${e.file.absolutePath}")
+        }
+
 
         return symbols.filterNot { it.validate() }.toList()
     }

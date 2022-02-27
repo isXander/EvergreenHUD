@@ -9,6 +9,9 @@
 package dev.isxander.evergreenhud.utils
 
 import dev.isxander.evergreenhud.EvergreenHUD
+import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper
+import net.minecraft.client.option.KeyBinding
+import net.minecraft.client.util.InputUtil
 import net.minecraft.util.Identifier
 import java.io.ByteArrayInputStream
 import java.io.InputStream
@@ -24,3 +27,6 @@ fun fromBase64(string: String): InputStream =
 
 fun Identifier.readText(): String =
     mc.resourceManager.getResource(this).inputStream.readAllBytes().decodeToString()
+
+fun KeyBinding.getBoundKey(): InputUtil.Key =
+    KeyBindingHelper.getBoundKeyOf(this)

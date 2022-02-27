@@ -17,10 +17,8 @@ import dev.isxander.evergreenhud.elements.impl.ElementIRLTime
 import dev.isxander.evergreenhud.elements.impl.ElementText
 import dev.isxander.evergreenhud.elements.type.TextElement
 import dev.isxander.evergreenhud.utils.*
-import dev.isxander.evergreenhud.utils.position.ZonedPosition
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.*
-import net.fabricmc.loader.api.FabricLoader
 import java.io.File
 
 object ChromaHudConverter : ConfigConverter {
@@ -45,7 +43,7 @@ object ChromaHudConverter : ConfigConverter {
         EvergreenHUD.elementManager.enabled = config.decode("enabled")!!
 
         for (elementJson in config.decode<List<JsonObject>>("elements")!!) {
-            val position = ZonedPosition.scaledPositioning(
+            val position = OriginedPosition.scaledPositioning(
                 x = elementJson.decode("x")!!,
                 y = elementJson.decode("y")!!,
                 scale = elementJson.decode("scale")!!,
@@ -73,7 +71,7 @@ object ChromaHudConverter : ConfigConverter {
                 val element = EvergreenHUD.elementManager.getNewElementInstance<Element>(id) ?: continue
 
                 element.position = position
-                element.position.zoneY = element.position.zoneY + (i * changeY)
+                element.position.rawY += i * changeY
 
                 if (element is TextElement) {
                     element.textColor = textColor

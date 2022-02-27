@@ -15,15 +15,24 @@ import gg.essential.universal.UMatrixStack
 import gg.essential.universal.shader.UShader
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.*
+import net.minecraft.client.render.model.BakedModel
+import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.Sprite
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.entity.LivingEntity
+import net.minecraft.item.ItemStack
+import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.text.OrderedText
 import net.minecraft.text.Text
 import net.minecraft.util.Identifier
 import net.minecraft.util.math.Matrix4f
+import net.minecraft.util.math.Quaternion
+import net.minecraft.util.math.Vec3f
 import java.awt.image.BufferedImage
 import java.util.function.BiConsumer
+import kotlin.math.ceil
+import kotlin.math.floor
 
 fun MatrixStack.translate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) =
     translate(x.toDouble(), y.toDouble(), z.toDouble())
@@ -86,7 +95,7 @@ fun MatrixStack.fillGradient(
     val bufferBuilder = tessellator.buffer
     bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR)
     fillGradient(
-        peek().model,
+        peek().positionMatrix,
         bufferBuilder,
         startX,
         startY,
@@ -175,16 +184,16 @@ fun TextRenderer.drawCenteredTextWithShadow(
  */
 fun drawWithOutline(x: Float, y: Float, renderAction: BiConsumer<Float, Float>) {
     RenderSystem.blendFuncSeparate(
-        GlStateManager.class_4535.ZERO,
-        GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA,
-        GlStateManager.class_4535.SRC_ALPHA,
-        GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA
+        GlStateManager.SrcFactor.ZERO,
+        GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
+        GlStateManager.SrcFactor.SRC_ALPHA,
+        GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA
     )
     renderAction.accept(x + 1, y)
     renderAction.accept(x - 1, y)
     renderAction.accept(x, y + 1)
     renderAction.accept(x, y - 1)
-    RenderSystem.blendFunc(GlStateManager.class_4535.SRC_ALPHA, GlStateManager.class_4534.ONE_MINUS_SRC_ALPHA)
+    RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA)
     renderAction.accept(x, y)
 }
 
@@ -352,7 +361,7 @@ fun MatrixStack.drawTexturedQuad(
     v1: Float
 ) {
     RenderSystem.setShader { GameRenderer.getPositionTexShader() }
-    val matrix = peek().model
+    val matrix = peek().positionMatrix
     val bufferBuilder = Tessellator.getInstance().buffer
     bufferBuilder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE)
     bufferBuilder.vertex(matrix, x0, y1, z).texture(u0, v1).next()
@@ -379,7 +388,7 @@ fun BufferedImage.toNativeImage(): NativeImage {
     val nativeImage = NativeImage(width, height, false)
     for (x in 0 until nativeImage.width) {
         for (y in 0 until nativeImage.height) {
-            nativeImage.setPixelColor(x, y, getRGB(x, y))
+            nativeImage.setColor(x, y, getRGB(x, y))
         }
     }
 
@@ -417,4 +426,141 @@ fun MatrixStack.drawChromaRectangle() {
     UIBlock.drawBlockWithActiveShader(UMatrixStack(this), Color.white.awt, 0.0, 0.0, mc.window.scaledWidth.toDouble(), mc.window.scaledHeight.toDouble())
 
     shader.unbind()
+}
+
+fun LivingEntity.renderEntity(x: Float, y: Float, size: Float, viewRotation: Float = 0f) {
+    val matrixStack = RenderSystem.getModelViewStack()
+    matrixStack.push()
+    matrixStack.translate(
+        x,
+        y,
+        1050f
+    )
+    matrixStack.scale(1.0f, 1.0f, -1.0f)
+    RenderSystem.applyModelViewMatrix()
+    val matrixStack2 = MatrixStack()
+    matrixStack2.translate(0.0, 0.0, 1000.0)
+    matrixStack2.scale(size, size, size)
+    val quaternion = Vec3f.POSITIVE_Z.getDegreesQuaternion(180.0f)
+    matrixStack2.multiply(quaternion)
+
+    val interpolatedYaw = lerp(prevYaw, yaw, mc.tickDelta)
+    matrixStack2.multiply(Quaternion(Vec3f(0f, 1f, 0f), interpolatedYaw - 180f + viewRotation, true))
+    val prevHeadYaw: Float = prevHeadYaw
+    val headYaw: Float = headYaw
+
+    this.headYaw = interpolatedYaw
+    this.prevHeadYaw = interpolatedYaw
+    DiffuseLighting.method_34742()
+    val entityRenderDispatcher = mc.entityRenderDispatcher
+    entityRenderDispatcher.rotation = quaternion
+    entityRenderDispatcher.setRenderShadows(false)
+    val immediate = mc.bufferBuilders.entityVertexConsumers
+    RenderSystem.runAsFancy {
+        entityRenderDispatcher.render(
+            this,
+            0.0,
+            0.0,
+            0.0,
+            0f,
+            mc.tickDelta,
+            matrixStack2,
+            immediate,
+            0xF000F0
+        )
+    }
+    immediate.draw()
+    entityRenderDispatcher.setRenderShadows(true)
+    this.prevHeadYaw = prevHeadYaw
+    this.headYaw = headYaw
+    matrixStack.pop()
+    RenderSystem.applyModelViewMatrix()
+    DiffuseLighting.enableGuiDepthLighting()
+}
+
+/*
+ * Taken from KronHUD under GNU-GPLv3.
+ * Modified to work in Kotlin
+ * https://github.com/DarkKronicle/KronHUD/blob/master/src/main/java/io/github/darkkronicle/kronhud/util/ItemUtil.java
+ */
+
+fun renderGuiItemModel(matrices: MatrixStack, stack: ItemStack?, x: Float, y: Float) {
+    val model: BakedModel = mc.itemRenderer.getModel(stack, null, mc.player, (x * y).toInt())
+    mc.textureManager.getTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).setFilter(false, false)
+    RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
+    RenderSystem.enableBlend()
+    RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA)
+    RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
+    matrices.push()
+    matrices.translate(x.toDouble(), y.toDouble(), 100.0f + mc.itemRenderer.zOffset)
+    matrices.translate(8.0, 8.0, 0.0)
+    matrices.scale(1.0f, -1.0f, 1.0f)
+    matrices.scale(16.0f, 16.0f, 16.0f)
+    RenderSystem.applyModelViewMatrix()
+    val immediate: VertexConsumerProvider.Immediate = mc.bufferBuilders.entityVertexConsumers
+    val bl = !model.isSideLit
+    if (bl) {
+        DiffuseLighting.disableGuiDepthLighting()
+    }
+    mc.itemRenderer.renderItem(
+        stack, ModelTransformation.Mode.GUI, false, matrices, immediate, 15728880,
+        OverlayTexture.DEFAULT_UV, model
+    )
+    immediate.draw()
+    RenderSystem.enableDepthTest()
+    if (bl) {
+        DiffuseLighting.enableGuiDepthLighting()
+    }
+    matrices.pop()
+    RenderSystem.applyModelViewMatrix()
+}
+
+fun renderGuiItemOverlay(
+    matrices: MatrixStack, stack: ItemStack, x: Float, y: Float,
+    countLabel: String?, showDurabilityBar: Boolean, textColor: Int, shadow: Boolean
+) {
+    if (stack.isEmpty) {
+        return
+    }
+    if (stack.count != 1 || countLabel != null) {
+        val string = countLabel ?: stack.count.toString()
+        matrices.translate(0.0, 0.0, mc.itemRenderer.zOffset + 200.0f)
+        drawString(matrices, string, x + 19 - 2 - mc.textRenderer.getWidth(string), y + 6 + 3, textColor, shadow = shadow)
+    }
+    if (stack.isItemBarVisible && showDurabilityBar) {
+        RenderSystem.disableDepthTest()
+        RenderSystem.disableTexture()
+        RenderSystem.disableBlend()
+        val i = stack.itemBarStep
+        val j = stack.itemBarColor
+
+        HitBox2D(x + 2, y + 13, 13f, 2f)
+            .let { matrices.fill(it.x1, it.y1, it.x2, it.y2, 0) }
+
+        val fill = HitBox2D(x + 2, y + 13, i.toFloat(), 1f)
+        val color = java.awt.Color(j shr 16 and 255, j shr 8 and 255, j and 255, 255).rgb
+        matrices.fill(fill.x1, fill.y1, fill.x2, fill.y2, color)
+
+        RenderSystem.enableBlend()
+        RenderSystem.enableTexture()
+        RenderSystem.enableDepthTest()
+    }
+    val clientPlayerEntity = mc.player
+    val f = clientPlayerEntity?.itemCooldownManager?.getCooldownProgress(
+        stack.item,
+        mc.tickDelta
+    )
+        ?: 0.0f
+    if (f > 0.0f) {
+        RenderSystem.disableDepthTest()
+        RenderSystem.disableTexture()
+        RenderSystem.enableBlend()
+        RenderSystem.defaultBlendFunc()
+
+        HitBox2D(x, y + floor(16f * (1f - f)), 16f, ceil(16f * f))
+            .let { matrices.fill(it.x1, it.y1, it.x2, it.y2, java.awt.Color(255, 255, 255, 127).rgb) }
+
+        RenderSystem.enableTexture()
+        RenderSystem.enableDepthTest()
+    }
 }

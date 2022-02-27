@@ -12,20 +12,19 @@ import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.utils.drawString
 import dev.isxander.evergreenhud.utils.translate
 import gg.essential.universal.UDesktop
-import io.ejekta.kambrik.ext.math.scale
-import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.LiteralText
 import java.net.URI
 
-class UpdateScreen(private val latest: String, private val parent: Screen?) : Screen(textLiteral("EvergreenHUD Update")) {
+class UpdateScreen(private val latest: String, private val parent: Screen?) : Screen(LiteralText("EvergreenHUD Update")) {
     override fun init() {
-        addDrawableChild(ButtonWidget(width / 2 - 102, height / 4 * 3, 100, 20, textLiteral("Download")) {
+        addDrawableChild(ButtonWidget(width / 2 - 102, height / 4 * 3, 100, 20, LiteralText("Download")) {
             UDesktop.browse(URI.create("https://www.isxander.dev/mods/evergreenhud"))
             client!!.setScreen(parent)
         })
-        addDrawableChild(ButtonWidget(width / 2 + 2, height / 4 * 3, 100, 20, textLiteral("Skip")) {
+        addDrawableChild(ButtonWidget(width / 2 + 2, height / 4 * 3, 100, 20, LiteralText("Skip")) {
             client!!.setScreen(parent)
         })
     }
@@ -35,7 +34,7 @@ class UpdateScreen(private val latest: String, private val parent: Screen?) : Sc
         super.render(matrices, mouseX, mouseY, delta)
         matrices.push()
         matrices.translate(width / 2f, height / 8f)
-        matrices.scale(2f)
+        matrices.scale(2f, 2f, 1f)
         drawString(matrices, "EvergreenHUD", 0f, 0f, EvergreenPalette.Evergreen.Evergreen3.rgba, centered = true)
         matrices.pop()
         drawString(matrices, "A new version is available for EvergreenHUD!", width / 2f, height / 4f, -1, centered = true)

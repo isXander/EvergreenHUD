@@ -19,7 +19,7 @@ class ElementBiome : SimpleTextElement("Biome") {
     override fun calculateValue(): String {
         val player = mc.player ?: return "Unknown"
 
-        val id = mc.world!!.registryManager!!.get(Registry.BIOME_KEY)!!.getId(mc.world?.getBiome(player.blockPos))!!
+        val id = mc.world!!.registryManager!!.get(Registry.BIOME_KEY)!!.getId(mc.world?.getBiome(player.blockPos)?.value())!!
         return I18n.translate("biome.${id.namespace}.${id.path}")
     }
 }

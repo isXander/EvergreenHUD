@@ -10,13 +10,13 @@ plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
     id("fabric-loom") version "0.11.+"
-    id("org.quiltmc.quilt-mappings-on-loom") version "4.0.+"
     id("io.github.juuxel.loom-quiltflower") version "1.6.+"
     id("com.google.devtools.ksp") version "$kotlinVersion-1.0.+"
     id("net.kyori.blossom") version "1.3.+"
     id("org.ajoberstar.grgit") version "5.0.+"
     `java-library`
     java
+    `maven-publish`
 }
 
 group = "dev.isxander"
@@ -38,9 +38,8 @@ fun DependencyHandlerScope.includeApi(dep: Any) {
     include(dep)
 }
 
-fun DependencyHandlerScope.includeModApi(dep: Any) {
-    modApi(dep)
-    include(dep)
+fun DependencyHandlerScope.includeModApi(dep: String, action: Action<ExternalModuleDependency> = Action<ExternalModuleDependency> {}) {
+    include(modApi(dep, action))
 }
 
 dependencies {
@@ -59,14 +58,14 @@ dependencies {
     includeApi("dev.isxander:settxi:2.1.0")
 
     minecraft("com.mojang:minecraft:$minecraftVersion")
-    mappings(loom.layered {
-        addLayer(quiltMappings.mappings("org.quiltmc:quilt-mappings:$minecraftVersion+build.+:v2"))
-    })
+    mappings("net.fabricmc:yarn:$minecraftVersion+build.+:v2")
     modImplementation("net.fabricmc:fabric-loader:0.13.+")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.46.1+1.18")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.47.8+1.18.2")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
 
-    modImplementation("io.ejekta:kambrik:3.1.0-1.18")
+    includeModApi("net.axay:fabrikmc-commands:1.7.+") {
+        exclude(module = "fabric-api")
+    }
     includeModApi("gg.essential:elementa-1.18-fabric:+")
 
     modImplementation("com.terraformersmc:modmenu:3.0.+")
@@ -102,6 +101,10 @@ tasks {
             )
         }
     }
+
+    register("setupEvergreenHUD") {
+        dependsOn("genSourcesWithQuiltflower")
+    }
 }
 
 allprojects {
@@ -118,6 +121,30 @@ allprojects {
         withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
             kotlinOptions {
                 jvmTarget = "17"
+            }
+        }
+    }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("evergreenhud") {
+            groupId = "dev.isxander"
+            artifactId = "evergreenhud"
+
+            from(components["java"])
+            artifact(tasks.remapJar)
+            artifact(tasks.remapSourcesJar)
+        }
+    }
+
+    repositories {
+        if (hasProperty("WOVERFLOW_REPO_PASS")) {
+            maven(url = "https://repo.woverflow.cc/releases") {
+                credentials {
+                    username = "wyvest"
+                    password = property("WOVERFLOW_REPO_PASS") as? String
+                }
             }
         }
     }

@@ -145,7 +145,7 @@ class ElementDisplay(val parentScreen: Screen? = null) : WindowScreen(ElementaVe
         super.onScreenClose()
     }
 
-    override fun onClose() {
+    override fun close() {
         mc.setScreen(parentScreen)
     }
 }

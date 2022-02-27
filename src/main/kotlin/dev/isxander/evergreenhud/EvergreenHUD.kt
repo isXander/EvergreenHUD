@@ -10,16 +10,15 @@ package dev.isxander.evergreenhud
 
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.config.convert.ConfigConverter
-import dev.isxander.evergreenhud.config.convert.impl.ChromaHudConverter
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.config.profile.ProfileManager
+import dev.isxander.evergreenhud.utils.registerKeyBind
 import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.EventBus
 import dev.isxander.evergreenhud.event.RenderHudEvent
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
 import dev.isxander.evergreenhud.ui.BlacklistedScreen
 import dev.isxander.evergreenhud.ui.UpdateScreen
-import dev.isxander.evergreenhud.ui.test.PositionTest
 import dev.isxander.evergreenhud.packets.client.registerElementsPacket
 import dev.isxander.evergreenhud.repo.ReleaseChannel
 import dev.isxander.evergreenhud.repo.RepoManager
@@ -27,14 +26,15 @@ import dev.isxander.evergreenhud.ui.ConfigConverterScreen
 import dev.isxander.evergreenhud.ui.ElementDisplay
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
-import io.ejekta.kambrik.Kambrik
-import io.ejekta.kambrik.text.textLiteral
 import kotlinx.coroutines.runBlocking
+import net.axay.fabrik.commands.clientCommand
 import net.fabricmc.api.ClientModInitializer
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.SharedConstants
+import net.minecraft.client.util.InputUtil
+import net.minecraft.text.LiteralText
 import org.bundleproject.libversion.Version
 import org.lwjgl.glfw.GLFW
 import java.io.File
@@ -101,39 +101,36 @@ object EvergreenHUD : ClientModInitializer {
 
         logger.debug("Registering hooks...")
 
-        Kambrik.Command.addClientCommand("evergreenhud") {
-            runs {
-                GuiHandler.displayGui(ElementDisplay())
-            }
+        // TODO: uncomment when Fabrik doesn't kill the kotlin compiler
+//        clientCommand("evergrenhud") {
+//            runs {
+//                GuiHandler.displayGui(ElementDisplay())
+//            }
+//
+//            if (FabricLoader.getInstance().isDevelopmentEnvironment) {
+//                literal("test") {
+//
+//                }
+//            }
+//        }
 
-            if (FabricLoader.getInstance().isDevelopmentEnvironment) {
-                "test" {
-                    "position" runs {
-                        GuiHandler.displayGui(PositionTest())
-                    }
-                }
-            }
-        }
-
-        Kambrik.Input.registerKeyboardBinding(
+        registerKeyBind(
             GLFW.GLFW_KEY_HOME,
-            keyTranslation = "evergreenhud.key.opengui",
-            keyCategory = "evergreenhud.keycategory"
+            InputUtil.Type.KEYSYM,
+            name = "evergreenhud.key.opengui",
+            category = "evergreenhud.keycategory"
         ) {
-            onDown {
-                mc.setScreen(ElementDisplay())
-            }
+            mc.setScreen(ElementDisplay())
         }
 
-        Kambrik.Input.registerKeyboardBinding(
+        registerKeyBind(
             GLFW.GLFW_KEY_UNKNOWN,
-            keyTranslation = "evergreenhud.key.toggle",
-            keyCategory = "evergreenhud.keycategory"
+            InputUtil.Type.KEYSYM,
+            name = "evergreenhud.key.toggle",
+            category = "evergreenhud.keycategory"
         ) {
-            onDown {
-                elementManager.enabled = !elementManager.enabled
-                mc.inGameHud?.chatHud?.addMessage(evergreenHudPrefix + textLiteral("Toggled mod."))
-            }
+            elementManager.enabled = !elementManager.enabled
+            mc.inGameHud?.chatHud?.addMessage(evergreenHudPrefix + LiteralText("Toggled mod."))
         }
 
         logger.debug("Registering events...")

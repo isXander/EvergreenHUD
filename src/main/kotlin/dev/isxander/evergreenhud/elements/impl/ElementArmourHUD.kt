@@ -15,11 +15,10 @@ import dev.isxander.evergreenhud.settings.color
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.settxi.impl.*
-import io.ejekta.kambrik.ext.math.scale
-import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.item.ItemStack
 import net.minecraft.item.Items
+import net.minecraft.text.LiteralText
 
 @ElementMeta(id = "evergreenhud:armour_hud", name = "Armour HUD", description = "Displays the player's currently equipped armour.", category = "Player")
 class ElementArmourHUD : BackgroundElement() {
@@ -132,10 +131,10 @@ class ElementArmourHUD : BackgroundElement() {
 
         val texts = items.map {
             when (extraInfo) {
-                ExtraInfo.DurabilityAbsolute -> textLiteral(if (it.isDamageable) (it.maxDamage - it.damage).toString() else "")
-                ExtraInfo.DurabilityPercent -> textLiteral(if (it.isDamageable) "${(it.maxDamage - it.damage) / it.maxDamage * 100}%" else "")
-                ExtraInfo.Name -> it.name ?: textLiteral("")
-                else -> textLiteral("")
+                ExtraInfo.DurabilityAbsolute -> LiteralText(if (it.isDamageable) (it.maxDamage - it.damage).toString() else "")
+                ExtraInfo.DurabilityPercent -> LiteralText(if (it.isDamageable) "${(it.maxDamage - it.damage) / it.maxDamage * 100}%" else "")
+                ExtraInfo.Name -> it.name ?: LiteralText("")
+                else -> LiteralText("")
             }.let { text ->
                 text to mc.textRenderer.getWidth(text)
             }
@@ -177,7 +176,7 @@ class ElementArmourHUD : BackgroundElement() {
 
             matrices.push()
             matrices.translate(textX, itemY)
-            matrices.scale(position.scale)
+            matrices.scale(position.scale, position.scale, 1f)
             drawString(
                 matrices,
                 text,

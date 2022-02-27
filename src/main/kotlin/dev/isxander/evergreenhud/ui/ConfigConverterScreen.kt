@@ -11,19 +11,18 @@ package dev.isxander.evergreenhud.ui
 import dev.isxander.evergreenhud.config.convert.ConfigConverter
 import dev.isxander.evergreenhud.utils.drawString
 import dev.isxander.evergreenhud.utils.translate
-import io.ejekta.kambrik.ext.math.scale
-import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.LiteralText
 
-class ConfigConverterScreen(val converter: ConfigConverter, val parent: Screen?) : Screen(textLiteral("Config Converter")) {
+class ConfigConverterScreen(val converter: ConfigConverter, val parent: Screen?) : Screen(LiteralText("Config Converter")) {
     override fun init() {
-        addDrawableChild(ButtonWidget(width / 2 - 102, height / 4 * 3, 100, 20, textLiteral("Convert")) {
+        addDrawableChild(ButtonWidget(width / 2 - 102, height / 4 * 3, 100, 20, LiteralText("Convert")) {
             converter.process()
             client!!.setScreen(parent)
         })
-        addDrawableChild(ButtonWidget(width / 2 + 2, height / 4 * 3, 100, 20, textLiteral("Skip")) {
+        addDrawableChild(ButtonWidget(width / 2 + 2, height / 4 * 3, 100, 20, LiteralText("Skip")) {
             client!!.setScreen(parent)
         })
     }
@@ -33,7 +32,7 @@ class ConfigConverterScreen(val converter: ConfigConverter, val parent: Screen?)
         super.render(matrices, mouseX, mouseY, delta)
         matrices.push()
         matrices.translate(width / 2f, height / 8f)
-        matrices.scale(2f)
+        matrices.scale(2f, 2f, 1f)
         drawString(matrices, "EvergreenHUD", 0f, 0f, EvergreenPalette.Evergreen.Evergreen3.rgba, centered = true)
         matrices.pop()
         drawString(matrices, "${converter.name} has been detected!", width / 2f, height / 4f, -1, centered = true)

@@ -10,7 +10,7 @@ package dev.isxander.evergreenhud.config.element
 
 import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.elements.Element
-import dev.isxander.evergreenhud.utils.position.ZonedPosition
+import dev.isxander.evergreenhud.utils.OriginedPosition
 import dev.isxander.settxi.serialization.asJson
 import dev.isxander.settxi.serialization.populateFromJson
 import kotlinx.serialization.KSerializer
@@ -29,7 +29,7 @@ class ElementSerializer : KSerializer<Element> {
     override val descriptor: SerialDescriptor =
         buildClassSerialDescriptor("elements") {
             element<String>("id")
-            element<ZonedPosition>("position")
+            element<OriginedPosition>("position")
             element<JsonObject>("settings")
         }
 
@@ -43,7 +43,7 @@ class ElementSerializer : KSerializer<Element> {
 
     override fun deserialize(decoder: Decoder) = decoder.decodeStructure(descriptor) {
         lateinit var id: String
-        lateinit var position: ZonedPosition
+        lateinit var position: OriginedPosition
         lateinit var settings: JsonObject
 
         while (true) {

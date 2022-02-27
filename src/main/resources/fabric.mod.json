@@ -41,7 +41,7 @@
     "fabric-language-kotlin": ">=1.7.1+kotlin.1.6.10",
     "minecraft": "1.18.x",
     "java": "17",
-    "kambrik": "*"
+    "fabrikmc-commands": "*"
   },
   "suggests": {
     "modmenu": ">=3.0.0"

@@ -28,3 +28,22 @@ class CacheHolder<T>(val cacheDuration: Duration, val action: () -> T) : ReadOnl
 
     override fun getValue(thisRef: Any?, property: KProperty<*>): T = value
 }
+
+class AsyncCacheHolder<T>(private val cacheDuration: Duration, val action: () -> T) : ReadOnlyProperty<Any?, T?> {
+    private var time = System.currentTimeMillis()
+
+    var value: T? = null
+        get() {
+            if (System.currentTimeMillis() - time >= cacheDuration.inWholeMilliseconds) {
+                runAsync {
+                    field = action()
+                    time = System.currentTimeMillis()
+                }
+            }
+
+            return field
+        }
+        private set
+
+    override fun getValue(thisRef: Any?, property: KProperty<*>): T? = value
+}

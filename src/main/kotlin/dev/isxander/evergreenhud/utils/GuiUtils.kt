@@ -10,7 +10,6 @@ package dev.isxander.evergreenhud.utils
 
 import gg.essential.universal.shader.BlendState
 import gg.essential.universal.shader.UShader
-import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.resource.language.I18n
 import net.minecraft.client.util.math.MatrixStack
 import net.minecraft.text.*
@@ -31,7 +30,7 @@ fun drawString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int
 }
 
 fun drawString(matrices: MatrixStack, text: String, x: Float, y: Float, color: Int, shadow: Boolean = true, centered: Boolean = false, bordered: Boolean = false, chroma: Color.ChromaProperties = Color.ChromaProperties.none) {
-    drawString(matrices, textLiteral(text), x, y, color, shadow, centered, bordered, chroma)
+    drawString(matrices, LiteralText(text), x, y, color, shadow, centered, bordered, chroma)
 }
 
 private fun drawCenteredString(matrices: MatrixStack, text: Text, x: Float, y: Float, color: Int, shadow: Boolean, bordered: Boolean, chroma: Color.ChromaProperties) {
@@ -52,7 +51,7 @@ private fun drawChromaString(matrices: MatrixStack, text: Text, _x: Float, y: Fl
     var x = _x
     for (char in toCharArrNoFormatting(text.extractString())) {
         val i = chroma.getChroma(x, y)
-        drawString(matrices, textLiteral(char), x, y, i, shadow = shadow)
+        drawString(matrices, LiteralText(char), x, y, i, shadow = shadow)
         x += mc.textRenderer.getWidth(char)}
 }
 
@@ -114,7 +113,7 @@ fun Text.extractString(): String {
 
 fun Text.modify(lambda: (String) -> String): Text {
     val string = extractString().run(lambda)
-    return textLiteral(string).fillStyle(this.style)
+    return LiteralText(string).fillStyle(this.style)
 }
 
 operator fun Formatting.plus(string: String): String =

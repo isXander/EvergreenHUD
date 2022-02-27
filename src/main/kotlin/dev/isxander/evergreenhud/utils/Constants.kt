@@ -8,6 +8,10 @@
 
 package dev.isxander.evergreenhud.utils
 
+import io.ktor.client.*
+import io.ktor.client.engine.apache.*
+import io.ktor.client.plugins.*
+import io.ktor.serialization.kotlinx.json.*
 import net.minecraft.client.MinecraftClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -19,3 +23,9 @@ val mc: MinecraftClient
 
 val tickDelta: Float
     get() = mc.tickDelta
+
+val http = HttpClient(Apache) {
+    install(ContentNegotiation) {
+        json(json)
+    }
+}

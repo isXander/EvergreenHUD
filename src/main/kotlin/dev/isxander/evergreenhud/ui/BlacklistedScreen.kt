@@ -11,19 +11,18 @@ package dev.isxander.evergreenhud.ui
 import dev.isxander.evergreenhud.utils.drawString
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.evergreenhud.utils.translate
-import io.ejekta.kambrik.ext.math.scale
-import io.ejekta.kambrik.text.textLiteral
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.client.gui.widget.ButtonWidget
 import net.minecraft.client.util.math.MatrixStack
+import net.minecraft.text.LiteralText
 import net.minecraft.util.Formatting
 
-class BlacklistedScreen(private val parent: Screen?) : Screen(textLiteral("EvergreenHUD Dangerous Version")) {
+class BlacklistedScreen(private val parent: Screen?) : Screen(LiteralText("EvergreenHUD Dangerous Version")) {
     override fun init() {
-        addDrawableChild(ButtonWidget(width / 2 - 100, height / 4 * 3, 200, 20, textLiteral("Quit Game")) {
+        addDrawableChild(ButtonWidget(width / 2 - 100, height / 4 * 3, 200, 20, LiteralText("Quit Game")) {
             mc.scheduleStop()
         })
-        addDrawableChild(ButtonWidget(width / 2 - 100, height / 4 * 3 + 22, 200, 20, textLiteral("I understand the risks, continue.") { color(Formatting.RED.colorValue!!) }) {
+        addDrawableChild(ButtonWidget(width / 2 - 100, height / 4 * 3 + 22, 200, 20, LiteralText("I understand the risks, continue.").formatted(Formatting.RED)) {
             client!!.setScreen(parent)
         })
     }
@@ -33,7 +32,7 @@ class BlacklistedScreen(private val parent: Screen?) : Screen(textLiteral("Everg
         super.render(matrices, mouseX, mouseY, delta)
         matrices.push()
         matrices.translate(width / 2f, height / 8f)
-        matrices.scale(2f)
+        matrices.scale(2f, 2f, 1f)
         drawString(matrices, "EvergreenHUD", 0f, 0f, EvergreenPalette.Evergreen.Evergreen3.rgba, centered = true)
         matrices.pop()
         drawString(matrices, "This version of EvergreenHUD has been marked as dangerous!", width / 2f, height / 4f, 0xff4747, centered = true)
