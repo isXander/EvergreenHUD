@@ -10,13 +10,13 @@ package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.type.MultiLineTextElement
 import dev.isxander.evergreenhud.utils.Facing
+import dev.isxander.evergreenhud.utils.decimalFormat
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.int
 import dev.isxander.settxi.impl.option
-import java.text.DecimalFormat
 
 @ElementMeta(id = "evergreenhud:coordinates", name = "Coordinates", description = "Show your current coordinates in the world.", category = "World")
 class ElementCoordinates : MultiLineTextElement("Coords") {
@@ -76,10 +76,7 @@ class ElementCoordinates : MultiLineTextElement("Coords") {
             return lines
         }
 
-        val formatter = if (trailingZeros) "0" else "#"
-        val formatBuilder = StringBuilder(if (accuracy < 1) formatter else "$formatter.")
-        for (i in 0 until accuracy) formatBuilder.append(formatter)
-        val df = DecimalFormat(formatBuilder.toString())
+        val df = decimalFormat(accuracy, trailingZeros)
 
         val sb = StringBuilder()
         val facing = Facing.parseExact(mc.thePlayer!!.rotationYaw)

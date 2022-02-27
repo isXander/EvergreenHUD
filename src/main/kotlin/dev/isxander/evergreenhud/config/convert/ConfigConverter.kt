@@ -8,8 +8,17 @@
 
 package dev.isxander.evergreenhud.config.convert
 
-import java.io.File
+import dev.isxander.evergreenhud.config.convert.impl.ChromaHudConverter
+import dev.isxander.evergreenhud.config.convert.impl.EvergreenHud14Converter
+import dev.isxander.evergreenhud.config.convert.impl.KronHudConverter
 
 interface ConfigConverter {
-    fun process(file: File): String?
+    val name: String
+
+    fun process(): String?
+    fun detect(): Boolean
+
+    companion object {
+        val all = listOf(ChromaHudConverter, KronHudConverter, EvergreenHud14Converter)
+    }
 }

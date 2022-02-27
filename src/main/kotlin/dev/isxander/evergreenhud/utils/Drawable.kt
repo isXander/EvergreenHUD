@@ -8,27 +8,58 @@
 
 package dev.isxander.evergreenhud.utils
 
+import dev.isxander.evergreenhud.EvergreenHUD
+import gg.essential.elementa.components.UIBlock
+import gg.essential.universal.UMatrixStack
+import gg.essential.universal.UResolution
+import gg.essential.universal.shader.BlendState
+import gg.essential.universal.shader.UShader
 import net.minecraft.client.gui.FontRenderer
-import net.minecraft.client.gui.Gui
 import net.minecraft.client.renderer.GlStateManager
-import java.util.function.BiConsumer
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 
 fun translate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) =
     GlStateManager.translate(x.toDouble(), y.toDouble(), z.toDouble())
 
-fun drawHorizontalLine(x1: Number, x2: Number, y: Number, width: Number, color: Int) {
-    Gui.drawRect(x1.toInt(), y.toInt(), x2.toInt() + width.toInt(), y.toInt() + width.toInt(), color)
+fun drawHorizontalLine(x1: Float, x2: Float, y: Float, width: Float, color: Int, shader: Boolean = true) {
+    drawRect(x1, y, x2 + width, y + width, color, shader)
 }
 
-fun drawVerticalLine(x: Number, y1: Number, y2: Number, width: Number, color: Int) {
-    Gui.drawRect(x.toInt(), y1.toInt() + width.toInt(), x.toInt() + width.toInt(), y2.toInt(), color)
+fun drawVerticalLine(x: Float, y1: Float, y2: Float, width: Float, color: Int, shader: Boolean = true) {
+    drawRect(x, y1 + width, x + width, y2, color, shader)
 }
 
-fun drawBorderLines(x0: Float, y0: Float, x1: Float, y1: Float, width: Float, color: Int) {
-    drawHorizontalLine(x0, x1, y0 - width / 2, width, color)
-    drawVerticalLine(x1 - width / 2, y0, y1, width, color)
-    drawHorizontalLine(x0, x1, y1 - width / 2, width, color)
-    drawVerticalLine(x0 - width / 2, y0, y1, width, color)
+fun drawBorderLines(x0: Float, y0: Float, x1: Float, y1: Float, width: Float, color: Int, shader: Boolean = true) {
+    drawHorizontalLine(x0 - width, x1, y0 - width, width, color, shader)
+    drawVerticalLine(x1, y0 - width, y1 + width, width, color, shader)
+    drawHorizontalLine(x0 - width, x1, y1, width, color, shader)
+    drawVerticalLine(x0 - width, y0 - width, y1 + width, width, color, shader)
+}
+
+fun drawRect(x1: Float, y1: Float, x2: Float, y2: Float, color: Int, shader: Boolean = true) {
+    GlStateManager.enableBlend()
+    GlStateManager.disableTexture2D()
+    GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+    UMatrixStack.Compat.get().tessellate(DrawMode.QUADS, DefaultVertexFormats.POSITION_COLOR, shader) {
+        vertex {
+            pos(x1, y2, 0f)
+            color(color)
+        }
+        vertex {
+            pos(x2, y2, 0f)
+            color(color)
+        }
+        vertex {
+            pos(x2, y1, 0f)
+            color(color)
+        }
+        vertex {
+            pos(x1, y1, 0f)
+            color(color)
+        }
+    }
+    GlStateManager.enableTexture2D()
+    GlStateManager.disableBlend()
 }
 
 fun FontRenderer.drawCenteredText(
@@ -59,21 +90,45 @@ fun FontRenderer.drawCenteredTextWithShadow(
     )
 }
 
-/**
- * @param renderAction the action to render both the content and the outline, taking x and y positions as input
- */
-fun drawWithOutline(x: Float, y: Float, renderAction: BiConsumer<Float, Float>) {
-    GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
-    renderAction.accept(x + 1, y)
-    renderAction.accept(x - 1, y)
-    renderAction.accept(x, y + 1)
-    renderAction.accept(x, y - 1)
-    GlStateManager.blendFunc(770, 771)
-    renderAction.accept(x, y)
-}
-
 fun push(block: () -> Unit) {
     GlStateManager.pushMatrix()
     block()
     GlStateManager.popMatrix()
+}
+
+
+val shader by lazy { UShader.fromLegacyShader(EvergreenHUD::class.java.getResourceAsStream("/assets/evergreenhud/shaders/chroma.vsh")?.readBytes()?.decodeToString() ?: throw RuntimeException(), EvergreenHUD::class.java.getResourceAsStream("/assets/evergreenhud/shaders/chroma.fsh")?.readBytes()?.decodeToString() ?: throw RuntimeException(), BlendState.NORMAL) }
+val shaderTimeUniform by lazy { shader.getIntUniform("u_time") }
+val shaderSpeedUniform by lazy { shader.getFloatUniform("u_speed") }
+val shaderFrequencyUniform by lazy { shader.getFloatUniform("u_frequency") }
+
+fun chroma(properties: Color.ChromaProperties, block: () -> Unit) {
+    if (!properties.hasChroma) {
+        block()
+        return
+    }
+
+    shader.bind()
+    shaderTimeUniform.setValue((System.currentTimeMillis() % properties.chromaSpeed.toDouble()).toInt())
+    shaderSpeedUniform.setValue(properties.chromaSpeed)
+    shaderFrequencyUniform.setValue(properties.chromaFrequency)
+
+    block()
+
+    shader.unbind()
+}
+
+fun drawChromaRectangle() {
+    val speed = 1000f
+
+    shader.bind()
+    shaderTimeUniform.setValue((System.currentTimeMillis() % speed.toDouble()).toInt())
+    shaderSpeedUniform.setValue(speed)
+    shaderFrequencyUniform.setValue(2f)
+
+    UIBlock.drawBlockWithActiveShader(UMatrixStack.Compat.get(), Color.white.awt, 0.0, 0.0,
+        UResolution.scaledWidth.toDouble(), UResolution.scaledHeight.toDouble()
+    )
+
+    shader.unbind()
 }

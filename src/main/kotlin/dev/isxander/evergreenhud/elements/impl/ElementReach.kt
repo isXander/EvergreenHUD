@@ -11,6 +11,7 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.ClientDamageEntityEvent
 import dev.isxander.evergreenhud.event.ClientTickEvent
+import dev.isxander.evergreenhud.utils.decimalFormat
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.boolean
@@ -19,7 +20,6 @@ import dev.isxander.settxi.impl.string
 import net.minecraft.entity.Entity
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.Vec3
-import java.text.DecimalFormat
 
 
 @ElementMeta(id = "evergreenhud:reach", name = "Reach Display", description = "Displays the reach of the last attacked entity.", category = "Player")
@@ -55,7 +55,7 @@ class ElementReach : SimpleTextElement("Reach") {
     var reach: String? by eventReturnable<ClientDamageEntityEvent, String>(noHitMessage, { it.attacker == mc.thePlayer }) { event ->
         val hitResult = getReachDistanceFromEntity(event.attacker) ?: return@eventReturnable reach
         lastHit = System.currentTimeMillis()
-        getDecimalFormat().format(hitResult)
+        decimalFormat(accuracy, trailingZeros).format(hitResult)
     }
 
     val clientTickEvent by event<ClientTickEvent> {
@@ -67,13 +67,6 @@ class ElementReach : SimpleTextElement("Reach") {
 
     override fun calculateValue(): String {
         return reach!!
-    }
-
-    private fun getDecimalFormat(): DecimalFormat {
-        val formatter = if (trailingZeros) "0" else "#"
-        val formatBuilder = StringBuilder(if (accuracy < 1) formatter else "$formatter.")
-        for (i in 0 until accuracy) formatBuilder.append(formatter)
-        return DecimalFormat(formatBuilder.toString())
     }
 
     private fun getReachDistanceFromEntity(entity: Entity): Double? {

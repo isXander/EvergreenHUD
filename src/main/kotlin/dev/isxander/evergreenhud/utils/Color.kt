@@ -76,7 +76,12 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
     }
 
     @Serializable
-    data class ChromaProperties(val hasChroma: Boolean, val chromaSpeed: Float = 2000f) {
+    data class ChromaProperties(val hasChroma: Boolean, val chromaSpeed: Float = 2000f, val chromaFrequency: Float = 4f) {
+        fun getChroma(x: Float, y: Float): Int {
+            val c = ((chromaFrequency * (-2.0 * x.toDouble() + y.toDouble())) / 10.0) % 1.0
+            return java.awt.Color.HSBtoRGB(((c + ((System.currentTimeMillis() % chromaSpeed.toDouble()).toInt() / chromaSpeed.toDouble())) % 1.0).toFloat(), 0.8f, 0.8f)
+        }
+
         companion object {
             val none = ChromaProperties(false)
             val default = ChromaProperties(true)

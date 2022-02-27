@@ -10,7 +10,7 @@ package dev.isxander.evergreenhud.elements.type
 
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.event.ClientTickEvent
-import dev.isxander.evergreenhud.utils.drawString
+import dev.isxander.evergreenhud.utils.drawStringExt
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.option
@@ -70,14 +70,14 @@ abstract class SimpleTextElement
         if (alignment == Alignment.RIGHT)
             x -= mc.fontRendererObj.getStringWidth(cachedDisplayString)
 
-        drawString(
+        drawStringExt(
             cachedDisplayString!!,
             x, y,
             textColor.rgba,
             centered = alignment == Alignment.CENTER,
             shadow = textStyle == TextStyle.SHADOW,
             bordered = textStyle == TextStyle.BORDER,
-            chroma = textColor.chroma.hasChroma, chromaSpeed = textColor.chroma.chromaSpeed
+            chroma = textColor.chroma
         )
 
         GlStateManager.popMatrix()

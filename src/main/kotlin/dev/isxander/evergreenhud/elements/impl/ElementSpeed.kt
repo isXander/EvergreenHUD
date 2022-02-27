@@ -9,13 +9,13 @@
 package dev.isxander.evergreenhud.elements.impl
 
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
+import dev.isxander.evergreenhud.utils.decimalFormat
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.int
 import dev.isxander.settxi.impl.option
-import java.text.DecimalFormat
 import kotlin.math.sqrt
 
 @ElementMeta(id = "evergreenhud:speed", name = "Speed", category = "Player", description = "Display how fast you are moving.")
@@ -75,10 +75,7 @@ class ElementSpeed : SimpleTextElement("Speed") {
             speed = convertSpeed(sqrt(dx*dx + dy*dy + dz*dz))
         }
 
-        val format = if (trailingZeros) "0" else "#"
-        var formattedSpeed =
-            DecimalFormat("0${if (accuracy > 0) "." else ""}" + format.repeat(accuracy))
-            .format(speed)
+        var formattedSpeed = decimalFormat(accuracy, trailingZeros).format(speed)
 
         if (suffix) formattedSpeed += " ${speedUnit.name}"
         return formattedSpeed

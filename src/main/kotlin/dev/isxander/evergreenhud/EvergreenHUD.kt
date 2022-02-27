@@ -10,6 +10,7 @@ package dev.isxander.evergreenhud
 
 import cc.woverflow.wcore.utils.command
 import dev.isxander.evergreenhud.addons.AddonLoader
+import dev.isxander.evergreenhud.config.convert.ConfigConverter
 import dev.isxander.evergreenhud.config.profile.ProfileManager
 import dev.isxander.evergreenhud.elements.ElementManager
 import dev.isxander.evergreenhud.event.EventBus
@@ -25,7 +26,11 @@ import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
 import dev.isxander.evergreenhud.utils.logger
 import dev.isxander.evergreenhud.utils.mc
 import gg.essential.api.EssentialAPI
+import gg.essential.api.gui.buildConfirmationModal
 import gg.essential.api.utils.Multithreading
+import gg.essential.elementa.ElementaVersion
+import gg.essential.elementa.WindowScreen
+import gg.essential.elementa.dsl.childOf
 import kotlinx.coroutines.runBlocking
 import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Loader
@@ -62,6 +67,9 @@ object EvergreenHUD {
     var postInitialized = false
         private set
 
+    var firstLaunch = false
+        private set
+
     /**
      * Initialises the whole mod
      *
@@ -74,6 +82,7 @@ object EvergreenHUD {
 
         val startTime = System.currentTimeMillis()
 
+        firstLaunch = !dataDir.exists()
         dataDir.mkdirs()
 
         logger.debug("Initialising element manager...")
@@ -143,6 +152,35 @@ object EvergreenHUD {
                 }
             } else {
                 logger.info("Skipping update and blacklisting check due to being in a development environment.")
+            }
+
+            if (firstLaunch) {
+                logger.info("Welcome to EvergreenHUD! Detected first launch.")
+
+                logger.debug("Detecting other HUD mod configs...")
+
+                for (converter in ConfigConverter.all) {
+                    if (converter.detect()) {
+                        logger.info("Found ${converter.name} config! Displaying notification.")
+                        EssentialAPI.getNotifications().push("EvergreenHUD", "${converter.name} has been detected! Click here to convert this.", action = {
+                            EssentialAPI.getGuiUtil().openScreen(object : WindowScreen(version = ElementaVersion.V1, restoreCurrentGuiOnClose = true) {
+                                init {
+                                    EssentialAPI.getEssentialComponentFactory().buildConfirmationModal {
+                                        text = "Are you sure you want to convert the config of ${converter.name}?"
+                                        secondaryText = "This will not destroy ${converter.name}'s config."
+                                        onConfirm = {
+                                            converter.process()
+                                            restorePreviousScreen()
+                                        }
+                                        onDeny = {
+                                            restorePreviousScreen()
+                                        }
+                                    } childOf window
+                                }
+                            })
+                        })
+                    }
+                }
             }
         }
 

@@ -13,7 +13,7 @@ import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement
 import dev.isxander.evergreenhud.settings.color
 import dev.isxander.evergreenhud.utils.Color
-import dev.isxander.evergreenhud.utils.drawString
+import dev.isxander.evergreenhud.utils.drawStringExt
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
@@ -180,22 +180,22 @@ class ElementArmourHUD : BackgroundElement() {
             GlStateManager.pushMatrix()
             GlStateManager.translate(textX.toDouble(), itemY.toDouble(), 0.0)
             GlStateManager.scale(position.scale, position.scale, position.scale)
-            drawString(
+            drawStringExt(
                 text,
                 0f, 0f,
                 textColor.rgba,
 //                centered = alignment == Alignment.CENTER,
                 shadow = textStyle == TextElement.TextStyle.SHADOW,
                 bordered = textStyle == TextElement.TextStyle.BORDER,
-                chroma = textColor.chroma.hasChroma, chromaSpeed = textColor.chroma.chromaSpeed
+                chroma = textColor.chroma
             )
             GlStateManager.popMatrix()
         }
     }
 
     object DisplayType : OptionContainer() {
-        val Up = option("Up")
         val Down = option("Down")
+        val Up = option("Up")
     }
 
     object ExtraInfo : OptionContainer() {

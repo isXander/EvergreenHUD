@@ -20,6 +20,7 @@ import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.float
 import dev.isxander.settxi.serialization.ConfigProcessor
+import gg.essential.elementa.utils.Vector2f
 import kotlinx.serialization.Serializable
 import net.minecraft.client.gui.GuiChat
 import net.minecraft.client.renderer.Tessellator
@@ -74,6 +75,18 @@ abstract class Element : ConfigProcessor {
 
         depends { EvergreenHUD.isReplayModLoaded }
     }
+
+    open val snapPoints = listOf(
+        Vector2f(0f, 0f), // top left
+        Vector2f(0f, 0.5f), // middle left
+        Vector2f(0f, 1f), // bottom left
+        Vector2f(0.5f, 0f), // top middle
+        Vector2f(0.5f, 0.5f), // center
+        Vector2f(0.5f, 1f), // bottom middle
+        Vector2f(1f, 0f), // top right
+        Vector2f(1f, 0.5f), // middle right
+        Vector2f(1f, 1f), // bottom right
+    )
 
     /* called when element is added */
     open fun onAdded() {

@@ -24,17 +24,30 @@ import gg.essential.elementa.constraints.*
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
+import gg.essential.elementa.utils.Vector2f
 
 class ElementDisplay : WindowScreen(ElementaVersion.V1, restoreCurrentGuiOnClose = true) {
+    val elements = mutableListOf<ElementComponent>()
+
+    val globalSnapPoints = listOf(
+        Vector2f(0f, 0f),
+        Vector2f(0f, 1f),
+        Vector2f(0.5f, 0f),
+        Vector2f(0.5f, 1f),
+        Vector2f(1f, 0f),
+        Vector2f(1f, 1f),
+    )
 
     init {
         for (element in EvergreenHUD.elementManager) {
-            val component by ElementComponent(element)
+            val component by ElementComponent(element, this)
 
             component.settingsButton.onMouseClick {
                 val configUI by ConfigUI(component.element)
                 configUI childOf window
             }
+
+            elements += component
 
             component childOf window
         }

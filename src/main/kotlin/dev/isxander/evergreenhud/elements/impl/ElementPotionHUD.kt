@@ -264,7 +264,7 @@ class ElementPotionHUD : BackgroundElement() {
                 var titleY = y + yOff
                 if (!durationVisible) titleY += mc.fontRendererObj.FONT_HEIGHT / 2f
                 titleY /= position.scale
-                drawString(
+                drawStringExt(
                     builtTitle,
                     titleX,
                     titleY,
@@ -272,8 +272,7 @@ class ElementPotionHUD : BackgroundElement() {
                     titleStyle == TextStyle.SHADOW,
                     false,
                     titleStyle == TextStyle.BORDER,
-                    titleColor.chroma.hasChroma,
-                    titleColor.chroma.chromaSpeed
+                    titleColor.chroma
                 )
             }
             if (durationVisible) {
@@ -292,7 +291,7 @@ class ElementPotionHUD : BackgroundElement() {
                 if (!titleVisible) timeY -= mc.fontRendererObj.FONT_HEIGHT / 2f
                 timeY /= position.scale
                 if (effect.duration / 20f > blinkingTime || effect.duration % (50 - blinkingSpeed) <= (50 - blinkingSpeed) / 2f) {
-                    drawString(
+                    drawStringExt(
                         builtDuration,
                         timeX,
                         timeY,
@@ -300,8 +299,7 @@ class ElementPotionHUD : BackgroundElement() {
                         durationStyle == TextStyle.SHADOW,
                         false,
                         durationStyle == TextStyle.BORDER,
-                        durationColor.chroma.hasChroma,
-                        durationColor.chroma.chromaSpeed,
+                        durationColor.chroma
                     )
                 }
             }

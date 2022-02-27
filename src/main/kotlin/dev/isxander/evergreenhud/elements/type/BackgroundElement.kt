@@ -11,14 +11,11 @@ package dev.isxander.evergreenhud.elements.type
 import dev.isxander.evergreenhud.elements.Element
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.settings.color
-import dev.isxander.evergreenhud.utils.Color
-import dev.isxander.evergreenhud.utils.HitBox2D
-import dev.isxander.evergreenhud.utils.drawBorderLines
+import dev.isxander.evergreenhud.utils.*
 import dev.isxander.settxi.impl.boolean
 import dev.isxander.settxi.impl.float
 import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.universal.UMatrixStack
-import net.minecraft.client.gui.Gui
 
 abstract class BackgroundElement : Element() {
     var backgroundColor: Color by color(Color.black.withAlpha(100)) {
@@ -104,14 +101,18 @@ abstract class BackgroundElement : Element() {
 
         if (backgroundColor.alpha > 0) {
             if (cornerRadius == 0f) {
-                Gui.drawRect(hitbox.x1.toInt(),
-                    hitbox.y1.toInt(), (hitbox.x1 + hitbox.width).toInt(), (hitbox.y1 + hitbox.height).toInt(), bgCol.rgba)
+                chroma(backgroundColor.chroma) {
+                    drawRect(hitbox.x1,
+                        hitbox.y1, (hitbox.x1 + hitbox.width), (hitbox.y1 + hitbox.height), bgCol.rgba, !backgroundColor.chroma.hasChroma)
+                }
             } else {
                 UIRoundedRectangle.drawRoundedRectangle(UMatrixStack.Compat.get(), hitbox.x1, hitbox.y1, hitbox.x2, hitbox.y2, cornerRadius, bgCol.awt)
             }
         }
         if (outlineEnabled && outlineCol.alpha != 0) {
-            drawBorderLines(hitbox.x1, hitbox.y1, hitbox.x2, hitbox.y2, outlineThickness, outlineCol.rgba)
+            chroma(outlineCol.chroma) {
+                drawBorderLines(hitbox.x1, hitbox.y1, hitbox.x2, hitbox.y2, outlineThickness, outlineCol.rgba, !outlineCol.chroma.hasChroma)
+            }
         }
     }
 

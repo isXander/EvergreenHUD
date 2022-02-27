@@ -42,9 +42,21 @@ fun getPercent(num: Float, min: Float = 0f, max: Float = 100f): Float {
 }
 
 /**
+ * Returns number between 0 - 1 depending on the range and value given
+ *
+ * @param num the value
+ * @param min minimum of what the value can be
+ * @param max maximum of what the value can be
+ * @return converted percentage
+ * @author isXander
+ */
+fun getPercent(num: Long, min: Long = 0, max: Long = 100): Long {
+    return (num - min) / (max - min)
+}
+
+/**
  * Returns the percentile of list of longs
  *
- * @param nums the list on which to calculate the percentile
  * @param percentile what percentile the calculation will output
  * @return the percentile of the nums
  * @author isXander

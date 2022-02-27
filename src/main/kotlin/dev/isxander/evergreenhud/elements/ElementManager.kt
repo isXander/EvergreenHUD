@@ -48,6 +48,12 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         description = "Display any elements you have created."
     }
 
+    var elementSnapping by boolean(true) {
+        name = "Element Snapping"
+        category = "General"
+        description = "When dragging elements, EGH snaps it "
+    }
+
     var checkForUpdates by boolean(true) {
         name = "Check For Updates"
         category = "Connectivity"

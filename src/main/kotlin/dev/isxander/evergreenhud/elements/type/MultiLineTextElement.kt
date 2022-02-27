@@ -10,7 +10,7 @@ package dev.isxander.evergreenhud.elements.type
 
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.event.ClientTickEvent
-import dev.isxander.evergreenhud.utils.drawString
+import dev.isxander.evergreenhud.utils.drawStringExt
 import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.int
 import gg.essential.universal.ChatColor
@@ -65,14 +65,14 @@ abstract class MultiLineTextElement
             val posX = x - (if (alignment == Alignment.RIGHT) mc.fontRendererObj.getStringWidth(line) else 0)
             val posY = y + (mc.fontRendererObj.FONT_HEIGHT * i) + (verticalSpacing * i)
 
-            drawString(
+            drawStringExt(
                 line,
                 posX, posY,
                 textColor.rgba,
                 centered = alignment == Alignment.CENTER,
                 shadow = textStyle == TextStyle.SHADOW,
                 bordered = textStyle == TextStyle.BORDER,
-                chroma = textColor.chroma.hasChroma, chromaSpeed = textColor.chroma.chromaSpeed
+                chroma = textColor.chroma
             )
         }
 

@@ -11,6 +11,7 @@ package dev.isxander.evergreenhud.elements.impl
 import dev.isxander.evergreenhud.elements.type.SimpleTextElement
 import dev.isxander.evergreenhud.event.RenderTickEvent
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta
+import dev.isxander.evergreenhud.utils.mc
 import dev.isxander.settxi.impl.OptionContainer
 import dev.isxander.settxi.impl.option
 import org.lwjgl.input.Mouse
@@ -29,14 +30,14 @@ class ElementCps : SimpleTextElement("CPS", 0) {
     private var rightPressed = false
 
     val renderTickEvent by event<RenderTickEvent> {
-        var pressed = Mouse.isButtonDown(0)
+        var pressed = Mouse.isButtonDown(mc.gameSettings.keyBindAttack.keyCode + 100)
 
         if (pressed != leftPressed) {
             leftPressed = pressed
             if (pressed) left.add(System.currentTimeMillis())
         }
 
-        pressed = Mouse.isButtonDown(1)
+        pressed = Mouse.isButtonDown(mc.gameSettings.keyBindUseItem.keyCode + 100)
 
         if (pressed != rightPressed) {
             rightPressed = pressed
