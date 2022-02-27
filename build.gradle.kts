@@ -29,7 +29,7 @@ plugins {
 group = "dev.isxander"
 
 val revision: String? = grgit.head()?.abbreviatedId
-version = "2.0.0-pre13"
+version = "2.0.0-alpha.4"
 
 minecraft {
     version = "1.8.9-11.15.1.2318-1.8.9"
