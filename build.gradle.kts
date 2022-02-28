@@ -6,6 +6,12 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
+import com.matthewprenger.cursegradle.CurseProject
+import com.matthewprenger.cursegradle.CurseRelation
+import com.matthewprenger.cursegradle.Options
+import com.modrinth.minotaur.dependencies.ModDependency
+import com.modrinth.minotaur.dependencies.DependencyType
+
 plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
@@ -14,6 +20,8 @@ plugins {
     id("com.google.devtools.ksp") version "$kotlinVersion-1.0.+"
     id("net.kyori.blossom") version "1.3.+"
     id("org.ajoberstar.grgit") version "5.0.+"
+    id("com.matthewprenger.cursegradle") version "1.4.+"
+    id("com.modrinth.minotaur") version "2.+"
     `java-library`
     java
     `maven-publish`
@@ -42,6 +50,37 @@ fun DependencyHandlerScope.includeModApi(dep: String, action: Action<ExternalMod
     include(modApi(dep, action))
 }
 
+val includeTransitive: Configuration by configurations.creating
+
+fun DependencyHandlerScope.includeTransitive(
+    dependencies: Set<ResolvedDependency>,
+    fabricLanguageKotlinDependency: ResolvedDependency,
+    checkedDependencies: MutableSet<ResolvedDependency> = HashSet()
+) {
+    dependencies.forEach {
+        if (checkedDependencies.contains(it) || (it.moduleGroup == "org.jetbrains.kotlin" && it.moduleName.startsWith("kotlin-stdlib")))
+            return@forEach
+
+        if (fabricLanguageKotlinDependency.children.any { kotlinDep -> kotlinDep.name == it.name }) {
+            println("Skipping -> ${it.name} (already in fabric-language-kotlin)")
+        } else {
+            include(it.name)
+            println("Including -> ${it.name}")
+        }
+        checkedDependencies += it
+
+        includeTransitive(it.children, fabricLanguageKotlinDependency, checkedDependencies)
+    }
+}
+
+fun DependencyHandlerScope.handleIncludes(project: Project, configuration: Configuration) {
+    includeTransitive(
+        configuration.resolvedConfiguration.firstLevelModuleDependencies,
+        project.configurations.getByName("modImplementation").resolvedConfiguration.firstLevelModuleDependencies
+            .first { it.moduleGroup == "net.fabricmc" && it.moduleName == "fabric-language-kotlin" }
+    )
+}
+
 dependencies {
     ksp(project(":processor"))
 
@@ -62,15 +101,18 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.47.8+1.18.2")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
 
-    includeModApi("net.axay:fabrikmc-commands:1.7.+") {
-        exclude(module = "fabric-api")
-    }
-    includeModApi("gg.essential:elementa-1.18-fabric:+")
+    includeTransitive(modApi("gg.essential:elementa-1.18-fabric:+") {
+        exclude(module = "annotations")
+        exclude(module = "kotlin-reflect")
+        exclude(module = "fabric-loader")
+    })
 
     modImplementation("com.terraformersmc:modmenu:3.0.+")
 
     includeApi("com.github.LlamaLad7:MixinExtras:0.0.+")
     annotationProcessor("com.github.LlamaLad7:MixinExtras:0.0.+")
+
+    handleIncludes(project, includeTransitive)
 }
 
 blossom {
@@ -107,6 +149,13 @@ tasks {
     register("setupEvergreenHUD") {
         dependsOn("genSourcesWithQuiltflower")
     }
+
+    register("publishMod") {
+        if (hasProperty("curseforge.token"))
+            dependsOn("curseforge")
+        if (hasProperty("modrinth.token"))
+            dependsOn("modrinth")
+    }
 }
 
 allprojects {
@@ -128,6 +177,42 @@ allprojects {
     }
 }
 
+modrinth {
+    token.set(property("modrinth.token") as String)
+    projectId.set("1yIQcc2b")
+    versionNumber.set(project.version.toString())
+    versionType.set("alpha")
+    uploadFile.set(tasks.remapJar.get())
+    gameVersions.set(listOf(minecraftVersion))
+    loaders.set(listOf("fabric"))
+    dependencies.set(listOf(
+        ModDependency("P7dR8mSH", DependencyType.REQUIRED),
+        ModDependency("Ha28R6CL", DependencyType.REQUIRED),
+        ModDependency("mOgUt4GM", DependencyType.OPTIONAL),
+    ))
+}
+
+curseforge {
+    apiKey = property("curseforge.token")
+    project(closureOf<CurseProject> {
+        mainArtifact(tasks.remapJar.get())
+
+        id = "460419"
+        releaseType = "alpha"
+        addGameVersion(minecraftVersion)
+
+        relations(closureOf<CurseRelation> {
+            requiredDependency("fabric-api")
+            requiredDependency("fabric-language-kotlin")
+            optionalDependency("modmenu")
+        })
+    })
+
+    options(closureOf<Options> {
+        forgeGradleIntegration = false
+    })
+}
+
 publishing {
     publications {
         register<MavenPublication>("evergreenhud") {
@@ -144,12 +229,12 @@ publishing {
     }
 
     repositories {
-        if (hasProperty("WOVERFLOW_REPO_PASS")) {
+        if (hasProperty("woverflow.token")) {
             logger.log(LogLevel.INFO, "Publishing to W-OVERFLOW")
             maven(url = "https://repo.woverflow.cc/releases") {
                 credentials {
-                    username = "wyvest"
-                    password = property("WOVERFLOW_REPO_PASS") as? String
+                    username = "xander"
+                    password = property("woverflow.token") as? String
                 }
             }
         }

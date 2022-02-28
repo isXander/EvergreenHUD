@@ -8,6 +8,7 @@
 
 package dev.isxander.evergreenhud
 
+import com.mojang.brigadier.builder.LiteralArgumentBuilder
 import dev.isxander.evergreenhud.addons.AddonLoader
 import dev.isxander.evergreenhud.config.convert.ConfigConverter
 import dev.isxander.evergreenhud.elements.ElementManager
@@ -27,8 +28,9 @@ import dev.isxander.evergreenhud.ui.ElementDisplay
 import dev.isxander.evergreenhud.utils.*
 import dev.isxander.evergreenhud.utils.hypixel.locraw.LocrawManager
 import kotlinx.coroutines.runBlocking
-import net.axay.fabrik.commands.clientCommand
 import net.fabricmc.api.ClientModInitializer
+import net.fabricmc.fabric.api.client.command.v1.ClientCommandManager
+import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents
 import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback
 import net.fabricmc.loader.api.FabricLoader
@@ -101,18 +103,10 @@ object EvergreenHUD : ClientModInitializer {
 
         logger.debug("Registering hooks...")
 
-        // TODO: uncomment when Fabrik doesn't kill the kotlin compiler
-//        clientCommand("evergrenhud") {
-//            runs {
-//                GuiHandler.displayGui(ElementDisplay())
-//            }
-//
-//            if (FabricLoader.getInstance().isDevelopmentEnvironment) {
-//                literal("test") {
-//
-//                }
-//            }
-//        }
+        ClientCommandManager.DISPATCHER.register(LiteralArgumentBuilder.literal<FabricClientCommandSource>("evergreenhud").executes {
+            GuiHandler.displayGui(ElementDisplay())
+            1
+        })
 
         registerKeyBind(
             GLFW.GLFW_KEY_HOME,
