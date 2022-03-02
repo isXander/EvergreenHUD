@@ -34,12 +34,7 @@ val revision: String? = grgit.head()?.abbreviatedId
 version = "2.0.0-alpha.4"
 
 repositories {
-    mavenCentral()
-    mavenLocal()
-    maven(url = "https://maven.fabricmc.net")
-    maven(url = "https://repo.sk1er.club/repository/maven-public")
-    maven(url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
-    maven(url = "https://maven.terraformersmc.com/releases")
+    maven(url = "https://repo.woverflow.cc")
 }
 
 fun DependencyHandlerScope.includeApi(dep: Any) {
@@ -165,8 +160,7 @@ tasks {
 
 allprojects {
     repositories {
-        mavenCentral()
-        maven(url = "https://jitpack.io")
+        maven(url = "https://repo.woverflow.cc")
     }
 
     tasks {
