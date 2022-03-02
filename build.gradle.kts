@@ -85,11 +85,11 @@ fun DependencyHandlerScope.handleIncludes(project: Project, configuration: Confi
 dependencies {
     ksp(project(":processor"))
 
-    includeTransitive(api("io.ktor:ktor-client-core:$ktorVersion"))
-    includeTransitive(api("io.ktor:ktor-client-apache:$ktorVersion"))
-    includeTransitive(api("io.ktor:ktor-client-content-negotiation:$ktorVersion"))
-    includeTransitive(api("io.ktor:ktor-serialization:$ktorVersion"))
-    includeTransitive(api("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion"))
+    includeTransitive(api("io.ktor:ktor-client-core:$ktorVersion")!!)
+    includeTransitive(api("io.ktor:ktor-client-apache:$ktorVersion")!!)
+    includeTransitive(api("io.ktor:ktor-client-content-negotiation:$ktorVersion")!!)
+    includeTransitive(api("io.ktor:ktor-serialization:$ktorVersion")!!)
+    includeTransitive(api("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")!!)
 
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
 
