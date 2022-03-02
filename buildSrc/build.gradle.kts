@@ -11,5 +11,5 @@ plugins {
 }
 
 repositories {
-    mavenCentral()
+    maven(url = "https://repo.woverflow.cc")
 }
