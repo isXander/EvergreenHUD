@@ -9,6 +9,7 @@
 import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
+import com.modrinth.minotaur.TaskModrinthUpload
 import com.modrinth.minotaur.dependencies.ModDependency
 import com.modrinth.minotaur.dependencies.DependencyType
 
@@ -150,11 +151,15 @@ tasks {
         dependsOn("genSourcesWithQuiltflower")
     }
 
-    register("publishMod") {
-        if (hasProperty("curseforge.token"))
-            dependsOn("curseforge")
-        if (hasProperty("modrinth.token"))
-            dependsOn("modrinth")
+    register("releaseEvergreenHUD") {
+        dependsOn("clean", "build")
+        dependsOn("modrinth")
+        dependsOn("curseforge")
+        dependsOn("publish")
+    }
+
+    named("curseforge") {
+        onlyIf { hasProperty("curseforge.token") }
     }
 }
 
@@ -178,7 +183,7 @@ allprojects {
 }
 
 modrinth {
-    token.set(property("modrinth.token") as String)
+    token.set(findProperty("modrinth.token").toString())
     projectId.set("1yIQcc2b")
     versionNumber.set(project.version.toString())
     versionType.set("alpha")
@@ -186,9 +191,9 @@ modrinth {
     gameVersions.set(listOf(minecraftVersion))
     loaders.set(listOf("fabric"))
     dependencies.set(listOf(
-        ModDependency("P7dR8mSH", DependencyType.REQUIRED),
-        ModDependency("Ha28R6CL", DependencyType.REQUIRED),
-        ModDependency("mOgUt4GM", DependencyType.OPTIONAL),
+        ModDependency("P7dR8mSH", DependencyType.REQUIRED), // fapi
+        ModDependency("Ha28R6CL", DependencyType.REQUIRED), // flk
+        ModDependency("mOgUt4GM", DependencyType.OPTIONAL), // mod menu
     ))
 }
 
