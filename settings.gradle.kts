@@ -8,13 +8,7 @@
 
 pluginManagement {
     repositories {
-        mavenCentral()
-        gradlePluginPortal()
-        google()
-
-        maven(url = "https://jitpack.io")
-        maven(url = "https://maven.fabricmc.net")
-        maven(url = "https://server.bbkr.space/artifactory/libs-release/")
+        maven(url = "https://repo.woverflow.cc")
     }
 
 }
