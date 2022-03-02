@@ -107,7 +107,7 @@ dependencies {
         exclude(module = "fabric-loader")
     })
 
-    modImplementation("com.terraformersmc:modmenu:3.0.+")
+    modImplementation("com.terraformersmc:modmenu:3.1.+")
 
     includeApi("com.github.LlamaLad7:MixinExtras:0.0.+")
     annotationProcessor("com.github.LlamaLad7:MixinExtras:0.0.+")
