@@ -16,7 +16,7 @@ import com.modrinth.minotaur.dependencies.DependencyType
 plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
-    id("fabric-loom") version "0.11.+"
+    id("fabric-loom") version "0.12.+"
     id("io.github.juuxel.loom-quiltflower") version "1.6.+"
     id("com.google.devtools.ksp") version "$kotlinVersion-1.0.+"
     id("net.kyori.blossom") version "1.3.+"
