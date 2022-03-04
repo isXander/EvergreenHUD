@@ -183,7 +183,7 @@ allprojects {
 }
 
 modrinth {
-    token.set(findProperty("modrinth.token").toString())
+    token.set(findProperty("modrinth.token")?.toString())
     projectId.set("1yIQcc2b")
     versionNumber.set(project.version.toString())
     versionType.set("alpha")

@@ -7,6 +7,6 @@
  */
 
 const val kotlinVersion = "1.6.10"
-const val ktorVersion = "2.0-eap-298"
+const val ktorVersion = "2.0.0-beta-1"
 const val kotlinxSerializationVersion = "1.3.+"
 const val minecraftVersion = "1.18.2"

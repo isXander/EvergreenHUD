@@ -18,6 +18,7 @@ import dev.isxander.evergreenhud.event.ClientTickEvent
 import dev.isxander.evergreenhud.event.EventBus
 import dev.isxander.evergreenhud.event.RenderHudEvent
 import dev.isxander.evergreenhud.event.ServerDamageEntityEventManager
+import dev.isxander.evergreenhud.metrics.UniqueUsersMetric
 import dev.isxander.evergreenhud.ui.BlacklistedScreen
 import dev.isxander.evergreenhud.ui.UpdateScreen
 import dev.isxander.evergreenhud.packets.client.registerElementsPacket
@@ -135,6 +136,11 @@ object EvergreenHUD : ClientModInitializer {
 
         logger.debug("Invoking addon entrypoints...")
         addonLoader.invokeInitEntrypoints()
+
+        runAsync {
+            logger.debug("Calling Metrics APIs")
+            runBlocking { UniqueUsersMetric.putApi() }
+        }
 
         mc.profiler.pop()
         logger.info("Finished loading EvergreenHUD. Took ${System.currentTimeMillis() - startTime} ms.")
