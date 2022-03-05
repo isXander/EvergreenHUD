@@ -8,20 +8,29 @@
 
 package dev.isxander.evergreenhud.metrics
 
+import com.mojang.authlib.minecraft.UserApiService
+import dev.isxander.evergreenhud.mixins.AccessorMinecraftClient
 import dev.isxander.evergreenhud.utils.http
 import dev.isxander.evergreenhud.utils.logger
 import dev.isxander.evergreenhud.utils.mc
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.serialization.Serializable
+import net.fabricmc.loader.api.FabricLoader
 
 object UniqueUsersMetric {
     fun url(uuid: String) =
         "https://api.isxander.dev/metric/put/evergreenhud?type=unique_users&uuid=$uuid"
 
     suspend fun putApi() {
+        if ((mc as AccessorMinecraftClient).userApiService == UserApiService.OFFLINE) {
+            if (!FabricLoader.getInstance().isDevelopmentEnvironment)
+                logger.warn("Minecraft appears to be cracked! Please just buy Minecraft!!")
+            return
+        }
+
         try {
-            val url = url(mc.session.uuid)
+            val url = url(mc.session.profile.id.toString())
             val response = http.get(url).body<GenericSuccessResponse>()
             if (!response.success) {
                 logger.error("Metric API could not be called: ${response.error}")

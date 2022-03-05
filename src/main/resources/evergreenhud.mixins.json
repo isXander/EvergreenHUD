@@ -12,9 +12,8 @@
     "MixinClientPlayerInteractionManager",
     "MixinMinecraftClient",
     "MixinPlayerEntity",
-    "MixinTitleScreen"
-  ],
-  "mixins": [
+    "MixinTitleScreen",
+    "AccessorMinecraftClient",
     "MixinClientPlayNetworkHandler",
     "MixinLivingEntity"
   ]
