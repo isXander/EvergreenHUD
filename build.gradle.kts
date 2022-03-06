@@ -31,7 +31,7 @@ plugins {
 group = "dev.isxander"
 
 val revision: String? = grgit.head()?.abbreviatedId
-version = "2.0.0-alpha.4"
+version = "2.0.0-alpha.5"
 
 repositories {
     mavenCentral()
@@ -45,10 +45,6 @@ repositories {
 fun DependencyHandlerScope.includeApi(dep: Any) {
     api(dep)
     include(dep)
-}
-
-fun DependencyHandlerScope.includeModApi(dep: String, action: Action<ExternalModuleDependency> = Action<ExternalModuleDependency> {}) {
-    include(modApi(dep, action))
 }
 
 val includeTransitive: Configuration by configurations.creating
@@ -197,25 +193,27 @@ modrinth {
     ))
 }
 
-curseforge {
-    apiKey = findProperty("curseforge.token")
-    project(closureOf<CurseProject> {
-        mainArtifact(tasks.remapJar.get())
+if (hasProperty("curseforge.token")) {
+    curseforge {
+        apiKey = findProperty("curseforge.token")
+        project(closureOf<CurseProject> {
+            mainArtifact(tasks.remapJar.get())
 
-        id = "460419"
-        releaseType = "alpha"
-        addGameVersion(minecraftVersion)
+            id = "460419"
+            releaseType = "alpha"
+            addGameVersion(minecraftVersion)
 
-        relations(closureOf<CurseRelation> {
-            requiredDependency("fabric-api")
-            requiredDependency("fabric-language-kotlin")
-            optionalDependency("modmenu")
+            relations(closureOf<CurseRelation> {
+                requiredDependency("fabric-api")
+                requiredDependency("fabric-language-kotlin")
+                optionalDependency("modmenu")
+            })
         })
-    })
 
-    options(closureOf<Options> {
-        forgeGradleIntegration = false
-    })
+        options(closureOf<Options> {
+            forgeGradleIntegration = false
+        })
+    }
 }
 
 publishing {
