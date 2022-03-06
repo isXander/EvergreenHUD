@@ -6,10 +6,13 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
-package dev.isxander.evergreenhud.ui.components.settings
+package dev.isxander.evergreenhud.ui.components
 
+import dev.isxander.evergreenhud.EvergreenHUD
+import dev.isxander.evergreenhud.config.profile.Profile
 import dev.isxander.evergreenhud.settings.ColorSetting
 import dev.isxander.evergreenhud.ui.EvergreenPalette
+import dev.isxander.evergreenhud.ui.components.settings.*
 import dev.isxander.evergreenhud.utils.constraint
 import dev.isxander.settxi.Setting
 import dev.isxander.settxi.impl.*
@@ -17,11 +20,14 @@ import gg.essential.elementa.UIComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
 import gg.essential.elementa.components.UIText
-import gg.essential.elementa.constraints.*
+import gg.essential.elementa.constraints.CenterConstraint
+import gg.essential.elementa.constraints.ChildBasedSizeConstraint
+import gg.essential.elementa.constraints.SiblingConstraint
+import gg.essential.elementa.constraints.TextAspectConstraint
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
 
-class SettingComponent(val setting: Setting<*>, val onChange: () -> Unit = {}) : UIBlock(EvergreenPalette.Greyscale.Dark3.constraint) {
+class ProfileDescriptionComponent(val profile: Profile) : UIBlock(EvergreenPalette.Greyscale.Dark3.constraint) {
     init {
         constrain {
             y = SiblingConstraint()
@@ -39,15 +45,15 @@ class SettingComponent(val setting: Setting<*>, val onChange: () -> Unit = {}) :
         height = ChildBasedSizeConstraint()
     } childOf this
 
-    val titleText by UIText(setting.name, false).constrain {
+    val titleText by UIText(profile.name, false).constrain {
         width = TextAspectConstraint()
-        height = 40.percent() boundTo this@SettingComponent
+        height = 40.percent() boundTo this@ProfileDescriptionComponent
     } childOf leftPadded
 
-    val descriptionText by UIText(setting.description, false).constrain {
+    val descriptionText by UIText(profile.description, false).constrain {
         y = SiblingConstraint(3f)
         width = TextAspectConstraint()
-        height = 20.percent() boundTo this@SettingComponent
+        height = 20.percent() boundTo this@ProfileDescriptionComponent
     } childOf leftPadded
 
     val rightPadded by UIContainer().constrain {
@@ -57,22 +63,12 @@ class SettingComponent(val setting: Setting<*>, val onChange: () -> Unit = {}) :
         height = 95.percent()
     } childOf this
 
-    val settingComponent by getSettingComponent(setting).constrain {
+    val useButtonBg by UIBlock(EvergreenPalette.Greyscale.Dark3.awt).constrain {
         x = 0.pixels(alignOpposite = true)
         y = CenterConstraint()
         height = 50.percent()
+    }.onMouseClick {
+        EvergreenHUD.profileManager.useProfile(profile)
     } childOf rightPadded
-
-    private fun getSettingComponent(setting: Setting<*>): UIComponent {
-        return when (setting) {
-            is BooleanSetting -> BooleanSettingComponent(this, setting)
-            is StringSetting -> StringSettingComponent(this, setting)
-            is OptionSetting -> OptionSettingComponent(this, setting)
-            is FloatSetting -> FloatSettingComponent(this, setting)
-            is IntSetting -> IntSettingComponent(this, setting)
-            is LongSetting -> LongSettingComponent(this, setting)
-            is ColorSetting -> ColorSettingComponent(this, setting)
-            else -> UIContainer()
-        }
-    }
 }
+

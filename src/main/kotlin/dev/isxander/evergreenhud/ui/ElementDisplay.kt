@@ -91,6 +91,9 @@ class ElementDisplay(val parentScreen: Screen? = null) : WindowScreen(ElementaVe
     val profileIcon by ProfileComponent().constrain {
         y = CenterConstraint()
         height = 40.percent()
+    }.onMouseClick {
+        val profilesUI by ProfilesUI()
+        profilesUI childOf window
     } childOf rightHeader
 
     val optionsButton by UIImage.ofIdentifier(resource("ui/options.png")).constrain {

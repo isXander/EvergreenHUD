@@ -61,6 +61,18 @@ class ProfileManager {
         }
     }
 
+    fun useProfile(profile: Profile) {
+        if (profile !in availableProfiles.values)
+            availableProfiles[profile.id] = profile
+        currentProfile = profile
+        save()
+
+        EvergreenHUD.elementManager.apply {
+            elementConfig.load()
+            globalConfig.load()
+        }
+    }
+
     @Suppress("UNUSED_EXPRESSION", "UNREACHABLE_CODE")
     private fun attemptConversion(data: JsonObject): JsonObject? {
         val currentSchema = data["schema"]?.jsonPrimitive?.int ?: 0

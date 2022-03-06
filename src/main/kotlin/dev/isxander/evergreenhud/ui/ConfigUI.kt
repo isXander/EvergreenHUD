@@ -10,12 +10,10 @@ package dev.isxander.evergreenhud.ui
 
 import dev.isxander.evergreenhud.ui.components.CategoryLabel
 import dev.isxander.evergreenhud.ui.components.settings.SettingComponent
-import dev.isxander.evergreenhud.utils.constraint
 import dev.isxander.settxi.serialization.ConfigProcessor
 import gg.essential.elementa.components.ScrollComponent
 import gg.essential.elementa.components.UIBlock
 import gg.essential.elementa.components.UIContainer
-import gg.essential.elementa.components.UIRoundedRectangle
 import gg.essential.elementa.constraints.*
 import gg.essential.elementa.dsl.*
 
@@ -100,7 +98,7 @@ class ConfigUI(val config: ConfigProcessor) : MainUI() {
             .filter { searchField.text.getText() == searchField.text.placeholder || it.name.contains(searchField.text.getText()) }
 
         for (setting in settings) {
-            val settingComponent by SettingComponent(setting, settingScroller) { settingUpdatedCallback() }
+            val settingComponent by SettingComponent(setting) { settingUpdatedCallback() }
             settingComponent childOf settingScroller
             settingsList.add(settingComponent)
         }

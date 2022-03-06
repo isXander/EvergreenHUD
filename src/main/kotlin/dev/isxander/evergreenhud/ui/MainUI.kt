@@ -82,6 +82,10 @@ abstract class MainUI : UIBlock(EvergreenPalette.Greyscale.Dark2.constraint) {
         x = SiblingConstraint(15f)
         y = CenterConstraint()
         height = 55.percent()
+    }.onMouseClick {
+        this@MainUI.hide()
+        val profilesUI by ProfilesUI()
+        profilesUI childOf this@MainUI.parent
     } childOf upperHeader
 
     val optionsButton by UIImage.ofIdentifier(resource("ui/options.png")).constrain {

@@ -9,6 +9,8 @@
 package dev.isxander.evergreenhud.utils
 
 import kotlinx.serialization.Serializable
+import net.minecraft.util.math.Vec3f
+import kotlin.math.abs
 import kotlin.math.floor
 
 @Serializable
@@ -78,9 +80,16 @@ data class Color(val rgba: Int, val chroma: ChromaProperties = ChromaProperties.
 
     @Serializable
     data class ChromaProperties(val hasChroma: Boolean, val chromaSpeed: Float = 2000f, val chromaFrequency: Float = 4f) {
-        fun getChroma(x: Float, y: Float): Int {
+        fun getChroma(x: Float, y: Float, overlay: Color = white): Int {
             val c = ((chromaFrequency * (-2.0 * x.toDouble() + y.toDouble())) / 10.0) % 1.0
-            return AwtColor.HSBtoRGB(((c + ((System.currentTimeMillis() % chromaSpeed.toDouble()).toInt() / chromaSpeed.toDouble())) % 1.0).toFloat(), 0.8f, 0.8f)
+            val rgbOverlay = hsb2rgb(Vec3f(((c + ((System.currentTimeMillis() % chromaSpeed.toDouble()).toInt() / chromaSpeed.toDouble())) % 1.0).toFloat(), 0.8f, 0.8f))
+            return Color((overlay.red * rgbOverlay.x).toInt(), (overlay.green * rgbOverlay.y).toInt(), (overlay.blue * rgbOverlay.z).toInt(), overlay.alpha).rgba
+        }
+
+        private fun hsb2rgb(hsb: Vec3f): Vec3f {
+            var rgb = (abs(((hsb.x * 6f + Vec3f(0f,4f,2f)) % 6f) - 3f) - 1f).coerceIn(0f..1f)
+            rgb = rgb * rgb * (3f - 2f * rgb)
+            return hsb.z * lerp(Vec3f(1f), rgb, hsb.y)
         }
 
         companion object {
