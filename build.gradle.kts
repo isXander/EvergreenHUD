@@ -31,7 +31,7 @@ plugins {
 group = "dev.isxander"
 
 val revision: String? = grgit.head()?.abbreviatedId
-version = "2.0.0-alpha.5"
+version = "2.0.0-alpha.6"
 
 repositories {
     mavenCentral()
@@ -50,28 +50,30 @@ fun DependencyHandlerScope.includeApi(dep: Any) {
 val includeTransitive: Configuration by configurations.creating
 
 fun DependencyHandlerScope.includeTransitive(
+    root: ResolvedDependency?,
     dependencies: Set<ResolvedDependency>,
     fabricLanguageKotlinDependency: ResolvedDependency,
     checkedDependencies: MutableSet<ResolvedDependency> = HashSet()
 ) {
     dependencies.forEach {
-        if (checkedDependencies.contains(it) || (it.moduleGroup == "org.jetbrains.kotlin" && it.moduleName.startsWith("kotlin-stdlib")))
+        if (checkedDependencies.contains(it) || (it.moduleGroup == "org.jetbrains.kotlin" && it.moduleName.startsWith("kotlin-stdlib")) || (it.moduleGroup == "org.slf4j" && it.moduleName == "slf4j-api"))
             return@forEach
 
         if (fabricLanguageKotlinDependency.children.any { kotlinDep -> kotlinDep.name == it.name }) {
             println("Skipping -> ${it.name} (already in fabric-language-kotlin)")
         } else {
             include(it.name)
-            println("Including -> ${it.name}")
+            println("Including -> ${it.name} from ${root?.name}")
         }
         checkedDependencies += it
 
-        includeTransitive(it.children, fabricLanguageKotlinDependency, checkedDependencies)
+        includeTransitive(root ?: it, it.children, fabricLanguageKotlinDependency, checkedDependencies)
     }
 }
 
 fun DependencyHandlerScope.handleIncludes(project: Project, configuration: Configuration) {
     includeTransitive(
+        null,
         configuration.resolvedConfiguration.firstLevelModuleDependencies,
         project.configurations.getByName("modImplementation").resolvedConfiguration.firstLevelModuleDependencies
             .first { it.moduleGroup == "net.fabricmc" && it.moduleName == "fabric-language-kotlin" }

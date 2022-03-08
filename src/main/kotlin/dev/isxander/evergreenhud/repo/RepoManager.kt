@@ -8,19 +8,22 @@
 
 package dev.isxander.evergreenhud.repo
 
+import dev.isxander.evergreenhud.EvergreenHUD
 import dev.isxander.evergreenhud.utils.http
 import io.ktor.client.call.*
 import io.ktor.client.request.*
 import kotlinx.serialization.Serializable
+import net.minecraft.SharedConstants
 import org.bundleproject.libversion.Version
 
 object RepoManager {
-    private const val jsonUrl = "https://dl.isxander.dev/mods/evergreenhud/info.json"
+    private fun url(loader: String, minecraft: String) =
+        "https://api.isxander.dev/updater/latest/evergreenhud?loader=$loader&minecraft=$minecraft&version=2.0.0-alpha.5"
 
     suspend fun getResponse(): RepoResponse {
-        return http.get(jsonUrl).body()
+        return http.get(url(EvergreenHUD.LOADER, SharedConstants.getGameVersion().name)).body()
     }
 }
 
 @Serializable
-data class RepoResponse(val latest: Map<ReleaseChannel, Version>, val blacklisted: List<String>)
+data class RepoResponse(val success: Boolean, val latest: Version? = null)

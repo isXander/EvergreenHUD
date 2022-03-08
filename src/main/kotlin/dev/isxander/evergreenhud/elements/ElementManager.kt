@@ -58,12 +58,6 @@ class ElementManager : ConfigProcessor, Iterable<Element> {
         description = "Should EvergreenHUD check for updates when you start up the game."
     }
 
-    var checkForSafety by boolean(true) {
-        name = "Check For Safety"
-        category = "Connectivity"
-        description = "Should EvergreenHUD check if the current version might have bannable features in them."
-    }
-
     init {
         val coreElementSrc = this.javaClass.getResourceAsStream("/evergreenhud-elements.json")
         if (coreElementSrc == null) {

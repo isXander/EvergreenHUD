@@ -48,6 +48,7 @@ object EvergreenHUD : ClientModInitializer {
     const val REVISION = "__GRADLE_REVISION__"
     const val VERSION_STR = "__GRADLE_VERSION__"
     val VERSION = Version.of(VERSION_STR)
+    const val LOADER = "fabric"
 
     val RELEASE_CHANNEL: ReleaseChannel
         get() =
@@ -149,25 +150,20 @@ object EvergreenHUD : ClientModInitializer {
     fun onPostInitialize() {
         if (!postInitialized) {
             if (!FabricLoader.getInstance().isDevelopmentEnvironment) {
-                if (elementManager.checkForUpdates || elementManager.checkForSafety) {
+                if (elementManager.checkForUpdates) {
                     logger.info("Getting information from API...")
                     runAsync {
                         val response = runBlocking { RepoManager.getResponse() }
 
-                        val latest = response.latest[RELEASE_CHANNEL]!!
-                        if (elementManager.checkForUpdates && latest < VERSION) {
+                        val latest = response.latest ?: return@runAsync
+                        if (latest < VERSION) {
                             logger.info("Found update.")
                             mc.setScreen(UpdateScreen(latest.toString(), mc.currentScreen))
-                        }
-
-                        if (elementManager.checkForSafety && REVISION in response.blacklisted) {
-                            logger.warn("Mod version has been marked as dangerous.")
-                            mc.setScreen(BlacklistedScreen(mc.currentScreen))
                         }
                     }
                 }
             } else {
-                logger.info("Skipping update and blacklisting check due to being in a development environment.")
+                logger.info("Skipping update due to being in a development environment.")
             }
 
             if (firstLaunch) {

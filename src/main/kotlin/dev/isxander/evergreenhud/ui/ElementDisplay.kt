@@ -26,11 +26,16 @@ import gg.essential.elementa.constraints.*
 import gg.essential.elementa.constraints.animation.Animations
 import gg.essential.elementa.dsl.*
 import gg.essential.elementa.effects.OutlineEffect
+import net.fabricmc.loader.api.FabricLoader
 import net.minecraft.client.gui.screen.Screen
 import net.minecraft.util.math.Vec2f
 
 class ElementDisplay(val parentScreen: Screen? = null) : WindowScreen(ElementaVersion.V1) {
-    val inspector by Inspector(window) childOf window
+    init {
+        if (FabricLoader.getInstance().isDevelopmentEnvironment)
+            Inspector(window) childOf window
+    }
+
     val elements = mutableListOf<ElementComponent>()
 
     val globalSnapPoints = listOf(
