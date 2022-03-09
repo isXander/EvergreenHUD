@@ -6,6 +6,9 @@
  * To view a copy of this license, visit https://www.gnu.org/licenses/gpl-3.0.en.html
  */
 
+//file:noinspection UnnecessaryQualifiedReference
+//file:noinspection GroovyAssignabilityCheck
+
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import net.minecraftforge.gradle.user.IReobfuscator
 import net.minecraftforge.gradle.user.ReobfMappingType.SEARGE
@@ -15,12 +18,12 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
+    id("cc.woverflow.loom") version "0.10.3"
+    id("dev.architectury.architectury-pack200") version "0.1.3"
     id("com.google.devtools.ksp") version "$kotlinVersion-1.0.2"
     id("net.kyori.blossom") version "1.3.+"
     id("org.ajoberstar.grgit") version "4.1.+"
-    id("net.minecraftforge.gradle.forge") version "6f53277"
     id("com.github.johnrengelman.shadow") version "6.1.0"
-    id("org.spongepowered.mixin") version "d5f9873d60"
     `java-library`
     java
     `maven-publish`
@@ -31,28 +34,26 @@ group = "dev.isxander"
 val revision: String? = grgit.head()?.abbreviatedId
 version = "2.0.0-alpha.4"
 
-minecraft {
-    version = "1.8.9-11.15.1.2318-1.8.9"
-    runDir = "run"
-    mappings = "stable_22"
-    makeObfSourceJar = false
-    clientJvmArgs.addAll(
-        arrayOf(
-            "-Dfml.coreMods.load=cc.woverflow.wcore.tweaker.WCoreTweaker"
-        )
-    )
-    clientRunArgs.addAll(
-        arrayOf(
-            "--tweakClass gg.essential.loader.stage0.EssentialSetupTweaker",
-            "--mixin mixins.evergreenhud.json"
-        )
-    )
+loom {
+    launchConfigs {
+        client {
+            arg("--tweakClass", "cc.woverflow.onecore.tweaker.OneCoreTweaker")
+            property("onecore.mixin", "mixins.${mod_id}.json")
+        }
+    }
+    runConfigs {
+        client {
+            ideConfigGenerated = true
+        }
+    }
+    forge {
+        pack200Provider = new dev.architectury.pack200.java.Pack200Adapter()
+        mixinConfig("mixins.${mod_id}.json")
+        mixin.defaultRefmapName.set("mixins.${mod_id}.refmap.json")
+    }
 }
 
 repositories {
-    mavenCentral()
-    mavenLocal()
-    maven(url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
     maven(url = "https://repo.woverflow.cc/")
 }
 
@@ -83,17 +84,18 @@ dependencies {
 
     includeApi("org.bundleproject:libversion:0.0.3")
     includeApi("dev.isxander:settxi:2.1.0")
+    
+    minecraft("com.mojang:minecraft:1.8.9")
+    mappings("de.oceanlabs.mcp:mcp_stable:22-1.8.9")
+    forge("net.minecraftforge:forge:1.8.9-11.15.1.2318-1.8.9")
 
-    include ("gg.essential:loader-launchwrapper:1.1.3") {
-        isTransitive = false
+    compileOnly 'gg.essential:essential-1.8.9-forge:1933'
+    compileOnly 'cc.woverflow:onecore:1.3.3'
+    include ('cc.woverflow:onecore-tweaker:1.3.0') {
+        transitive = false
     }
-    compileOnly ("gg.essential:essential-1.8.9-forge:1788")
-    compileOnly ("cc.woverflow:w-core:1.1.3")
-    include ("cc.woverflow:w-core-tweaker:1.0.2") {
-        isTransitive = false
-    }
-
-    compileMainAnnotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
+    
+    compileOnly ('org.spongepowered:mixin:0.8.5-SNAPSHOT')
     annotationProcessor("com.google.code.gson:gson:2.2.4")
     annotationProcessor("com.google.guava:guava:21.0")
     annotationProcessor("org.ow2.asm:asm-tree:6.2")
@@ -148,12 +150,11 @@ tasks {
         manifest {
             attributes(
                 mapOf(
-                    "FMLCorePlugin" to "cc.woverflow.wcore.tweaker.WCoreTweaker",
+                    "FMLCorePlugin" to "cc.woverflow.onecore.tweaker.OneCoreTweaker",
                     "FMLCorePluginContainsFMLMod" to true,
                     "ForceLoadAsMod" to true,
                     "MixinConfigs" to "mixins.evergreenhud.json",
                     "ModSide" to "CLIENT",
-                    "TweakClass" to "gg.essential.loader.stage0.EssentialSetupTweaker",
                     "TweakOrder" to "0"
                 )
             )
@@ -199,8 +200,7 @@ tasks {
 
 allprojects {
     repositories {
-        mavenCentral()
-        maven(url = "https://jitpack.io")
+        maven(url = "https://repo.woverflow.cc/")
     }
 
     tasks {
