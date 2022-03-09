@@ -123,13 +123,6 @@ sourceSets {
     }
 }
 
-configure<NamedDomainObjectContainer<IReobfuscator>> {
-    clear()
-    create("shadowJar") {
-        mappingType = SEARGE
-        classpath = sourceSets.main.get().compileClasspath
-    }
-}
 
 tasks {
     processResources {
