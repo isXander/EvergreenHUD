@@ -19,4 +19,12 @@ pluginManagement {
 }
 
 rootProject.name = "EvergreenHUD"
-include(":processor")
+listOf(
+    "processor",
+).forEach { version ->
+    include(":$version")
+    project(":$version").apply {
+        projectDir = file("versions/$version")
+        buildFileName = "../../build.gradle.kts"
+    }
+}
