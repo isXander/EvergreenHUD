@@ -8,6 +8,8 @@
 
 pluginManagement {
     repositories {
+        mavenCentral()
+        gradlePluginPortal()
         maven(url = "https://repo.woverflow.cc/")
     }
     resolutionStrategy {
