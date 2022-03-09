@@ -8,19 +8,13 @@
 
 pluginManagement {
     repositories {
-        mavenCentral()
-        gradlePluginPortal()
-        google()
-
         maven(url = "https://repo.woverflow.cc/")
     }
     resolutionStrategy {
         eachPlugin {
-            when (requested.id.id) {
-                "net.minecraftforge.gradle.forge" -> useModule("com.github.asbyth:ForgeGradle:${requested.version}")
-                "org.spongepowered.mixin" -> useModule("com.github.Skytils:mixingradle:${requested.version}")
-            }
-        }
+            if (requested.id.id == "gg.essential.loom") {
+                useModule("gg.essential:architectury-loom:${requested.version}")
+            }      
     }
 }
 
