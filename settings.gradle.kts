@@ -11,6 +11,9 @@ pluginManagement {
         mavenCentral()
         gradlePluginPortal()
         maven(url = "https://repo.woverflow.cc/")
+        maven(url = "https://maven.fabricmc.net/")
+        maven(url = "https://maven.architectury.dev/")
+        maven(url = "https://maven.minecraftforge.net/")
     }
     resolutionStrategy {
         eachPlugin {
