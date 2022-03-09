@@ -20,7 +20,7 @@ pluginManagement {
 
 rootProject.name = "EvergreenHUD"
 listOf(
-    "processor",
+    "processor"
 ).forEach { version ->
     include(":$version")
     project(":$version").apply {
