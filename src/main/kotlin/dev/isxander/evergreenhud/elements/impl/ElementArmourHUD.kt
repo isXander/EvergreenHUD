@@ -8,6 +8,7 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
+import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.elements.type.TextElement
@@ -159,12 +160,14 @@ class ElementArmourHUD : BackgroundElement() {
 
             val itemY = y + offset * i * position.scale
 
-            matrices.push()
-            matrices.translate(itemX - 4f, itemY - 4f)
-            matrices.scale(position.scale, position.scale, 1f)
-            renderGuiItemModel(matrices, stack, 0f, 0f)
-            renderGuiItemOverlay(matrices, stack, 0f, 0f, null, showDurabilityBar, -1, true)
-            matrices.pop()
+            renderGuiItemModel(stack, 0f, 0f) {
+                it.translate(itemX - 4f, itemY - 4f)
+                it.scale(position.scale, position.scale, 1f)
+            }
+            renderGuiItemOverlay(stack, 0f, 0f, null, showDurabilityBar, -1, true) {
+                it.translate(itemX - 4f, itemY - 4f)
+                it.scale(position.scale, position.scale, 1f)
+            }
 
             val (text, textWidth) = texts[i]
 

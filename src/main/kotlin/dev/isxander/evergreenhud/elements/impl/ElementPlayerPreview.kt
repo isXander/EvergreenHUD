@@ -8,7 +8,6 @@
 
 package dev.isxander.evergreenhud.elements.impl
 
-import com.mojang.blaze3d.systems.RenderSystem
 import dev.isxander.evergreenhud.elements.RenderOrigin
 import dev.isxander.evergreenhud.elements.type.BackgroundElement
 import dev.isxander.evergreenhud.utils.elementmeta.ElementMeta

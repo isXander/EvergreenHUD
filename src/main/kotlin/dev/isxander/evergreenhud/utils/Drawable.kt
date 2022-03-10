@@ -9,13 +9,15 @@
 package dev.isxander.evergreenhud.utils
 
 import com.mojang.blaze3d.platform.GlStateManager
+import com.mojang.blaze3d.platform.GlStateManager.DstFactor
+import com.mojang.blaze3d.platform.GlStateManager.SrcFactor
 import com.mojang.blaze3d.systems.RenderSystem
 import gg.essential.elementa.components.UIBlock
 import gg.essential.universal.UMatrixStack
 import gg.essential.universal.shader.UShader
+import net.minecraft.client.MinecraftClient
 import net.minecraft.client.font.TextRenderer
 import net.minecraft.client.render.*
-import net.minecraft.client.render.model.BakedModel
 import net.minecraft.client.render.model.json.ModelTransformation
 import net.minecraft.client.texture.NativeImage
 import net.minecraft.client.texture.Sprite
@@ -25,7 +27,7 @@ import net.minecraft.item.ItemStack
 import net.minecraft.screen.PlayerScreenHandler
 import net.minecraft.text.OrderedText
 import net.minecraft.text.Text
-import net.minecraft.util.Identifier
+import net.minecraft.util.math.MathHelper
 import net.minecraft.util.math.Matrix4f
 import net.minecraft.util.math.Quaternion
 import net.minecraft.util.math.Vec3f
@@ -484,83 +486,101 @@ fun LivingEntity.renderEntity(x: Float, y: Float, size: Float, viewRotation: Flo
  * https://github.com/DarkKronicle/KronHUD/blob/master/src/main/java/io/github/darkkronicle/kronhud/util/ItemUtil.java
  */
 
-fun renderGuiItemModel(matrices: MatrixStack, stack: ItemStack?, x: Float, y: Float) {
-    val model: BakedModel = mc.itemRenderer.getModel(stack, null, mc.player, (x * y).toInt())
+fun renderGuiItemModel(stack: ItemStack?, x: Float, y: Float, matrices: (MatrixStack) -> Unit) {
+    val model = mc.itemRenderer.getModel(stack, null, null, 0)
     mc.textureManager.getTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).setFilter(false, false)
     RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE)
     RenderSystem.enableBlend()
-    RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA)
+    RenderSystem.blendFunc(SrcFactor.SRC_ALPHA, DstFactor.ONE_MINUS_SRC_ALPHA)
     RenderSystem.setShaderColor(1.0f, 1.0f, 1.0f, 1.0f)
-    matrices.push()
-    matrices.translate(x.toDouble(), y.toDouble(), 100.0f + mc.itemRenderer.zOffset)
-    matrices.translate(8.0, 8.0, 0.0)
-    matrices.scale(1.0f, -1.0f, 1.0f)
-    matrices.scale(16.0f, 16.0f, 16.0f)
+    val matrixStack = RenderSystem.getModelViewStack()
+    matrixStack.push()
+    matrices.invoke(matrixStack)
+    matrixStack.push()
+    matrixStack.translate(x.toDouble(), y.toDouble(), (100.0f + mc.itemRenderer.zOffset).toDouble())
+    matrixStack.translate(8.0, 8.0, 0.0)
+    matrixStack.scale(1.0f, -1.0f, 1.0f)
+    matrixStack.scale(16.0f, 16.0f, 16.0f)
     RenderSystem.applyModelViewMatrix()
-    val immediate: VertexConsumerProvider.Immediate = mc.bufferBuilders.entityVertexConsumers
-    val bl = !model.isSideLit
+    val matrixStack2 = MatrixStack()
+    val immediate = MinecraftClient.getInstance().bufferBuilders.entityVertexConsumers
+    val bl: Boolean = !model.isSideLit
     if (bl) {
         DiffuseLighting.disableGuiDepthLighting()
     }
+
     mc.itemRenderer.renderItem(
-        stack, ModelTransformation.Mode.GUI, false, matrices, immediate, 15728880,
-        OverlayTexture.DEFAULT_UV, model
+        stack,
+        ModelTransformation.Mode.GUI,
+        false,
+        matrixStack2,
+        immediate,
+        15728880,
+        OverlayTexture.DEFAULT_UV,
+        model
     )
     immediate.draw()
     RenderSystem.enableDepthTest()
     if (bl) {
         DiffuseLighting.enableGuiDepthLighting()
     }
-    matrices.pop()
+
+    matrixStack.pop()
+    matrixStack.pop()
     RenderSystem.applyModelViewMatrix()
 }
 
 fun renderGuiItemOverlay(
-    matrices: MatrixStack, stack: ItemStack, x: Float, y: Float,
-    countLabel: String?, showDurabilityBar: Boolean, textColor: Int, shadow: Boolean
+    stack: ItemStack, x: Float, y: Float,
+    countLabel: String?, showDurabilityBar: Boolean, textColor: Int, shadow: Boolean, matrices: (MatrixStack) -> Unit
 ) {
-    if (stack.isEmpty) {
-        return
-    }
-    if (stack.count != 1 || countLabel != null) {
-        val string = countLabel ?: stack.count.toString()
-        matrices.translate(0.0, 0.0, mc.itemRenderer.zOffset + 200.0f)
-        drawString(matrices, string, x + 19 - 2 - mc.textRenderer.getWidth(string), y + 6 + 3, textColor, shadow = shadow)
-    }
-    if (stack.isItemBarVisible && showDurabilityBar) {
-        RenderSystem.disableDepthTest()
-        RenderSystem.disableTexture()
-        RenderSystem.disableBlend()
-        val i = stack.itemBarStep
-        val j = stack.itemBarColor
-
-        HitBox2D(x + 2, y + 13, 13f, 2f)
-            .let { matrices.fill(it.x1, it.y1, it.x2, it.y2, 0) }
-
-        val fill = HitBox2D(x + 2, y + 13, i.toFloat(), 1f)
-        val color = java.awt.Color(j shr 16 and 255, j shr 8 and 255, j and 255, 255).rgb
-        matrices.fill(fill.x1, fill.y1, fill.x2, fill.y2, color)
-
-        RenderSystem.enableBlend()
-        RenderSystem.enableTexture()
-        RenderSystem.enableDepthTest()
-    }
-    val clientPlayerEntity = mc.player
-    val f = clientPlayerEntity?.itemCooldownManager?.getCooldownProgress(
-        stack.item,
-        mc.tickDelta
-    )
-        ?: 0.0f
-    if (f > 0.0f) {
-        RenderSystem.disableDepthTest()
-        RenderSystem.disableTexture()
-        RenderSystem.enableBlend()
-        RenderSystem.defaultBlendFunc()
-
-        HitBox2D(x, y + floor(16f * (1f - f)), 16f, ceil(16f * f))
-            .let { matrices.fill(it.x1, it.y1, it.x2, it.y2, java.awt.Color(255, 255, 255, 127).rgb) }
-
-        RenderSystem.enableTexture()
-        RenderSystem.enableDepthTest()
+    if (!stack.isEmpty) {
+        val matrixStack = MatrixStack()
+        matrixStack.push()
+        matrices.invoke(matrixStack)
+        if (stack.count != 1 || countLabel != null) {
+            val string = countLabel ?: stack.count.toString()
+            matrixStack.translate(0.0, 0.0, (mc.itemRenderer.zOffset + 200.0f).toDouble())
+            val immediate = VertexConsumerProvider.immediate(Tessellator.getInstance().buffer)
+            mc.textRenderer.draw(
+                string, (x + 19 - 2 - mc.textRenderer.getWidth(string)), y + 6 + 3,
+                textColor,
+                shadow,
+                matrixStack.peek().positionMatrix,
+                immediate,
+                false,
+                0,
+                15728880
+            )
+            immediate.draw()
+        }
+        if (stack.isItemBarVisible && showDurabilityBar) {
+            RenderSystem.disableDepthTest()
+            RenderSystem.disableTexture()
+            RenderSystem.disableBlend()
+            val i = stack.itemBarStep
+            val j = stack.itemBarColor
+            matrixStack.fill(x + 2, y + 13, 13f, 2f, Color(0, 0, 0, 255).rgba)
+            matrixStack.fill(x + 2, y + 13, i.toFloat(), 1f, j)
+            RenderSystem.enableBlend()
+            RenderSystem.enableTexture()
+            RenderSystem.enableDepthTest()
+        }
+        val clientPlayerEntity = MinecraftClient.getInstance().player
+        val f = clientPlayerEntity?.itemCooldownManager?.getCooldownProgress(
+            stack.item,
+            MinecraftClient.getInstance().tickDelta
+        )
+            ?: 0.0f
+        if (f > 0.0f) {
+            RenderSystem.disableDepthTest()
+            RenderSystem.disableTexture()
+            RenderSystem.enableBlend()
+            RenderSystem.defaultBlendFunc()
+            matrixStack.fill(x, y + floor(16f * (1f - f)), 16f, ceil(16f * f), Color.white.withAlpha(127).rgba)
+            RenderSystem.enableTexture()
+            RenderSystem.enableDepthTest()
+        }
+        matrixStack.pop()
     }
 }

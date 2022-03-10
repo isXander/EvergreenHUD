@@ -125,10 +125,12 @@ blossom {
 
 tasks {
     remapJar {
-        archiveVersion.set("${project.version}-$minecraftVersion" + (revision?.let { "-$it" } ?: ""))
+        archiveVersion.set(project.version.toString() + (revision?.let { "-$it" } ?: ""))
+        archiveClassifier.set("fabric-$minecraftVersion")
     }
     remapSourcesJar {
-        archiveClassifier.set("sources")
+        archiveVersion.set(project.version.toString() + (revision?.let { "-$it" } ?: ""))
+        archiveClassifier.set("fabric-$minecraftVersion-sources")
     }
 
     processResources {
@@ -162,6 +164,8 @@ tasks {
 }
 
 allprojects {
+    apply(plugin = "java")
+
     repositories {
         mavenCentral()
         maven(url = "https://jitpack.io")
@@ -177,6 +181,10 @@ allprojects {
                 jvmTarget = "17"
             }
         }
+    }
+
+    java {
+        withSourcesJar()
     }
 }
 
@@ -224,12 +232,7 @@ publishing {
             groupId = "dev.isxander"
             artifactId = "evergreenhud"
 
-            artifact(tasks.remapJar) {
-                classifier = "fabric-$minecraftVersion"
-            }
-            artifact(tasks.remapSourcesJar) {
-                classifier = "fabric-$minecraftVersion-sources"
-            }
+            from(components["java"])
         }
     }
 
