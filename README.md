@@ -3,6 +3,7 @@
 
 # `EvergreenHUD`
 
+![Total Time](https://wakatime.com/share/badges/projects?q=EvergreenHUD)
 [![GPLv3 License](https://img.shields.io/badge/License-GPLv3-ff3333)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Github All Releases](https://img.shields.io/github/downloads/isXander/EvergreenHUD/total.svg?style=flat)](https://github.com/isXander/EvergreenHUD/releases)
 [![Donate](https://img.shields.io/badge/donate-patreon-ff6666.svg?style=flat)](https://paypal.me/isxander)
