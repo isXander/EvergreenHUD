@@ -3,9 +3,11 @@
 
 # `EvergreenHUD`
 
-[![wakatime](https://wakatime.com/badge/user/75903a5e-3254-43c5-b168-b082ed4dfc1b/project/14b782f8-10bf-4738-b936-e6b17b2114f8.svg)](https://wakatime.com/badge/user/75903a5e-3254-43c5-b168-b082ed4dfc1b/project/14b782f8-10bf-4738-b936-e6b17b2114f8)
+[![wakatime](https://wakatime.com/badge/user/75903a5e-3254-43c5-b168-b082ed4dfc1b/project/14b782f8-10bf-4738-b936-e6b17b2114f8.svg?style=for-the-badge)](https://wakatime.com/badge/user/75903a5e-3254-43c5-b168-b082ed4dfc1b/project/14b782f8-10bf-4738-b936-e6b17b2114f8)
+![Lines of Code](https://img.shields.io/tokei/lines/github/isXander/EvergreenHUD?color=ff5555&label=Lines%20of%20code&style=for-the-badge)
+
 [![GPLv3 License](https://img.shields.io/badge/License-GPLv3-ff3333)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-![Lines of Code](https://img.shields.io/tokei/lines/github/isXander/EvergreenHUD)
+
 [![Donate](https://img.shields.io/badge/donate-patreon-ff6666.svg?style=flat)](https://paypal.me/isxander)
 [![Discord Chat](https://img.shields.io/discord/780023008668287017.svg)](https://short.isxander.dev/discord)
 
