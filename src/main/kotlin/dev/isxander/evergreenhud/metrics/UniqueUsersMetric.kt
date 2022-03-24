@@ -20,7 +20,7 @@ import net.fabricmc.loader.api.FabricLoader
 
 object UniqueUsersMetric {
     fun url(uuid: String) =
-        "https://api.isxander.dev/metric/put/evergreenhud?type=unique_users&uuid=$uuid"
+        "https://api.isxander.dev/metric/put/evergreenhud?type=users&uuid=$uuid"
 
     suspend fun putApi() {
         if ((mc as AccessorMinecraftClient).userApiService == UserApiService.OFFLINE) {
