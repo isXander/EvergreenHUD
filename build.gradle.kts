@@ -96,7 +96,7 @@ dependencies {
 
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings("net.fabricmc:yarn:$minecraftVersion+build.+:v2")
-    modImplementation("net.fabricmc:fabric-loader:0.13.+")
+    modImplementation("net.fabricmc:fabric-loader:0.14.+")
     modImplementation("net.fabricmc.fabric-api:fabric-api:0.47.9+1.18.2")
     modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
 
