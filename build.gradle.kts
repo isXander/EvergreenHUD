@@ -10,19 +10,17 @@ import com.matthewprenger.cursegradle.CurseProject
 import com.matthewprenger.cursegradle.CurseRelation
 import com.matthewprenger.cursegradle.Options
 import com.modrinth.minotaur.TaskModrinthUpload
-import com.modrinth.minotaur.dependencies.ModDependency
-import com.modrinth.minotaur.dependencies.DependencyType
 
 plugins {
     kotlin("jvm") version kotlinVersion
     kotlin("plugin.serialization") version kotlinVersion
-    id("fabric-loom") version "0.11.+"
-    id("io.github.juuxel.loom-quiltflower") version "1.6.+"
+    id("fabric-loom") version "0.12.+"
+    id("io.github.juuxel.loom-quiltflower") version "1.7.+"
     id("com.google.devtools.ksp") version "$kotlinVersion-1.0.+"
     id("net.kyori.blossom") version "1.3.+"
     id("org.ajoberstar.grgit") version "5.0.+"
     id("com.matthewprenger.cursegradle") version "1.4.+"
-    id("com.modrinth.minotaur") version "2.+"
+    id("com.modrinth.minotaur") version "2.3.+"
     `java-library`
     java
     `maven-publish`
@@ -31,13 +29,13 @@ plugins {
 group = "dev.isxander"
 
 val revision: String? = grgit.head()?.abbreviatedId
-version = "2.0.0-alpha.6"
+version = "2.0.0-alpha.7"
 
 repositories {
     mavenCentral()
     mavenLocal()
     maven(url = "https://maven.fabricmc.net")
-    maven(url = "https://repo.sk1er.club/repository/maven-public")
+    maven(url = "https://repo.essential.gg/repository/maven-public/")
     maven(url = "https://maven.pkg.jetbrains.space/public/p/ktor/eap")
     maven(url = "https://maven.terraformersmc.com/releases")
 }
@@ -92,13 +90,14 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlinxSerializationVersion")
 
     includeApi("org.bundleproject:libversion:0.0.3")
-    includeApi("dev.isxander:settxi:2.1.0")
+    includeApi("dev.isxander.settxi:settxi-core:2.3.+")
+    includeApi("dev.isxander.settxi:settxi-kotlinx-serialization:2.3.+")
 
     minecraft("com.mojang:minecraft:$minecraftVersion")
     mappings("net.fabricmc:yarn:$minecraftVersion+build.+:v2")
-    modImplementation("net.fabricmc:fabric-loader:0.13.+")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:0.47.9+1.18.2")
-    modImplementation("net.fabricmc:fabric-language-kotlin:1.7.1+kotlin.$kotlinVersion")
+    modImplementation("net.fabricmc:fabric-loader:0.14.+")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:0.56.0+1.19")
+    modImplementation("net.fabricmc:fabric-language-kotlin:1.8.0+kotlin.$kotlinVersion")
 
     includeTransitive(modApi("gg.essential:elementa-1.18-fabric:+") {
         exclude(module = "annotations")
@@ -106,7 +105,7 @@ dependencies {
         exclude(module = "fabric-loader")
     })
 
-    modImplementation("com.terraformersmc:modmenu:3.+")
+    modImplementation("com.terraformersmc:modmenu:4.+")
 
     includeApi("com.github.LlamaLad7:MixinExtras:0.0.+")
     annotationProcessor("com.github.LlamaLad7:MixinExtras:0.0.+")
@@ -190,17 +189,17 @@ allprojects {
 
 modrinth {
     token.set(findProperty("modrinth.token")?.toString())
-    projectId.set("1yIQcc2b")
+    projectId.set("evergreenhud")
     versionNumber.set(project.version.toString())
     versionType.set("alpha")
     uploadFile.set(tasks.remapJar.get())
     gameVersions.set(listOf(minecraftVersion))
     loaders.set(listOf("fabric"))
-    dependencies.set(listOf(
-        ModDependency("P7dR8mSH", DependencyType.REQUIRED), // fapi
-        ModDependency("Ha28R6CL", DependencyType.REQUIRED), // flk
-        ModDependency("mOgUt4GM", DependencyType.OPTIONAL), // mod menu
-    ))
+    dependencies {
+        required.project("fabric-api")
+        required.project("fabric-language-kotlin")
+        optional.project("modmenu")
+    }
 }
 
 if (hasProperty("curseforge.token")) {
