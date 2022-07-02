@@ -1,0 +1,12 @@
+{
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.7",
+  "refmap": "mixins.evergreenhud.refmap.json",
+  "injectors": {
+    "maxShiftBy": 5
+  },
+  "verbose": true,
+  "client": [
+
+  ]
+}

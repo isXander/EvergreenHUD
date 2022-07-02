@@ -11,6 +11,10 @@ class FPS: Config(Mod("FPS", ModType.HUD), "fps.json") {
     @HUD(name = "Main")
     var hud = FPSHud()
 
+    init {
+        initialize()
+    }
+
     class FPSHud : SingleTextHud("FPS", true) {
         override fun getText(): String {
             return Minecraft.getDebugFPS().toString()

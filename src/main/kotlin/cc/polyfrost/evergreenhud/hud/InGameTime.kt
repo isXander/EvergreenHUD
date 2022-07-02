@@ -15,6 +15,10 @@ class InGameTime : Config(Mod("In Game Time", ModType.HUD), "ingametime.json") {
     @HUD(name = "Main")
     var hud = InGameTimeHud()
 
+    init {
+        initialize()
+    }
+
     class InGameTimeHud : SingleTextHud("Time", false) {
 
         @Switch(name = "Twelve Hour Time")
