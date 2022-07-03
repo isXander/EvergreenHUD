@@ -13,7 +13,7 @@ import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
 import cc.polyfrost.oneconfig.utils.dsl.mc
 
-class PlaceCount: Config(Mod("Block Place Count", ModType.HUD), "placecount.json") {
+class PlaceCount: Config(Mod("Block Place Count", ModType.HUD), "evergreenhud/placecount.json") {
     @HUD(name = "Main")
     var hud = PlaceCountHud()
 

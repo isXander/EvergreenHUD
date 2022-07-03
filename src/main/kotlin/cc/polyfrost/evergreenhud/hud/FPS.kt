@@ -13,7 +13,7 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-class FPS: Config(Mod("FPS", ModType.HUD), "fps.json") {
+class FPS: Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
     @HUD(name = "FPS", category = "FPS")
     var fps = FPSHud()
 

@@ -17,7 +17,7 @@ import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraft.network.play.server.S19PacketEntityStatus
 
 
-class Combo: Config(Mod("Combo", ModType.HUD), "combo.json") {
+class Combo: Config(Mod("Combo", ModType.HUD), "evergreenhud/combo.json") {
     @HUD(name = "Main")
     var hud = ComboHud()
 

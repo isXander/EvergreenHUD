@@ -1,6 +1,7 @@
 package cc.polyfrost.evergreenhud
 
 import cc.polyfrost.oneconfig.config.Config
+import cc.polyfrost.oneconfig.config.profiles.Profiles
 import cc.polyfrost.oneconfig.events.EventManager
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
@@ -11,12 +12,14 @@ import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.reflections.Reflections
+import java.io.File
 import java.lang.reflect.InvocationTargetException
 
 @Mod(modid = EvergreenHUD.MODID, name = EvergreenHUD.NAME, version = EvergreenHUD.VERSION)
 class EvergreenHUD {
     @Mod.EventHandler
     fun onFMLInitialization(event: FMLInitializationEvent?) {
+        File(Profiles.getProfileDir(), "evergreenhud").mkdirs()
         val time = System.currentTimeMillis()
         for (classes in reflections.getSubTypesOf(
             Config::class.java

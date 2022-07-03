@@ -9,7 +9,7 @@ import cc.polyfrost.oneconfig.config.data.Mod
 import cc.polyfrost.oneconfig.config.data.ModType
 import cc.polyfrost.oneconfig.hud.SingleTextHud
 
-class Memory: Config(Mod("Memory", ModType.HUD), "memory.json") {
+class Memory: Config(Mod("Memory", ModType.HUD), "evergreenhud/memory.json") {
     @HUD(name = "Main")
     var hud = MemoryHud()
 

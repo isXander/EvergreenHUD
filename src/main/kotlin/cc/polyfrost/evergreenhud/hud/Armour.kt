@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 
-class Armour: Config(Mod("ArmourHud", ModType.HUD), "armour.json") {
+class Armour: Config(Mod("ArmourHud", ModType.HUD), "evergreenhud/armour.json") {
     @HUD(name = "Main")
     var hud = ArmourHud()
 

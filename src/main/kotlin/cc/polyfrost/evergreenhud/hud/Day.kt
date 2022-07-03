@@ -7,7 +7,7 @@ import cc.polyfrost.oneconfig.config.data.ModType
 import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.utils.dsl.mc
 
-class Day: Config(Mod("Day", ModType.HUD), "day.json") {
+class Day: Config(Mod("Day", ModType.HUD), "evergreenhud/day.json") {
     @HUD(name = "Main")
     var hud = DayHud()
 

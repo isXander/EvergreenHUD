@@ -10,7 +10,7 @@ import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.libs.universal.UMatrixStack
 import cc.polyfrost.oneconfig.utils.dsl.mc
 
-class ServerIP: Config(Mod("Server IP", ModType.HUD), "serverip.json") {
+class ServerIP: Config(Mod("Server IP", ModType.HUD), "evergreenhud/serverip.json") {
     @HUD(name = "Main")
     var hud = ServerIPHud()
 

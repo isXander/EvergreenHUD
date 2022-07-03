@@ -11,7 +11,7 @@ import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.libs.universal.UMatrixStack
 import cc.polyfrost.oneconfig.utils.dsl.mc
 
-class Ping: Config(Mod("Ping", ModType.HUD), "ping.json") {
+class Ping: Config(Mod("Ping", ModType.HUD), "evergreenhud/ping.json") {
     @HUD(name = "Main")
     var hud = PingHud()
 

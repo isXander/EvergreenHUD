@@ -13,7 +13,7 @@ import cc.polyfrost.oneconfig.utils.hypixel.LocrawInfo
 import java.util.*
 import kotlin.collections.HashMap
 
-class HypixelHuds: Config(Mod("Hypixel HUDs", ModType.HUD), "hypixelhuds.json") {
+class HypixelHuds: Config(Mod("Hypixel HUDs", ModType.HUD), "evergreenhud/hypixelhuds.json") {
     @HUD(
         name = "Game Mode",
         category = "Game Mode"

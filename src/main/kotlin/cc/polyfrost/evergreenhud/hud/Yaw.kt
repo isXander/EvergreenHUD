@@ -11,7 +11,7 @@ import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraft.util.MathHelper
 
-class Yaw : Config(Mod("Yaw", ModType.HUD), "yaw.json") {
+class Yaw : Config(Mod("Yaw", ModType.HUD), "evergreenhud/yaw.json") {
     @HUD(name = "Main")
     var hud = YawHud()
 
