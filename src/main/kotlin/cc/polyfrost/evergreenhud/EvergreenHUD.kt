@@ -56,5 +56,4 @@ class EvergreenHUD {
 }
 
 class ClientDamageEntityEvent(val attacker: Entity, val target: Entity)
-
 class ClientPlaceBlockEvent(val player: EntityPlayer, val world: World)
