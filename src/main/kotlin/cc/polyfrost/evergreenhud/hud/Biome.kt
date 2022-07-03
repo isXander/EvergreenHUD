@@ -16,7 +16,7 @@ class Biome: Config(Mod("Biome", ModType.HUD), "biome.json") {
         initialize()
     }
 
-    class BiomeHud: SingleTextHud("Biome", true) {
+    class BiomeHud: SingleTextHud("Biome", false) {
         override fun getText(): String {
             val player = mc.thePlayer ?: return "Unknown"
 

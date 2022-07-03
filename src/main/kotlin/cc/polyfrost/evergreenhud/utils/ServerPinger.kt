@@ -1,5 +1,6 @@
 package cc.polyfrost.evergreenhud.utils
 
+import cc.polyfrost.oneconfig.config.annotations.Exclude
 import cc.polyfrost.oneconfig.events.EventManager
 import cc.polyfrost.oneconfig.events.event.Stage
 import cc.polyfrost.oneconfig.events.event.TickEvent
@@ -31,6 +32,7 @@ object ServerPinger {
         return pinger
     }
 
+    @Exclude
     class Pinger(private val interval: () -> Int, private val serverGetter: () -> ServerData?) : ReadOnlyProperty<Any?, Int?> {
         private var ping: Int? = null
 

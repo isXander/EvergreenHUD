@@ -23,7 +23,7 @@ class BlockAbove: Config(Mod("Block Above", ModType.HUD), "blockabove.json") {
         initialize()
     }
 
-    class BlockAboveHud: SingleTextHud("Above", true) {
+    class BlockAboveHud: SingleTextHud("Above", false) {
         @Switch(
             name = "Notify With Sound"
         )

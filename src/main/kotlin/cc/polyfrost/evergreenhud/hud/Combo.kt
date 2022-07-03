@@ -1,5 +1,6 @@
 package cc.polyfrost.evergreenhud.hud
 
+import cc.polyfrost.evergreenhud.ClientDamageEntityEvent
 import cc.polyfrost.oneconfig.config.Config
 import cc.polyfrost.oneconfig.config.annotations.HUD
 import cc.polyfrost.oneconfig.config.annotations.Slider
@@ -14,9 +15,6 @@ import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraft.network.play.server.S19PacketEntityStatus
-import net.minecraftforge.common.MinecraftForge
-import net.minecraftforge.event.entity.player.AttackEntityEvent
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
 
 class Combo: Config(Mod("Combo", ModType.HUD), "combo.json") {
@@ -48,7 +46,6 @@ class Combo: Config(Mod("Combo", ModType.HUD), "combo.json") {
 
         init {
             EventManager.INSTANCE.register(this)
-            MinecraftForge.EVENT_BUS.register(this)
         }
 
         @Subscribe
@@ -58,10 +55,9 @@ class Combo: Config(Mod("Combo", ModType.HUD), "combo.json") {
             }
         }
 
-        @SubscribeEvent
-        fun onAttackEntity(event: AttackEntityEvent) {
-            if (event.isCanceled) return
-            if (event.entity != mc.thePlayer) {
+        @Subscribe
+        private fun onAttackEntity(event: ClientDamageEntityEvent) {
+            if (event.attacker != mc.thePlayer) {
                 return
             }
             sentAttack = event.target.entityId

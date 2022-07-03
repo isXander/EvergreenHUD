@@ -17,7 +17,7 @@ class Direction: Config(Mod("Direction", ModType.HUD), "direction.json") {
         initialize()
     }
 
-    class DirectionHud: SingleTextHud("Direction", true) {
+    class DirectionHud: SingleTextHud("Direction", false) {
 
         @Switch(
             name = "Abbreviated"
