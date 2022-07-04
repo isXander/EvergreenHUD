@@ -3,6 +3,7 @@ package cc.polyfrost.evergreenhud.hud
 import cc.polyfrost.evergreenhud.utils.FrameTimeHelper
 import cc.polyfrost.oneconfig.config.Config
 import cc.polyfrost.oneconfig.config.annotations.Dropdown
+import cc.polyfrost.oneconfig.config.annotations.Exclude
 import cc.polyfrost.oneconfig.config.annotations.HUD
 import cc.polyfrost.oneconfig.config.annotations.Switch
 import cc.polyfrost.oneconfig.config.data.Mod
@@ -13,7 +14,7 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-class FPS: Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
+class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
     @HUD(name = "FPS", category = "FPS")
     var fps = FPSHud()
 

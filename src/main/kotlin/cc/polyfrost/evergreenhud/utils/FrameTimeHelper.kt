@@ -1,5 +1,6 @@
 package cc.polyfrost.evergreenhud.utils
 
+import cc.polyfrost.oneconfig.config.annotations.Exclude
 import cc.polyfrost.oneconfig.events.EventManager
 import cc.polyfrost.oneconfig.events.event.RenderEvent
 import cc.polyfrost.oneconfig.events.event.Stage
@@ -8,7 +9,9 @@ import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
 class FrameTimeHelper : ReadOnlyProperty<Any?, MutableList<Double>> {
+    @Exclude
     private var lastTime = System.currentTimeMillis().toDouble()
+    @Exclude
     val frameTimes = mutableListOf<Double>()
 
     init {
