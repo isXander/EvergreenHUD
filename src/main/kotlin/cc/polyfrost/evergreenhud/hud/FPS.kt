@@ -32,7 +32,7 @@ class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
         @Switch(
             name = "Update Fast"
         )
-        var updateFast = true
+        var updateFast = false
 
         @Dropdown(
             name = "Average Method",
@@ -66,7 +66,7 @@ class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
         }
     }
 
-    class FrameConsistencyHud : SingleTextHud("Frame Consistency", true) {
+    class FrameConsistencyHud : SingleTextHud("Frame Consistency", false) {
 
         private val frameTimes by FrameTimeHelper()
 
@@ -92,7 +92,7 @@ class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
         }
     }
 
-    class FrameTimeHud : SingleTextHud("Frame Time", true) {
+    class FrameTimeHud : SingleTextHud("Frame Time", false) {
 
         @Dropdown(
             name = "Average Method",
