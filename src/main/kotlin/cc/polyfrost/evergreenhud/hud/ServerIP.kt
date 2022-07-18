@@ -28,23 +28,12 @@ class ServerIP: Config(Mod("Server IP", ModType.HUD), "evergreenhud/serverip.jso
         @Text(name = "No Server Text")
         var noServerText = "127.0.0.1"
 
-        @Transient private var example = false
-
-        override fun drawExample(matrices: UMatrixStack?, x: Int, y: Int, scale: Float) {
-            example = true
-            try {
-                super.drawExample(matrices, x, y, scale)
-            } finally {
-                example = false
-            }
-        }
-
-        override fun draw(matrices: UMatrixStack?, x: Int, y: Int, scale: Float) {
+        override fun draw(matrices: UMatrixStack?, x: Float, y: Float, scale: Float, example: Boolean) {
             if (mc.currentServerData == null && !showInSinglePlayer && !example) return
-            super.draw(matrices, x, y, scale)
+            super.draw(matrices, x, y, scale, example)
         }
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             return mc.currentServerData?.serverIP ?: noServerText
         }
 

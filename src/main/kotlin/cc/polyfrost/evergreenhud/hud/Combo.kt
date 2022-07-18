@@ -92,7 +92,7 @@ class Combo: Config(Mod("Combo", ModType.HUD), "evergreenhud/combo.json") {
             }
         }
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             if (currentCombo == 0) return noHitMessage
             return currentCombo.toString()
         }

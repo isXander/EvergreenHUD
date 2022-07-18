@@ -68,7 +68,7 @@ class Speed: Config(Mod("Speed", ModType.HUD), "evergreenhud/speed.json") {
                 }
             }
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             var speed = 0.0
 
             if (mc.thePlayer != null) {

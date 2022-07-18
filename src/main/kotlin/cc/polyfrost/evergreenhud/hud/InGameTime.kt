@@ -24,7 +24,7 @@ class InGameTime : Config(Mod("In Game Time", ModType.HUD), "evergreenhud/ingame
         @Switch(name = "Twelve Hour Time")
         var twelveHour = false
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             UMinecraft.getWorld()?.let {
                 // ticks to ticks in day to seconds to millis plus six hours (time 0 = 6am)
                 val date = Date(it.worldTime / 20 * 1000 + TimeUnit.HOURS.toMillis(6))

@@ -16,7 +16,7 @@ class Day: Config(Mod("Day", ModType.HUD), "evergreenhud/day.json") {
     }
 
     class DayHud : SingleTextHud("Day", false) {
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             if (mc.theWorld == null) return "0"
             return (mc.theWorld.worldTime / 24000L).toString()
         }

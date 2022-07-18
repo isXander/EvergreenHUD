@@ -34,7 +34,7 @@ class Memory: Config(Mod("Memory", ModType.HUD), "evergreenhud/memory.json") {
             return bytes / 1024L / 1024L
         }
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             return if (!displayType) {
                 val df = decimalFormat(1, trailingZeros)
 

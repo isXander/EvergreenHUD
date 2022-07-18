@@ -3,7 +3,6 @@ package cc.polyfrost.evergreenhud.hud
 import cc.polyfrost.evergreenhud.utils.FrameTimeHelper
 import cc.polyfrost.oneconfig.config.Config
 import cc.polyfrost.oneconfig.config.annotations.Dropdown
-import cc.polyfrost.oneconfig.config.annotations.Exclude
 import cc.polyfrost.oneconfig.config.annotations.HUD
 import cc.polyfrost.oneconfig.config.annotations.Switch
 import cc.polyfrost.oneconfig.config.data.Mod
@@ -40,6 +39,7 @@ class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
         )
         var averageMethod = 0
 
+        @delegate:Transient
         private val frameTimes by FrameTimeHelper()
 
         private fun average(list: List<Double>): Double = when (averageMethod) {
@@ -55,7 +55,7 @@ class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
             return list.sorted()[index]
         }
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             return if (updateFast) {
                 val fps = (1000 / (average(frameTimes).takeUnless { it.isNaN() } ?: 1.0)).roundToInt().toString()
                 frameTimes.clear()
@@ -68,6 +68,7 @@ class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
 
     class FrameConsistencyHud : SingleTextHud("Frame Consistency", false) {
 
+        @delegate:Transient
         private val frameTimes by FrameTimeHelper()
 
         private fun List<Double>.consistency(): Double {
@@ -85,7 +86,7 @@ class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
             return change / count / this.sum()
         }
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             val consistency = ((1 - frameTimes.consistency()) * 100).roundToInt()
             frameTimes.clear()
             return "$consistency%"
@@ -100,6 +101,7 @@ class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
         )
         var averageMethod = 0
 
+        @delegate:Transient
         private val frameTimes by FrameTimeHelper()
 
         private fun average(list: List<Double>): Double = when (averageMethod) {
@@ -115,7 +117,7 @@ class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
             return list.sorted()[index]
         }
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             // converts average to FPS
             val frameTime = (average(frameTimes).takeUnless { it.isNaN() } ?: 1.0).roundToInt()
             frameTimes.clear()

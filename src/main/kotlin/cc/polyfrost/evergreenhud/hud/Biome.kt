@@ -17,7 +17,7 @@ class Biome: Config(Mod("Biome", ModType.HUD), "evergreenhud/biome.json") {
     }
 
     class BiomeHud: SingleTextHud("Biome", false) {
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             val player = mc.thePlayer ?: return "Unknown"
 
             val playerPos = BlockPos(player.posX, player.posY, player.posZ)

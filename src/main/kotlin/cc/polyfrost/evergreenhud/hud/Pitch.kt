@@ -32,7 +32,7 @@ class Pitch: Config(Mod("Pitch", ModType.HUD), "evergreenhud/pitch.json") {
         )
         var trailingZeros = true
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             return decimalFormat(accuracy, trailingZeros).format(mc.thePlayer?.rotationPitch ?: 0f )
         }
 

@@ -13,7 +13,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.reflections.Reflections
 import java.io.File
-import java.lang.reflect.InvocationTargetException
 
 @Mod(modid = EvergreenHUD.MODID, name = EvergreenHUD.NAME, version = EvergreenHUD.VERSION)
 class EvergreenHUD {
@@ -26,13 +25,7 @@ class EvergreenHUD {
         )) {
             try {
                 classes.getConstructor().newInstance()
-            } catch (e: InstantiationException) {
-                e.printStackTrace()
-            } catch (e: IllegalAccessException) {
-                e.printStackTrace()
-            } catch (e: InvocationTargetException) {
-                e.printStackTrace()
-            } catch (e: NoSuchMethodException) {
+            } catch (e: Exception) {
                 e.printStackTrace()
             }
         }

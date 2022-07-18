@@ -25,7 +25,7 @@ class RealLifeTime : Config(Mod("IRL Time", ModType.HUD), "evergreenhud/irltime.
         @Switch(name = "Seconds")
         var seconds = false
 
-        override fun getText() = SimpleDateFormat(String.format(if (twelveHour) "hh:mm%s a" else "HH:mm%s", if (seconds) ":ss" else ""))
+        override fun getText(example: Boolean): String = SimpleDateFormat(String.format(if (twelveHour) "hh:mm%s a" else "HH:mm%s", if (seconds) ":ss" else ""))
             .format(Calendar.getInstance().time).uppercase()
     }
 }

@@ -48,7 +48,7 @@ class BlockAbove: Config(Mod("Block Above", ModType.HUD), "evergreenhud/blockabo
         @Exclude
         private var notified = false
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             if (mc.theWorld == null || mc.thePlayer == null) return "0"
 
             var above = 0

@@ -24,7 +24,7 @@ class Direction: Config(Mod("Direction", ModType.HUD), "evergreenhud/direction.j
         )
         var abbreviated = false
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             if (mc.thePlayer == null) return "Unknown"
 
             val facing = Facing.parse(mc.thePlayer!!.rotationYaw)

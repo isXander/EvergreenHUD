@@ -77,7 +77,7 @@ class CPS: Config(Mod("CPS", ModType.HUD), "evergreenhud/cps.json") {
             }
         }
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             return when (button) {
                 0 -> left.size.toString()
                 1 -> right.size.toString()
@@ -86,9 +86,9 @@ class CPS: Config(Mod("CPS", ModType.HUD), "evergreenhud/cps.json") {
             }
         }
 
-        override fun getTextFrequent(): String? {
+        override fun getTextFrequent(example: Boolean): String? {
             return if (updateFast) {
-                text
+                getText(example)
             } else {
                 null
             }

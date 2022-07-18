@@ -55,7 +55,7 @@ class PlaceCount: Config(Mod("Block Place Count", ModType.HUD), "evergreenhud/pl
             }
         }
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             return blockCount.size.toString()
         }
 

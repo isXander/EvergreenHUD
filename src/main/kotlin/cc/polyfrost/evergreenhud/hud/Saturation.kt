@@ -17,7 +17,7 @@ class Saturation: Config(Mod("Saturation", ModType.HUD), "evergreen/saturation.j
     }
 
     class SaturationHud: SingleTextHud("Saturation", true) {
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             return decimalFormat(1, true).format(mc.thePlayer?.foodStats?.saturationLevel ?: 20)
         }
     }

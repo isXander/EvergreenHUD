@@ -6,7 +6,7 @@ import cc.polyfrost.oneconfig.config.core.OneColor
 import cc.polyfrost.oneconfig.config.data.InfoType
 import cc.polyfrost.oneconfig.config.data.Mod
 import cc.polyfrost.oneconfig.config.data.ModType
-import cc.polyfrost.oneconfig.hud.Hud
+import cc.polyfrost.oneconfig.hud.BasicHud
 import cc.polyfrost.oneconfig.libs.universal.UGraphics
 import cc.polyfrost.oneconfig.libs.universal.UMatrixStack
 import cc.polyfrost.oneconfig.renderer.RenderManager
@@ -23,7 +23,7 @@ class Armour: Config(Mod("ArmourHud", ModType.HUD), "evergreenhud/armour.json") 
         initialize()
     }
 
-    class ArmourHud : Hud(true) {
+    class ArmourHud : BasicHud(true) {
 
         @Transient val diamondHelmet = ItemStack(Items.diamond_helmet)
         @Transient val diamondChestplate = ItemStack(Items.diamond_chestplate)
@@ -94,43 +94,40 @@ class Armour: Config(Mod("ArmourHud", ModType.HUD), "evergreenhud/armour.json") 
         )
         var alignment = 0
 
-        @Transient private var actualWidth = 0
-        @Transient private var actualHeight = 0
+        @Transient private var actualWidth = 0F
+        @Transient private var actualHeight = 0F
 
-        override fun draw(matrices: UMatrixStack?, x: Int, y: Int, scale: Float) {
-            draw(matrices, x, y, scale, false)
+        override fun draw(matrices: UMatrixStack?, x: Float, y: Float, scale: Float, example: Boolean) {
+            draw(matrices, x, y, scale, getItems(example))
         }
 
-        override fun drawExample(matrices: UMatrixStack?, x: Int, y: Int, scale: Float) {
-            draw(matrices, x, y, scale, true)
-        }
+        private fun getItems(example: Boolean) = if (example) {
+            arrayListOf<ItemStack>().run {
+                if (showHelmet) add(diamondHelmet)
+                if (showChestplate) add(diamondChestplate)
+                if (showLeggings) add(diamondLeggings)
+                if (showBoots) add(diamondBoots)
+                if (showMainHand) add(diamondSword)
 
-        private fun draw(matrices: UMatrixStack?, x: Int, y: Int, scale: Float, example: Boolean) {
-            val items: List<ItemStack> = if (mc.thePlayer != null && !example) {
-                val inventory = mc.thePlayer!!.inventory
-
-                arrayListOf<ItemStack>().run {
-                    if (showHelmet) inventory.armorInventory[3]?.let { add(it) }
-                    if (showChestplate) inventory.armorInventory[2]?.let { add(it) }
-                    if (showLeggings) inventory.armorInventory[1]?.let { add(it) }
-                    if (showBoots) inventory.armorInventory[0]?.let { add(it) }
-                    if (showMainHand) mc.thePlayer.heldItem?.let { add(it) }
-
-                    if (displayType) reverse()
-                    return@run this
-                }
-            } else {
-                arrayListOf<ItemStack>().run {
-                    if (showHelmet) add(diamondHelmet)
-                    if (showChestplate) add(diamondChestplate)
-                    if (showLeggings) add(diamondLeggings)
-                    if (showBoots) add(diamondBoots)
-                    if (showMainHand) add(diamondSword)
-
-                    if (displayType) reverse()
-                    return@run this
-                }
+                if (displayType) reverse()
+                return@run this
             }
+        } else {
+            val inventory = mc.thePlayer!!.inventory
+
+            arrayListOf<ItemStack>().run {
+                if (showHelmet) inventory.armorInventory[3]?.let { add(it) }
+                if (showChestplate) inventory.armorInventory[2]?.let { add(it) }
+                if (showLeggings) inventory.armorInventory[1]?.let { add(it) }
+                if (showBoots) inventory.armorInventory[0]?.let { add(it) }
+                if (showMainHand) mc.thePlayer.heldItem?.let { add(it) }
+
+                if (displayType) reverse()
+                return@run this
+            }
+        }
+
+        private fun draw(matrices: UMatrixStack?, x: Float, y: Float, scale: Float, items: List<ItemStack>) {
 
             val offset = 16f + padding
 
@@ -144,8 +141,8 @@ class Armour: Config(Mod("ArmourHud", ModType.HUD), "evergreenhud/armour.json") 
                     text to mc.fontRendererObj.getStringWidth(text)
                 }
             }
-            actualWidth = (texts.maxOfOrNull { mc.fontRendererObj.getStringWidth(it.first) } ?: 0) + 2 + 16
-            actualHeight = (items.size * offset - padding * 2).toInt()
+            actualWidth = (texts.maxOfOrNull { mc.fontRendererObj.getStringWidth(it.first) } ?: 0) + 2F + 16
+            actualHeight = items.size * offset - padding * 2
 
             val itemX = when (alignment) {
                 0 -> x + 2f
@@ -185,9 +182,9 @@ class Armour: Config(Mod("ArmourHud", ModType.HUD), "evergreenhud/armour.json") 
             }
         }
 
-        override fun getWidth(scale: Float) = actualWidth
+        override fun getWidth(scale: Float, example: Boolean): Float = actualWidth
 
-        override fun getHeight(scale: Float) = actualHeight
+        override fun getHeight(scale: Float, example: Boolean): Float = actualHeight
 
     }
 }

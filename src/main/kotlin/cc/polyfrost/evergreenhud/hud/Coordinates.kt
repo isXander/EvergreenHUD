@@ -66,7 +66,7 @@ class Coordinates: Config(Mod("Coordinates", ModType.HUD), "evergreenhud/coordin
         )
         var trailingZeros = false
 
-        override fun getLines(lines: MutableList<String>) {
+        override fun getLines(lines: MutableList<String>, example: Boolean) {
             if (mc.thePlayer == null) {
                 lines.add("Unknown")
                 return

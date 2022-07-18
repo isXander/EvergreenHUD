@@ -6,14 +6,13 @@ import cc.polyfrost.oneconfig.config.annotations.HUD
 import cc.polyfrost.oneconfig.config.annotations.Slider
 import cc.polyfrost.oneconfig.config.data.Mod
 import cc.polyfrost.oneconfig.config.data.ModType
-import cc.polyfrost.oneconfig.hud.Hud
+import cc.polyfrost.oneconfig.hud.BasicHud
 import cc.polyfrost.oneconfig.libs.universal.UMatrixStack
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.OpenGlHelper
 import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.entity.EntityLivingBase
-import kotlin.math.roundToInt
 
 
 class PlayerPreview: Config(Mod("Player Preview", ModType.HUD), "evergreenhud/playerpreview.json") {
@@ -26,7 +25,7 @@ class PlayerPreview: Config(Mod("Player Preview", ModType.HUD), "evergreenhud/pl
         initialize()
     }
 
-    class SelfPreviewHud: Hud(false) {
+    class SelfPreviewHud: BasicHud(false) {
 
         @Slider(
             name = "Rotation",
@@ -36,15 +35,15 @@ class PlayerPreview: Config(Mod("Player Preview", ModType.HUD), "evergreenhud/pl
         var rotation = 0
 
         @Transient private var drawBackground = false
-        override fun drawBackground() = drawBackground
+        override fun shouldDrawBackground() = drawBackground
 
-        override fun draw(matrices: UMatrixStack?, x: Int, y: Int, scale: Float) {
+        override fun draw(matrices: UMatrixStack?, x: Float, y: Float, scale: Float, example: Boolean) {
             if (drawBackground) return
             GlStateManager.pushMatrix()
             GlStateManager.enableDepth()
             drawBackground = true
             try {
-                drawAll(matrices, x.toFloat(), y.toFloat(), scale, true)
+                drawAll(matrices, example)
             } finally {
                 drawBackground = false
             }
@@ -64,14 +63,14 @@ class PlayerPreview: Config(Mod("Player Preview", ModType.HUD), "evergreenhud/pl
             GlStateManager.popMatrix()
         }
 
-        override fun getWidth(scale: Float) = (80 * scale).roundToInt()
+        override fun getWidth(scale: Float, example: Boolean): Float = 80 * scale
 
-        override fun getHeight(scale: Float) = (120 * scale).roundToInt()
+        override fun getHeight(scale: Float, example: Boolean): Float = 120 * scale
     }
 
     @Exclude
     companion object {
-        private fun renderLiving(ent: EntityLivingBase, matrices: UMatrixStack?, x: Int, y: Int, scale: Float, rotation: Int) {
+        private fun renderLiving(ent: EntityLivingBase, matrices: UMatrixStack?, x: Float, y: Float, scale: Float, rotation: Int) {
             GlStateManager.enableColorMaterial()
             GlStateManager.pushMatrix()
             GlStateManager.translate(x.toDouble(), y.toDouble(), 50.0)

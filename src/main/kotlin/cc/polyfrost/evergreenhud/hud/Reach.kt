@@ -74,7 +74,7 @@ class Reach: Config(Mod("Reach", ModType.HUD), "evergreenhud/reach.json") {
             }
         }
 
-        override fun getText(): String = reach ?: noHitMessage
+        override fun getText(example: Boolean): String = reach ?: noHitMessage
 
         private fun getReachDistanceFromEntity(entity: Entity): Double? {
             mc.mcProfiler.startSection("Calculate Reach Dist")

@@ -27,7 +27,7 @@ class Yaw : Config(Mod("Yaw", ModType.HUD), "evergreenhud/yaw.json") {
         @Switch(name = "Trailing Zeros")
         var trailingZeros = true
 
-        override fun getText(): String {
+        override fun getText(example: Boolean): String {
             return decimalFormat(accuracy, trailingZeros).format(mc.thePlayer?.rotationYaw?.let(MathHelper::wrapAngleTo180_float) ?: 0f)
         }
     }

@@ -5,6 +5,7 @@ import cc.polyfrost.oneconfig.events.EventManager
 import cc.polyfrost.oneconfig.events.event.Stage
 import cc.polyfrost.oneconfig.events.event.TickEvent
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
+import cc.polyfrost.oneconfig.utils.Multithreading
 import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.ServerAddress
 import net.minecraft.client.multiplayer.ServerData
@@ -20,8 +21,6 @@ import net.minecraft.util.ChatComponentText
 import net.minecraft.util.IChatComponent
 import java.net.InetAddress
 import java.util.*
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 
 object ServerPinger {
     val pingers = Collections.synchronizedList(mutableListOf<Pinger>())
@@ -33,13 +32,16 @@ object ServerPinger {
     }
 
     @Exclude
-    class Pinger(private val interval: () -> Int, private val serverGetter: () -> ServerData?) : ReadOnlyProperty<Any?, Int?> {
-        private var ping: Int? = null
+    class Pinger(private val interval: () -> Int, private val serverGetter: () -> ServerData?) {
+        var ping: Int? = null
+        private set
 
         private var ticks = 0
         init {
             EventManager.INSTANCE.register(this)
-            serverGetter()?.let(this::ping)
+            Multithreading.runAsync {
+                serverGetter()?.let(this::ping)
+            }
         }
 
         @Subscribe
@@ -48,7 +50,9 @@ object ServerPinger {
                 ticks++
 
                 if (ticks % interval() == 0) {
-                    serverGetter()?.let(this::ping)
+                    Multithreading.runAsync {
+                        serverGetter()?.let(this::ping)
+                    }
                 }
             }
         }
@@ -96,7 +100,5 @@ object ServerPinger {
             )
             networkmanager.sendPacket(C00PacketServerQuery())
         }
-
-        override fun getValue(thisRef: Any?, property: KProperty<*>) = ping
     }
 }
