@@ -8,7 +8,7 @@ import cc.polyfrost.oneconfig.config.data.ModType
 import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.utils.dsl.mc
 
-class Saturation: Config(Mod("Saturation", ModType.HUD), "evergreen/saturation.json") {
+class Saturation: Config(Mod("Saturation", ModType.HUD), "evergreenhud/saturation.json") {
     @HUD(name = "Main")
     var hud = SaturationHud()
 
