@@ -1,7 +1,6 @@
 package cc.polyfrost.evergreenhud
 
 import cc.polyfrost.oneconfig.config.Config
-import cc.polyfrost.oneconfig.config.profiles.Profiles
 import cc.polyfrost.oneconfig.events.EventManager
 import net.minecraft.entity.Entity
 import net.minecraft.entity.player.EntityPlayer
@@ -18,7 +17,6 @@ import java.io.File
 class EvergreenHUD {
     @Mod.EventHandler
     fun onFMLInitialization(event: FMLInitializationEvent?) {
-        File(Profiles.getProfileDir(), "evergreenhud").mkdirs()
         val time = System.currentTimeMillis()
         for (classes in reflections.getSubTypesOf(
             Config::class.java
