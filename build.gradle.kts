@@ -62,11 +62,11 @@ sourceSets {
 repositories {
     mavenCentral()
     maven("https://repo.polyfrost.cc/releases")
-    maven("https://repo.polyfrost.cc/snapshots")
 }
 
 dependencies {
-    compileOnly("cc.polyfrost:oneconfig-1.8.9-forge:0.1.0-alpha-LOCAL2")
+    compileOnly("cc.polyfrost:oneconfig-1.8.9-forge:0.1.0-alpha110")
+    compileOnly("org.spongepowered:mixin:0.7.11-SNAPSHOT")
     shade("cc.polyfrost:oneconfig-wrapper-launchwrapper:1.0.0-alpha+")
     shade("org.reflections:reflections:0.10.2")
 }
