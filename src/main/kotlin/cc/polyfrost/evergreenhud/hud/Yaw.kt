@@ -11,7 +11,7 @@ import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraft.util.MathHelper
 
-class Yaw : Config(Mod("Yaw", ModType.HUD), "evergreenhud/yaw.json") {
+class Yaw : Config(Mod("Yaw", ModType.HUD), "evergreenhud/yaw.json", false) {
     @HUD(name = "Main")
     var hud = YawHud()
 
@@ -19,7 +19,7 @@ class Yaw : Config(Mod("Yaw", ModType.HUD), "evergreenhud/yaw.json") {
         initialize()
     }
 
-    class YawHud : SingleTextHud("Yaw", false) {
+    class YawHud : SingleTextHud("Yaw", true, 180, 70) {
 
         @Slider(name = "Accuracy", min = 0F, max = 10F)
         var accuracy = 2

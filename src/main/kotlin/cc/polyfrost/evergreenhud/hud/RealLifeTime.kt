@@ -9,7 +9,7 @@ import cc.polyfrost.oneconfig.hud.SingleTextHud
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RealLifeTime : Config(Mod("IRL Time", ModType.HUD), "evergreenhud/irltime.json") {
+class RealLifeTime : Config(Mod("IRL Time", ModType.HUD), "evergreenhud/irltime.json", false) {
     @HUD(name = "Main")
     var hud = RealLifeTimeHud()
 
@@ -17,7 +17,7 @@ class RealLifeTime : Config(Mod("IRL Time", ModType.HUD), "evergreenhud/irltime.
         initialize()
     }
 
-    class RealLifeTimeHud : SingleTextHud("Time", false) {
+    class RealLifeTimeHud : SingleTextHud("Time", true, 120, 10) {
 
         @Switch(name = "Twelve Hour Time")
         var twelveHour = false

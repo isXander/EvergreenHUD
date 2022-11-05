@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.init.Items
 import net.minecraft.item.ItemStack
 
-class Armour: Config(Mod("ArmourHud", ModType.HUD), "evergreenhud/armour.json") {
+class Armour: Config(Mod("ArmourHud", ModType.HUD), "evergreenhud/armour.json", false) {
     @HUD(name = "Main")
     var hud = ArmourHud()
 
@@ -23,7 +23,7 @@ class Armour: Config(Mod("ArmourHud", ModType.HUD), "evergreenhud/armour.json") 
         initialize()
     }
 
-    class ArmourHud : BasicHud(true) {
+    class ArmourHud : BasicHud(true, 1920f - 5, 1080f - 5) {
 
         @Transient val diamondHelmet = ItemStack(Items.diamond_helmet)
         @Transient val diamondChestplate = ItemStack(Items.diamond_chestplate)
@@ -94,8 +94,8 @@ class Armour: Config(Mod("ArmourHud", ModType.HUD), "evergreenhud/armour.json") 
         )
         var alignment = 0
 
-        @Transient private var actualWidth = 0F
-        @Transient private var actualHeight = 0F
+        @Transient private var actualWidth = 5F
+        @Transient private var actualHeight = 5F
 
         override fun draw(matrices: UMatrixStack?, x: Float, y: Float, scale: Float, example: Boolean) {
             draw(matrices, x, y, scale, getItems(example))

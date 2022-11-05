@@ -8,7 +8,7 @@ import cc.polyfrost.oneconfig.config.data.ModType
 import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.utils.dsl.mc
 
-class Saturation: Config(Mod("Saturation", ModType.HUD), "evergreenhud/saturation.json") {
+class Saturation: Config(Mod("Saturation", ModType.HUD), "evergreenhud/saturation.json", false) {
     @HUD(name = "Main")
     var hud = SaturationHud()
 
@@ -16,7 +16,7 @@ class Saturation: Config(Mod("Saturation", ModType.HUD), "evergreenhud/saturatio
         initialize()
     }
 
-    class SaturationHud: SingleTextHud("Saturation", true) {
+    class SaturationHud: SingleTextHud("Saturation", true, 180, 10) {
         override fun getText(example: Boolean): String {
             return decimalFormat(1, true).format(mc.thePlayer?.foodStats?.saturationLevel ?: 20)
         }

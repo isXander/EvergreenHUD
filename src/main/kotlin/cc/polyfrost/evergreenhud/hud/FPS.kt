@@ -13,7 +13,7 @@ import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 
-class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
+class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json", false) {
     @HUD(name = "FPS", category = "FPS")
     var fps = FPSHud()
 
@@ -27,7 +27,7 @@ class FPS : Config(Mod("FPS", ModType.HUD), "evergreenhud/fps.json") {
         initialize()
     }
 
-    class FPSHud : SingleTextHud("FPS", true) {
+    class FPSHud : SingleTextHud("FPS", true, 60, 50) {
         @Switch(
             name = "Update Fast"
         )

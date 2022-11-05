@@ -40,6 +40,9 @@ loom {
             arg("--tweakClass", "cc.polyfrost.oneconfigwrapper.OneConfigWrapper")
             property("mixin.debug.export", "true")
         }
+        runConfigs.named("client") {
+            vmArgs.remove("-XstartOnFirstThread")
+        }
     }
     if (project.platform.isForge) {
         forge {

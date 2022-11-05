@@ -15,7 +15,7 @@ import net.minecraft.block.BlockVine
 import net.minecraft.init.Blocks
 import net.minecraft.util.BlockPos
 
-class BlockAbove: Config(Mod("Block Above", ModType.HUD), "evergreenhud/blockabove.json") {
+class BlockAbove: Config(Mod("Block Above", ModType.HUD), "evergreenhud/blockabove.json", false) {
     @HUD(name = "Main")
     var hud = BlockAboveHud()
 
@@ -23,7 +23,7 @@ class BlockAbove: Config(Mod("Block Above", ModType.HUD), "evergreenhud/blockabo
         initialize()
     }
 
-    class BlockAboveHud: SingleTextHud("Above", false) {
+    class BlockAboveHud: SingleTextHud("Above", true, 120, 50) {
         @Switch(
             name = "Notify With Sound"
         )

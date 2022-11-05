@@ -17,7 +17,7 @@ import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraft.network.play.server.S19PacketEntityStatus
 
 
-class Combo: Config(Mod("Combo", ModType.HUD), "evergreenhud/combo.json") {
+class Combo: Config(Mod("Combo", ModType.HUD), "evergreenhud/combo.json", false) {
     @HUD(name = "Main")
     var hud = ComboHud()
 
@@ -25,7 +25,7 @@ class Combo: Config(Mod("Combo", ModType.HUD), "evergreenhud/combo.json") {
         initialize()
     }
 
-    class ComboHud: SingleTextHud("Combo", true) {
+    class ComboHud: SingleTextHud("Combo", true, 0, 70) {
         @Slider(
             name = "Discard Time",
             min = 0F,

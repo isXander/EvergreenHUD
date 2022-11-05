@@ -9,7 +9,7 @@ import cc.polyfrost.oneconfig.config.data.Mod
 import cc.polyfrost.oneconfig.config.data.ModType
 import cc.polyfrost.oneconfig.hud.SingleTextHud
 
-class Memory: Config(Mod("Memory", ModType.HUD), "evergreenhud/memory.json") {
+class Memory: Config(Mod("Memory", ModType.HUD), "evergreenhud/memory.json", false) {
     @HUD(name = "Main")
     var hud = MemoryHud()
 
@@ -17,7 +17,7 @@ class Memory: Config(Mod("Memory", ModType.HUD), "evergreenhud/memory.json") {
         initialize()
     }
 
-    class MemoryHud: SingleTextHud("Memory", false) {
+    class MemoryHud: SingleTextHud("Memory", true, 60, 90) {
         @DualOption(
             name = "Display Type",
             left = "Absolute",

@@ -14,7 +14,7 @@ import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import org.lwjgl.input.Mouse
 
-class CPS: Config(Mod("CPS", ModType.HUD), "evergreenhud/cps.json") {
+class CPS: Config(Mod("CPS", ModType.HUD), "evergreenhud/cps.json", false) {
     @HUD(name = "Main")
     var hud = CPSHud()
 
@@ -22,7 +22,7 @@ class CPS: Config(Mod("CPS", ModType.HUD), "evergreenhud/cps.json") {
         initialize()
     }
 
-    class CPSHud: SingleTextHud("CPS", true) {
+    class CPSHud: SingleTextHud("CPS", true, 0, 50) {
 
         @Switch(
             name = "Update Fast"

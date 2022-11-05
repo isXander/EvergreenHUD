@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.entity.EntityLivingBase
 
 
-class PlayerPreview: Config(Mod("Player Preview", ModType.HUD), "evergreenhud/playerpreview.json") {
+class PlayerPreview: Config(Mod("Player Preview", ModType.HUD), "evergreenhud/playerpreview.json", false) {
     @HUD(
         name = "Self Preview"
     )
@@ -25,7 +25,7 @@ class PlayerPreview: Config(Mod("Player Preview", ModType.HUD), "evergreenhud/pl
         initialize()
     }
 
-    class SelfPreviewHud: BasicHud(false) {
+    class SelfPreviewHud: BasicHud(true, 1920 - 80f, 1080 - 120f) {
 
         @Slider(
             name = "Rotation",

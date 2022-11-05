@@ -11,7 +11,7 @@ import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.libs.universal.UMatrixStack
 import cc.polyfrost.oneconfig.utils.dsl.mc
 
-class Ping: Config(Mod("Ping", ModType.HUD), "evergreenhud/ping.json") {
+class Ping: Config(Mod("Ping", ModType.HUD), "evergreenhud/ping.json", false) {
     @HUD(name = "Main")
     var hud = PingHud()
 
@@ -19,7 +19,7 @@ class Ping: Config(Mod("Ping", ModType.HUD), "evergreenhud/ping.json") {
         initialize()
     }
 
-    class PingHud : SingleTextHud("Ping", true) {
+    class PingHud : SingleTextHud("Ping", true, 60, 70) {
 
         @Slider(
             name = "Ping Period",

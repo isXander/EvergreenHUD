@@ -17,7 +17,7 @@ import cc.polyfrost.oneconfig.libs.eventbus.Subscribe
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraft.entity.Entity
 
-class Reach: Config(Mod("Reach", ModType.HUD), "evergreenhud/reach.json") {
+class Reach: Config(Mod("Reach", ModType.HUD), "evergreenhud/reach.json", false) {
     @HUD(name = "Main")
     var hud = ReachHud()
 
@@ -25,7 +25,7 @@ class Reach: Config(Mod("Reach", ModType.HUD), "evergreenhud/reach.json") {
         initialize()
     }
 
-    class ReachHud: SingleTextHud("Reach", true) {
+    class ReachHud: SingleTextHud("Reach", true, 0, 90) {
         @Switch(name = "Trailing Zeros")
         var trailingZeros = false
 

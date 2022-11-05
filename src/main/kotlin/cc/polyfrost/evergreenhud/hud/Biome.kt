@@ -8,7 +8,7 @@ import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.utils.dsl.mc
 import net.minecraft.util.BlockPos
 
-class Biome: Config(Mod("Biome", ModType.HUD), "evergreenhud/biome.json") {
+class Biome: Config(Mod("Biome", ModType.HUD), "evergreenhud/biome.json", false) {
     @HUD(name = "Main")
     var hud = BiomeHud()
 
@@ -16,7 +16,7 @@ class Biome: Config(Mod("Biome", ModType.HUD), "evergreenhud/biome.json") {
         initialize()
     }
 
-    class BiomeHud: SingleTextHud("Biome", false) {
+    class BiomeHud: SingleTextHud("Biome", true, 400, 50) {
         override fun getText(example: Boolean): String {
             val player = mc.thePlayer ?: return "Unknown"
 

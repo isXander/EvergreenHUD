@@ -12,7 +12,7 @@ import cc.polyfrost.oneconfig.config.data.ModType
 import cc.polyfrost.oneconfig.hud.TextHud
 import cc.polyfrost.oneconfig.utils.dsl.mc
 
-class Coordinates: Config(Mod("Coordinates", ModType.HUD), "evergreenhud/coordinates.json") {
+class Coordinates: Config(Mod("Coordinates", ModType.HUD), "evergreenhud/coordinates.json", true) {
     @HUD(name = "Main")
     var hud = CoordinatesHud()
 
@@ -20,7 +20,7 @@ class Coordinates: Config(Mod("Coordinates", ModType.HUD), "evergreenhud/coordin
         initialize()
     }
 
-    class CoordinatesHud : TextHud(true) {
+    class CoordinatesHud : TextHud(true, 0, 0) {
         @DualOption(
             name = "Mode",
             left = "Vertical",

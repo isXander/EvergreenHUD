@@ -9,7 +9,7 @@ import cc.polyfrost.oneconfig.config.data.ModType
 import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.utils.dsl.mc
 
-class Direction: Config(Mod("Direction", ModType.HUD), "evergreenhud/direction.json") {
+class Direction: Config(Mod("Direction", ModType.HUD), "evergreenhud/direction.json", false) {
     @HUD(name = "Main")
     var hud = DirectionHud()
 
@@ -17,7 +17,7 @@ class Direction: Config(Mod("Direction", ModType.HUD), "evergreenhud/direction.j
         initialize()
     }
 
-    class DirectionHud: SingleTextHud("Direction", false) {
+    class DirectionHud: SingleTextHud("Direction", true, 260, 10) {
 
         @Switch(
             name = "Abbreviated"

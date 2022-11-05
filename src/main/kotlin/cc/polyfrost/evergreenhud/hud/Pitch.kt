@@ -10,7 +10,7 @@ import cc.polyfrost.oneconfig.config.data.ModType
 import cc.polyfrost.oneconfig.hud.SingleTextHud
 import cc.polyfrost.oneconfig.utils.dsl.mc
 
-class Pitch: Config(Mod("Pitch", ModType.HUD), "evergreenhud/pitch.json") {
+class Pitch: Config(Mod("Pitch", ModType.HUD), "evergreenhud/pitch.json", false) {
     @HUD(name = "Main")
     var hud = PitchHud()
 
@@ -18,7 +18,7 @@ class Pitch: Config(Mod("Pitch", ModType.HUD), "evergreenhud/pitch.json") {
         initialize()
     }
 
-    class PitchHud: SingleTextHud("Pitch", false) {
+    class PitchHud: SingleTextHud("Pitch", true, 180, 50) {
 
         @Slider(
             name = "Accuracy",
