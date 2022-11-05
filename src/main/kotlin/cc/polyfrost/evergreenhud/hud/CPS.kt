@@ -4,6 +4,7 @@ import cc.polyfrost.oneconfig.config.Config
 import cc.polyfrost.oneconfig.config.annotations.Dropdown
 import cc.polyfrost.oneconfig.config.annotations.HUD
 import cc.polyfrost.oneconfig.config.annotations.Switch
+import cc.polyfrost.oneconfig.config.annotations.Text
 import cc.polyfrost.oneconfig.config.data.Mod
 import cc.polyfrost.oneconfig.config.data.ModType
 import cc.polyfrost.oneconfig.events.EventManager
@@ -28,6 +29,11 @@ class CPS: Config(Mod("CPS", ModType.HUD), "evergreenhud/cps.json", false) {
             name = "Update Fast"
         )
         var updateFast = false
+
+        @Text(
+            name = "CPS Button Divider"
+        )
+        var divider = "|"
 
         @Dropdown(
             name = "Button",
@@ -81,7 +87,7 @@ class CPS: Config(Mod("CPS", ModType.HUD), "evergreenhud/cps.json", false) {
             return when (button) {
                 0 -> left.size.toString()
                 1 -> right.size.toString()
-                2 -> "${left.size} | ${right.size}"
+                2 -> "${left.size} $divider ${right.size}"
                 else -> throw IllegalStateException()
             }
         }
