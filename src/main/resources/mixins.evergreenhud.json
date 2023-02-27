@@ -8,6 +8,7 @@
   },
   "verbose": true,
   "client": [
-    "ForgeHooksMixin"
+    "ForgeHooksMixin",
+    "EntityPlayerMixin"
   ]
 }

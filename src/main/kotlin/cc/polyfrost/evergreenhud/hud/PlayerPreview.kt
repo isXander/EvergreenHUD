@@ -73,8 +73,8 @@ class PlayerPreview: Config(Mod("Player Preview", ModType.HUD), "evergreenhud/pl
         private fun renderLiving(ent: EntityLivingBase, matrices: UMatrixStack?, x: Float, y: Float, scale: Float, rotation: Int) {
             GlStateManager.enableColorMaterial()
             GlStateManager.pushMatrix()
-            GlStateManager.translate(x.toDouble(), y.toDouble(), 50.0)
-            GlStateManager.scale(-(scale * 50), scale * 50, scale * 50) //todo
+            GlStateManager.translate(x.toDouble() + (40 * scale), y.toDouble() + (107 * scale), 50.0)
+            GlStateManager.scale(-(scale * 50), scale * 50, scale * 50)
             GlStateManager.rotate(180.0f, 0.0f, 0.0f, 1.0f)
             val f = ent.renderYawOffset
             val f1 = ent.rotationYaw
